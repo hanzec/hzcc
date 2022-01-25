@@ -1,0 +1,92 @@
+###############################################################################
+## Compiler Targets ###########################################################
+###############################################################################
+# exec target
+add_executable(mycc)
+
+# test target
+add_executable(mycc_test)
+
+###############################################################################
+## Project Versions ###########################################################
+###############################################################################
+# generate build time
+string(TIMESTAMP BUILD_TIMESTAMP "%Y-%m-%d %H:%M:%S")
+
+# collect head commit hash
+find_package(Git QUIET)
+if(GIT_FOUND)
+    execute_process(
+            COMMAND ${GIT_EXECUTABLE} log -1 --pretty=format:%h
+            OUTPUT_VARIABLE GIT_HASH
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_QUIET
+            WORKING_DIRECTORY
+            ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+endif()
+
+# generate the configuration file
+configure_file(
+        version.h.in
+        ${CMAKE_CURRENT_BINARY_DIR}/version.h)
+target_include_directories(mycc PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+
+###############################################################################
+## Shared Dependency ##########################################################
+###############################################################################
+# google log
+find_package(glog CONFIG REQUIRED)
+target_link_libraries(mycc glog::glog)
+target_link_libraries(mycc_test glog::glog)
+target_include_directories(mycc PRIVATE ${glog_INCLUDE_DIRS})
+
+# google flag
+find_package(gflags CONFIG REQUIRED)
+target_link_libraries(mycc gflags_static)
+target_include_directories(mycc PRIVATE ${GFLAGS_INCLUDE_DIR})
+
+# google test deps(require pthread)
+find_package(Threads REQUIRED)
+find_package(GTest CONFIG REQUIRED)
+target_link_libraries(mycc_test Threads::Threads)
+target_link_libraries(mycc_test GTest::gmock GTest::gtest GTest::gmock_main GTest::gtest_main)
+
+###############################################################################
+## Compile Config #############################################################
+###############################################################################
+# build type specific options
+if (CMAKE_BUILD_TYPE)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        target_link_options(mycc PRIVATE -o0 -g -fsanitize=address -fno-omit-frame-pointer)
+        target_compile_options(mycc PRIVATE -O0 -g -fsanitize=address -fno-omit-frame-pointer)
+    elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+        target_compile_options(mycc PRIVATE -O3 -fPIC -ffast-math -Bsymbolic -Werror)
+    endif ()
+endif ()
+
+# general  compile options
+add_compile_options(-Wall -Wextra)
+
+# compile under cxx 17 since need std::byte support
+target_compile_features(mycc PRIVATE cxx_std_17)
+target_compile_features(mycc_test PRIVATE cxx_std_17)
+set_property(TARGET mycc PROPERTY CXX_STANDARD_REQUIRED ON)
+set_property(TARGET mycc_test PROPERTY CXX_STANDARD_REQUIRED ON)
+
+###############################################################################
+## Project Source #############################################################
+###############################################################################
+target_sources(mycc
+        PRIVATE
+        "version.h.in" "main.cc" )
+target_include_directories(mycc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+###############################################################################
+## Testing ####################################################################
+###############################################################################
+# add testing main
+target_sources(mycc_test PRIVATE "test_main.cc")
+
+# scan for possibale test
+gtest_discover_tests(mycc_test)

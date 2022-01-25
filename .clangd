@@ -1,0 +1,17 @@
+Diagnostics:
+  ClangTidy:
+    Add:
+      [
+        performance-*,
+        bugprone-*,
+        portability-*,
+        modernize-*,
+      ]
+    Remove:
+      [
+        bugprone-macro-parentheses,
+        modernize-use-trailing-return-type,
+        bugprone-easily-swappable-parameters,
+      ]
+    CheckOptions:
+      WarnOnFloatingPointNarrowingConversion: false

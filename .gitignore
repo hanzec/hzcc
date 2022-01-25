@@ -1,0 +1,12 @@
+# latex generated files
+*.aux
+*.log
+*.out
+*.toc
+*.pdf
+
+# CLion files
+.idea/
+cmake-build-*/
+
+# ReadME build files
