@@ -44,19 +44,18 @@ if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND)
     get_filename_component(LATEX_IND_FILES ${LATEX_IND_FILES} NAME)
     get_filename_component(LATEX_IND_FILES ${CMAKE_CURRENT_BINARY_DIR}/${LATEX_IND_FILES} ABSOLUTE)
     add_custom_target(latex-makeindex
-            DEPENDS ${DOC_MAIN_TEX}
+            DEPENDS ${DOC_MAIN_TEX} ${LATEX_AUX_FILES}
             BYPRODUCTS ${LATEX_IND_FILES}
             COMMAND ${CMAKE_COMMAND} -E env TEXMFOUTPUT=${CMAKE_CURRENT_BINARY_DIR} ${MAKEINDEX_COMPILER} ${DOC_MAIN_TEX} -o ${LATEX_IND_FILES} -t ${CMAKE_CURRENT_BINARY_DIR}/makeindex.log
             COMMENT "Read and create indices with ${DOC_MAIN_TEX}."
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-    add_dependencies(latex-makeindex latex-prebuild)
 
     # Generate the PDF file.
     string(REGEX REPLACE "[.]tex$" ".pdf" LATEX_PDF_FILES ${DOC_MAIN_TEX})
     get_filename_component(LATEX_PDF_FILES ${LATEX_PDF_FILES} NAME)
     get_filename_component(LATEX_PDF_FILES ${CMAKE_CURRENT_BINARY_DIR}/${LATEX_PDF_FILES} ABSOLUTE)
     add_custom_target(documentation
-            DEPENDS ${DOC_MAIN_TEX} ${LATEX_IND_FILES}
+            DEPENDS ${DOC_MAIN_TEX} ${LATEX_IND_FILES} ${LATEX_AUX_FILES}
             BYPRODUCTS ${LATEX_PDF_FILES}
             COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} ${DOC_MAIN_TEX}
             COMMENT "Generating pdf file."

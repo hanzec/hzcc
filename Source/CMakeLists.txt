@@ -68,11 +68,24 @@ endif ()
 # general  compile options
 add_compile_options(-Wall -Wextra)
 
+# hide static link symbols
+if(MACOSX)
+    target_link_options(mycc PRIVATE -hidden-lssl)
+else()
+    target_link_options(mycc PRIVATE -Wl,--exclude-libs,ALL)
+endif()
+
 # compile under cxx 17 since need std::byte support
 target_compile_features(mycc PRIVATE cxx_std_17)
 target_compile_features(mycc_test PRIVATE cxx_std_17)
 set_property(TARGET mycc PROPERTY CXX_STANDARD_REQUIRED ON)
 set_property(TARGET mycc_test PROPERTY CXX_STANDARD_REQUIRED ON)
+
+# set default visibility
+set_target_properties(mycc PROPERTIES POSITION_INDEPENDENT_CODE 1) # generate fpic
+set_target_properties(mycc PROPERTIES VISIBILITY_INLINES_HIDDEN 1) # generate fpic
+set_target_properties(mycc PROPERTIES C_VISIBILITY_PRESET hidden) # not export symbols
+set_target_properties(mycc PROPERTIES CXX_VISIBILITY_PRESET hidden) # not export symbols
 
 ###############################################################################
 ## Project Source #############################################################
