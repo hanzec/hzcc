@@ -9,6 +9,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "const_msg.h"
+
 /******************************************************************************/
 /** Compiler Arguments                                                       **/
 /******************************************************************************/
@@ -31,25 +33,15 @@ int main(int argc, char *argv[]) {
   gflags::SetVersionString(FULL_VERSION);
 
   // usage information
-  gflags::SetUsageMessage("Usage: mycc -mode [options] infile");
+  gflags::SetUsageMessage(kMsg_Usage);
 
+  // parse command line arguments
   google::InitGoogleLogging(argv[0]);
   gflags::ParseCommandLineFlags(&argc, &argv, false);
 
   // if no argument will print version information
   if (argc == 1) {
-    std::cerr << "Usage:\n"
-                 "\tmycc -mode [options] infile\n"
-                 "Valid modes:\n"
-                 "\t-0: Version information only\n"
-                 "\t-1: Part 1 (not yet implemented)\n"
-                 "\t-2: Part 2 (not yet implemented)\n"
-                 "\t-3: Part 3 (not yet implemented)\n"
-                 "\t-4: Part 4 (not yet implemented)\n"
-                 "\t-5: Part 5 (not yet implemented)\n"
-                 "Valid options:\n"
-                 "\t-o outfile: write to outfile instead of standard output"
-              << std::endl;
+    std::cerr << kMsg_Help << std::endl;
     return 0;
   }
 
@@ -69,17 +61,11 @@ int main(int argc, char *argv[]) {
   if (FLAGS_0) {
     if (gflags::GetCommandLineFlagInfoOrDie("o").is_default) {
       // by project document, will print version information to stdout if -o is not specified
-      std::cout << "My bare-bones C compiler (for COM 440/540)\n"
-                   "\tWritten by Hanze Chen (hanzech@iastate.edu)\n"
-                   "\tVersion " FULL_VERSION "_" GIT_HASH "\n\t" BUILD_TIMESTAMP
-                << std::endl;
+      std::cout << kMsg_Author << std::endl;
     } else {
       // by project document, will print version information to output file
       std::ofstream outfile(FLAGS_o);
-      outfile << "My bare-bones C compiler (for COM 440/540)\n"
-                 "\tWritten by Hanze Chen (hanzech@iastate.edu)\n"
-                 "\tVersion " FULL_VERSION "_" GIT_HASH "\n\t" BUILD_TIMESTAMP
-              << std::endl;
+      outfile << kMsg_Author << std::endl;
       outfile.close();
     }
     return 0;
