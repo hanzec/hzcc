@@ -21,7 +21,7 @@ variables:
     - apt update
     - apt install -y git
     - mkdir -p /tmp && cd /tmp
-    - [ -d "/tmp/CMake" ] && echo "Found Cached CMake Directory at [/tmp/CMake]" || git clone --depth 1 --branch "$CMAKE_VERSION" https://github.com/Kitware/CMake.git
+    - test -f /tmp/CMake && echo "Found Cached CMake Directory at [/tmp/CMake]" || git clone --depth 1 --branch "$CMAKE_VERSION" https://github.com/Kitware/CMake.git
     - cd ./CMake && ./bootstrap --parallel=$(nproc) > /dev/null 2>&1
     - make -j$(nproc) > /dev/null 2>&1 && make install > /dev/null 2>&1
 
@@ -39,7 +39,7 @@ variables:
 
 .documentation_default: &documentation_default
   before_script:
-    - !reference [ .compile_default, before_script ]
+    - !reference [ .install_vcpkg_dep, before_script ]
     - !reference [ .install_latex_dep, before_script ]
     - !reference [ .install_cmake_3_16_0, before_script ]
 
