@@ -11,3 +11,7 @@ cmake-build-*/
 
 # ReadME build files
 build/
+
+# python files
+*.pyc
+venv/
