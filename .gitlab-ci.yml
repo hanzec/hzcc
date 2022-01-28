@@ -54,9 +54,11 @@ build_gcc_10_3_ninja_debug:
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && make mycc -j$(nproc)
   cache:
     - key: "gcc_10_3_cmake_$CMAKE_VERSION($CI_RUNNER_ID)"
-        path: "/tmp/CMake"
+      paths: 
+        - "/tmp/CMake"
     - key: "gcc_10_3_ninja_debug_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
-        path: "$CI_PROJECT_DIR/build"
+      paths: 
+        - "$CI_PROJECT_DIR/build"
 
 test_gcc_10_3_debug:
   <<: *testing_default
@@ -73,13 +75,14 @@ test_gcc_10_3_debug:
     reports:
       junit: ./build/Source/gtest_report.xml
   needs:
-    - build_gcc_10_3_make_release
-    - build_gcc_10_3_ninja_release
+    - build_gcc_10_3_ninja_debug
   cache:
     - key: "gcc_10_3_cmake_$CMAKE_VERSION($CI_RUNNER_ID)"
-        path: "/tmp/CMake"
+      paths: 
+        - "/tmp/CMake"
     - key: "gcc_10_3_ninja_debug_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
-        path: "$CI_PROJECT_DIR/build"
+      paths: 
+        - "$CI_PROJECT_DIR/build"
 
 
 test_gcc_10_3_release:
@@ -97,10 +100,11 @@ test_gcc_10_3_release:
     reports:
       junit: ./build/Source/gtest_report.xml
   needs:
-    - build_gcc_10_3_make_release
-    - build_gcc_10_3_ninja_release
+    - build_gcc_10_3_ninja_debug
   cache:
     - key: "gcc_10_3_cmake_$CMAKE_VERSION($CI_RUNNER_ID)"
-        path: "/tmp/CMake"
+      paths: 
+        - "/tmp/CMake"
     - key: "gcc_10_3_ninja_debug_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
-        path: "$CI_PROJECT_DIR/build"
+      paths: 
+        - "$CI_PROJECT_DIR/build"
