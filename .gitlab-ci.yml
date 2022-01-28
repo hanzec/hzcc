@@ -21,6 +21,13 @@ stages:
     - cd ./CMake && ./bootstrap --parallel=$(nproc) > /dev/null 2>&1
     - make -j$(nproc) > /dev/null 2>&1 && make install > /dev/null 2>&1
 
+.testing_default: &testing_default
+  script:
+    - !reference [.install_vcpkg_dep, before_script]
+    - !reference [.install_cmake_3_16_0, before_script]
+    - apt update
+    - apt-get install -y ninja-build # install ninja
+
 .compile_default: &compile_default
   before_script:
     - !reference [.install_vcpkg_dep, before_script]
@@ -62,3 +69,34 @@ build_gcc_10_3_ninja_release:
     paths:
       - ./build/Source/mycc
     expire_in: 20 days
+
+
+test_gcc_10_3_debug:
+  <<: *testing_default
+  image: gcc:10.3
+  stage: test
+  tags:
+    - docker
+  script:
+    - cd $CI_PROJECT_DIR
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug -G Ninja && cd ./build && make mycc_test -j$(nproc)
+    - cd ./build/Source && ./mycc_test --gtest_output="xml:gtest_report.xml"
+  artifacts:
+    when: always
+      reports:
+        junit: ./build/Source/gtest_report.xml
+
+test_gcc_10_3_release:
+  <<: *testing_default
+  image: gcc:10.3
+  stage: test
+  tags:
+    - docker
+  script:
+    - cd $CI_PROJECT_DIR
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && make mycc_test -j$(nproc)
+    - cd ./build/Source && ./mycc_test --gtest_output="xml:gtest_report.xml"
+  artifacts:
+    when: always
+      reports:
+        junit: ./build/Source/gtest_report.xml
