@@ -72,8 +72,8 @@ test_gcc_10_3_debug:
     - cd ./build/Source && ./mycc_test --gtest_output="xml:gtest_report.xml"
   artifacts:
     when: always
-      reports:
-        junit: ./build/Source/gtest_report.xml
+    reports:
+      junit: ./build/Source/gtest_report.xml
 
 test_gcc_10_3_release:
   <<: *testing_default
