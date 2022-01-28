@@ -26,6 +26,9 @@ if(GIT_FOUND)
     )
 endif()
 
+# get hostname
+cmake_host_system_information(RESULT MACHINE_HOST_NAME QUERY HOSTNAME)
+
 # generate the configuration file
 configure_file(
         version.h.in

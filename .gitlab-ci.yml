@@ -1,0 +1,32 @@
+stages:
+  - build
+  - test
+
+build_gcc_10_3_make_release:
+  stage: build
+  image: gcc:10.3
+  tags:
+    - build
+  script:
+    - apt update
+    - apt-get install -y curl zip unzip tar pkg-config cmake # install vcpkg dependencies
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G 'Unix Makefiles' && cd ./build && make mycc -j$(nproc)
+  artifacts:
+    paths:
+      - ./build/Source/mycc
+    expire_in: 5 days
+
+build_gcc_10_3_ninja_release:
+  stage: build
+  image: gcc:10.3
+  tags:
+    - build
+  script:
+    - apt update
+    - apt-get install -y ninja-build # install ninja
+    - apt-get install -y curl zip unzip tar pkg-config cmake # install vcpkg dependencies
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && make mycc -j$(nproc)
+  artifacts:
+    paths:
+      - ./build/Source/mycc
+    expire_in: 5 days
