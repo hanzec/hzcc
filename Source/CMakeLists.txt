@@ -75,11 +75,11 @@ else()
     target_link_options(mycc PRIVATE -Wl,--exclude-libs,ALL)
 endif()
 
-# compile under cxx 17 since need std::byte support
+# compile under cxx 17
 target_compile_features(mycc PRIVATE cxx_std_17)
 target_compile_features(mycc_test PRIVATE cxx_std_17)
-set_property(TARGET mycc PROPERTY CXX_STANDARD_REQUIRED ON)
-set_property(TARGET mycc_test PROPERTY CXX_STANDARD_REQUIRED ON)
+#set_property(TARGET mycc PROPERTY CXX_STANDARD_REQUIRED ON)
+#set_property(TARGET mycc_test PROPERTY CXX_STANDARD_REQUIRED ON)
 
 # set default visibility
 set_target_properties(mycc PROPERTIES POSITION_INDEPENDENT_CODE 1) # generate fpic
@@ -87,13 +87,26 @@ set_target_properties(mycc PROPERTIES VISIBILITY_INLINES_HIDDEN 1) # generate fp
 set_target_properties(mycc PROPERTIES C_VISIBILITY_PRESET hidden) # not export symbols
 set_target_properties(mycc PROPERTIES CXX_VISIBILITY_PRESET hidden) # not export symbols
 
+# change include base to project root
+target_include_directories(mycc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(mycc_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
 ###############################################################################
 ## Project Source #############################################################
 ###############################################################################
 target_sources(mycc
         PRIVATE
-        "version.h.in" "main.cc" )
-target_include_directories(mycc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+        "const_msg.h" "macro.h" "main.cc")
+
+###############################################################################
+## Project Utils ##############################################################
+###############################################################################
+add_subdirectory(utils)
+
+###############################################################################
+## Lexical Analysis ###########################################################
+###############################################################################
+add_subdirectory(lexical)
 
 ###############################################################################
 ## Testing ####################################################################

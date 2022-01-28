@@ -76,6 +76,9 @@ In release build, we will use `-O3` optimization level.
 cmake . -B./build/ && cd ./build && make mycc documentation -j$(nproc)
 ```
 
+The build will be done in `./build` directory. The document will be generated to `./build/Documentation/developers.pdf`.
+And the executable will be generated to `./build/Source/mycc`.
+
 ### Debug Build
 
 In debug mode, the compiler will be built with debug symbols and assertions enabled with '-g -O0' and ASAN enabled
@@ -83,6 +86,9 @@ In debug mode, the compiler will be built with debug symbols and assertions enab
 ```bash
  cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug && cd ./build && make mycc documentation -j$(nproc)
  ```
+
+The build will be done in `./build` directory. The document will be generated to `./build/Documentation/developers.pdf`.
+And the executable will be generated to `./build/Source/mycc`.
 
 ## Usage
 

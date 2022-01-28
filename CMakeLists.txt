@@ -15,6 +15,7 @@ if (NOT DEFINED CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
     message(STATUS "CMAKE_BUILD_TYPE is not set, defaulting to ${CMAKE_BUILD_TYPE}")
 endif ()
+
 ###############################################################################
 ## Compile Config #############################################################
 ###############################################################################
@@ -57,7 +58,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 if ((EXISTS "${vcpkg_SOURCE_DIR}/vcpkg") OR (EXISTS "${vcpkg_SOURCE_DIR}/vcpkg.exe"))
     message(VERBOSE "Found builded vcpkg at ${vcpkg_SOURCE_DIR}")
 else ()
-    message(STATUS "Not Found builded vcpkg, trying to run bootstrap-vcpkg scripts")
+    message(STATUS "Not Found builded vcpkg, bootstrap vcpkg now...")
     if (WIN32)
         execute_process(COMMAND "${vcpkg_SOURCE_DIR}/bootstrap-vcpkg.bat" -disableMetrics
                 RESULT_VARIABLE VCPKG_STATUS

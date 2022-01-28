@@ -8,8 +8,8 @@
 
 #include <fstream>
 #include <iostream>
-
 #include "const_msg.h"
+#include "lexical/lexical.h"
 
 /******************************************************************************/
 /** Compiler Arguments                                                       **/
