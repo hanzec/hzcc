@@ -43,8 +43,10 @@ variables:
 
 .documentation_default: &documentation_default
   before_script:
-    - !reference [ .testing_default, before_script ]
+    - !reference [ .install_vcpkg_dep, before_script ]
     - !reference [ .install_latex_dep, before_script ]
+    - !reference [ .install_ninja_build, before_script ]
+    - !reference [ .install_cmake_3_16_0, before_script ]
 
 build_gcc_10_3_ninja_debug:
   <<: *compile_default
