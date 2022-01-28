@@ -70,8 +70,8 @@ test_gcc_10_3_debug:
     - cd ./build/Source && ./mycc_test --gtest_output="xml:gtest_report.xml"
   artifacts:
     when: always
-      reports:
-        junit: ./build/Source/gtest_report.xml
+    reports:
+      junit: ./build/Source/gtest_report.xml
   needs:
     - build_gcc_10_3_make_release
     - build_gcc_10_3_ninja_release
@@ -80,6 +80,7 @@ test_gcc_10_3_debug:
         path: "/tmp/CMake"
     - key: "gcc_10_3_ninja_debug_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
         path: "$CI_PROJECT_DIR/build"
+
 
 test_gcc_10_3_release:
   <<: *testing_default
