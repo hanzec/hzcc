@@ -5,7 +5,7 @@ stages:
 .install_vcpkg_dep: &install_vcpkg_dep
   before_script:
     - apt update
-    - apt-get install -y curl zip unzip tar pkg-config cmake # install vcpkg dependencies
+    - apt install -y curl zip unzip tar pkg-config cmake # install vcpkg dependencies
 
 .install_cmake_3_16_0: &install_cmake_3_16_0
   before_script:
@@ -13,11 +13,12 @@ stages:
     - apt install -y git
     - mkdir -p /tmp && cd /tmp
     - git clone --depth 1 --branch "v3.16.0" https://github.com/Kitware/CMake.git
-    - cd ./CMake && ./bootstrap --parallel=$(nproc) && make -j$(nproc) && make install
+    - cd ./CMake && ./bootstrap --parallel=$(nproc) > /dev/null 2>&1 && make -j$(nproc) && make install
 
 .compile_default: &compile_default
-  <<: *install_vcpkg_dep
-  <<: *install_cmake_3_16_0
+  before_script:
+    - !reference [.install_vcpkg_dep, before_script]
+    - !reference [.install_cmake_3_16_0, before_script]
 
 build_gcc_10_3_make_release:
   <<: *compile_default
@@ -26,12 +27,13 @@ build_gcc_10_3_make_release:
   tags:
     - docker
   script:
-    - cd ${CI_PROJECT_DIR}
+    - cd $CI_PROJECT_DIR
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G 'Unix Makefiles' && cd ./build && make mycc -j$(nproc)
   artifacts:
+    name: "build_gcc_10_3_make_release($CI_JOB_NAME-$CI_COMMIT_REF_NAME)"
     paths:
       - ./build/Source/mycc
-    expire_in: 5 days
+    expire_in: 20 days
 
 build_gcc_10_3_ninja_release:
   <<: *compile_default
@@ -45,6 +47,7 @@ build_gcc_10_3_ninja_release:
     - apt-get install -y ninja-build # install ninja
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && make mycc -j$(nproc)
   artifacts:
+    name: "build_gcc_10_3_ninja_release($CI_JOB_NAME-$CI_COMMIT_REF_NAME)"
     paths:
       - ./build/Source/mycc
-    expire_in: 5 days
+    expire_in: 20 days
