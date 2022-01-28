@@ -25,7 +25,7 @@ variables:
     - make -j$(nproc) > /dev/null 2>&1 && make install > /dev/null 2>&1
 
 .testing_default: &testing_default
-  script:
+  before_script:
     - !reference [.install_vcpkg_dep, before_script]
     - !reference [.install_cmake_3_16_0, before_script]
     - apt update
