@@ -30,6 +30,13 @@ set(DOC_MAIN_TEX "${CMAKE_CURRENT_SOURCE_DIR}/developers.tex")
 ## Latex Targets ##############################################################
 ###############################################################################
 if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND)
+    # copy the figure files to the build directory
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/figure)
+    file(GLOB LATEX_DOC_FIGURES "${CMAKE_CURRENT_SOURCE_DIR}/figure/*.png")
+    foreach(LATEX_DOC_FIGURE ${LATEX_DOC_FIGURES})
+        configure_file(${LATEX_DOC_FIGURE} "${CMAKE_CURRENT_BINARY_DIR}/figure/" COPYONLY)
+    endforeach()
+
     # Run the latex compiler with draft mode increasing the speed.
     string(REGEX REPLACE "[.]tex$" ".aux" LATEX_AUX_FILES ${DOC_MAIN_TEX})
     get_filename_component(LATEX_AUX_FILES ${LATEX_AUX_FILES} NAME)
@@ -37,7 +44,7 @@ if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND)
     add_custom_target(latex-prebuild
             DEPENDS ${DOC_MAIN_TEX}
             BYPRODUCTS ${LATEX_AUX_FILES}
-            COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} -draftmode -interaction=nonstopmode ${DOC_MAIN_TEX}
+            COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} -draftmode -interaction=nonstopmode ${DOC_MAIN_TEX} > ${CMAKE_CURRENT_BINARY_DIR}/latex_prebuild.log 2>&1
             COMMENT "Starting Prebuild."
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -59,7 +66,7 @@ if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND)
     add_custom_target(documentation
             DEPENDS ${DOC_MAIN_TEX} ${LATEX_IND_FILES} ${LATEX_AUX_FILES}
             BYPRODUCTS ${LATEX_PDF_FILES}
-            COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} ${DOC_MAIN_TEX}
+            COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} ${DOC_MAIN_TEX} > ${CMAKE_CURRENT_BINARY_DIR}/pdflatex.log 2>&1
             COMMENT "Generating pdf file."
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     add_dependencies(documentation latex-prebuild latex-makeindex)
