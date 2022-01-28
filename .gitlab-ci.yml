@@ -11,8 +11,9 @@ stages:
   before_script:
     - apt update
     - apt install -y git
+    - mkdir -p /tmp && cd /tmp
     - git clone --depth 1 --branch "v3.16.0" https://github.com/Kitware/CMake.git
-    - cd ./CMake && ./bootstrap && make -j$(nproc) && make install
+    - cd ./CMake && ./bootstrap --parallel=$(nproc) && make -j$(nproc) && make install
 
 .compile_default: &compile_default
   <<: *install_vcpkg_dep
@@ -25,6 +26,7 @@ build_gcc_10_3_make_release:
   tags:
     - docker
   script:
+    - cd ${CI_PROJECT_DIR}
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G 'Unix Makefiles' && cd ./build && make mycc -j$(nproc)
   artifacts:
     paths:
@@ -39,6 +41,7 @@ build_gcc_10_3_ninja_release:
     - docker
   script:
     - apt update
+    - cd ${CI_PROJECT_DIR}
     - apt-get install -y ninja-build # install ninja
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && make mycc -j$(nproc)
   artifacts:
