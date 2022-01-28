@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - documentation
 
 variables:
   CMAKE_VERSION: "v3.16.0"
@@ -20,26 +21,27 @@ variables:
     - apt update
     - apt install -y git
     - mkdir -p /tmp && cd /tmp
-    - git clone --depth 1 --branch "$CMAKE_VERSION" https://github.com/Kitware/CMake.git
+    - [ -d "/tmp/CMake" ] && echo "Found Cached CMake Directory at [/tmp/CMake]" || git clone --depth 1 --branch "$CMAKE_VERSION" https://github.com/Kitware/CMake.git
     - cd ./CMake && ./bootstrap --parallel=$(nproc) > /dev/null 2>&1
     - make -j$(nproc) > /dev/null 2>&1 && make install > /dev/null 2>&1
 
 .testing_default: &testing_default
   before_script:
-    - !reference [.install_vcpkg_dep, before_script]
-    - !reference [.install_cmake_3_16_0, before_script]
+    - !reference [ .install_vcpkg_dep, before_script ]
+    - !reference [ .install_cmake_3_16_0, before_script ]
     - apt update
     - apt-get install -y ninja-build # install ninja
 
 .compile_default: &compile_default
   before_script:
-    - !reference [.install_vcpkg_dep, before_script]
-    - !reference [.install_cmake_3_16_0, before_script]
+    - !reference [ .install_vcpkg_dep, before_script ]
+    - !reference [ .install_cmake_3_16_0, before_script ]
 
 .documentation_default: &documentation_default
   before_script:
-    - !reference [.compile_default, before_script]
-    - !reference [.install_latex_dep, before_script]
+    - !reference [ .compile_default, before_script ]
+    - !reference [ .install_latex_dep, before_script ]
+    - !reference [ .install_cmake_3_16_0, before_script ]
 
 build_gcc_10_3_ninja_debug:
   <<: *compile_default
@@ -54,10 +56,10 @@ build_gcc_10_3_ninja_debug:
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc
   cache:
     - key: "gcc_10_3_cmake_$CMAKE_VERSION($CI_RUNNER_ID)"
-      paths: 
+      paths:
         - "/tmp/CMake"
     - key: "gcc_10_3_ninja_debug_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
-      paths: 
+      paths:
         - "$CI_PROJECT_DIR/build"
 
 test_gcc_10_3_debug:
@@ -69,7 +71,7 @@ test_gcc_10_3_debug:
   script:
     - cd $CI_PROJECT_DIR
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug -G Ninja && cd ./build && ninja -j$(nproc) mycc_test
-    - cd ./build/Source && ./mycc_test --gtest_output="xml:gtest_report.xml"
+    - cd ./Source && ./mycc_test --gtest_output="xml:gtest_report.xml"
   artifacts:
     when: always
     reports:
@@ -78,12 +80,11 @@ test_gcc_10_3_debug:
     - build_gcc_10_3_ninja_debug
   cache:
     - key: "gcc_10_3_cmake_$CMAKE_VERSION($CI_RUNNER_ID)"
-      paths: 
+      paths:
         - "/tmp/CMake"
     - key: "gcc_10_3_ninja_debug_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
-      paths: 
+      paths:
         - "$CI_PROJECT_DIR/build"
-
 
 test_gcc_10_3_release:
   <<: *testing_default
@@ -94,7 +95,7 @@ test_gcc_10_3_release:
   script:
     - cd $CI_PROJECT_DIR
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc_test
-    - cd ./build/Source && ./mycc_test --gtest_output="xml:gtest_report.xml"
+    - cd ./Source && ./mycc_test --gtest_output="xml:gtest_report.xml"
   artifacts:
     when: always
     reports:
@@ -103,8 +104,22 @@ test_gcc_10_3_release:
     - build_gcc_10_3_ninja_debug
   cache:
     - key: "gcc_10_3_cmake_$CMAKE_VERSION($CI_RUNNER_ID)"
-      paths: 
+      paths:
         - "/tmp/CMake"
     - key: "gcc_10_3_ninja_debug_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
-      paths: 
+      paths:
         - "$CI_PROJECT_DIR/build"
+
+build_latex_documentation:
+  <<: *documentation_default
+  image: gcc:10.3
+  stage: documentation
+  tags:
+    - docker
+  script:
+    - cd $CI_PROJECT_DIR
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) documentation
+  cache:
+    - key: "gcc_10_3_cmake_$CMAKE_VERSION($CI_RUNNER_ID)"
+      paths:
+        - "/tmp/CMake"
