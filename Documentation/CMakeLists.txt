@@ -1,19 +1,21 @@
 ###############################################################################
 ## Latex Requirements #########################################################
 ###############################################################################
-find_package(LATEX REQUIRED)
+find_package(LATEX)
 
-if (LUALATEX__FOUND)
-    MESSAGE(STATUS "lualatex found - ${LUALATEX_COMPILER}")
-endif ()
+if(LATEX_FOUND)
+    if (LUALATEX__FOUND)
+        MESSAGE(STATUS "lualatex found - ${LUALATEX_COMPILER}")
+    endif ()
 
-if (BIBTEX_FOUND)
-    MESSAGE(STATUS "bibtex found - ${BIBTEX_COMPILER}")
-endif ()
+    if (BIBTEX_FOUND)
+        MESSAGE(STATUS "bibtex found - ${BIBTEX_COMPILER}")
+    endif ()
 
-if (MAKEINDEX_FOUND)
-    MESSAGE(STATUS "makeindex found - ${MAKEINDEX_COMPILER}")
-endif ()
+    if (MAKEINDEX_FOUND)
+        MESSAGE(STATUS "makeindex found - ${MAKEINDEX_COMPILER}")
+    endif ()
+endif()
 
 ###############################################################################
 ## Latex Sources ##############################################################

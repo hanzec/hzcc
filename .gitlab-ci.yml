@@ -7,13 +7,15 @@ stages:
     - apt update
     - apt install -y curl zip unzip tar pkg-config cmake # install vcpkg dependencies
 
+.install
 .install_cmake_3_16_0: &install_cmake_3_16_0
   before_script:
     - apt update
     - apt install -y git
     - mkdir -p /tmp && cd /tmp
     - git clone --depth 1 --branch "v3.16.0" https://github.com/Kitware/CMake.git
-    - cd ./CMake && ./bootstrap --parallel=$(nproc) > /dev/null 2>&1 && make -j$(nproc) && make install
+    - cd ./CMake && ./bootstrap --parallel=$(nproc) > /dev/null 2>&1
+    - make -j$(nproc) > /dev/null 2>&1 && make install > /dev/null 2>&1
 
 .compile_default: &compile_default
   before_script:
