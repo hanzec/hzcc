@@ -15,9 +15,8 @@ stages:
     - cd ./CMake && ./bootstrap && make -j$(nproc) && make install
 
 .compile_default: &compile_default
-  <<:
-    - *install_vcpkg_dep
-    - *install_cmake_3_16_0
+  <<: *install_vcpkg_dep
+  <<: *install_cmake_3_16_0
 
 build_gcc_10_3_make_release:
   <<: *compile_default
