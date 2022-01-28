@@ -51,7 +51,7 @@ build_gcc_10_3_ninja_debug:
     - apt update
     - cd $CI_PROJECT_DIR
     - apt-get install -y ninja-build # install ninja
-    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && make mycc -j$(nproc)
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc
   cache:
     - key: "gcc_10_3_cmake_$CMAKE_VERSION($CI_RUNNER_ID)"
       paths: 
@@ -68,7 +68,7 @@ test_gcc_10_3_debug:
     - docker
   script:
     - cd $CI_PROJECT_DIR
-    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug -G Ninja && cd ./build && make mycc_test -j$(nproc)
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug -G Ninja && cd ./build && ninja -j$(nproc) mycc_test
     - cd ./build/Source && ./mycc_test --gtest_output="xml:gtest_report.xml"
   artifacts:
     when: always
@@ -93,7 +93,7 @@ test_gcc_10_3_release:
     - docker
   script:
     - cd $CI_PROJECT_DIR
-    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && make mycc_test -j$(nproc)
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc_test
     - cd ./build/Source && ./mycc_test --gtest_output="xml:gtest_report.xml"
   artifacts:
     when: always
