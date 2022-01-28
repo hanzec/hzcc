@@ -7,7 +7,11 @@ stages:
     - apt update
     - apt install -y curl zip unzip tar pkg-config cmake # install vcpkg dependencies
 
-.install
+.install_latex_dep: &install_latex_dep
+  before_script:
+    - apt update
+    - apt-get install -y texlive-base texlive-latex-recommended texlive-latex-extra
+
 .install_cmake_3_16_0: &install_cmake_3_16_0
   before_script:
     - apt update
@@ -21,6 +25,11 @@ stages:
   before_script:
     - !reference [.install_vcpkg_dep, before_script]
     - !reference [.install_cmake_3_16_0, before_script]
+
+.documentation_default: &documentation_default
+  before_script:
+    - !reference [.compile_default, before_script]
+    - !reference [.install_latex_dep, before_script]
 
 build_gcc_10_3_make_release:
   <<: *compile_default
