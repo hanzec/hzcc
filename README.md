@@ -68,6 +68,11 @@ The project is build by cmake and required to use out-of-source build. Both Ninj
 - **mycc_test**: testing target for **mycc** target.
 - **documentation**: documentation target which will compile the documentation from latex to PDF
 
+### Special Notes for building in Pyrite
+
+**Pyrite's user home folder's IO is really slow**. I suggest you can create a folder under `/tmp` which have 700 permission
+and use it as the build root. This will significantly improve the build speed (almost 10x).
+
 ### Release build
 
 In release build, we will use `-O3` optimization level.
