@@ -28,7 +28,7 @@ TEST(UTILS_STATUS_TEST, status_code_test) {
   EXPECT_EQ(status.Code(), Status::INVALID_ARGUMENT);
   EXPECT_EQ(status.Message(), "No Message Provided");
 
-  status = Status::OK();
+  status = Status::OkStatus();
   EXPECT_EQ(status.Ok(), true);
   EXPECT_EQ(status.Code(), Status::OK);
   EXPECT_EQ(status.Message(), "Return Ok without error!");
