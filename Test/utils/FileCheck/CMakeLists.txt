@@ -26,7 +26,7 @@ target_link_libraries(FileCheck gflags_static)
 target_include_directories(FileCheck PRIVATE ${GFLAGS_INCLUDE_DIR})
 
 # re2
-find_package(RE2 CONFIG REQUIRED)
+find_package(re2 CONFIG REQUIRED)
 target_link_libraries(FileCheck re2::re2)
 
 # threading
