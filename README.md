@@ -115,7 +115,11 @@ Unit testing is done by `gtest` with following command in git root directory:
 
 ### End to End Testing
 
-End to end testing is done by `llvm-lit` which is a LLVM testing tool. You could install in via python pip:
+End to end testing is done by `llvm-lit` which is a LLVM testing tool and [FileCheck tools](utils/FileCHeck/README.md).
+The test compares the output of the compiler with the expected output rules. The rules files support string matching and
+regex matching.
+
+You could install `llvm-lit` via python pip:
 
 ```bash
 pip install lit
@@ -126,7 +130,6 @@ Then you could run the test by following command in git root directory:
 ```bash
  cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug && cd ./build && make mycc_e2e_test -j$(nproc)
  ```
-
 
 ## Usage
 

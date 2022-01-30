@@ -20,19 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cf82db0-35f4-4a42-b235-4e91ee77d3a3" name="变更" comment="">
-      <change afterPath="$PROJECT_DIR$/Test/lit.site.cfg.py.in" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part0/lit.cfg.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part0/usage_message.test" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/utils/FileCheck/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/utils/FileCheck/FileCheck.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/utils/FileCheck/effcee/stringpiece.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Documentation/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Documentation/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/utils/FileCheck/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testing/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Test/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testing/llvm_lit.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test/llvm_lit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vcpkg.json" beforeDir="false" afterPath="$PROJECT_DIR$/vcpkg.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -237,7 +227,7 @@
       <workItem from="1643508529691" duration="159000" />
       <workItem from="1643509160151" duration="581000" />
       <workItem from="1643511957198" duration="76000" />
-      <workItem from="1643515294051" duration="12082000" />
+      <workItem from="1643515294051" duration="13098000" />
     </task>
     <servers />
   </component>
