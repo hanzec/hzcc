@@ -70,8 +70,8 @@ The project is build by cmake and required to use out-of-source build. Both Ninj
 
 ### Special Notes for building in Pyrite
 
-**Pyrite's user home folder's IO is really slow**. I suggest you can create a folder under `/tmp` which have 700 permission
-and use it as the build root. This will significantly improve the build speed (almost 10x).
+**Pyrite's user home folder's IO is really slow**. I suggest you can create a folder under `/tmp` which have 700
+permission and use it as the build root. This will significantly improve the build speed (almost 10x).
 
 ### Release build
 
@@ -94,6 +94,39 @@ In debug mode, the compiler will be built with debug symbols and assertions enab
 
 The build will be done in `./build` directory. The document will be generated to `./build/Documentation/developers.pdf`.
 And the executable will be generated to `./build/Source/mycc`.
+
+## Testing
+
+There will be two part of testing which split into two different targets:
+
+- **mycc_test**: unit testing
+- **mycc_e2e_test**: end to end testing
+
+`mycc_test` will be possible located in all sub-folders in `Source/` directory. And `mycc_e2e_test` will be located
+in `Test/`
+
+### Unit Testing
+
+Unit testing is done by `gtest` with following command in git root directory:
+
+```bash
+ cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug && cd ./build && make mycc_test -j$(nproc) && ./Source/mycc_test
+ ```
+
+### End to End Testing
+
+End to end testing is done by `llvm-lit` which is a LLVM testing tool. You could install in via python pip:
+
+```bash
+pip install lit
+```
+
+Then you could run the test by following command in git root directory:
+
+```bash
+ cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug && cd ./build && make mycc_e2e_test -j$(nproc)
+ ```
+
 
 ## Usage
 

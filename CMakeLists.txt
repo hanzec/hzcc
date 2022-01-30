@@ -16,6 +16,14 @@ if (NOT DEFINED CMAKE_BUILD_TYPE)
     message(STATUS "CMAKE_BUILD_TYPE is not set, defaulting to ${CMAKE_BUILD_TYPE}")
 endif ()
 
+# enable IDE Folders
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+# cmake product generated path
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 ###############################################################################
 ## Compile Config #############################################################
 ###############################################################################
@@ -90,13 +98,13 @@ else ()
     message(VERBOSE "CMAKE_TOOLCHAIN_FILE is already define as ${CMAKE_TOOLCHAIN_FILE}")
 endif ()
 
+# setup include directories
+include_directories("${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/include/")
+
 ###############################################################################
 ## Project Config #############################################################
 ###############################################################################
 project(mycc VERSION 0.1.0)
-
-# project lib export folder
-SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 ###############################################################################
 ## Compiler Targets ###########################################################
@@ -106,6 +114,9 @@ add_executable(mycc)
 
 # test target
 add_executable(mycc_test)
+
+# add to mycc folder
+set_target_properties(mycc mycc_test PROPERTIES FOLDER MyCC_Target)
 
 ###############################################################################
 ## Project Source #############################################################
@@ -118,10 +129,13 @@ add_subdirectory(Source)
 add_subdirectory(Documentation)
 
 ###############################################################################
+## Documentation Source #######################################################
+###############################################################################
+add_subdirectory(Test)
+
+###############################################################################
 ## Testing ####################################################################
 ###############################################################################
-# initial test
-enable_testing()
 include(GoogleTest)
 
 # scan for possible test

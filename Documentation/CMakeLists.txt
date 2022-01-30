@@ -70,9 +70,6 @@ if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND)
             COMMENT "Generating pdf file."
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     add_dependencies(documentation latex-prebuild latex-makeindex)
-
-    ADD_CUSTOM_TARGET(all-formats ALL) # Entry point of execution.
-    ADD_DEPENDENCIES(all-formats documentation)
 ELSE ()
     MESSAGE(ERROR "No latex tools found!")
 endif ()
