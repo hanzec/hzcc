@@ -8,25 +8,25 @@ variables:
 
 .install_vcpkg_dep: &install_vcpkg_dep
   before_script:
-    - apt-get update
-    - apt-get install -y curl zip unzip tar pkg-config cmake # install vcpkg dependencies
+    - apt-get -qq update
+    - apt-get -qq install -y curl zip unzip tar pkg-config cmake # install vcpkg dependencies
 
 .install_latex_dep: &install_latex_dep
   before_script:
-    - apt-get update
-    - apt-get install -y texlive-base texlive-latex-recommended texlive-latex-extra
+    - apt-get -qq update
+    - apt-get -qq install -y texlive-base texlive-latex-recommended texlive-latex-extra
 
 .install_ninja_build: &install_ninja_build
   before_script:
-    - apt-get update
-    - apt-get install -y ninja-build
+    - apt-get -qq update
+    - apt-get -qq install -y ninja-build
 
 .install_cmake_3_16_0: &install_cmake_3_16_0
   before_script:
-    - apt-get update
-    - apt-get install -y git wget
+    - apt-get -qq update
+    - apt-get -qq install -y git wget
     - mkdir -p /tmp && cd /tmp
-    - wget "https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.sh" -P /tmp
+    - wget -q "https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.sh" -P /tmp
     - chmod +x /tmp/cmake-$CMAKE_VERSION-linux-x86_64.sh
     - /tmp/cmake-$CMAKE_VERSION-linux-x86_64.sh --skip-license --prefix=/usr/local
 
@@ -55,9 +55,9 @@ build_gcc_10_3_ninja_debug:
   tags:
     - docker
   script:
-    - apt-get update
+    - apt-get -pp update
     - cd $CI_PROJECT_DIR
-    - apt-get install -y ninja-build # install ninja
+    - apt-get -pp install -y ninja-build # install ninja
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc
   cache:
     - key: "gcc_10_3_ninja_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
