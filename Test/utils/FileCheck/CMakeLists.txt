@@ -12,6 +12,17 @@ target_include_directories(FileCheck PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # compile versions (cpp17 inorder to use std::filesystem)
 target_compile_features(FileCheck PRIVATE cxx_std_17)
 
+# hide static link symbols
+if(MACOSX)
+    target_link_options(FileCheck PRIVATE -hidden-lssl)
+else()
+    target_link_options(FileCheck PRIVATE -Wl,--exclude-libs,ALL)
+endif()
+
+# hide internal symbols
+set_target_properties(FileCheck PROPERTIES C_VISIBILITY_PRESET hidden) # not export symbols
+set_target_properties(FileCheck PROPERTIES CXX_VISIBILITY_PRESET hidden) # not export symbols
+
 ###############################################################################
 ## Dependence #################################################################
 ###############################################################################

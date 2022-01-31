@@ -8,21 +8,42 @@ add_executable(FileCheck)
 add_custom_target(mycc_e2e_test COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS mycc FileCheck)
 
 ###############################################################################
+## Test Variables #############################################################
+###############################################################################
+# set-up xunit output folder
+set(TEST_OUTPUT_FOLDER "${CMAKE_CURRENT_BINARY_DIR}/test_output")
+
+# create xunit output folder if not exist
+if(NOT EXISTS "${TEST_OUTPUT_FOLDER}")
+    file(MAKE_DIRECTORY "${TEST_OUTPUT_FOLDER}")
+endif()
+
+# llvm-lit executable
+set(LLVM_LIT_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/utils/llvm_lit.py")
+
+###############################################################################
 ## Helper Function ############################################################
 ###############################################################################
-function(add_lit_test name directory)
+function(add_lit_test_set name directory)
+    message(STATUS "Add lit test set [${name}]")
+
     # check existence of test directory
     if(NOT EXISTS ${directory})
         message(FATAL_ERROR "Directory ${directory} does not exist.")
     endif()
 
     # test root
-    set(CURRENT_TEST_ROOT ${CMAKE_CURRENT_BINARY_DIR}/${name})
+    set(CURRENT_TEST_ROOT "${CMAKE_CURRENT_BINARY_DIR}/${name}")
 
     # copy all test files to test directory
     if(NOT EXISTS ${CURRENT_TEST_ROOT})
         file(MAKE_DIRECTORY ${CURRENT_TEST_ROOT})
     else()
+        # delete previous test files
+        file(GLOB PREVIOUS_TEST_FILES "${CURRENT_TEST_ROOT}/*")
+        file(REMOVE ${PREVIOUS_TEST_FILES})
+
+        # copy all test files to test directory
         file(GLOB CURRENT_TEST_FILES "${directory}/*")
         foreach(file ${CURRENT_TEST_FILES})
             message(STATUS "Copying ${file} to ${CURRENT_TEST_ROOT}")
@@ -33,10 +54,11 @@ function(add_lit_test name directory)
     # generate the environment variable
     configure_file(lit.site.cfg.py.in "${CURRENT_TEST_ROOT}/lit.site.cfg.py")
 
-    # add test target
+    # add test targets
+    set(TEST_TARGET_OUTPUT_FILE "${TEST_OUTPUT_FOLDER}/${name}.xunit.xml")
     add_test(NAME ${name}
              WORKING_DIRECTORY ${CURRENT_TEST_ROOT}
-             COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/llvm_lit.py ${CURRENT_TEST_ROOT})
+             COMMAND ${Python3_EXECUTABLE} ${LLVM_LIT_EXECUTABLE} --xunit-xml-output "${TEST_TARGET_OUTPUT_FILE}" ${CURRENT_TEST_ROOT})
 endfunction()
 
 ###############################################################################
@@ -56,7 +78,6 @@ if (Python3_FOUND)
     execute_process(COMMAND Python3::Interpreter -c "import lit" RESULT_VARIABLE EXIT_CODE OUTPUT_QUIET)
     if (EXIT_CODE AND NOT EXIT_CODE STREQUAL 0)
         set(E2E_DEPENDS_MET true)
-        set(LLVM_LIT_COMMAND "${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/llvm_lit.py")
     else ()
         message(WARNING "Cannot find lit python package, will skip lit testing.")
     endif ()
@@ -70,8 +91,7 @@ enable_testing()
 
 if (${E2E_DEPENDS_MET})
     message(STATUS "E2E testing is enabled.")
-    message(VERBOSE "Running E2E test with ${LLVM_LIT_COMMAND}")
 
-    # run e2e test
-    add_lit_test(part0 ${CMAKE_CURRENT_SOURCE_DIR}/part0)
+    # add part 0 test set
+    add_lit_test_set(part0 ${CMAKE_CURRENT_SOURCE_DIR}/part0)
 endif ()

@@ -104,9 +104,32 @@ test_gcc_10_3_release:
   artifacts:
     when: always
     reports:
-      junit: ./build/Source/gtest_report.xml
+      junit: $CI_PROJECT_DIR/build/Source/gtest_report.xml
   needs:
     - build_gcc_10_3_ninja_debug
+  cache:
+    - key: "gcc_10_3_cmake_$CMAKE_VERSION($CI_RUNNER_ID)"
+      paths:
+        - "/tmp/CMake"
+    - key: "gcc_10_3_ninja_debug_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
+      paths:
+        - "$CI_PROJECT_DIR/build"
+
+e2e_test_gcc_10_3_release:
+  <<: *testing_default
+  image: gcc:10.3
+  stage: test
+  tags:
+    - docker
+  script:
+    - cd $CI_PROJECT_DIR
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc_e2e_test
+  artifacts:
+    when: always
+    reports:
+      junit: $CI_PROJECT_DIR/build/Test/test_output/*.xunit.xml
+  needs:
+    - test_gcc_10_3_release
   cache:
     - key: "gcc_10_3_cmake_$CMAKE_VERSION($CI_RUNNER_ID)"
       paths:

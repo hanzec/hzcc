@@ -25,6 +25,6 @@ constexpr const char *kMsg_Usage = "Usage: mycc -mode [options] infile";
 constexpr const char *kMsg_Author =
     "My bare-bones C compiler (for COM 440/540)\n"
     "\tWritten by Hanze Chen (hanzech@iastate.edu)\n"
-    "\tVersion " FULL_VERSION "\n\t" BUILD_TIMESTAMP;
+    "\tVersion " FULL_VERSION "\n\t" BUILD_TIMESTAMP "\n";
 
 #endif  // MYCC_CONST_MSG_H

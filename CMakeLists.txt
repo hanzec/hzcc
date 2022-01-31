@@ -49,7 +49,7 @@ message(STATUS "Fetching VCPKG...")
 include(FetchContent)
 FetchContent_Declare(
         vcpkg
-        GIT_TAG 2022.01.01
+        GIT_TAG master
         GIT_REPOSITORY https://github.com/microsoft/vcpkg.git)
 FetchContent_MakeAvailable(vcpkg)
 

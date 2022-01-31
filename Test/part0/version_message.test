@@ -2,5 +2,5 @@
 //RUN: %mycc -0 -o %t && cat %t | %FileCheck --test_rules="%s"
 //CHECK: My bare-bones C compiler (for COM 440/540)
 //CHECK-NEXT:         Written by Hanze Chen (hanzech@iastate.edu)
-//CHECK-NEXT:         Version {{[0-9]*.[0-9]*.[0-9]*_[0-9a-z]{7}\(.*\)$}}
-//CHECK-NEXT:         [0-9]{4}-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-6][0-9]:[0-6][0-9]
+//CHECK-NEXT:         Version {{[0-9]+.[0-9]+.[0-9]*_[0-9a-z]+\([0-9a-zA-z.]+\)}}
+//CHECK-NEXT:         {{[0-9]{4}-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-6][0-9]:[0-6][0-9]}}
