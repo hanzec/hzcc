@@ -39,10 +39,6 @@ function(add_lit_test_set name directory)
     if(NOT EXISTS ${CURRENT_TEST_ROOT})
         file(MAKE_DIRECTORY ${CURRENT_TEST_ROOT})
     else()
-        # delete previous test files
-        file(GLOB PREVIOUS_TEST_FILES "${CURRENT_TEST_ROOT}/*")
-        file(REMOVE ${PREVIOUS_TEST_FILES})
-
         # copy all test files to test directory
         file(GLOB CURRENT_TEST_FILES "${directory}/*")
         foreach(file ${CURRENT_TEST_FILES})
