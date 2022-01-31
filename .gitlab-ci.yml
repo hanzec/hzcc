@@ -60,7 +60,7 @@ build_gcc_10_3_ninja_debug:
     - apt-get -qq install -y ninja-build # install ninja
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc
   cache:
-    - key: "gcc_10_3_ninja_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
+    - key: "gcc_10_3_ninja_$CI_COMMIT_SHORT_SHA($CI_RUNNER_ID)"
       paths:
         - "$CI_PROJECT_DIR/build"
 
@@ -81,7 +81,7 @@ test_gcc_10_3_debug:
   needs:
     - build_gcc_10_3_ninja_debug
   cache:
-    - key: "gcc_10_3_ninja_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
+    - key: "gcc_10_3_ninja_$CI_COMMIT_SHORT_SHA($CI_RUNNER_ID)"
       paths:
         - "$CI_PROJECT_DIR/build"
 
@@ -102,7 +102,7 @@ test_gcc_10_3_release:
   needs:
     - build_gcc_10_3_ninja_debug
   cache:
-    - key: "gcc_10_3_ninja_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
+    - key: "gcc_10_3_ninja_$CI_COMMIT_SHORT_SHA($CI_RUNNER_ID)"
       paths:
         - "$CI_PROJECT_DIR/build"
 
@@ -122,7 +122,7 @@ e2e_test_gcc_10_3_release:
   needs:
     - test_gcc_10_3_release
   cache:
-    - key: "gcc_10_3_ninja_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
+    - key: "gcc_10_3_ninja_$CI_COMMIT_SHORT_SHA($CI_RUNNER_ID)"
       paths:
         - "$CI_PROJECT_DIR/build"
 
