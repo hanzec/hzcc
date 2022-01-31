@@ -55,9 +55,9 @@ build_gcc_10_3_ninja_debug:
   tags:
     - docker
   script:
-    - apt-get -pp update
+    - apt-get -qq update
     - cd $CI_PROJECT_DIR
-    - apt-get -pp install -y ninja-build # install ninja
+    - apt-get -qq install -y ninja-build # install ninja
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc
   cache:
     - key: "gcc_10_3_ninja_$CI_COMMIT_REF_SLUG($CI_RUNNER_ID)"
@@ -135,7 +135,3 @@ build_latex_documentation:
   script:
     - cd $CI_PROJECT_DIR
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) documentation
-  cache:
-    - key: "gcc_10_3_cmake_$CMAKE_VERSION($CI_RUNNER_ID)"
-      paths:
-        - "/tmp/CMake"
