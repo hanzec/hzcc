@@ -114,8 +114,7 @@ e2e_test_gcc_10_3_release:
     - docker
   script:
     - cd $CI_PROJECT_DIR
-    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja
-    - cmake -B./build/ --target mycc_e2e_test
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc_e2e_test
   artifacts:
     when: always
     reports:

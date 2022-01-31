@@ -6,6 +6,7 @@
 *.pdf
 
 # CLion files
+.idea/
 cmake-build-*/
 
 # ReadME build files
