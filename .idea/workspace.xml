@@ -19,36 +19,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a8b8667c-3583-4db2-8acb-4962665ac84e" name="变更" comment="">
       <change beforePath="$PROJECT_DIR$/.gitlab-ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.gitlab-ci.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/cmake.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/coms_550_mycc.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/coms_550_mycc.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/const_msg.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/const_msg.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/LexicalParser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/LexicalParser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/LexicalToken.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/LexicalToken.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/lexical.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/lexical.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/macro.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/macro.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/Status.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/Status.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/fs_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/fs_utils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/test/status_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/test/status_test.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Test/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/lit.site.cfg.py.in" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lit.site.cfg.py.in" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/llvm_lit.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test/utils/llvm_lit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/part0/lit.cfg.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test/part0/lit.cfg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/part0/usage_message.test" beforeDir="false" afterPath="$PROJECT_DIR$/Test/part0/usage_message.test" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/part0/version_message.test" beforeDir="false" afterPath="$PROJECT_DIR$/Test/part0/version_message.test" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/FileCheck/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Test/utils/FileCheck/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/FileCheck/FileCheck.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Test/utils/FileCheck/FileCheck.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/FileCheck/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Test/utils/FileCheck/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/FileCheck/effcee/stringpiece.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Test/utils/FileCheck/effcee/stringpiece.cc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +53,7 @@
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -178,7 +150,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1643571561228</updated>
-      <workItem from="1643571563543" duration="10959000" />
+      <workItem from="1643571563543" duration="12415000" />
     </task>
     <servers />
   </component>
