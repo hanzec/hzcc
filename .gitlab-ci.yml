@@ -73,11 +73,11 @@ test_gcc_10_3_debug:
   script:
     - cd $CI_PROJECT_DIR
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug -G Ninja && cd ./build && ninja -j$(nproc) mycc_test
-    - cd ./Source && ./mycc_test --gtest_output="xml:gtest_report.xml"
+    - cd $CI_PROJECT_DIR/build/bin && ./mycc_test --gtest_output="xml:$CI_PROJECT_DIR/gtest_report.xml"
   artifacts:
     when: always
     reports:
-      junit: ./build/Source/gtest_report.xml
+      junit: $CI_PROJECT_DIR/gtest_report.xml
   needs:
     - build_gcc_10_3_ninja_debug
   cache:
@@ -94,11 +94,11 @@ test_gcc_10_3_release:
   script:
     - cd $CI_PROJECT_DIR
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc_test
-    - cd ./Source && ./mycc_test --gtest_output="xml:gtest_report.xml"
+    - cd $CI_PROJECT_DIR/build/bin && ./mycc_test --gtest_output="xml:xml:$CI_PROJECT_DIR/gtest_report.xml"
   artifacts:
     when: always
     reports:
-      junit: $CI_PROJECT_DIR/build/Source/gtest_report.xml
+      junit: $CI_PROJECT_DIR/gtest_report.xml
   needs:
     - build_gcc_10_3_ninja_debug
   cache:
