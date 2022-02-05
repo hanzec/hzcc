@@ -133,6 +133,13 @@ Then you could run the test by following command in git root directory:
 
 ## Usage
 
+### VLOG Level
+
+- **0**: only internal warning and error will be printed
+- **1**: used for print current status
+- **2**: print debug information
+- **3**: print all information including pass output/input
+
 ### supported arguments
 
 - **-help**: print usage information and exit.

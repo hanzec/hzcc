@@ -5,7 +5,7 @@
   "dependencies": [
     "glog",
     "gtest",
-    "gflags",
+    "cli11",
     "re2"
   ]
 }

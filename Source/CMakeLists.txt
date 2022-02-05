@@ -6,7 +6,7 @@ string(TIMESTAMP BUILD_TIMESTAMP "%Y-%m-%d %H:%M:%S")
 
 # collect head commit hash
 find_package(Git QUIET)
-if(GIT_FOUND)
+if (GIT_FOUND)
     execute_process(
             COMMAND ${GIT_EXECUTABLE} log -1 --pretty=format:%h
             OUTPUT_VARIABLE GIT_HASH
@@ -15,7 +15,7 @@ if(GIT_FOUND)
             WORKING_DIRECTORY
             ${CMAKE_CURRENT_SOURCE_DIR}
     )
-endif()
+endif ()
 
 # get hostname
 cmake_host_system_information(RESULT MACHINE_HOST_NAME QUERY HOSTNAME)
@@ -52,10 +52,47 @@ target_link_libraries(mycc_test GTest::gmock GTest::gtest GTest::gmock_main GTes
 # build type specific options
 if (CMAKE_BUILD_TYPE)
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-        target_link_options(mycc PRIVATE -o0 -g -fsanitize=address -fno-omit-frame-pointer)
-        target_compile_options(mycc PRIVATE -O0 -g -fsanitize=address -fno-omit-frame-pointer)
-    elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+        # general debug options
+        target_link_options(mycc PRIVATE -o0 -g )
+        target_link_options(mycc_test PRIVATE -o0 -g )
+        target_compile_options(mycc PRIVATE -O0 -g)
+        target_compile_options(mycc_test PRIVATE -O0 -g)
+
+        # Sentilizers
+        if (ENABLE_ASAN)
+            message(STATUS "Enable ASAN")
+            target_link_options(mycc PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+            target_link_options(mycc_test PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+            target_compile_options(mycc PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+            target_compile_options(mycc_test PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+        endif ()
+
+        if(ENABLE_TSAN)
+            message(STATUS "Enable TSAN")
+            target_link_options(mycc PRIVATE -fsanitize=thread -fno-omit-frame-pointer)
+            target_link_options(mycc_test PRIVATE -fsanitize=thread -fno-omit-frame-pointer)
+            target_compile_options(mycc PRIVATE -fsanitize=thread -fno-omit-frame-pointer)
+            target_compile_options(mycc_test PRIVATE -fsanitize=thread -fno-omit-frame-pointer)
+        endif ()
+
+        if (ENABLE_UBSAN)
+            message(STATUS "Enable UBSAN")
+            target_link_options(mycc PRIVATE -fsanitize=undefined -fno-omit-frame-pointer)
+            target_link_options(mycc_test PRIVATE -fsanitize=undefined -fno-omit-frame-pointer)
+            target_compile_options(mycc PRIVATE -fsanitize=undefined -fno-omit-frame-pointer)
+            target_compile_options(mycc_test PRIVATE -fsanitize=undefined -fno-omit-frame-pointer)
+        endif ()
+
+        if (ENABLE_MSAN)
+            message(STATUS "Enable MSAN")
+            target_link_options(mycc PRIVATE -fsanitize=memory -fno-omit-frame-pointer)
+            target_link_options(mycc_test PRIVATE -fsanitize=memory -fno-omit-frame-pointer)
+            target_compile_options(mycc PRIVATE -fsanitize=memory -fno-omit-frame-pointer)
+            target_compile_options(mycc_test PRIVATE -fsanitize=memory -fno-omit-frame-pointer)
+        endif ()
+    elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
         target_compile_options(mycc PRIVATE -O3 -fPIC -ffast-math -Bsymbolic -Werror)
+        target_compile_options(mycc_test PRIVATE -O3 -fPIC -ffast-math -Bsymbolic -Werror)
     endif ()
 endif ()
 
@@ -63,11 +100,11 @@ endif ()
 add_compile_options(-Wall -Wextra)
 
 # hide static link symbols
-if(MACOSX)
+if (MACOSX)
     target_link_options(mycc PRIVATE -hidden-lssl)
-else()
+else ()
     target_link_options(mycc PRIVATE -Wl,--exclude-libs,ALL)
-endif()
+endif ()
 
 # compile under cxx 17
 target_compile_features(mycc PRIVATE cxx_std_17)
@@ -85,12 +122,26 @@ set_target_properties(mycc PROPERTIES CXX_VISIBILITY_PRESET hidden) # not export
 target_include_directories(mycc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(mycc_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
+# test coverage settings
+if (CODE_COVERAGE)
+    if ("${CMAKE_C_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
+        message(STATUS "Building with llvm Code Coverage Tools")
+        target_link_options(mycc_test PRIVATE -fprofile-instr-generate)
+        target_compile_options(mycc_test PRIVATE -fprofile-instr-generate -fcoverage-mapping)
+    elseif (CMAKE_COMPILER_IS_GNUCXX)
+        message(STATUS "Building with lcov Code Coverage Tools")
+        target_compile_options(mycc_test PRIVATE --coverage -fprofile-arcs -ftest-coverage)
+    else ()
+        message(FATAL_ERROR "Code coverage requires Clang or GCC. Aborting.")
+    endif ()
+endif ()
+
 ###############################################################################
 ## Project Source #############################################################
 ###############################################################################
 target_sources(mycc
         PRIVATE
-        "const_msg.h" "macro.h" "main.cc")
+        "const_msg.h" "macro.h" "main.cc" "options.cc")
 
 ###############################################################################
 ## Project Utils ##############################################################
@@ -106,4 +157,14 @@ add_subdirectory(lexical)
 ## Testing ####################################################################
 ###############################################################################
 # add testing main
-target_sources(mycc_test PRIVATE "test_main.cc")
+target_sources(mycc_test
+        PRIVATE
+        "test_main.cc" "options.cc")
+
+###############################################################################
+## Testing  Coverage ##########################################################
+###############################################################################
+if (CODE_COVERAGE)
+    include(code-coverage)
+    target_code_coverage(mycc_test)
+endif ()

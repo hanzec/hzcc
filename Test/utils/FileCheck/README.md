@@ -13,6 +13,20 @@ This tool reads the test rules file from the command argument and reads the matc
 against the test rules file. The details of the test rules syntax can be found in
 the [LLVM FileCheck Document](https://llvm.org/docs/CommandGuide/FileCheck.html).
 
+### Symbol replacement
+
+Symbol replacement could be done by using the `--fsymbol_replacement` option. The there are following supported symbol:
+
+    `__FILE__`: The FULL(Absolute) path of the file being checked.
+
+Following symbol are plan to supported in the future:
+
+    `__LINE__`: The line number of the file being checked.
+    `__DATE__`: The date of the file being checked.
+    `__TIME__`: The time of the file being checked.
+    `__TIMESTAMP__`: The timestamp of the file being checked.
+    `__COUNTER__`: The counter of the file being checked.
+
 ### Possible Arguments
 
 - **--test_rules**: The path to the test rules file.

@@ -1,6 +1,7 @@
 stages:
   - build
-  - test
+  - unit_test
+  - end_to_end_test
   - documentation
 
 variables:
@@ -21,6 +22,13 @@ variables:
     - apt-get -qq update
     - apt-get -qq install -y ninja-build
 
+.install_llvm_lit: &install_llvm_lit
+  before_script:
+    - apt-get -qq update
+    - apt-get -qq install -y python3 python3-pip
+    - pip3 install lit
+
+
 .install_cmake_3_16_0: &install_cmake_3_16_0
   before_script:
     - apt-get -qq update
@@ -32,6 +40,13 @@ variables:
 
 .testing_default: &testing_default
   before_script:
+    - !reference [ .install_vcpkg_dep, before_script ]
+    - !reference [ .install_ninja_build, before_script ]
+    - !reference [ .install_cmake_3_16_0, before_script ]
+
+.e2e_testing_default: &e2e_testing_default
+  before_script:
+    - !reference [ .install_llvm_lit, before_script ]
     - !reference [ .install_vcpkg_dep, before_script ]
     - !reference [ .install_ninja_build, before_script ]
     - !reference [ .install_cmake_3_16_0, before_script ]
@@ -67,12 +82,13 @@ build_gcc_10_3_ninja_debug:
 test_gcc_10_3_debug:
   <<: *testing_default
   image: gcc:10.3
-  stage: test
+  stage: unit_test
   tags:
     - docker
   script:
     - cd $CI_PROJECT_DIR
-    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug -G Ninja && cd ./build && ninja -j$(nproc) mycc_test
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug -G Ninja
+    - cd ./build && ninja -j$(nproc) mycc_test
     - cd $CI_PROJECT_DIR/build/bin && ./mycc_test --gtest_output="xml:$CI_PROJECT_DIR/gtest_report.xml"
   artifacts:
     when: always
@@ -88,7 +104,7 @@ test_gcc_10_3_debug:
 test_gcc_10_3_release:
   <<: *testing_default
   image: gcc:10.3
-  stage: test
+  stage: unit_test
   tags:
     - docker
   script:
@@ -107,9 +123,9 @@ test_gcc_10_3_release:
         - "$CI_PROJECT_DIR/build"
 
 e2e_test_gcc_10_3_release:
-  <<: *testing_default
+  <<: *e2e_testing_default
   image: gcc:10.3
-  stage: test
+  stage: end_to_end_test
   tags:
     - docker
   script:
@@ -132,6 +148,13 @@ build_latex_documentation:
   stage: documentation
   tags:
     - docker
+  only:
+    - master
   script:
     - cd $CI_PROJECT_DIR
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) documentation
+    - mv $CI_PROJECT_DIR/build/Documentation/developers.pdf $CI_PROJECT_DIR/developers.pdf
+  artifacts:
+    when: always
+    paths:
+      - $CI_PROJECT_DIR/developers.pdf

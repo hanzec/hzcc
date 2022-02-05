@@ -16,13 +16,19 @@ if (NOT DEFINED CMAKE_BUILD_TYPE)
     message(STATUS "CMAKE_BUILD_TYPE is not set, defaulting to ${CMAKE_BUILD_TYPE}")
 endif ()
 
-# enable IDE Folders
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+# add custom cmake scrips location
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-# cmake product generated path
+# set generate path
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# target build options
+option(ENABLE_ASAN "Enable Address Sanitizer" OFF)
+option(ENABLE_TSAN "Enable Thread Sanitizer" OFF)
+option(ENABLE_UBSAN "Enable Undefined Behavior Sanitizer" OFF)
+option(ENABLE_MSAN "Enable Memory Sanitizer" OFF)
 
 ###############################################################################
 ## Compile Config #############################################################
@@ -55,9 +61,6 @@ FetchContent_MakeAvailable(vcpkg)
 
 # generate compile_commands.json for clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-# add custom cmake scrips location
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 ###############################################################################
 ## Setup vcpkg ################################################################
