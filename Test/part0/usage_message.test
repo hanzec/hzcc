@@ -1,5 +1,5 @@
 //RUN: %mycc 2>&1 | %FileCheck --test_rules="%s"
-//CHECK: Usage:
+//CHECK:      Usage:
 //CHECK-NEXT:         mycc -mode [options] infile
 //CHECK-NEXT: Valid modes:
 //CHECK-NEXT:         -0: Version information only

@@ -42,8 +42,13 @@ function(add_lit_test_set name directory)
         # copy all test files to test directory
         file(GLOB CURRENT_TEST_FILES "${directory}/*")
         foreach(file ${CURRENT_TEST_FILES})
-            message(STATUS "Copying ${file} to ${CURRENT_TEST_ROOT}")
-            configure_file(${file} "${CURRENT_TEST_ROOT}/" COPYONLY)
+            get_filename_component(FILE_EXTENSION ${file} LAST_EXT)
+            if(FILE_EXTENSION STREQUAL ".disabled")
+                message(STATUS "Ignore test case [${file}] in [${name}] since it is disabled.")
+            else()
+                message(STATUS "add test case [${file}] in [${name}] since it is disabled.")
+                configure_file(${file} "${CURRENT_TEST_ROOT}/" COPYONLY)
+            endif()
         endforeach()
     endif()
 
@@ -90,4 +95,7 @@ if (${E2E_DEPENDS_MET})
 
     # add part 0 test set
     add_lit_test_set(part0 ${CMAKE_CURRENT_SOURCE_DIR}/part0)
+
+    # add part 1 test set
+    add_lit_test_set(part1 ${CMAKE_CURRENT_SOURCE_DIR}/part1)
 endif ()

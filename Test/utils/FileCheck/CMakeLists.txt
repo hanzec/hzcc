@@ -23,6 +23,9 @@ endif()
 set_target_properties(FileCheck PROPERTIES C_VISIBILITY_PRESET hidden) # not export symbols
 set_target_properties(FileCheck PROPERTIES CXX_VISIBILITY_PRESET hidden) # not export symbols
 
+# always compile with optimization
+target_compile_options(FileCheck PRIVATE -fPIC -ffast-math -Bsymbolic -Werror)
+
 ###############################################################################
 ## Dependence #################################################################
 ###############################################################################
@@ -35,6 +38,11 @@ target_sources(FileCheck PUBLIC ${EFFCEE_HDRS} ${EFFCEE_SRCS})
 find_package(gflags CONFIG REQUIRED)
 target_link_libraries(FileCheck gflags_static)
 target_include_directories(FileCheck PRIVATE ${GFLAGS_INCLUDE_DIR})
+
+# google log
+find_package(glog CONFIG REQUIRED)
+target_link_libraries(FileCheck glog::glog)
+target_include_directories(FileCheck PRIVATE ${glog_INCLUDE_DIRS})
 
 # re2
 find_package(re2 CONFIG REQUIRED)
