@@ -1,12 +1,12 @@
 # mycc
 
-My awesome the c  programming language compiler implementation with C++ 17
+My awesome the c programming language compiler implementation with C++ 17
 
 ## Dependency
 
-Currently, most project dependencies are managed by [VCPKG](https://github.com/microsoft/vcpkg), a
-cross-platform package manager for C++. VCPKG will be downloaded and configured automatically after CMake scripts are
-configured. The documentation is required of the LATEX compiler.
+Currently, most project dependencies are managed by [VCPKG](https://github.com/microsoft/vcpkg), a cross-platform
+package manager for C++. VCPKG will be downloaded and configured automatically after CMake scripts are configured. The
+documentation is required of the LATEX compiler.
 
 ### Install VCPKG Dependencies(Build in pyrite Machine could skip this step)
 
@@ -88,7 +88,8 @@ permission and use it as the build root. This will significantly improve the bui
 
 ### Release build
 
-In release build, we will use `-O3` optimization level.
+In release build, we will use `-O3` optimization level. In order to compile, you need to run following command at the 
+**root folder of git repository**:
 
 ```bash
 cmake . -B./build/ && cd ./build && make mycc documentation -j$(nproc)
@@ -99,14 +100,15 @@ And the executable will be generated to `./build/Source/mycc`.
 
 ### Debug Build
 
-In debug mode, the compiler will be built with debug symbols and assertions enabled with '-g -O0' and ASAN enabled
+In debug mode, the compiler will be built with debug symbols and assertions enabled with '-g -O0' and ASAN enabled. In
+order to compile, you need to run following command at the **root folder of git repository**:
 
 ```bash
  cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug && cd ./build && make mycc documentation -j$(nproc)
  ```
 
 The build will be done in `./build` directory. The document will be generated to `./build/Documentation/developers.pdf`.
-And the executable will be generated to `./build/Source/mycc`.
+And the executable will be generated to `./build/bin/` directory.
 
 ## Testing
 
@@ -115,8 +117,7 @@ There will be two part of testing which split into two different targets:
 - **mycc_test**: unit testing
 - **mycc_e2e_test**: end to end testing
 
-`mycc_test` will be possible located in all sub-folders in `Source/` directory. And `mycc_e2e_test` will be located
-in `Test/`
+Both of executable target `mycc_test` and `mycc_e2e_test` will be located in `./build/bin/` directory.
 
 ### Unit Testing
 
@@ -125,6 +126,7 @@ Unit testing is done by `gtest` with following command in git root directory:
 ```bash
  cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug && cd ./build && make mycc_test -j$(nproc) && ./Source/mycc_test
  ```
+
 ### Code Coverage
 
 Code coverage is supported both llvm-cov and gcov, currently code coverage is only supported for `mycc_test` target. For
@@ -144,9 +146,9 @@ For exporting report to cobertura xml format, Run:
 
 ### End to End Testing
 
-End-to-end testing is done by `llvm-lit`, LLVM testing tool and [FileCheck tools](utils/FileCHeck/README.md).
-The test compares the output of the compiler with the expected output rules. The rules files support string matching and
-regex matching.
+End-to-end testing is done by `llvm-lit`, LLVM testing tool and [FileCheck tools](utils/FileCHeck/README.md). The test
+compares the output of the compiler with the expected output rules. The rules files support string matching and regex
+matching.
 
 You could install `llvm-lit` via python pip:
 
