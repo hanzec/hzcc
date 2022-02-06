@@ -1,10 +1,8 @@
 ###############################################################################
 ## File Checking Tool #########################################################
 ###############################################################################
-target_sources(FileCheck PUBLIC "FileCheck.cc")
-
-# add current folder to include path
-target_include_directories(FileCheck PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+# exec target
+add_executable(FileCheck)
 
 ###############################################################################
 ## Compile Options ############################################################
@@ -25,6 +23,9 @@ set_target_properties(FileCheck PROPERTIES CXX_VISIBILITY_PRESET hidden) # not e
 
 # always compile with optimization
 target_compile_options(FileCheck PRIVATE -fPIC -ffast-math -Bsymbolic -Werror)
+
+# add current folder to include path
+target_include_directories(FileCheck PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 ###############################################################################
 ## Dependence #################################################################
@@ -51,3 +52,8 @@ target_link_libraries(FileCheck re2::re2)
 # threading
 find_package(Threads REQUIRED)
 target_link_libraries(FileCheck Threads::Threads)
+
+###############################################################################
+## Sources ####################################################################
+###############################################################################
+target_sources(FileCheck PUBLIC "FileCheck.cc")
