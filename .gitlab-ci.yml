@@ -5,7 +5,19 @@ stages:
   - documentation
 
 variables:
-  CMAKE_VERSION: "3.16.0"
+  CMAKE_VERSION: "3.16.3"
+
+.install_gcovr: &install_gcovr
+  before_script:
+    - apt-get -qq update
+    - apt-get -qq install -y python3 python3-pip
+    - pip3 install gcovr
+
+.install_lcov_cobertura: &install_lcov_cobertura
+  before_script:
+    - apt-get -qq update
+    - apt-get -qq install -y python3 python3-pip
+    - pip3 install lcov_cobertura
 
 .install_vcpkg_dep: &install_vcpkg_dep
   before_script:
@@ -28,7 +40,6 @@ variables:
     - apt-get -qq install -y python3 python3-pip
     - pip3 install lit
 
-
 .install_cmake_3_16_0: &install_cmake_3_16_0
   before_script:
     - apt-get -qq update
@@ -40,9 +51,11 @@ variables:
 
 .testing_default: &testing_default
   before_script:
+    - !reference [ .install_gcovr, before_script ]
     - !reference [ .install_vcpkg_dep, before_script ]
     - !reference [ .install_ninja_build, before_script ]
     - !reference [ .install_cmake_3_16_0, before_script ]
+    - !reference [ .install_lcov_cobertura, before_script ]
 
 .e2e_testing_default: &e2e_testing_default
   before_script:
@@ -73,11 +86,12 @@ build_gcc_10_3_ninja_debug:
     - apt-get -qq update
     - cd $CI_PROJECT_DIR
     - apt-get -qq install -y ninja-build # install ninja
-    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug -G Ninja && cd ./build && ninja -j$(nproc) mycc
   cache:
-    - key: "gcc_10_3_ninja_$CI_COMMIT_SHORT_SHA($CI_RUNNER_ID)"
+    - key: "gcc_10_3_deps($CI_RUNNER_ID)"
       paths:
-        - "$CI_PROJECT_DIR/build"
+        - "$CI_PROJECT_DIR/build/_deps"
+        - "$CI_PROJECT_DIR/build/vcpkg_installed"
 
 test_gcc_10_3_debug:
   <<: *testing_default
@@ -85,21 +99,29 @@ test_gcc_10_3_debug:
   stage: unit_test
   tags:
     - docker
+  variables:
+    GTEST_OUTPUT: "xml:$CI_PROJECT_DIR/gtest_report.xml"
   script:
     - cd $CI_PROJECT_DIR
-    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug -G Ninja
-    - cd ./build && ninja -j$(nproc) mycc_test
-    - cd $CI_PROJECT_DIR/build/bin && ./mycc_test --gtest_output="xml:$CI_PROJECT_DIR/gtest_report.xml"
+    - |
+      cmake . -B./build/                   \
+        -DENABLE_TESTING=ON                \
+        -DENABLE_COVERAGE=ON               \
+        -DENABLE_DOCUMENTATION=OFF         \
+        -DCMAKE_BUILD_TYPE=Debug -G Ninja
+    - cd ./build && ninja -j$(nproc) ccov-export-mycc_test
   artifacts:
     when: always
     reports:
       junit: $CI_PROJECT_DIR/gtest_report.xml
+      cobertura: $CI_PROJECT_DIR/build/ccov/mycc_test.xml
   needs:
     - build_gcc_10_3_ninja_debug
   cache:
-    - key: "gcc_10_3_ninja_$CI_COMMIT_SHORT_SHA($CI_RUNNER_ID)"
+    - key: "gcc_10_3_deps($CI_RUNNER_ID)"
       paths:
-        - "$CI_PROJECT_DIR/build"
+        - "$CI_PROJECT_DIR/build/_deps"
+        - "$CI_PROJECT_DIR/build/vcpkg_installed"
 
 test_gcc_10_3_release:
   <<: *testing_default
@@ -107,20 +129,29 @@ test_gcc_10_3_release:
   stage: unit_test
   tags:
     - docker
+  variables:
+    GTEST_OUTPUT: "xml:$CI_PROJECT_DIR/gtest_report.xml"
   script:
     - cd $CI_PROJECT_DIR
-    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc_test
-    - cd $CI_PROJECT_DIR/build/bin && ./mycc_test --gtest_output="xml:xml:$CI_PROJECT_DIR/gtest_report.xml"
+    - |
+      cmake . -B./build/                   \
+        -DENABLE_TESTING=ON                \
+        -DENABLE_COVERAGE=ON               \
+        -DENABLE_DOCUMENTATION=OFF         \
+        -DCMAKE_BUILD_TYPE=Release -G Ninja
+    - cd ./build && ninja -j$(nproc) ccov-export-mycc_test
   artifacts:
     when: always
     reports:
       junit: $CI_PROJECT_DIR/gtest_report.xml
+      cobertura: $CI_PROJECT_DIR/build/ccov/mycc_test.xml
   needs:
     - build_gcc_10_3_ninja_debug
   cache:
-    - key: "gcc_10_3_ninja_$CI_COMMIT_SHORT_SHA($CI_RUNNER_ID)"
+    - key: "gcc_10_3_deps($CI_RUNNER_ID)"
       paths:
-        - "$CI_PROJECT_DIR/build"
+        - "$CI_PROJECT_DIR/build/_deps"
+        - "$CI_PROJECT_DIR/build/vcpkg_installed"
 
 e2e_test_gcc_10_3_release:
   <<: *e2e_testing_default
@@ -130,17 +161,25 @@ e2e_test_gcc_10_3_release:
     - docker
   script:
     - cd $CI_PROJECT_DIR
-    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) mycc_e2e_test
+    - |
+      cmake . -B./build/                   \
+        -DENABLE_TESTING=ON                \
+        -DENABLE_E2E_TESTING=ON            \
+        -DENABLE_DOCUMENTATION=OFF         \
+        -DCMAKE_BUILD_TYPE=Release -G Ninja
+    - cd ./build && ninja -j$(nproc) mycc_e2e_test
   artifacts:
     when: always
     reports:
       junit: $CI_PROJECT_DIR/build/Test/test_output/*.xunit.xml
   needs:
+    - test_gcc_10_3_debug
     - test_gcc_10_3_release
   cache:
-    - key: "gcc_10_3_ninja_$CI_COMMIT_SHORT_SHA($CI_RUNNER_ID)"
+    - key: "gcc_10_3_deps($CI_RUNNER_ID)"
       paths:
-        - "$CI_PROJECT_DIR/build"
+        - "$CI_PROJECT_DIR/build/_deps"
+        - "$CI_PROJECT_DIR/build/vcpkg_installed"
 
 build_latex_documentation:
   <<: *documentation_default
@@ -157,4 +196,9 @@ build_latex_documentation:
   artifacts:
     when: always
     paths:
-      - $CI_PROJECT_DIR/developers.pdf
+      - $CI_PROJECT_DIR/developers.pdf\
+  cache:
+    - key: "gcc_10_3_deps($CI_RUNNER_ID)"
+      paths:
+        - "$CI_PROJECT_DIR/build/_deps"
+        - "$CI_PROJECT_DIR/build/vcpkg_installed"

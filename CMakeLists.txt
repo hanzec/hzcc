@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.0) # we need FetchContent
+cmake_minimum_required(VERSION 3.16.3) # we need FetchContent
 
 ###############################################################################
 ## CMake Settings #############################################################
@@ -29,6 +29,10 @@ option(ENABLE_ASAN "Enable Address Sanitizer" OFF)
 option(ENABLE_TSAN "Enable Thread Sanitizer" OFF)
 option(ENABLE_UBSAN "Enable Undefined Behavior Sanitizer" OFF)
 option(ENABLE_MSAN "Enable Memory Sanitizer" OFF)
+option(ENABLE_COVERAGE "Enable Code Coverage" OFF)
+option(ENABLE_TESTING "Enable unit Tests" OFF)
+option(ENABLE_E2E_TESTING "Enable End to END Tests" OFF)
+option(ENABLE_DOCUMENTATION "Enable Documentation Build" ON)
 
 ###############################################################################
 ## Compile Config #############################################################
@@ -112,14 +116,14 @@ project(mycc VERSION 0.1.0)
 ###############################################################################
 ## Compiler Targets ###########################################################
 ###############################################################################
-# exec target
 add_executable(mycc)
+set_target_properties(mycc PROPERTIES FOLDER MyCC_Target)
 
-# test target
-add_executable(mycc_test)
-
-# add to mycc folder
-set_target_properties(mycc mycc_test PROPERTIES FOLDER MyCC_Target)
+if(ENABLE_TESTING MATCHES "ON")
+    message(STATUS "Enable testing...")
+    add_executable(mycc_test)
+    set_target_properties(mycc_test PROPERTIES FOLDER MyCC_Target)
+endif ()
 
 ###############################################################################
 ## Project Source #############################################################
@@ -129,20 +133,26 @@ add_subdirectory(Source)
 ###############################################################################
 ## Documentation Source #######################################################
 ###############################################################################
-add_subdirectory(Documentation)
+if(ENABLE_DOCUMENTATION MATCHES "ON")
+    message(STATUS "Enable documentation")
+    add_subdirectory(Documentation)
+endif ()
 
 ###############################################################################
 ## Documentation Source #######################################################
 ###############################################################################
-add_subdirectory(Test)
+if(ENABLE_E2E_TESTING MATCHES "ON")
+    message(STATUS "Enable E2E testing")
+    add_subdirectory(Test)
+endif ()
 
 ###############################################################################
 ## Testing ####################################################################
 ###############################################################################
-include(GoogleTest)
-
-# scan for possible test
-gtest_discover_tests(mycc_test)
+if(ENABLE_TESTING MATCHES "ON")
+    include(GoogleTest)
+    gtest_discover_tests(mycc_test)
+endif()
 
 ###############################################################################
 ## Packing ####################################################################

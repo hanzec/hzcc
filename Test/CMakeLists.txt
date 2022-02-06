@@ -1,11 +1,8 @@
 ###############################################################################
 ## Mycc E2E Testing ###########################################################
 ###############################################################################
-# exec target
-add_executable(FileCheck)
-
 # a fake target which allow e2e test target require binary target
-add_custom_target(mycc_e2e_test COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS mycc FileCheck)
+add_custom_target(mycc_e2e_test COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS mycc)
 
 ###############################################################################
 ## Test Variables #############################################################
@@ -38,19 +35,19 @@ function(add_lit_test_set name directory)
     # copy all test files to test directory
     if(NOT EXISTS ${CURRENT_TEST_ROOT})
         file(MAKE_DIRECTORY ${CURRENT_TEST_ROOT})
-    else()
-        # copy all test files to test directory
-        file(GLOB CURRENT_TEST_FILES "${directory}/*")
-        foreach(file ${CURRENT_TEST_FILES})
-            get_filename_component(FILE_EXTENSION ${file} LAST_EXT)
-            if(FILE_EXTENSION STREQUAL ".disabled")
-                message(STATUS "Ignore test case [${file}] in [${name}] since it is disabled.")
-            else()
-                message(STATUS "add test case [${file}] in [${name}] since it is disabled.")
-                configure_file(${file} "${CURRENT_TEST_ROOT}/" COPYONLY)
-            endif()
-        endforeach()
     endif()
+
+    # copy all test files to test directory
+    file(GLOB CURRENT_TEST_FILES "${directory}/*")
+    foreach(file ${CURRENT_TEST_FILES})
+        get_filename_component(FILE_EXTENSION ${file} LAST_EXT)
+        if(FILE_EXTENSION STREQUAL ".disabled")
+            message(STATUS "Ignore test case [${name}]:${file} in  since it is mark as disabled.")
+        else()
+            message(STATUS "Discover test [${name}]:${file}")
+            configure_file(${file} "${CURRENT_TEST_ROOT}/" COPYONLY)
+        endif()
+    endforeach()
 
     # generate the environment variable
     configure_file(lit.site.cfg.py.in "${CURRENT_TEST_ROOT}/lit.site.cfg.py")
@@ -66,6 +63,9 @@ endfunction()
 ## FileCheckTool ##############################################################
 ###############################################################################
 add_subdirectory(utils/FileCheck)
+
+# testing target required this target
+add_dependencies(mycc_e2e_test FileCheck)
 
 ###############################################################################
 ## Testing Dependence #########################################################
@@ -94,8 +94,8 @@ if (${E2E_DEPENDS_MET})
     message(STATUS "E2E testing is enabled.")
 
     # add part 0 test set
-    add_lit_test_set(part0 ${CMAKE_CURRENT_SOURCE_DIR}/part0)
+    add_lit_test_set(part0 "${CMAKE_CURRENT_SOURCE_DIR}/part0")
 
     # add part 1 test set
-    add_lit_test_set(part1 ${CMAKE_CURRENT_SOURCE_DIR}/part1)
+    add_lit_test_set(part1 "${CMAKE_CURRENT_SOURCE_DIR}/part1")
 endif ()

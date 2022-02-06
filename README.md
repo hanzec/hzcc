@@ -54,7 +54,8 @@ sudo apt-get install -y texlive-base texlive-latex-recommended texlive-latex-ext
 
 ### External Dependency Managed by VCPKG (Will automatically compile and linking by CMake)
 
-- **Glog**: for logging.
+- **Glog**: for logging(FileCheck Tools only)
+- **cli11**: for command line parsing(mycc only)
 - **Gtest**: for unit testing (this will be only used in test target) .
 - **Gflags**: for parsing command line flags.
 
@@ -66,7 +67,16 @@ The project is build by cmake and required to use out-of-source build. Both Ninj
 
 - **mycc**: the compiler target
 - **mycc_test**: testing target for **mycc** target.
+- **mycc_e2e_test**: end to end testing target for **mycc** target.
 - **documentation**: documentation target which will compile the documentation from latex to PDF
+
+### Available build options
+
+- **-DENABLE_ASAN**: enable address sanitizer, default is disabled
+- **-DENABLE_TSAN**: enable thread sanitizer, default is disabled
+- **-DENABLE_MSAN**: enable memory sanitizer, default is disabled
+- **-DENABLE_UBSAN**: enable undefined behavior sanitizer, default is disabled
+- **-DENABLE_TESTING**: enable unit testing, default is enabled
 
 ### Special Notes for building in Pyrite
 

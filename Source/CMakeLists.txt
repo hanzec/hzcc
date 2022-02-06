@@ -32,19 +32,21 @@ target_include_directories(mycc PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 # google log
 find_package(glog CONFIG REQUIRED)
 target_link_libraries(mycc glog::glog)
-target_link_libraries(mycc_test glog::glog)
-target_include_directories(mycc PRIVATE ${glog_INCLUDE_DIRS})
 
-# google flag
-find_package(gflags CONFIG REQUIRED)
-target_link_libraries(mycc gflags_static)
-target_include_directories(mycc PRIVATE ${GFLAGS_INCLUDE_DIR})
+if (ENABLE_TESTING)
+    # google log
+    target_link_libraries(mycc gflags_static)
 
-# google test deps(require pthread)
-find_package(Threads REQUIRED)
-find_package(GTest CONFIG REQUIRED)
-target_link_libraries(mycc_test Threads::Threads)
-target_link_libraries(mycc_test GTest::gmock GTest::gtest GTest::gmock_main GTest::gtest_main)
+    # google flag
+    find_package(gflags CONFIG REQUIRED)
+    target_link_libraries(mycc_test glog::glog)
+
+    # google test deps(require pthread)
+    find_package(Threads REQUIRED)
+    find_package(GTest CONFIG REQUIRED)
+    target_link_libraries(mycc_test Threads::Threads)
+    target_link_libraries(mycc_test GTest::gmock GTest::gtest GTest::gmock_main GTest::gtest_main)
+endif ()
 
 ###############################################################################
 ## Compile Config #############################################################
@@ -53,46 +55,65 @@ target_link_libraries(mycc_test GTest::gmock GTest::gtest GTest::gmock_main GTes
 if (CMAKE_BUILD_TYPE)
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         # general debug options
-        target_link_options(mycc PRIVATE -o0 -g )
-        target_link_options(mycc_test PRIVATE -o0 -g )
+        target_link_options(mycc PRIVATE -o0 -g)
         target_compile_options(mycc PRIVATE -O0 -g)
-        target_compile_options(mycc_test PRIVATE -O0 -g)
+
+        if (ENABLE_TESTING MATCHES "ON")
+            target_link_options(mycc_test PRIVATE -o0 -g)
+            target_compile_options(mycc_test PRIVATE -O0 -g)
+        endif ()
 
         # Sentilizers
-        if (ENABLE_ASAN)
+        if (ENABLE_ASAN MATCHES "ON")
             message(STATUS "Enable ASAN")
+
             target_link_options(mycc PRIVATE -fsanitize=address -fno-omit-frame-pointer)
-            target_link_options(mycc_test PRIVATE -fsanitize=address -fno-omit-frame-pointer)
             target_compile_options(mycc PRIVATE -fsanitize=address -fno-omit-frame-pointer)
-            target_compile_options(mycc_test PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+
+            if (ENABLE_TESTING MATCHES "ON")
+                target_link_options(mycc_test PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+                target_compile_options(mycc_test PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+            endif ()
         endif ()
 
-        if(ENABLE_TSAN)
+        if (ENABLE_TSAN MATCHES "ON")
             message(STATUS "Enable TSAN")
             target_link_options(mycc PRIVATE -fsanitize=thread -fno-omit-frame-pointer)
-            target_link_options(mycc_test PRIVATE -fsanitize=thread -fno-omit-frame-pointer)
             target_compile_options(mycc PRIVATE -fsanitize=thread -fno-omit-frame-pointer)
-            target_compile_options(mycc_test PRIVATE -fsanitize=thread -fno-omit-frame-pointer)
+
+            if (ENABLE_TESTING MATCHES "ON")
+                target_link_options(mycc_test PRIVATE -fsanitize=thread -fno-omit-frame-pointer)
+                target_compile_options(mycc_test PRIVATE -fsanitize=thread -fno-omit-frame-pointer)
+            endif ()
         endif ()
 
-        if (ENABLE_UBSAN)
+        if (ENABLE_UBSAN MATCHES "ON")
             message(STATUS "Enable UBSAN")
             target_link_options(mycc PRIVATE -fsanitize=undefined -fno-omit-frame-pointer)
-            target_link_options(mycc_test PRIVATE -fsanitize=undefined -fno-omit-frame-pointer)
             target_compile_options(mycc PRIVATE -fsanitize=undefined -fno-omit-frame-pointer)
-            target_compile_options(mycc_test PRIVATE -fsanitize=undefined -fno-omit-frame-pointer)
+
+            if (ENABLE_TESTING MATCHES "ON")
+                target_link_options(mycc_test PRIVATE -fsanitize=undefined -fno-omit-frame-pointer)
+                target_compile_options(mycc_test PRIVATE -fsanitize=undefined -fno-omit-frame-pointer)
+            endif ()
         endif ()
 
-        if (ENABLE_MSAN)
+        if (ENABLE_MSAN MATCHES "ON")
             message(STATUS "Enable MSAN")
             target_link_options(mycc PRIVATE -fsanitize=memory -fno-omit-frame-pointer)
-            target_link_options(mycc_test PRIVATE -fsanitize=memory -fno-omit-frame-pointer)
             target_compile_options(mycc PRIVATE -fsanitize=memory -fno-omit-frame-pointer)
-            target_compile_options(mycc_test PRIVATE -fsanitize=memory -fno-omit-frame-pointer)
+
+            if (ENABLE_TESTING MATCHES "ON")
+                target_link_options(mycc_test PRIVATE -fsanitize=memory -fno-omit-frame-pointer)
+                target_compile_options(mycc_test PRIVATE -fsanitize=memory -fno-omit-frame-pointer)
+            endif ()
         endif ()
     elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
         target_compile_options(mycc PRIVATE -O3 -fPIC -ffast-math -Bsymbolic -Werror)
-        target_compile_options(mycc_test PRIVATE -O3 -fPIC -ffast-math -Bsymbolic -Werror)
+
+        if (ENABLE_TESTING MATCHES "ON")
+            target_compile_options(mycc_test PRIVATE -O3 -fPIC -ffast-math -Bsymbolic -Werror)
+        endif ()
     endif ()
 endif ()
 
@@ -108,9 +129,7 @@ endif ()
 
 # compile under cxx 17
 target_compile_features(mycc PRIVATE cxx_std_17)
-target_compile_features(mycc_test PRIVATE cxx_std_17)
 set_property(TARGET mycc PROPERTY CXX_STANDARD_REQUIRED ON)
-set_property(TARGET mycc_test PROPERTY CXX_STANDARD_REQUIRED ON)
 
 # set default visibility
 set_target_properties(mycc PROPERTIES POSITION_INDEPENDENT_CODE 1) # generate fpic
@@ -120,21 +139,16 @@ set_target_properties(mycc PROPERTIES CXX_VISIBILITY_PRESET hidden) # not export
 
 # change include base to project root
 target_include_directories(mycc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(mycc_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
-# test coverage settings
-if (CODE_COVERAGE)
-    if ("${CMAKE_C_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
-        message(STATUS "Building with llvm Code Coverage Tools")
-        target_link_options(mycc_test PRIVATE -fprofile-instr-generate)
-        target_compile_options(mycc_test PRIVATE -fprofile-instr-generate -fcoverage-mapping)
-    elseif (CMAKE_COMPILER_IS_GNUCXX)
-        message(STATUS "Building with lcov Code Coverage Tools")
-        target_compile_options(mycc_test PRIVATE --coverage -fprofile-arcs -ftest-coverage)
-    else ()
-        message(FATAL_ERROR "Code coverage requires Clang or GCC. Aborting.")
-    endif ()
-endif ()
+# testing target options
+if(ENABLE_TESTING MATCHES "ON")
+    # compile under cxx 17
+    target_compile_features(mycc_test PRIVATE cxx_std_17)
+    set_property(TARGET mycc_test PROPERTY CXX_STANDARD_REQUIRED ON)
+
+    # change include base to project root
+    target_include_directories(mycc_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
 
 ###############################################################################
 ## Project Source #############################################################
@@ -156,15 +170,19 @@ add_subdirectory(lexical)
 ###############################################################################
 ## Testing ####################################################################
 ###############################################################################
-# add testing main
-target_sources(mycc_test
-        PRIVATE
-        "test_main.cc" "options.cc")
+if (ENABLE_TESTING MATCHES "ON")
+    # add testing main
+    target_sources(mycc_test
+            PRIVATE
+            "test_main.cc" "options.cc")
+endif ()
+
 
 ###############################################################################
 ## Testing  Coverage ##########################################################
 ###############################################################################
-if (CODE_COVERAGE)
+if ((ENABLE_COVERAGE MATCHES "ON") AND (ENABLE_TESTING MATCHES "ON"))
     include(code-coverage)
     target_code_coverage(mycc_test)
+    message(STATUS "Code coverage enabled")
 endif ()
