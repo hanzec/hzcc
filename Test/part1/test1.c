@@ -124,7 +124,7 @@ iffy
 //CHECK-NEXT: File __FILE__ Line    23 Token  37 Text %
 //CHECK-NEXT: File __FILE__ Line    24 Token  58 Text :
 //CHECK-NEXT: File __FILE__ Line    25 Token  63 Text ?
-//CHECK-NEXT: File __FILE__ Line    26 Token 306 Text ~
+//CHECK-NEXT: File __FILE__ Line    26 Token 126 Text ~
 //CHECK-NEXT: File __FILE__ Line    27 Token 124 Text |
 //CHECK-NEXT: File __FILE__ Line    28 Token  38 Text &
 //CHECK-NEXT: File __FILE__ Line    29 Token  33 Text !

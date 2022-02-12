@@ -4,7 +4,15 @@
 
 #ifndef MYCC_EXPR_NODE_H
 #define MYCC_EXPR_NODE_H
+#include "context.h"
 
-class ExprNode {};
+namespace Mycc::AST{
+class ExprNode {
+  public:
+
+  
+};
+
+} // namespace Mycc::AST
 
 #endif  // MYCC_EXPR_NODE_H

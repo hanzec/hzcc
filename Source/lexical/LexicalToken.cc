@@ -14,15 +14,32 @@
 namespace Mycc::Lexical {
 LexicalToken::LexicalToken(const LexicalToken& old)
     : _token_type(old._token_type),
+      _token_val_ref(old._token_val_ref),
       _token_location(old._token_location),
-      _token_val_ref(old._token_val_ref) {
-  if (old._token_val_ref != nullptr) {  // Speical symbol does not have string value
+      _source_line_val_ref(old._source_line_val_ref) {
+  // token string
+  if (old._token_val_ref !=
+      nullptr) {  // Speical symbol does not have string value
     auto ref = _const_value_storage.find(*_token_val_ref);
     if (ref != _const_value_storage.end()) {
       ref->second++;
     } else {
 #ifndef NDEBUG
-      LOG(ERROR) << "[Internal] Token value is not in const value storage when copy.";
+      LOG(ERROR)
+          << "[Internal] Token value is not in const value storage when copy.";
+#endif
+    }
+  }
+
+  // source line cache
+  if (old._source_line_val_ref != nullptr) {
+    auto ref = _const_value_storage.find(*_source_line_val_ref);
+    if (ref != _const_value_storage.end()) {
+      ref->second++;
+    } else {
+#ifndef NDEBUG
+      LOG(ERROR) << "[Internal] Source linke cache is not in const value "
+                    "storage when copy.";
 #endif
     }
   }
@@ -31,7 +48,8 @@ LexicalToken::LexicalToken(const LexicalToken& old)
 LexicalToken::LexicalToken(Type token_type, int row, int col) noexcept
     : _token_type(token_type), _token_location(std::make_pair(row, col)) {}
 
-LexicalToken::LexicalToken(Type token_type, int row, int col, const std::string& line) noexcept
+LexicalToken::LexicalToken(Type token_type, int row, int col,
+                           const std::string& line) noexcept
     : LexicalToken(token_type, row, col) {
   auto ref = _const_value_storage.find(line);
   if (ref != _const_value_storage.end()) {
@@ -44,12 +62,13 @@ LexicalToken::LexicalToken(Type token_type, int row, int col, const std::string&
 #ifndef NDEBUG
     VLOG(3) << "insert new source line cache: [" << line << "]";
 #endif
-    _source_line_val_ref = &(_const_value_storage.emplace(line, 1).first->first);
+    _source_line_val_ref =
+        &(_const_value_storage.emplace(line, 1).first->first);
   }
 }
 
-LexicalToken::LexicalToken(const std::string& token_string, Type token_type, int row,
-                           int col) noexcept
+LexicalToken::LexicalToken(const std::string& token_string, Type token_type,
+                           int row, int col) noexcept
     : _token_type(token_type), _token_location(std::make_pair(row, col)) {
   auto ref = _const_value_storage.find(token_string);
   if (ref != _const_value_storage.end()) {
@@ -62,12 +81,14 @@ LexicalToken::LexicalToken(const std::string& token_string, Type token_type, int
 #ifndef NDEBUG
     VLOG(3) << "insert new token string: [" << token_string << "]";
 #endif
-    _token_val_ref = &(_const_value_storage.emplace(token_string, 1).first->first);
+    _token_val_ref =
+        &(_const_value_storage.emplace(token_string, 1).first->first);
   }
 }
 
-LexicalToken::LexicalToken(const std::string& token_string, LexicalToken::Type token_type,
-                           int row, int col, const std::string& line) noexcept
+LexicalToken::LexicalToken(const std::string& token_string,
+                           LexicalToken::Type token_type, int row, int col,
+                           const std::string& line) noexcept
     : LexicalToken(token_string, token_type, row, col) {
   auto ref = _const_value_storage.find(line);
   if (ref != _const_value_storage.end()) {
@@ -80,7 +101,8 @@ LexicalToken::LexicalToken(const std::string& token_string, LexicalToken::Type t
 #ifndef NDEBUG
     VLOG(3) << "insert new source line cache: [" << line << "]";
 #endif
-    _source_line_val_ref = &(_const_value_storage.emplace(line, 1).first->first);
+    _source_line_val_ref =
+        &(_const_value_storage.emplace(line, 1).first->first);
   }
 }
 
@@ -113,9 +135,7 @@ LexicalToken::~LexicalToken() noexcept {
         _const_value_storage.erase(ref);
       }
     } else {
-#ifndef NDEBUG
-      VLOG(3) << "decreasing recount source line cache: " << *_token_val_ref;
-#endif
+      LOG(ERROR) << "[Internal] Token value reference not found";
     }
   }
 }
@@ -124,34 +144,38 @@ bool LexicalToken::IsSymbol() const noexcept { return _token_type < 400; }
 
 bool LexicalToken::IsKeyword() const noexcept { return _token_type > 400; }
 
-void LexicalToken::TokenType(LexicalToken::Type new_type) noexcept { _token_type = new_type; }
+void LexicalToken::TokenType(LexicalToken::Type new_type) noexcept {
+  _token_type = new_type;
+}
 
-LexicalToken::Type LexicalToken::TokenType() const noexcept { return _token_type; }
+LexicalToken::Type LexicalToken::TokenType() const noexcept {
+  return _token_type;
+}
 
 std::string LexicalToken::Value(bool escape) const noexcept {
-  if(_token_val_ref == nullptr) {
+  if (_token_val_ref == nullptr) {
     return SymbolUtils::TokenTypeToString(_token_type);
   } else {
-    if(escape) {
+    if (escape) {
       std::stringstream ss;
 
-      if(_token_type == Type::kString) {
+      if (_token_type == Type::kString) {
         ss << "\"";
-      } else if(_token_type == Type::kChar) {
+      } else if (_token_type == Type::kChar) {
         ss << "'";
       }
 
-      for(auto& c : *_token_val_ref) {
-        if(std::iscntrl(c)) {
+      for (auto& c : *_token_val_ref) {
+        if (std::iscntrl(c)) {
           ss << SymbolUtils::ASCIIControlCodeToString(c);
         } else {
           ss << c;
         }
       }
 
-      if(_token_type == Type::kString) {
+      if (_token_type == Type::kString) {
         ss << "\"";
-      } else if(_token_type == Type::kChar) {
+      } else if (_token_type == Type::kChar) {
         ss << "'";
       }
 
@@ -162,10 +186,14 @@ std::string LexicalToken::Value(bool escape) const noexcept {
   }
 }
 
-std::pair<int, int> LexicalToken::Location() const noexcept { return _token_location; }
+std::pair<int, int> LexicalToken::Location() const noexcept {
+  return _token_location;
+}
+
 std::optional<std::string> LexicalToken::SourceLine() const noexcept {
-  return _source_line_val_ref == nullptr ? std::nullopt
-                                         : std::make_optional(std::string(*_token_val_ref));
+  return _source_line_val_ref == nullptr
+             ? std::nullopt
+             : std::make_optional(std::string(*_source_line_val_ref));
 }
 
 }  // namespace Mycc::Lexical

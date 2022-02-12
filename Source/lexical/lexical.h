@@ -12,7 +12,8 @@
 #include "macro.h"
 #include "utils/Status.h"
 namespace Mycc::Lexical {
-constexpr int kMaxSignificantDigits = 19; // Max number of significant digits in a long double
+constexpr int kMaxSignificantDigits =
+    19;  // Max number of significant digits in a long double
 
 class LexicalToken {
  public:
@@ -24,14 +25,14 @@ class LexicalToken {
    *         COMMA            |     ,                 | The token of comma
    *         DOT              |     .                 | The token of dot
    *         SEMI             |     ;                 | The token of semicolon
-   *         LPAR             |     (                 | The token of left parenthesis
-   *         RPAR             |     )                 | The token of right parenthesis
-   *         LBRAK            |     [                 | The token of left bracket
-   *         RBRAK            |     ]                 | The token of right bracket
-   *         LBRACE           |     {                 | The token of left brace
+   *         LPAR             |     (                 | The token of left
+   * parenthesis RPAR             |     )                 | The token of right
+   * parenthesis LBRAK            |     [                 | The token of left
+   * bracket RBRAK            |     ]                 | The token of right
+   * bracket LBRACE           |     {                 | The token of left brace
    *         RBRACE           |     }                 | The token of right brace
-   *         GT               |     >                 | The token of greater than
-   *         LT               |     <                 | The token of less than
+   *         GT               |     >                 | The token of greater
+   * than LT               |     <                 | The token of less than
    *         ASSIGN           |     =                 | The token of assignment
    *         PLUS             |     +                 | The token of plus
    *         MINUS            |     -                 | The token of minus
@@ -117,6 +118,15 @@ class LexicalToken {
     kUnknown = 999
   };
 
+  /**
+   * @brief Copy Constructor of a new Lexical Token object this constructor will
+   *        do following things:
+   *          - Copy the token type
+   *          - Copy the token location
+   *          - Increate the refence count of the cached token    
+   *
+   * @param old the old Lexical Token object
+   */
   LexicalToken(const LexicalToken& old);
 
   /**
@@ -133,37 +143,41 @@ class LexicalToken {
    * @param row row number of current LexicalToken exists in the source code
    * @param col column number of current LexicalToken exists in the source code
    */
-  LexicalToken(Type token_type, int row, int col, const std::string& line) noexcept;
-
-  /**
-   * @brief The LexicalToken constructor
-   * @param token_string  the string of current LexicalToken
-   * @param token_type the token type of current LexicalToken
-   * @param row row number of current LexicalToken exists in the source code
-   * @param col column number of current LexicalToken exists in the source code
-   */
-  LexicalToken(const std::string& token_string, Type token_type, int row, int col) noexcept;
-
-  /**
-   * @brief The LexicalToken constructor
-   * @param token_string  the string of current LexicalToken
-   * @param token_type the token type of current LexicalToken
-   * @param row row number of current LexicalToken exists in the source code
-   * @param col column number of current LexicalToken exists in the source code
-   */
-  LexicalToken(const std::string& token_string, Type token_type, int row, int col,
+  LexicalToken(Type token_type, int row, int col,
                const std::string& line) noexcept;
 
   /**
+   * @brief The LexicalToken constructor
+   * @param token_string  the string of current LexicalToken
+   * @param token_type the token type of current LexicalToken
+   * @param row row number of current LexicalToken exists in the source code
+   * @param col column number of current LexicalToken exists in the source code
+   */
+  LexicalToken(const std::string& token_string, Type token_type, int row,
+               int col) noexcept;
+
+  /**
+   * @brief The LexicalToken constructor
+   * @param token_string  the string of current LexicalToken
+   * @param token_type the token type of current LexicalToken
+   * @param row row number of current LexicalToken exists in the source code
+   * @param col column number of current LexicalToken exists in the source code
+   */
+  LexicalToken(const std::string& token_string, Type token_type, int row,
+               int col, const std::string& line) noexcept;
+
+  /**
    * @brief The LexicalToken Destructor
-   *    This destructor will tracing the reference count of current storage string in
-   *    _const_value_storage, If the reference count is 0, then erase the token string.
+   *    This destructor will tracing the reference count of current storage
+   * string in _const_value_storage, If the reference count is 0, then erase the
+   * token string.
    */
   ~LexicalToken() noexcept;
 
   /**
    * @brief Check whether the current LexicalToken is a reserved keyword
-   * @return true if the current LexicalToken is a reserved keyword, otherwise false
+   * @return true if the current LexicalToken is a reserved keyword, otherwise
+   * false
    */
   [[nodiscard]] bool IsSymbol() const noexcept;
 
@@ -192,12 +206,17 @@ class LexicalToken {
    */
   [[nodiscard]] std::pair<int, int> Location() const noexcept;
 
-
+  /**
+   * @brief Get the cached source line of the token
+   *
+   * @return std::optional<std::string>
+   */
   [[nodiscard]] std::optional<std::string> SourceLine() const noexcept;
 
   /**
    * @brief Get the human readable string of the token
-   * @note The token string is the original string of the token and should not be modified
+   * @note The token string is the original string of the token and should not
+   * be modified
    * @param escape whether to escape the ASCII Control char in the token string
    * @return std::string the human readable string value of the token
    */
@@ -209,17 +228,21 @@ class LexicalToken {
   const std::string* _token_val_ref = nullptr;
   const std::string* _source_line_val_ref = nullptr;
 
+  // global storage pool for all the token string
   inline static std::unordered_map<std::string, int> _const_value_storage{};
 };
 
 /**
+ * @brief Parse the source code and generate a list of LexicalToken
  *
- * @param source
- * @return
+ * @param source the source code to be parsed
+ * @param tokenStream the output list of parsed LexicalToken
+ * @param source_name the source file name, default is ""
+ * @return Status return the parsing result
  */
-Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokenStream, const std::string& source_name = "");
-
-
+Status ParseToToken(std::istream& source,
+                    std::vector<LexicalToken>& tokenStream,
+                    const std::string& source_name = "");
 
 }  // namespace Mycc::Lexical
 #endif  // MYCC_LEXICAL_H

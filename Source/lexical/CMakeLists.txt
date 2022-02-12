@@ -16,8 +16,10 @@ add_subdirectory(utils)
 ## Testing Source #############################################################
 ###############################################################################
 if (ENABLE_TESTING MATCHES "ON")
+    # looking for the source code
     file(GLOB MYCC_LEXICAL_TEST_SRCS ${CMAKE_CURRENT_LIST_DIR}/test/*_test.cc)
 
+    # add to mycc_test target
     target_sources(mycc_test
             PRIVATE
             ${MYCC_LEXICAL_TEST_SRCS}

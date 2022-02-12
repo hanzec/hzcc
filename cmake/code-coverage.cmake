@@ -72,8 +72,20 @@
 
 # Programs
 find_program(GCOVR_PATH gcovr)
-find_program(LLVM_COV_PATH llvm-cov)
-find_program(LLVM_PROFDATA_PATH llvm-profdata)
+find_program(LLVM_COV_PATH llvm-cov
+        NAMES
+        "llvm-cov-14"
+        "llvm-cov-13"
+        "llvm-cov-12"
+        "llvm-cov-11"
+        "llvm-cov-10")
+find_program(LLVM_PROFDATA_PATH llvm-profdata
+        NAMES
+        "llvm-profdata-14"
+        "llvm-profdata-13"
+        "llvm-profdata-12"
+        "llvm-profdata-11"
+        "llvm-profdata-10")
 
 # Hide behind the 'advanced' mode flag for GUI/ccmake
 mark_as_advanced(FORCE LLVM_COV_PATH LLVM_PROFDATA_PATH LCOV_PATH GENHTML_PATH)

@@ -11,7 +11,7 @@ namespace Mycc::Lexical::SymbolUtils {
 /**
  * Number of special symbols in C language.
  */
-#define kSingleCharSymbolTableSize 22
+#define kSingleCharSymbolTableSize 23
 #define kDoubleCharSymbolTableSize 14
 
 /**
@@ -23,12 +23,14 @@ namespace Mycc::Lexical::SymbolUtils {
 /**
  * Special Symbol's table.
  */
-constexpr static std::array<const char, kSingleCharSymbolTableSize> kSingleCharSymbol{
-    '+', '-', '*', '/', '%', '&', '|', '!', '=', '.', ',',
-    '<', '>', '?', ':', ';', '{', '}', '(', ')', '[', ']'};
+constexpr static std::array<const char, kSingleCharSymbolTableSize>
+    kSingleCharSymbol{'+', '-', '*', '/', '%', '&', '|', '!',
+                      '=', '.', ',', '~', '<', '>', '?', ':',
+                      ';', '{', '}', '(', ')', '[', ']'};
 
-constexpr static std::array<const char *, kDoubleCharSymbolTableSize> kDoubleCharSymbol{
-    "==", "!=", ">=", "<=", "++", "--", "||", "&&", "<<", ">>", "+=", "-=", "*=", "/="};
+constexpr static std::array<const char *, kDoubleCharSymbolTableSize>
+    kDoubleCharSymbol{"==", "!=", ">=", "<=", "++", "--", "||",
+                      "&&", "<<", ">>", "+=", "-=", "*=", "/="};
 
 /**
  * Special Keyword's table.
@@ -38,14 +40,16 @@ constexpr static std::array<const char *, kKeywordTableSize> kKeyword{
     "break", "continue", "return", "switch", "case", "default",
 };
 
-constexpr static std::array<const char *, KPermittedTypeTableSize> kPrimitiveType{
-    "int", "char", "float", "double", "void", "bool",
-};
+constexpr static std::array<const char *, KPermittedTypeTableSize>
+    kPrimitiveType{
+        "int", "char", "float", "double", "void", "bool",
+    };
 
 /**
- * @Brief: internal constexpr wrap for searching an std::array with constexpr, which is a
- *         constexpr version of std::find_if
- * @note: Since all table's size is not so large, will trying to unroll the loop if possible.
+ * @Brief: internal constexpr wrap for searching an std::array with constexpr,
+ * which is a constexpr version of std::find_if
+ * @note: Since all table's size is not so large, will trying to unroll the loop
+ * if possible.
  * @tparam Type the type of the array element.
  * @tparam N the size of the array.
  * @param table the array.
@@ -57,7 +61,8 @@ constexpr static std::array<const char *, KPermittedTypeTableSize> kPrimitiveTyp
 #pragma GCC optimize("unroll-loops")
 #endif
 template <class Type, int N>
-constexpr ALWAYS_INLINE int Iserch_table(const std::array<Type, N> &table, Type str) {
+constexpr ALWAYS_INLINE unsigned int Iserch_table(const std::array<Type, N> &table,
+                                         Type str) {
 #ifdef __clang__
 #pragma clang loop unroll(full)
 #endif
@@ -84,7 +89,8 @@ constexpr ALWAYS_INLINE int Iserch_table(const std::array<Type, N> &table, Type 
  * @return the index of the symbol in symbol table, and -1 if not found.
  */
 ALWAYS_INLINE LexicalToken::Type GetSymbolType(const char str) {
-  auto ret = Iserch_table<const char, kSingleCharSymbolTableSize>(kSingleCharSymbol, str);
+  auto ret = Iserch_table<const char, kSingleCharSymbolTableSize>(
+      kSingleCharSymbol, str);
 
   if (ret == -1) {
     return LexicalToken::Type::kUnknown;
@@ -108,7 +114,8 @@ ALWAYS_INLINE bool IsOperator(const char str) {
  * @return true if the char is the special symbol, false otherwise.
  */
 ALWAYS_INLINE bool IsPrimitiveType(const char *str) {
-  return Iserch_table<const char *, KPermittedTypeTableSize>(kPrimitiveType, str) != -1;
+  return Iserch_table<const char *, KPermittedTypeTableSize>(kPrimitiveType,
+                                                             str) != -1;
 }
 
 /**
@@ -125,8 +132,8 @@ ALWAYS_INLINE LexicalToken::Type GetSymbolType(const char str[2]) {
   // create a tmp string
   std::string tmp(str, 2);
 
-  auto ret =
-      Iserch_table<const char *, kDoubleCharSymbolTableSize>(kDoubleCharSymbol, tmp.c_str());
+  auto ret = Iserch_table<const char *, kDoubleCharSymbolTableSize>(
+      kDoubleCharSymbol, tmp.c_str());
 
   if (ret == -1) {
     return GetSymbolType(str[0]);
@@ -136,8 +143,8 @@ ALWAYS_INLINE LexicalToken::Type GetSymbolType(const char str[2]) {
 }
 
 /**
- * @Brief: Converting char to ASCII Control Code. There are following ASCII Control Code
- *         supported:
+ * @Brief: Converting char to ASCII Control Code. There are following ASCII
+ * Control Code supported:
  *         - \0: NUL
  *         - \a: BEL
  *         - \b: BS
@@ -173,8 +180,8 @@ ALWAYS_INLINE char ToASCIIControlCode(const char str) {
 }
 
 /**
- * @Brief: ASCII Control Code to its string('\0' ->"\\0"). There are following ASCII Control
- * Code supported:
+ * @Brief: ASCII Control Code to its string('\0' ->"\\0"). There are following
+ * ASCII Control Code supported:
  *         - \0: NUL
  *         - \a: BEL
  *         - \b: BS
@@ -214,8 +221,10 @@ ALWAYS_INLINE const char *ASCIIControlCodeToString(const char str) {
  * @param keyword the string to be checked.
  * @return the index of the keyword in keyword table, and -1 if not found.
  */
-ALWAYS_INLINE LexicalToken::Type GetStringKeywordType(const std::string &keyword) {
-  auto ret = Iserch_table<const char *, kKeywordTableSize>(kKeyword, keyword.c_str());
+ALWAYS_INLINE LexicalToken::Type GetStringKeywordType(
+    const std::string &keyword) {
+  auto ret =
+      Iserch_table<const char *, kKeywordTableSize>(kKeyword, keyword.c_str());
 
   if (ret == -1) {
     return LexicalToken::Type::kUnknown;

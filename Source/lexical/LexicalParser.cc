@@ -311,9 +311,10 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
 
             if (type != LexicalToken::kUnknown) {  // splitting keyword
               tokens.emplace_back(type, row, start, line);
-            } else if (SymbolUtils::IsPrimitiveType(word.c_str())) {  // splitting primitive type
+            } else if (SymbolUtils::IsPrimitiveType(
+                           word.c_str())) {  // splitting primitive type
               tokens.emplace_back(word, LexicalToken::kType, row, start, line);
-            } else {// identifier
+            } else {  // identifier
               tokens.emplace_back(word, LexicalToken::kIdentity, row, start, line);
             }
             col--;  // back to the last digit
