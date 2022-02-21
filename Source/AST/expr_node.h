@@ -4,7 +4,6 @@
 
 #ifndef MYCC_EXPR_NODE_H
 #define MYCC_EXPR_NODE_H
-#include "context.h"
 
 namespace Mycc::AST{
 class ExprNode {

@@ -1,23 +1,24 @@
-#ifndef MYCC_AST_AST_H
-#define MYCC_AST_AST_H
-#include "context.h"
 #include <memory>
+#include <unordered_map>
 #include <vector>
 #include "expr_node.h"
 #include "function_node.h"
 #include "function_node.h"
 
+#ifndef MYCC_AST_AST_H
+#define MYCC_AST_AST_H
+
 namespace Mycc::AST{
-class AST {
+class ASTContext {
   public:
-    AST();
+    ASTContext();
 
     
-
+  
   private:
-    Context context_;
+    std::vector<std::unique_ptr<ExprNode>> _expr_nodes;
 
-    std::vector<ExprNode> expr_nodes_;
+    std::unordered_map<std::string,ExprNode> _function_map;
 
 };
 

@@ -1,12 +1,13 @@
 //
 // Created by chen_ on 2022/2/1.
 //
+#include <array>
+#include "lexical/lexical.h"
+#include "lexical/LexicalToken.h"
 
 #ifndef MYCC_SYMBOL_UTILS_H
 #define MYCC_SYMBOL_UTILS_H
-#include <array>
 
-#include "lexical/lexical.h"
 namespace Mycc::Lexical::SymbolUtils {
 /**
  * Number of special symbols in C language.
@@ -17,7 +18,7 @@ namespace Mycc::Lexical::SymbolUtils {
 /**
  * The table of string Keywords in C language.
  */
-#define kKeywordTableSize 13
+#define kKeywordTableSize 14
 #define KPermittedTypeTableSize 6
 
 /**
@@ -37,7 +38,7 @@ constexpr static std::array<const char *, kDoubleCharSymbolTableSize>
  */
 constexpr static std::array<const char *, kKeywordTableSize> kKeyword{
     "const", "struct",   "for",    "while",  "do",   "if",      "else",
-    "break", "continue", "return", "switch", "case", "default",
+    "break", "continue", "return", "switch", "case", "default", "typedef"
 };
 
 constexpr static std::array<const char *, KPermittedTypeTableSize>

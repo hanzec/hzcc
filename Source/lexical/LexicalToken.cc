@@ -8,8 +8,8 @@
 #include <string>
 #include <utility>
 
-#include "lexical.h"
 #include "utils/symbol_utils.h"
+#include "lexical/LexicalToken.h"
 
 namespace Mycc::Lexical {
 LexicalToken::LexicalToken(const LexicalToken& old)
