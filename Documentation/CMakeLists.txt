@@ -46,7 +46,7 @@ if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND)
             BYPRODUCTS ${LATEX_AUX_FILES}
             COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} -draftmode -interaction=nonstopmode ${DOC_MAIN_TEX} > ${CMAKE_CURRENT_BINARY_DIR}/latex_prebuild.log 2>&1
             COMMENT "Starting Prebuild."
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
     # Generate the indices for the index table.
     string(REGEX REPLACE "[.]tex$" ".ind" LATEX_IND_FILES ${DOC_MAIN_TEX})
@@ -68,7 +68,7 @@ if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND)
             BYPRODUCTS ${LATEX_PDF_FILES}
             COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} ${DOC_MAIN_TEX} > ${CMAKE_CURRENT_BINARY_DIR}/pdflatex.log 2>&1
             COMMENT "Generating pdf file."
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     add_dependencies(documentation latex-prebuild latex-makeindex)
 ELSE ()
     MESSAGE(FATAL_ERROR "No latex tools found!")
