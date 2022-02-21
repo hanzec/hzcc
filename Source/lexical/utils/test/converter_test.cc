@@ -41,7 +41,7 @@ TEST(LEXICAL_UTILS_CONVERTER, token_code_to_string) { // NOLINT
    */
   const std::array<const char *, kKeywordTableSize> arrayKeyword{
       "const", "struct",   "for",    "while",  "do",   "if",      "else",
-      "break", "continue", "return", "switch", "case", "default",
+      "break", "continue", "return", "switch", "case", "default", "typedef"
   };
 
   // single char symbols
