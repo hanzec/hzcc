@@ -3,6 +3,9 @@
 # build tempary directory
 mkdir -m 700 /dev/shm/hanzech_build_cache
 
+# configure the projdect
+cmake -S . -B /dev/shm/hanzech_build_cache
+
 # compile project
 cmake --build /dev/shm/hanzech_build_cache --target install  -- -j$(nproc)
 
