@@ -7,7 +7,7 @@ mkdir -m 700 /dev/shm/hanzech_build_cache
 cmake -S . -B /dev/shm/hanzech_build_cache
 
 # compile project
-cmake --build /dev/shm/hanzech_build_cache --target install  -- -j$(nproc)
+cmake --build /dev/shm/hanzech_build_cache --target mycc documentation -- -j$(nproc)
 
 # build product directory
 mkdir build
