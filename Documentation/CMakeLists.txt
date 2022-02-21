@@ -44,6 +44,9 @@ if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND)
     add_custom_target(latex-prebuild
             DEPENDS ${DOC_MAIN_TEX}
             BYPRODUCTS ${LATEX_AUX_FILES}
+            COMMAND ${CMAKE_COMMAND} -E remove -f *.aux
+            COMMAND ${CMAKE_COMMAND} -E remove -f *.idx
+            COMMAND ${CMAKE_COMMAND} -E remove -f *.log
             COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} -draftmode -interaction=nonstopmode ${DOC_MAIN_TEX} > ${CMAKE_CURRENT_BINARY_DIR}/latex_prebuild.log 2>&1
             COMMENT "Starting Prebuild."
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
