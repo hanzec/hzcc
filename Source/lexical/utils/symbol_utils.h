@@ -2,50 +2,15 @@
 // Created by chen_ on 2022/2/1.
 //
 #include <array>
-#include "lexical/lexical.h"
-#include "lexical/LexicalToken.h"
+#include <cstring>
+
+#include "lexical/keywords.h"
+#include "lexical/token_type.h"
 
 #ifndef MYCC_SYMBOL_UTILS_H
 #define MYCC_SYMBOL_UTILS_H
 
 namespace Mycc::Lexical::SymbolUtils {
-/**
- * Number of special symbols in C language.
- */
-#define kSingleCharSymbolTableSize 23
-#define kDoubleCharSymbolTableSize 14
-
-/**
- * The table of string Keywords in C language.
- */
-#define kKeywordTableSize 14
-#define KPermittedTypeTableSize 6
-
-/**
- * Special Symbol's table.
- */
-constexpr static std::array<const char, kSingleCharSymbolTableSize>
-    kSingleCharSymbol{'+', '-', '*', '/', '%', '&', '|', '!',
-                      '=', '.', ',', '~', '<', '>', '?', ':',
-                      ';', '{', '}', '(', ')', '[', ']'};
-
-constexpr static std::array<const char *, kDoubleCharSymbolTableSize>
-    kDoubleCharSymbol{"==", "!=", ">=", "<=", "++", "--", "||",
-                      "&&", "<<", ">>", "+=", "-=", "*=", "/="};
-
-/**
- * Special Keyword's table.
- */
-constexpr static std::array<const char *, kKeywordTableSize> kKeyword{
-    "const", "struct",   "for",    "while",  "do",   "if",      "else",
-    "break", "continue", "return", "switch", "case", "default", "typedef"
-};
-
-constexpr static std::array<const char *, KPermittedTypeTableSize>
-    kPrimitiveType{
-        "int", "char", "float", "double", "void", "bool",
-    };
-
 /**
  * @Brief: internal constexpr wrap for searching an std::array with constexpr,
  * which is a constexpr version of std::find_if
@@ -57,28 +22,28 @@ constexpr static std::array<const char *, KPermittedTypeTableSize>
  * @param str the string to be searched.
  * @return the index of the string in the array.
  */
-#if defined(__GNUC__)
+#if !defined(__clang__) && defined(__GNUC__)
 #pragma GCC push_options
 #pragma GCC optimize("unroll-loops")
 #endif
 template <class Type, int N>
-constexpr ALWAYS_INLINE unsigned int Iserch_table(const std::array<Type, N> &table,
-                                         Type str) {
+constexpr ALWAYS_INLINE unsigned int Iserch_table(
+    const std::array<Type, N> &table, Type str) {
 #ifdef __clang__
 #pragma clang loop unroll(full)
 #endif
-  for (size_t i = 0; i < N; ++i) {
-    if constexpr (std::is_same_v<Type, const char *>) {
-      if (strcmp(table[i], str) == 0) {
-        return i;
-      }
-    } else {
-      if (table[i] == str) {
-        return i;
-      }
+    for (size_t i = 0; i < N; ++i) {
+        if constexpr (std::is_same_v<Type, const char *>) {
+            if (strcmp(table[i], str) == 0) {
+                return i;
+            }
+        } else {
+            if (table[i] == str) {
+                return i;
+            }
+        }
     }
-  }
-  return -1;
+    return -1;
 }
 #if !defined(__clang__) && defined(__GNUC__)
 #pragma GCC pop_options
@@ -89,15 +54,15 @@ constexpr ALWAYS_INLINE unsigned int Iserch_table(const std::array<Type, N> &tab
  * @param str the char to be searched.
  * @return the index of the symbol in symbol table, and -1 if not found.
  */
-ALWAYS_INLINE LexicalToken::Type GetSymbolType(const char str) {
-  auto ret = Iserch_table<const char, kSingleCharSymbolTableSize>(
-      kSingleCharSymbol, str);
+ALWAYS_INLINE TokenType GetSymbolType(const char str) {
+    auto ret = Iserch_table<const char, kSingleCharSymbolTableSize>(
+        Keywords::kSingleCharSymbol, str);
 
-  if (ret == -1) {
-    return LexicalToken::Type::kUnknown;
-  } else {
-    return static_cast<LexicalToken::Type>(kSingleCharSymbol[ret]);
-  }
+    if (ret == -1) {
+        return TokenType::kUnknown;
+    } else {
+        return static_cast<TokenType>(Keywords::kSingleCharSymbol[ret]);
+    }
 }
 
 /**
@@ -106,7 +71,7 @@ ALWAYS_INLINE LexicalToken::Type GetSymbolType(const char str) {
  * @return true if the char is the special symbol, false otherwise.
  */
 ALWAYS_INLINE bool IsOperator(const char str) {
-  return str == ' ' || LexicalToken::Type::kUnknown != GetSymbolType(str);
+    return str == ' ' || TokenType::kUnknown != GetSymbolType(str);
 }
 
 /**
@@ -115,8 +80,8 @@ ALWAYS_INLINE bool IsOperator(const char str) {
  * @return true if the char is the special symbol, false otherwise.
  */
 ALWAYS_INLINE bool IsPrimitiveType(const char *str) {
-  return Iserch_table<const char *, KPermittedTypeTableSize>(kPrimitiveType,
-                                                             str) != -1;
+    return Iserch_table<const char *, KPermittedTypeTableSize>(
+               Keywords::kPrimitiveType, str) != -1;
 }
 
 /**
@@ -124,23 +89,23 @@ ALWAYS_INLINE bool IsPrimitiveType(const char *str) {
  * @param str the double char to be searched.
  * @return the index of the symbol in symbol table, and -1 if not found.
  */
-ALWAYS_INLINE LexicalToken::Type GetSymbolType(const char str[2]) {
-  // handle if the char is a single char symbol
-  if (GetSymbolType(str[1]) == LexicalToken::Type::kUnknown) {
-    return GetSymbolType(str[0]);
-  }
+ALWAYS_INLINE TokenType GetSymbolType(const char str[2]) {
+    // handle if the char is a single char symbol
+    if (GetSymbolType(str[1]) == TokenType::kUnknown) {
+        return GetSymbolType(str[0]);
+    }
 
-  // create a tmp string
-  std::string tmp(str, 2);
+    // create a tmp string
+    std::string tmp(str, 2);
 
-  auto ret = Iserch_table<const char *, kDoubleCharSymbolTableSize>(
-      kDoubleCharSymbol, tmp.c_str());
+    auto ret = Iserch_table<const char *, kDoubleCharSymbolTableSize>(
+        Keywords::kDoubleCharSymbol, tmp.c_str());
 
-  if (ret == -1) {
-    return GetSymbolType(str[0]);
-  } else {
-    return static_cast<LexicalToken::Type>(ret + 351);
-  }
+    if (ret == -1) {
+        return GetSymbolType(str[0]);
+    } else {
+        return static_cast<TokenType>(ret + 351);
+    }
 }
 
 /**
@@ -158,26 +123,26 @@ ALWAYS_INLINE LexicalToken::Type GetSymbolType(const char str[2]) {
  * @return the ASCII Control Code, will return 0xFF if not found.
  */
 ALWAYS_INLINE char ToASCIIControlCode(const char str) {
-  switch (str) {
-    case '0':
-      return '\0';
-    case 'a':
-      return '\a';
-    case 'b':
-      return '\b';
-    case 'f':
-      return '\f';
-    case 't':
-      return '\t';
-    case 'n':
-      return '\n';
-    case 'r':
-      return '\r';
-    case 'v':
-      return '\v';
-    default:
-      return (char)0xFF;
-  }
+    switch (str) {
+        case '0':
+            return '\0';
+        case 'a':
+            return '\a';
+        case 'b':
+            return '\b';
+        case 'f':
+            return '\f';
+        case 't':
+            return '\t';
+        case 'n':
+            return '\n';
+        case 'r':
+            return '\r';
+        case 'v':
+            return '\v';
+        default:
+            return (char)0xFF;
+    }
 }
 
 /**
@@ -195,26 +160,26 @@ ALWAYS_INLINE char ToASCIIControlCode(const char str) {
  * @return the ASCII Control Code, will return "" if not found.
  */
 ALWAYS_INLINE const char *ASCIIControlCodeToString(const char str) {
-  switch (str) {
-    case '\0':
-      return "\\0";
-    case '\a':
-      return "\\a";
-    case '\b':
-      return "\\b";
-    case '\f':
-      return "\\f";
-    case '\n':
-      return "\\n";
-    case '\r':
-      return "\\r";
-    case '\t':
-      return "\\t";
-    case '\v':
-      return "\\v";
-    default:
-      return "";
-  }
+    switch (str) {
+        case '\0':
+            return "\\0";
+        case '\a':
+            return "\\a";
+        case '\b':
+            return "\\b";
+        case '\f':
+            return "\\f";
+        case '\n':
+            return "\\n";
+        case '\r':
+            return "\\r";
+        case '\t':
+            return "\\t";
+        case '\v':
+            return "\\v";
+        default:
+            return "";
+    }
 }
 
 /**
@@ -222,28 +187,29 @@ ALWAYS_INLINE const char *ASCIIControlCodeToString(const char str) {
  * @param keyword the string to be checked.
  * @return the index of the keyword in keyword table, and -1 if not found.
  */
-ALWAYS_INLINE LexicalToken::Type GetStringKeywordType(
-    const std::string &keyword) {
-  auto ret =
-      Iserch_table<const char *, kKeywordTableSize>(kKeyword, keyword.c_str());
+ALWAYS_INLINE TokenType GetStringKeywordType(const std::string &keyword) {
+    auto ret = Iserch_table<const char *, kKeywordTableSize>(Keywords::kKeyword,
+                                                             keyword.c_str());
 
-  if (ret == -1) {
-    return LexicalToken::Type::kUnknown;
-  } else {
-    return static_cast<LexicalToken::Type>(ret + 401);
-  }
+    if (ret == -1) {
+        return TokenType::kUnknown;
+    } else {
+        return static_cast<TokenType>(ret + 401);
+    }
 }
 
-ALWAYS_INLINE std::string TokenTypeToString(LexicalToken::Type tokenType) {
-  if ((int)tokenType >= 401 && (int)tokenType <= 500) {
-    return kKeyword[tokenType - 401];
-  } else if ((int)tokenType >= 351 && (int)tokenType <= 400) {
-    return kDoubleCharSymbol[tokenType - 351];
-  } else if ((int)tokenType <= 0xFF) {
-    return std::string(1, (char)tokenType);  // NOLINT
-  } else {
-    return "Unknown";
-  }
+ALWAYS_INLINE std::string TokenTypeToString(TokenType tokenType) {
+    if ((int)tokenType >= 401 && (int)tokenType <= 500) {
+        return Keywords::kKeyword[tokenType - 401];
+    } else if ((int)tokenType >= 351 && (int)tokenType <= 400) {
+        return Keywords::kDoubleCharSymbol[tokenType - 351];
+    } else if ((int)tokenType <= 0xFF) {
+        return std::string(1, (char)tokenType);  // NOLINT
+    } else if ((int)tokenType >= 301 && (int)tokenType <= 306) {
+        return Keywords::kLiteralsSymbol[tokenType - 301];
+    } else {
+        return "Unknown";
+    }
 }
 }  // namespace Mycc::Lexical::SymbolUtils
 #endif  // MYCC_SYMBOL_UTILS_H

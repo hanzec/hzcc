@@ -93,9 +93,9 @@ enable_testing()
 if (${E2E_DEPENDS_MET})
     message(STATUS "E2E testing is enabled.")
 
-    # add part 0 test set
+    # add part3 0 test set
     add_lit_test_set(part0 "${CMAKE_CURRENT_SOURCE_DIR}/part0")
 
-    # add part 1 test set
+    # add part3 1 test set
     add_lit_test_set(part1 "${CMAKE_CURRENT_SOURCE_DIR}/part1")
 endif ()

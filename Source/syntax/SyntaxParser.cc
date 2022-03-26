@@ -1,36 +1,86 @@
 #include <algorithm>
+#include <array>
+#include <list>
+#include <memory>
 
+#include "AST/ast_context.h"
+#include "lexical/Token.h"
+#include "lexical/utils/token_utils.h"
 #include "syntax/syntax.h"
+#include "utils/Status.h"
+#include "utils/message_utils.h"
+#include "utils/token_list_utils.h"
+#include "syntax/Parser.h"
 
 namespace Mycc::Syntax {
 
-Status GenertateAST(AST::ASTContext& context,
-                    std::vector<Lexical::LexicalToken>& tokens) {
-  using Block = struct {
-    std::vector<Lexical::LexicalToken>::iterator begin;
-    std::vector<Lexical::LexicalToken>::iterator end;
-  };
-                     
-  return Status::OkStatus();
+using namespace TokenListUtils;
+using TokenList = std::list<Lexical::Token>;
+
+static TokenList GetAttribute(TokenList& tokens) {
+    TokenList attribute;
+    while (!tokens.empty() &&
+           Lexical::TokenUtils::IsAttribute(peek(tokens).Type())) {
+        attribute.push_back(tokens.front());
+        tokens.pop_front();
+    }
+    return attribute;
 }
 
+Status GenerateAST(AST::ASTContext& context, TokenList& tokens) {
+    // in the most top level of the file only contains function definitions,
+    // function prototypes and variables declarations
+    while (!tokens.empty()) {
+        // get attributes
+        auto attrs = GetAttribute(tokens);
 
+        // handle enumerable definition
+        if (tokens.front().Type() == Lexical::kEnum ||
+            tokens.front().Type() == Lexical::kUnion ||
+            tokens.front().Type() == Lexical::kStruct ||
+            tokens.front().Type() == Lexical::kTypedef) {
+            // parsing as statement declaration
+            context.addASTNode(
+                ParserFactory::ParseAST<AST::ASTNode>(context, tokens, attrs));
+        }
+        // handle declaration
+        else if (context.hasType(peek(tokens).Value())) {
+            auto type = context.getType(pop(tokens).Value());
 
-Status SplitToBlocks(std::vector<std::vector<Lexical::LexicalToken>>& blocks,
-                     std::vector<Lexical::LexicalToken>& tokens) {
-  // first reverse the tokens
-  std::reverse(tokens.begin(), tokens.end());
+            // there is some possibility that some attributes are after the type
+            {
+                auto attr_cont = GetAttribute(tokens);
+                attrs.insert(attr_cont.begin(), attr_cont.begin(),
+                             attr_cont.end());
+            }
 
-  // then split the tokens to blocks
-  for (std::vector<Lexical::LexicalToken> block; !tokens.empty();
-       blocks.push_back(block)) {
-    for (auto& token = tokens.back(); tokens.empty();
-         tokens.pop_back()) {
-      if (token.) 
+            // check next token should be an identifier
+            if (peek(tokens).Type() == Lexical::kIdentity) {
+                // if we found "(" then it is a function declaration
+                if (peek2(tokens).Type() == Lexical::kLParentheses) {
+                    context.addASTNode(
+                        ParserFactory::ParseAST<AST::FunctionNode>(
+                            context, tokens, attrs));
+                } else {
+                    context.addASTNode(ParserFactory::ParseAST<AST::ASTNode>(
+                        context, tokens, attrs));
+                }
+            } else {
+                MYCC_PrintFirstTokenError(
+                    tokens,
+                    "Expect an identifier after the type definition, but got " +
+                        error_token.Value()) return {Status::INVALID_ARGUMENT,
+                                                     "unexpected token"};
+            }
+        }
+        // handle error
+        else {
+            MYCC_PrintFirstTokenError(
+                tokens, "Unexpected token: " + error_token.Value()) return {
+                Status::INVALID_ARGUMENT, "unexpected token"};
+        }
     }
-  }
-
-  return Status::OkStatus();
+    return Status::OkStatus();
 }
 
 }  // namespace Mycc::Syntax

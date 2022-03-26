@@ -8,9 +8,18 @@ file(GLOB MYCC_SYNTAX_SRCS ${CMAKE_CURRENT_LIST_DIR}/*.cc)
 target_sources(mycc PRIVATE ${MYCC_SYNTAX_HDRS} ${MYCC_SYNTAX_SRCS})
 
 ###############################################################################
-## Syntax Utils ##############################################################
+## Utils ######################################################################
 ###############################################################################
-#add_subdirectory(utils)
+file(GLOB MYCC_SYNTAX_UTILS_HDRS ${CMAKE_CURRENT_LIST_DIR}/utils/*.h)
+file(GLOB MYCC_SYNTAX_UTILS_SRCS ${CMAKE_CURRENT_LIST_DIR}/utils/*.cc)
+
+# project sources
+target_sources(mycc PRIVATE ${MYCC_SYNTAX_UTILS_HDRS} ${MYCC_SYNTAX_UTILS_SRCS})
+
+###############################################################################
+## syntax parsers ##############################################################
+###############################################################################
+add_subdirectory(parser)
 
 ###############################################################################
 ## Testing Source #############################################################
@@ -23,5 +32,6 @@ if (ENABLE_TESTING MATCHES "ON")
     target_sources(mycc_test
             PRIVATE
             ${MYCC_SYNTAX_TEST_SRCS}
-            ${MYCC_SYNTAX_HDRS} ${MYCC_SYNTAX_SRCS})
+            ${MYCC_SYNTAX_HDRS} ${MYCC_SYNTAX_SRCS}
+            ${MYCC_SYNTAX_PARSER_HDRS} ${MYCC_SYNTAX_PARSER_SRCS})
 endif ()

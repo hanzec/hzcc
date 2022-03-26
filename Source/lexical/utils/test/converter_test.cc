@@ -46,17 +46,17 @@ TEST(LEXICAL_UTILS_CONVERTER, token_code_to_string) { // NOLINT
 
   // single char symbols
   for (auto & symbol: singleCharSymbol) {
-    ASSERT_EQ(std::string(1,symbol), TokenTypeToString((LexicalToken::Type)symbol));
+    ASSERT_EQ(std::string(1,symbol), TokenTypeToString((Token::Type)symbol));
   }
 
   // double char symbols
   for (int i = 0; i < doubleCharSymbol.size(); ++i) {
-    ASSERT_EQ(doubleCharSymbol[i], TokenTypeToString((LexicalToken::Type)(i + 351)));
+    ASSERT_EQ(doubleCharSymbol[i], TokenTypeToString((Token::Type)(i + 351)));
   }
 
   // keywords
   for (int i = 0; i < arrayKeyword.size(); ++i) {
-    ASSERT_EQ(arrayKeyword[i], TokenTypeToString((LexicalToken::Type)(i + 401)));
+    ASSERT_EQ(arrayKeyword[i], TokenTypeToString((Token::Type)(i + 401)));
   }
 }
 }  // namespace Mycc::Lexical::SymbolUtils

@@ -1,11 +1,14 @@
 //
 // Created by chen_ on 2022/1/26.
 //
-
+#include <regex>
 #include "lexical.h"
 #include "utils/Status.h"
 #include "utils/message_utils.h"
 #include "utils/symbol_utils.h"
+#include "lexical/Token.h"
+#include "lexical_limit.h"
+
 namespace Mycc::Lexical {
 
 static std::regex kHex_number_regex("^0[xX][0-9a-fA-F]+$");
@@ -14,8 +17,7 @@ static std::regex kInteger_number_regex("^[0-9]+$");
 static std::regex kBinary_number_regex("^0[bB][01]+$");
 static std::regex kReal_number_regex("[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$");
 
-Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
-                    const std::string& source_name) {
+Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
   bool have_error = false;
 
   // move to the first line
@@ -56,7 +58,7 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
         case '`':
         case '$':
           Message::print_message(Message::kWarning, "Unexpected symbol, ignoring.", line,
-                                 source_name, std::make_pair(row, col));
+                                  std::make_pair(row, col));
           break;
         case '/': {  // handling comment
           if (line_buf[col + 1] == '/') {
@@ -82,7 +84,7 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
           if (std::string::npos == col) {
             have_error = true;
             Message::print_message(Message::kError, "unclosed string literal", line,
-                                   source_name, std::make_pair(row, start - 1));
+                                    std::make_pair(row, start - 1));
             col = line.length();
           } else {
             // handling escape sequence
@@ -101,7 +103,7 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
             if (std::string::npos == col) {
               have_error = true;
               Message::print_message(Message::kError, "unclosed string literal", line,
-                                     source_name, std::make_pair(row, start - 1));
+                                      std::make_pair(row, start - 1));
               col = line.length();
             }
           }
@@ -117,7 +119,7 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
           }
 
           // add token
-          tokens.emplace_back(tmp_string, LexicalToken::kString, row, start - 1, line);
+          tokens.emplace_back(tmp_string, TokenType::kString, row, start - 1, line);
         } break;
         case '\'': {  // handling char literal
           auto start = col + 1;
@@ -126,13 +128,13 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
           // handling escape sequence
           while (line_buf[col - 1] == '\\') col = line.find_first_of('\'', col + 1);
 
-          tokens.emplace_back(line.substr(start, col - start), LexicalToken::kChar, row, start,
+          tokens.emplace_back(line.substr(start, col - start), TokenType::kChar, row, start,
                               line);
         } break;
         default: {
           if (std::isdigit(line_buf[col])) {
             auto start = col;
-            LexicalToken::Type type = LexicalToken::kInteger;
+            TokenType type = TokenType::kInteger;
             col = line.find_first_not_of("0123456789", start);
 
             if (col != std::string::npos) {
@@ -143,7 +145,7 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
 
               // if real number change type to real
               if (line_buf[col] == '.') {
-                type = LexicalToken::kReal_number;
+                type = TokenType::kReal_number;
                 col++;
               }
             } else {
@@ -151,31 +153,31 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
             }
 
             // numbers are ended by a special Symbol or a space, correctness will be checked in
-            // syntax part. Here we want to escape Dot(.) because it could be part of real
+            // syntax part3. Here we want to escape Dot(.) because it could be part3 of real
             // number
             while (col <= line.length() &&
                    (line_buf[col] == '.' || (!std::isspace(line_buf[col]) &&
                                              !SymbolUtils::IsOperator(line_buf[col])))) {
-              // we want to escape Minus(-) directly after [E] because it could be part of real
+              // we want to escape Minus(-) directly after [E] because it could be part3 of real
               // number (e.g. 1.0E-2)
               if (std::tolower(line_buf[col]) == 'e' &&
                   (line_buf[col + 1] == '-' || line_buf[col + 1] == '+')) {
                 col++;
-                type = LexicalToken::kReal_number;
+                type = TokenType::kReal_number;
               }
               col++;
             }
 
             // do number format check
             auto tmp_numbers = line.substr(start, col - start);
-            if (type == LexicalToken::kInteger) {
+            if (type == TokenType::kInteger) {
               if (tmp_numbers[0] != '0' ||
                   (tmp_numbers[0] == '0' && tmp_numbers.length() == 1)) {  // decimal number
                 // check format
                 if (!std::regex_match(tmp_numbers, kInteger_number_regex)) {
                   have_error = true;
                   Message::print_message(Message::kError, "invalid integer number", line,
-                                         source_name, std::make_pair(row, start));
+                                          std::make_pair(row, start));
                 }
 
                 // check range
@@ -183,12 +185,12 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
                   if (std::stoll(tmp_numbers) > std::numeric_limits<int64_t>::max()) {
                     have_error = true;
                     Message::print_message(Message::kError, "integer number overflow", line,
-                                           source_name, std::make_pair(row, start));
+                                            std::make_pair(row, start));
                   }
                 } catch (const std::out_of_range& e) {
                   have_error = true;
                   Message::print_message(Message::kError, "integer number out of range", line,
-                                         source_name, std::make_pair(row, start));
+                                          std::make_pair(row, start));
                 }
 
               } else if (std::tolower(tmp_numbers[1]) == 'x') {
@@ -196,7 +198,7 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
                 if (!std::regex_match(tmp_numbers, kHex_number_regex)) {
                   have_error = true;
                   Message::print_message(Message::kError, "invalid hex number", line,
-                                         source_name, std::make_pair(row, start));
+                                          std::make_pair(row, start));
                 }
 
                 // check range
@@ -205,12 +207,12 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
                       std::numeric_limits<int64_t>::max()) {
                     have_error = true;
                     Message::print_message(Message::kError, "hex number overflow", line,
-                                           source_name, std::make_pair(row, start));
+                                            std::make_pair(row, start));
                   }
                 } catch (const std::out_of_range& e) {
                   have_error = true;
                   Message::print_message(Message::kError, "hex number out of range", line,
-                                         source_name, std::make_pair(row, start));
+                                          std::make_pair(row, start));
                 }
 
               } else if (std::tolower(tmp_numbers[1]) == 'b') {  // binary number
@@ -218,7 +220,7 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
                 if (!std::regex_match(tmp_numbers, kBinary_number_regex)) {
                   have_error = true;
                   Message::print_message(Message::kError, "invalid binary number", line,
-                                         source_name, std::make_pair(row, start));
+                                          std::make_pair(row, start));
                 }
 
                 // check range
@@ -227,12 +229,12 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
                       std::numeric_limits<int64_t>::max()) {
                     have_error = true;
                     Message::print_message(Message::kError, "binary number overflow", line,
-                                           source_name, std::make_pair(row, start));
+                                            std::make_pair(row, start));
                   }
                 } catch (const std::out_of_range& e) {
                   have_error = true;
                   Message::print_message(Message::kError, "binary number out of range", line,
-                                         source_name, std::make_pair(row, start));
+                                          std::make_pair(row, start));
                 }
 
               } else {  // octo number
@@ -240,7 +242,7 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
                 if (!std::regex_match(tmp_numbers, kOct_number_regex)) {
                   have_error = true;
                   Message::print_message(Message::kError, "invalid octo number", line,
-                                         source_name, std::make_pair(row, start));
+                                          std::make_pair(row, start));
                 }
 
                 // check range
@@ -249,12 +251,12 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
                       std::numeric_limits<int64_t>::max()) {
                     have_error = true;
                     Message::print_message(Message::kError, "octo number overflow", line,
-                                           source_name, std::make_pair(row, start));
+                                            std::make_pair(row, start));
                   }
                 } catch (const std::out_of_range& e) {
                   have_error = true;
                   Message::print_message(Message::kError, "octo number out of range", line,
-                                         source_name, std::make_pair(row, start));
+                                          std::make_pair(row, start));
                 }
               }
             } else {
@@ -262,7 +264,7 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
               if (!std::regex_match(tmp_numbers, kReal_number_regex)) {
                 have_error = true;
                 Message::print_message(Message::kError, "invalid real number literal", line,
-                                       source_name, std::make_pair(row, start));
+                                        std::make_pair(row, start));
               }
 
               // check real number range
@@ -271,12 +273,12 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
                     std::stod(tmp_numbers) < std::numeric_limits<long double>::lowest()) {
                   have_error = true;
                   Message::print_message(Message::kError, "real number literal out of range",
-                                         line, source_name, std::make_pair(row, start));
+                                         line,  std::make_pair(row, start));
                 }
               } catch (const std::out_of_range& e) {
                 have_error = true;
                 Message::print_message(Message::kError, "real number literal out of range",
-                                       line, source_name, std::make_pair(row, start));
+                                       line,  std::make_pair(row, start));
               }
 
               // check the significant digits
@@ -287,13 +289,13 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
                                        "real number is greater than most possible significant "
                                        "digits, will truncating to " +
                                            tmp_numbers,
-                                       line, source_name, std::make_pair(row, start));
+                                       line,  std::make_pair(row, start));
               }
             }
 
             tokens.emplace_back(tmp_numbers, type, row, start, line);
             col--;  // back to the last digit
-          } else if (LexicalToken::kUnknown == SymbolUtils::GetSymbolType(line_buf[col])) {
+          } else if (TokenType::kUnknown == SymbolUtils::GetSymbolType(line_buf[col])) {
             size_t start = col;
 
             // find the next closest symbol
@@ -309,18 +311,17 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
             auto word = line.substr(start, col - start);
             auto type = SymbolUtils::GetStringKeywordType(word);
 
-            if (type != LexicalToken::kUnknown) {  // splitting keyword
+            if (type != TokenType::kUnknown) {  // splitting keyword
               tokens.emplace_back(type, row, start, line);
             } else if (SymbolUtils::IsPrimitiveType(
                            word.c_str())) {  // splitting primitive type
-              tokens.emplace_back(word, LexicalToken::kType, row, start, line);
+              tokens.emplace_back(word, TokenType::kType, row, start, line);
             } else {  // identifier
-              tokens.emplace_back(word, LexicalToken::kIdentity, row, start, line);
+              tokens.emplace_back(word, TokenType::kIdentity, row, start, line);
             }
             col--;  // back to the last digit
           } else {
           HANDLE_SYMBOL:
-
             auto type = SymbolUtils::GetSymbolType((const char*)(line_buf + col));
 
             /**
@@ -345,8 +346,7 @@ Status ParseToToken(std::istream& source, std::vector<LexicalToken>& tokens,
 
   // if line finished without multi-line comment closed
   if (multiple_line_comment) {
-    Message::print_message(Message::kError, "Unclosed comment", source_name,
-                           multiple_line_comment_start);
+    Message::print_message(Message::kError, "Unclosed comment",multiple_line_comment_start);
     return {Status::INTERNAL, "Unclosed comment"};
   }
 

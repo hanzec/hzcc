@@ -2,20 +2,14 @@
 // Created by chen_ on 2022/1/26.
 //
 
-#include <filesystem>
-#include <memory>
-#include <regex>
-#include <unordered_set>
+#include <list>
 
-#include "macro.h"
 #include "utils/Status.h"
-#include "lexical_limit.h"
-#include "lexical/LexicalToken.h"
-
 #ifndef MYCC_LEXICAL_H
 #define MYCC_LEXICAL_H
-
 namespace Mycc::Lexical {
+// forward declare of Token
+class Token;
 /**
  * @brief Parse the source code and generate a list of LexicalToken
  *
@@ -25,19 +19,7 @@ namespace Mycc::Lexical {
  * @return Status return the parsing result
  */
 Status ParseToToken(std::istream& source,
-                    std::vector<LexicalToken>& tokenStream,
-                    const std::string& source_name = "");
-
-/**
- * @brief  
- * 
- * @param source 
- * @param output 
- * @param source_name 
- * @return Status 
- */
-Status PreprocessSource(std::istream& source, std::ostream& output,
-                        const std::string& source_name = "");
+                    std::list<Token>& tokenStream);
 
 }  // namespace Mycc::Lexical
 #endif  // MYCC_LEXICAL_H
