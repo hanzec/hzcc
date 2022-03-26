@@ -36,35 +36,16 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(  // NOLINT
     AST::ArgumentList arguments;
     while (!tokens.empty() &&
            peek(tokens).Type() != Lexical::TokenType::kRParentheses) {
-        // check type
-        if (!context.hasType(peek(tokens).Value())) {
-            MYCC_PrintFirstTokenError_ReturnNull(
-                tokens, "Except a type but got:" + error_token.Value())
+        // get base type
+        auto [type, name_token] = ParseTypeDecl(context, tokens);
+        if (type == nullptr) return nullptr;
+
+        std::string name_str{name_token.Value()};
+        if (MYCC_ExistInArgumentList(arguments, name_str)) {
+            MYCC_PrintTokenError(name_token,
+                                 "Duplicate argument name_token:" + name_str);
+            return nullptr;
         }
-        auto type = context.getType(pop(tokens).Value());
-
-        // argument name is not necessary
-        if (peek(tokens).Type() != Lexical::TokenType::kComma) {
-            // check token type
-            if (tokens.front().Type() != Lexical::TokenType::kIdentity) {
-                MYCC_PrintFirstTokenError_ReturnNull(
-                    tokens,
-                    "Except an identifier but got:" + error_token.Value())
-            }
-
-            // also, we are not allowing duplicate argument name
-            auto name = pop(tokens).Value();
-            if (MYCC_ExistInArgumentList(arguments, name)) {
-                MYCC_PrintFirstTokenError_ReturnNull(
-                    tokens, "Duplicate argument name:" + error_token.Value());
-            }
-
-            // consume type and name
-            arguments.push_back(std::make_pair(name, type));
-        } else {
-            arguments.push_back(std::make_pair(std::string_view(), type));
-        }
-
         // consume ',' if we are not at the end
         if (peek(tokens).Type() != Lexical::TokenType::kRParentheses) {
             MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kComma, tokens);

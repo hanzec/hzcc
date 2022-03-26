@@ -12,6 +12,7 @@
 #define MYCC_SOURCE_SYNTAX_PARSER_COMMON_UTILS_H_
 namespace Mycc {
 namespace AST {
+class Type;
 class ASTNode;
 class ASTContext;
 }  // namespace AST
@@ -22,11 +23,15 @@ namespace Syntax::Parser {
 
 std::unique_ptr<AST::ASTNode> ParseCondition(  // NOLINT
     AST::ASTContext& context,                  // NOLINT
-    std::list<Lexical::Token> tokens);         // NOLINT
+    std::list<Lexical::Token>& tokens);        // NOLINT
 
 std::unique_ptr<AST::ASTNode> ParseBodyStatement(  // NOLINT
     AST::ASTContext& context,                      // NOLINT
-    std::list<Lexical::Token> tokens);             // NOLINT
+    std::list<Lexical::Token>& tokens);            // NOLINT
+
+std::tuple<std::shared_ptr<AST::Type>, Lexical::Token> ParseTypeDecl(  // NOLINT
+    AST::ASTContext& context,                                          // NOLINT
+    std::list<Lexical::Token>& tokens);                                // NOLINT
 
 #define MYCC_CheckElse_ReturnNull(except, tokens)                             \
     if (TokenListUtils::peek(tokens).Type() != (except)) {                    \

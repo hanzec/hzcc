@@ -1,6 +1,8 @@
 #include "ast_context.h"
 
 #include "lexical/utils/symbol_utils.h"
+#include "AST/type/array_type.h"
+#include "AST/type/func_ptr_type.h"
 
 namespace Mycc::AST {
 
@@ -12,11 +14,15 @@ bool ASTContext::hasType(const std::string &basicString) {
         return _current_context->hasType(basicString);
     };
 }
-void ASTContext::addASTNode(std::unique_ptr<ASTNode> node) {
+bool ASTContext::addASTNode(std::unique_ptr<ASTNode> node) {
+    if(node == nullptr) {
+        return false;
+    }
     _current_context->AddStatement(std::move(node));
+    return true;
 }
 std::shared_ptr<Type> ASTContext::getType(const std::string &name) {
-    return {};
+    return std::make_shared<Type>(name);
 }
 Status ASTContext::leaveScope() {
     if (_current_context->getUpperScope() == nullptr) {
@@ -33,5 +39,17 @@ void ASTContext::enterScope(std::string_view name) {
     }
 
     _current_context = _scoped_symbol_table[name];
+}
+std::shared_ptr<Type> ASTContext::getArrayType(const std::string &name) {
+    return std::make_shared<Type>(name);
+}
+std::shared_ptr<Type> ASTContext::getArrayType(
+    const std::string &name, std::list<std::unique_ptr<AST::ASTNode>>& shape) {
+    return std::make_shared<ArrayType>(name);
+}
+std::shared_ptr<Type> ASTContext::getFuncPtrType(
+    const std::string &name,
+    std::list<std::shared_ptr<AST::Type>> argument_list) {
+    return std::make_shared<FuncPtrType>(name);
 }
 }  // namespace Mycc::AST

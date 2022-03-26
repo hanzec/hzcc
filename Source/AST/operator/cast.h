@@ -4,7 +4,7 @@
 #include <memory>
 #include <utility>
 #include "AST/ast_node.h"
-#include "AST/type/type.h"
+#include "AST/type.h"
 #ifndef MYCC_SOURCE_AST_OPERATOR_CAST_H_
 #define MYCC_SOURCE_AST_OPERATOR_CAST_H_
 namespace Mycc::AST {

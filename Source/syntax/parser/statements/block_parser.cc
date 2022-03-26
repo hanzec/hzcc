@@ -30,6 +30,7 @@ std::unique_ptr<AST::ASTNode> BlockStatement::parse_impl(          // NOLINT
     while (tokens.front().Type() != Lexical::TokenType::kRBrace) {
         block_node->AddStatement(
             ParserFactory::ParseAST<AST::ASTNode>(context, tokens));
+        MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon, tokens);
     }
 
     // consume '}'

@@ -8,7 +8,7 @@
 #include <utility>
 #include <vector>
 
-#include "type/type.h"
+#include "type.h"
 
 namespace Mycc::AST {
 using ArgumentList =

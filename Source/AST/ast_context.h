@@ -6,7 +6,7 @@
 
 #include "AST/ast_node.h"
 #include "AST/function_node.h"
-#include "AST/type/type.h"
+#include "type.h"
 #include "AST/value/variable.h"
 #include "utils/Status.h"
 
@@ -22,7 +22,15 @@ class ASTContext {
 
     std::shared_ptr<Type> getType(const std::string& name);
 
-    void addASTNode(std::unique_ptr<ASTNode> node);
+
+    std::shared_ptr<Type> getArrayType(const std::string& name);
+
+    std::shared_ptr<Type> getArrayType(const std::string& name, std::list<std::unique_ptr<AST::ASTNode>>& shape);
+
+    std::shared_ptr<Type> getFuncPtrType(const std::string& name, std::list<std::shared_ptr<AST::Type>> argument_list);
+
+
+    bool addASTNode(std::unique_ptr<ASTNode> node);
 
     Status addVariable(const Lexical::Token& name,
                        const std::shared_ptr<Type>& token_types,

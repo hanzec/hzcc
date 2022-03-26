@@ -79,9 +79,6 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(  // NOLINT
             node = ParseCommaExpr(context, tokens);
             break;
     }
-
-    // we need to consume the ;
-    MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon, tokens);
     return node;
 }
 

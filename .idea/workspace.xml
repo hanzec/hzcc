@@ -19,392 +19,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/Assign.h.0CE021EE5D05339C.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/FileCheck.cc.4F449D5A5A79DA83.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/LexicalParser.cc.B045E5F7B3EBACF0.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/LexicalToken.cc.A16FF3119DC77C8F.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/LexicalToken.h.AE103FBEE7667EFD.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/ParserFactory.cc.8EAA5BCD86FE3630.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/ParserFactory.h.9D8609812E13806A.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/Preprocessor.cc.037980FA2EA6E816.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/Status.h.8B876EB9FCB673A0.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/SyntaxParser.cc.311BEC0E0AF0ACAD.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/Token.cc.FE584D4889704B7C.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/Token.h.CE4201BCB6758777.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/assign.cc.F939209770B60AA7.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/assign.cc.FB4B615C43CD01A4.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/ast_context.cc.8046B46ED63B2C03.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/ast_context.h.87D533AB9A60AC77.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/ast_node.h.0F5843FDD9ECBE5B.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/auto_factory.h.3EE4FD7818183A80.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/block_stmt.h.C9F7D8C11E1A5497.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/check.cc.F47A70B4C90BED0C.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/check.h.0E90EE8CEB11C011.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/comma.cc.0D8FFC0E91E06FBB.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/const_msg.h.330BEEDACF9B50E3.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/converter_test.cc.1EE4D67982B1EE46.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/cursor.h.127D82D68B2AC489.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/diagnostic.h.1DF1A241326CC518.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/effcee.h.301FF0C63415FE71.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/fs_utils.h.9EBEB9534ECA7276.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/fs_utils_test.cc.C158EF87F3253879.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/function_body.h.A9911F1801BFDF7E.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/function_decl.cc.49B3DDBBB44EDA19.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/function_decl.cc.B25E9F8EBF685DF9.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/function_node.h.2BC639F5B7C48389.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/keywords.h.B3725BDDFFFFD167.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/lexical.h.FA3D3EA86D92D061.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/lexical_limit.h.B3176E55B1384CE4.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/lexical_token_test.cc.EC76335E4254CBC2.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/logging.h.28922188B7DAD5F6.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/macro.h.454AC224372F756B.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/main.cc.F1823EC6F8877FD8.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/make_unique.h.78A93B740E90CD39.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/match.cc.7B13144CE25E118E.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/message_utils.cc.E07E5F05DF540DF3.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/message_utils.h.47E5F9749AE40D4D.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/options.cc.5BA61CAC371A56A1.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/options.h.090EC4F94A1CF768.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/parser_base.h.1D3924A04185F3F7.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/parser_comment_test.cc.75BE127A456393A5.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/parser_number_literal_test.cc.DB68AE7EAD7852CC.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/parser_string_literal_test.cc.4F66A870CD0E1C10.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/status_test.cc.356BCBFA7E8DD12E.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/stringpiece.cc.24BDD0802E68EBE7.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/symbol_utils.h.7F6197AC11150D0D.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/syntax.h.E78D3E227E2766CE.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/test_main.cc.CECBEE28AA2814EF.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/to_string.h.AF9BE3FCDDB6E1C6.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/token_type.h.21918F1BA9CA65EB.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/type.h.2D684EF829DAC9A9.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/type_id_test.cc.30B32E8A1F5D1EF0.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/typedef.cc.8AE7E3CF68F24E20.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/typedef_decl.cc.54ABB1FD0478026A.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/variable.h.4A9492FBA7C55ADE.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/variable_decl.cc.ED7F2C895A24C89B.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.cache/clangd/index/variable_decl.cc.EE02FF3565D00EAB.idx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/cmake.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/statistic.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/ast_context.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/ast_context.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/ast_node.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/ast_utils.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/ast_utils.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/access.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/arithmetic.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/array.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/assign.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/bitwise.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/cast.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/comma.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/field.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/logical.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/operator.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/relational.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/sizeof.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/operator/unary.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/statement/block_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/statement/break.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/statement/continue.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/statement/do_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/statement/for_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/statement/if_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/statement/return.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/statement/while_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/value/value.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/value/variable.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/variable_attr.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/lexical/Token.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/lexical/keywords.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/lexical/token_type.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/lexical/utils/token_utils.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/Parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/operator_type.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/base_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/default_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/function_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/block_parser.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/block_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/do_parser.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/do_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/for_parser.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/for_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/if_parser.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/if_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/while_parser.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/while_parser.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/utils/common_utils.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/utils/common_utils.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/utils/debug_utils.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/syntax/utils/token_list_utils.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/utils/fnv1a_hash.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/utils/logging.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/utils/type_name_utils.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/Check_3.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/array1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/array1.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/array2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/array2.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/array3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/array3.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/array4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/array4.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/array5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/array5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/array5.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/assign1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/assign1.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/assign2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/assign2.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/assign3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/assign3.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/assign4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/assign4.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/assign5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/assign5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call1.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call2.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call3.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call3.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call4.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call4.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/call5.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs1.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs2.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs3.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs4.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs6.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs6.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs7.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs7.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs8.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs8.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs9.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs9.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprs9.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprsA.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/exprsA.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody1.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody2.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody3.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody3.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody4.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody4.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcbody5.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto1.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto2.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto3.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto3.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto4.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto4.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/funcproto5.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/global1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/global1.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/global2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/global2.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/global3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/global3.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/global4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/global4.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/global5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/global5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/ite1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/ite1.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/ite2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/ite2.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/ite3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/ite3.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/ite3.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/ite4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/ite4.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/ite5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/ite5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/ite5.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop1.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop2.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop3.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop3.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop4.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop5.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop6.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop6.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop7.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop7.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop7.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop8.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop8.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop9.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loop9.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loopA.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/loopA.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/stmt1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/stmt1.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/stmt2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/stmt2.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/stmt3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/stmt3.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/stmt4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/stmt4.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/stmt5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/stmt5.c.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const1.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const1.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const2.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const2.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const3.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const3.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const4.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const4.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_const5.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init1.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init1.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init2.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init2.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init3.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init3.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init4.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init4.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_init5.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member1.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member1.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member2.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member2.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member3.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member3.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member4.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member4.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_member5.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct1.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct1.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct2.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct2.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct3.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct3.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct4.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct4.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct5.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct5.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct6.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct6.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct6.c.extra.output3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct7.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct7.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct7.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct8.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct8.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct8.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct9.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct9.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_struct9.c.extra.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_structA.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_structA.c.error3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part3/xc_structA.c.extra.error3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.clang-format" beforeDir="false" afterPath="$PROJECT_DIR$/.clang-format" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/mycc.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mycc.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/ast.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/CallExpr.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/VariableExpr.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr_node.h" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/type/array_type.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/type/func_ptr_type.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/ast_context.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ast_context.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/ast_context.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ast_context.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/function_node.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/function_node.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/prototype_node.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/type.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/type.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/LexicalParser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/LexicalParser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/LexicalToken.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/Token.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/LexicalToken.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/Preprocessor.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/lexical.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/lexical.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/test/lexical_token_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/test/lexical_token_test.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/test/parser_comment_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/test/parser_comment_test.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/test/parser_number_literal_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/test/parser_number_literal_test.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/test/parser_string_literal_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/test/parser_string_literal_test.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/utils/symbol_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/utils/symbol_utils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/utils/test/converter_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/utils/test/converter_test.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/utils/test/type_id_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/utils/test/type_id_test.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/main.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/main.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/operator/cast.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/operator/cast.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/type.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/Parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/Parser.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/syntax/SyntaxParser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/SyntaxParser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/handler/base_handler.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/handler/typedef_handler.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/handler/var_expr_handler.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/syntax.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/syntax.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/syntax_handler.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/block_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/block_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/utils/common_utils.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/utils/common_utils.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/utils/common_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/utils/common_utils.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/utils/Status.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/Status.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/auto_factory.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/logging.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/logging.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/message_utils.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/message_utils.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/message_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/message_utils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Test/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/part1/hello.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/part1/hello.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/FileCheck/effcee/check.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Test/utils/FileCheck/effcee/check.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/FileCheck/effcee/check.h" beforeDir="false" afterPath="$PROJECT_DIR$/Test/utils/FileCheck/effcee/check.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -459,6 +89,7 @@
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Test\part3" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\AST" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\syntax\utils" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\syntax" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\syntax\parser" />
@@ -497,7 +128,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-3 /home/hanzech/mycc/Test/part3/array1.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
+    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-3 /home/hanzech/mycc/Test/part3/array2.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -537,11 +168,20 @@
       <workItem from="1648135921403" duration="37666000" />
       <workItem from="1648224834800" duration="8670000" />
       <workItem from="1648243183588" duration="62000" />
-      <workItem from="1648243665152" duration="31125000" />
+      <workItem from="1648243665152" duration="47721000" />
     </task>
     <servers />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statements/block_parser.cc</url>
+          <line>36</line>
+          <option name="timeStamp" value="61" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
         <watch expression="_parserMap" />
