@@ -109,6 +109,28 @@ endif ()
 include_directories("${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/include/")
 
 ###############################################################################
+## System Information  ########################################################
+###############################################################################
+# generate build time
+string(TIMESTAMP BUILD_TIMESTAMP "%Y-%m-%d %H:%M:%S")
+
+# collect head commit hash
+find_package(Git QUIET)
+if (GIT_FOUND)
+    execute_process(
+            COMMAND ${GIT_EXECUTABLE} log -1 --pretty=format:%h
+            OUTPUT_VARIABLE GIT_HASH
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_QUIET
+            WORKING_DIRECTORY
+            ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+endif ()
+
+# get hostname
+cmake_host_system_information(RESULT MACHINE_HOST_NAME QUERY HOSTNAME)
+
+###############################################################################
 ## Project Config #############################################################
 ###############################################################################
 project(mycc VERSION 0.1.0)
@@ -119,7 +141,7 @@ project(mycc VERSION 0.1.0)
 add_executable(mycc Source/syntax/Parser.h)
 set_target_properties(mycc PROPERTIES FOLDER MyCC_Target)
 
-if(ENABLE_TESTING MATCHES "ON")
+if (ENABLE_TESTING MATCHES "ON")
     message(STATUS "Enable testing...")
     add_executable(mycc_test)
     set_target_properties(mycc_test PROPERTIES FOLDER MyCC_Target)
@@ -133,7 +155,7 @@ add_subdirectory(Source)
 ###############################################################################
 ## Documentation Source #######################################################
 ###############################################################################
-if(ENABLE_DOCUMENTATION MATCHES "ON")
+if (ENABLE_DOCUMENTATION MATCHES "ON")
     message(STATUS "Enable documentation")
     add_subdirectory(Documentation)
 endif ()
@@ -141,7 +163,7 @@ endif ()
 ###############################################################################
 ## Documentation Source #######################################################
 ###############################################################################
-if(ENABLE_E2E_TESTING MATCHES "ON")
+if (ENABLE_E2E_TESTING MATCHES "ON")
     message(STATUS "Enable E2E testing")
     add_subdirectory(Test)
 endif ()
@@ -149,10 +171,10 @@ endif ()
 ###############################################################################
 ## Testing ####################################################################
 ###############################################################################
-if(ENABLE_TESTING MATCHES "ON")
+if (ENABLE_TESTING MATCHES "ON")
     include(GoogleTest)
     gtest_discover_tests(mycc_test)
-endif()
+endif ()
 
 ###############################################################################
 ## Packing ####################################################################

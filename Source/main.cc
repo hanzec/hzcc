@@ -25,6 +25,7 @@ int main(int argc, char* argv[]) {
 
     // command line arguments
     CLI::App app{"mycc"};
+    app.allow_extras();
 
     // available flags
     bool show_version = false;
@@ -76,6 +77,11 @@ int main(int argc, char* argv[]) {
     if (1 < (int)(flag0 + flag1 + flag2 + flag3 + flag4 + flag5)) {
         LOG(ERROR) << "More than one mode selected!";
         return -1;
+    }
+
+    // type check will not available at part3
+    if (flag3) {
+        Mycc::Options::Global_enable_type_checking = false;
     }
 
     // if -0 is selected, will only print version information
@@ -136,8 +142,23 @@ int main(int argc, char* argv[]) {
     Mycc::AST::ASTContext context;
     auto syntax_result = Mycc::Syntax::GenerateAST(context, tokens);
 
-    if(flag3 && syntax_result.Ok()){
-        std::cout << "File " << input_files[0] <<" is syntactically correct." << std::endl;
+    if (flag3 && syntax_result.Ok()) {
+        std::cout << "File " << input_files[0] << " is syntactically correct."
+                  << std::endl;
+    }
+
+    if (flag4 && syntax_result.Ok()) {
+        DVLOG(AST_LOG_LEVEL) << "AST Dump\n" << context.Dump();
+
+        if (output_file.empty()) {
+            std::cout << context.Dump() << std::endl;
+
+        } else {
+            std::fstream outfile(output_file, std::fstream::out);
+            outfile << context.Dump() << std::endl;
+            outfile.close();
+        }
+        return 0;
     }
     return 0;
 }

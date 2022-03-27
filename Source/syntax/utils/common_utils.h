@@ -7,6 +7,7 @@
 #include "lexical/token_type.h"
 #include "lexical/utils/symbol_utils.h"
 #include "macro.h"
+#include "syntax/utils/token_list_utils.h"
 #include "utils/message_utils.h"
 #ifndef MYCC_SOURCE_SYNTAX_PARSER_COMMON_UTILS_H_
 #define MYCC_SOURCE_SYNTAX_PARSER_COMMON_UTILS_H_
@@ -21,33 +22,48 @@ class Token;
 }  // namespace Lexical
 namespace Syntax::Parser {
 
+std::string TokenListToString(std::list<Lexical::Token>& tokens);
+
+std::list<Lexical::Token> ParseTypeName(  // NOLINT
+    AST::ASTContext& context,             // NOLINT
+    std::list<Lexical::Token>& tokens);   // NOLINT
+
 std::unique_ptr<AST::ASTNode> ParseCondition(  // NOLINT
     AST::ASTContext& context,                  // NOLINT
     std::list<Lexical::Token>& tokens);        // NOLINT
 
 std::unique_ptr<AST::ASTNode> ParseBodyStatement(  // NOLINT
     AST::ASTContext& context,                      // NOLINT
-    std::list<Lexical::Token>& tokens);            // NOLINT
+    std::list<Lexical::Token>& tokens, bool add_semicolon = true);            // NOLINT
 
-std::tuple<std::shared_ptr<AST::Type>, Lexical::Token> ParseTypeDecl(  // NOLINT
-    AST::ASTContext& context,                                          // NOLINT
-    std::list<Lexical::Token>& tokens);                                // NOLINT
+std::tuple<std::shared_ptr<AST::Type>, TokenList, Lexical::Token>
+ParseTypeDecl(  // NOLINT
+    std::string param,
+    AST::ASTContext& context,            // NOLINT
+    std::list<Lexical::Token>& tokens);  // NOLINT
 
-#define MYCC_CheckElse_ReturnNull(except, tokens)                             \
-    if (TokenListUtils::peek(tokens).Type() != (except)) {                    \
-        MYCC_PrintFirstTokenError_ReturnNull(                                 \
-            tokens, "Except an " +                                            \
-                        Lexical::SymbolUtils::TokenTypeToString(except) +     \
-                        " but got: " +                                        \
-                        ((int)error_token.Type() <= 0xFF                      \
-                             ? "[Symbol"                                      \
-                             : "[" + Lexical::SymbolUtils::TokenTypeToString( \
-                                         error_token.Type())) +               \
-                        "]:@" + error_token.Value() + "@");                   \
+std::tuple<Lexical::Token, std::list<std::unique_ptr<AST::ASTNode>>>
+ParseVariable(                           // NOLINT
+    AST::ASTContext& context,            // NOLINT
+    std::list<Lexical::Token>& tokens);  // NOLINT
+
+#define MYCC_CheckElse_MSG_ReturnNull(except, tokens, message)                 \
+    if ((tokens).empty() || TokenListUtils::peek(tokens).Type() != (except)) { \
+        MYCC_PrintFirstTokenError_ReturnNull(tokens, message);                 \
     } else
 
+#define MYCC_CheckElse_ReturnNull(except, tokens) \
+    MYCC_CheckElse_MSG_ReturnNull(                \
+        except, tokens,                           \
+        "Expected '" + Lexical::SymbolUtils::TokenTypeToString(except) + "'")
+
 #define MYCC_CheckAndConsume_ReturnNull(except, tokens) \
-    MYCC_CheckElse_ReturnNull(except, tokens) { (tokens).pop_front(); }
+    MYCC_CheckElse_ReturnNull(except, tokens) {         \
+        TokenListUtils::pop_list(tokens);               \
+    }
+
+#define MYCC_CheckAndConsume_MSG_ReturnNull(except, tokens, message) \
+    MYCC_CheckElse_MSG_ReturnNull(except, tokens, message)
 
 }  // namespace Syntax::Parser
 }  // namespace Mycc

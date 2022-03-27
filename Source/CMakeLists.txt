@@ -1,25 +1,6 @@
 ###############################################################################
 ## Project Versions ###########################################################
 ###############################################################################
-# generate build time
-string(TIMESTAMP BUILD_TIMESTAMP "%Y-%m-%d %H:%M:%S")
-
-# collect head commit hash
-find_package(Git QUIET)
-if (GIT_FOUND)
-    execute_process(
-            COMMAND ${GIT_EXECUTABLE} log -1 --pretty=format:%h
-            OUTPUT_VARIABLE GIT_HASH
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-            ERROR_QUIET
-            WORKING_DIRECTORY
-            ${CMAKE_CURRENT_SOURCE_DIR}
-    )
-endif ()
-
-# get hostname
-cmake_host_system_information(RESULT MACHINE_HOST_NAME QUERY HOSTNAME)
-
 # generate the configuration file
 configure_file(
         version.h.in
@@ -118,7 +99,7 @@ if (CMAKE_BUILD_TYPE)
 endif ()
 
 # general  compile options
-add_compile_options(-Wall -Wextra)
+add_compile_options(-Wall -Wextra -frtti)
 
 # hide static link symbols
 if (MACOSX)

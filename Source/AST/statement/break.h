@@ -6,6 +6,8 @@
 #define MYCC_SOURCE_AST_STATEMENT_BREAK_H_
 namespace Mycc::AST {
 class BreakStatement : public ASTNode {
+  protected:
+    [[nodiscard]] std::string GetNodeName() const override;
 };
 }  // namespace Mycc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_BREAK_H_

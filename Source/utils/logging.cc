@@ -4,6 +4,8 @@
 
 #include "logging.h"
 namespace Mycc {
+int MYCC_LOG_LEVEL = 0;
+
 void initLogging(char argv[]) {
     google::InitGoogleLogging(argv);
 #ifndef NDEBUG

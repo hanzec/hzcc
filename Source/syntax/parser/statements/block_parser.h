@@ -8,10 +8,9 @@
 namespace Mycc::Syntax::Parser {
 class BlockStatement : public ParserBase {
   public:
-    BlockStatement();
-    std::unique_ptr<AST::ASTNode> parse_impl(         // NOLINT
-        AST::ASTContext& context,                     // NOLINT
-        std::list<Lexical::Token>& tokens) override;  // NOLINT
+    BlockStatement() noexcept;
+    std::unique_ptr<AST::ASTNode> parse_impl(AST::ASTContext& context,
+                                             TokenList& tokens) override;
 };
 
 }  // namespace Mycc::Syntax::Parser

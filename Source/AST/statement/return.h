@@ -11,8 +11,19 @@
 namespace Mycc::AST {
 class ReturnNode : public ASTNode {
   public:
-    ReturnNode(std::unique_ptr<ASTNode> return_val)
-        : _return_val(std::move(return_val)){};
+    explicit ReturnNode(const Lexical::Token& token,
+                        std::unique_ptr<ASTNode> return_val);
+
+#ifdef NDEBUG
+    [[nodiscard]]  std::string Dump(std::string_view ident) const override{ return ""; }
+#endif
+
+  protected:
+    [[nodiscard]] std::string GetNodeName() const override;
+
+    [[nodiscard]] std::string PrintAdditionalInfo(
+        std::string_view ident) const override;
+
   private:
     std::unique_ptr<ASTNode> _return_val;
 };

@@ -6,24 +6,30 @@
 #include <list>
 
 #include "AST/ast_context.h"
-#include "AST/operator/access.h"
-#include "AST/operator/arithmetic.h"
-#include "AST/operator/array.h"
-#include "AST/operator/assign.h"
-#include "AST/operator/bitwise.h"
-#include "AST/operator/cast.h"
-#include "AST/operator/comma.h"
-#include "AST/operator/logical.h"
-#include "AST/operator/relational.h"
-#include "AST/operator/sizeof.h"
-#include "AST/operator/unary.h"
+#include "AST/expr/access.h"
+#include "AST/expr/array.h"
+#include "AST/expr/cast.h"
+#include "AST/expr/conditional.h"
+#include "AST/expr/literal.h"
+#include "AST/expr/operator/arithmetic.h"
+#include "AST/expr/operator/assign.h"
+#include "AST/expr/operator/bitwise.h"
+#include "AST/expr/operator/comma.h"
+#include "AST/expr/operator/logical.h"
+#include "AST/expr/operator/relational.h"
+#include "AST/expr/sizeof.h"
+#include "AST/expr/unary.h"
 #include "AST/statement/break.h"
 #include "AST/statement/continue.h"
-#include "AST/statement/do_parser.h"
-#include "AST/statement/for_parser.h"
-#include "AST/statement/if_parser.h"
+#include "AST/statement/do.h"
+#include "AST/statement/empty.h"
+#include "AST/statement/for.h"
+#include "AST/statement/function_call.h"
+#include "AST/statement/if.h"
 #include "AST/statement/return.h"
-#include "AST/value/value.h"
+#include "AST/statement/struct.h"
+#include "AST/statement/value_decl.h"
+#include "AST/type/array_type.h"
 #include "lexical/Token.h"
 #include "lexical/token_type.h"
 #include "syntax/Parser.h"
@@ -32,22 +38,37 @@
 
 namespace Mycc::Syntax::Parser {
 using namespace TokenListUtils;
-Statement::Statement()
+Statement::Statement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::ASTNode>(),
                  TypeNameUtil::name_pretty<AST::ASTNode>()) {}
 
-std::unique_ptr<AST::ASTNode> Statement::parse_impl(  // NOLINT
-    AST::ASTContext& context,                         // NOLINT
-    std::list<Lexical::Token>& tokens,                // NOLINT
-    const std::list<Lexical::Token>& attributes) {    // NOLINT
-
+std::unique_ptr<AST::ASTNode> Statement::parse_impl(AST::ASTContext& context,
+                                                    TokenList& tokens,
+                                                    TokenList& attributes) {
+    ConcatAttribute(attributes, tokens);
     std::unique_ptr<AST::ASTNode> node{nullptr};
     switch (peek(tokens).Type()) {
-        case Lexical::TokenType::kReturn:
-            tokens.pop_front();
-            node = std::make_unique<AST::ReturnNode>(
-                ParseCommaExpr(context, tokens));
+        case Lexical::TokenType::kSemiColon:
+            node = std::make_unique<AST::EmptyStatement>();
             break;
+        case Lexical::TokenType::kReturn: {
+            auto token = pop_list(tokens);
+            if (peek(tokens).Type() != Lexical::TokenType::kSemiColon) {
+                auto ret_expr = ParseCommaExpr(context, tokens);
+                if (ret_expr) {
+                    node = std::make_unique<AST::ReturnNode>(
+                        token, std::move(ret_expr));
+                } else {
+                    DLOG(ERROR) << "parse return statement error";
+                    return nullptr;
+                }
+            } else {
+                DLOG(INFO) << "ignore ';' since return statement is empty";
+                node = std::make_unique<AST::ReturnNode>(
+                    token, std::make_unique<AST::EmptyStatement>());
+            }
+            break;
+        }
         case Lexical::TokenType::kIf:
             node = ParserFactory::ParseAST<AST::IfStatement>(context, tokens,
                                                              attributes);
@@ -65,25 +86,45 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(  // NOLINT
                                                                 attributes);
             break;
         case Lexical::TokenType::kBreak:
-            tokens.pop_front();
+            pop_list(tokens);
             node = std::make_unique<AST::BreakStatement>();
             break;
         case Lexical::TokenType::kContinue:
-            tokens.pop_front();
+            pop_list(tokens);
             node = std::make_unique<AST::ContinueStatement>();
             break;
+        case Lexical::TokenType::kStruct:
+            if (!context.hasType(peek(tokens).Value() + " " +
+                                 peek2(tokens).Value())) {
+                node = ParserFactory::ParseAST<AST::StructDeclareNode>(
+                    context, tokens, attributes);
+                break;
+            }
+        case Lexical::TokenType::kType:
+        case Lexical::TokenType::kIdentity: {
+            auto type = Parser::ParseTypeName(context, tokens);
+            if (context.hasType(Parser::TokenListToString(type))) {
+                tokens.insert(tokens.begin(), type.begin(), type.end());
+                node = ParserFactory::ParseAST<AST::VarDecl>(context, tokens,
+                                                             attributes);
+                break;
+            } else {
+                tokens.insert(tokens.begin(), type.begin(), type.end());
+            }
+        }
         default:
-            /*
-             * Parsing operator here
-             */
             node = ParseCommaExpr(context, tokens);
             break;
+    }
+
+    if (node == nullptr) {
+        DLOG(WARNING) << "statement is empty";
     }
     return node;
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseCommaExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     // parsing left-hand side of expression
     auto lhs = ParseAssignExpr(context, tokens);
     if (lhs == nullptr) {
@@ -92,29 +133,31 @@ std::unique_ptr<AST::ASTNode> Statement::ParseCommaExpr(
     }
 
     // if we have a comma, we should parse the next expression
+    auto next = peek(tokens);
     if (peek(tokens).Type() == Lexical::TokenType::kComma) {
-        tokens.pop_front();
+        pop_list(tokens);
         auto rhs = ParseCommaExpr(context, tokens);
         if (lhs == nullptr) {
             DLOG(ERROR) << "Parse [RHS] for comma expression failed";
             return nullptr;
         }
 
-        return std::make_unique<AST::CommaExpr>(std::move(lhs), std::move(rhs));
+        return std::make_unique<AST::CommaExpr>(next, std::move(lhs),
+                                                std::move(rhs));
     } else {
         return lhs;
     }
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseAssignExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseConditionalExpr(context, tokens);
     if (lhs == nullptr) {
         DLOG(ERROR) << "Parse [LHS] for assign expression failed";
         return nullptr;
     }
 
-    // if we have a assign operator, we should parse the right-hand side
+    // if we have a assign expr, we should parse the right-hand side
     if (peek(tokens).Type() == Lexical::TokenType::kAssign ||
         peek(tokens).Type() == Lexical::TokenType::kAddAssign ||
         peek(tokens).Type() == Lexical::TokenType::kSubAssign ||
@@ -126,14 +169,42 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAssignExpr(
         peek(tokens).Type() == Lexical::TokenType::kAndAssign ||
         peek(tokens).Type() == Lexical::TokenType::kXorAssign ||
         peek(tokens).Type() == Lexical::TokenType::kOrAssign) {
-        auto assign_type = tokens.front().Value();
-        tokens.pop_front();
+        auto assign_type = tokens.front();
+        pop_list(tokens);
 
         // parse rhs expression
         auto rhs = ParseAssignExpr(context, tokens);
         if (rhs == nullptr) {
             DLOG(ERROR) << "Parse [RHS] for assign expression failed";
             return nullptr;
+        }
+
+
+        if (Options::Global_enable_type_checking) {
+            Message::set_current_part("Type checking");
+            // LHS has to be an assignable node
+            if (!lhs->IsAssignable()) {
+                MYCC_PrintTokenError_ReturnNull(assign_type,
+                                                "Left hand side is not assignable")
+            }
+
+            // LHS cannot be const variable
+            if (lhs->GetType()->IsConst()) {
+                MYCC_PrintTokenError_ReturnNull(assign_type,
+                                                "Left hand side is not assignable")
+            }
+
+            if (!lhs->GetType()->IsSame(rhs->GetType())) {
+                auto rhs_type = rhs->GetType();
+                rhs = AST::ASTNode::CastTo(lhs->GetType(), std::move(rhs));
+                if (rhs == nullptr) {
+                    MYCC_PrintTokenError_ReturnNull(
+                        assign_type, "Assignment mismatch " +
+                                         lhs->GetType()->GetName() +
+                                         " += " + rhs_type->GetName());
+                }
+            }
+            Message::set_current_part("Parser");
         }
 
         return std::make_unique<AST::AssignExpr>(assign_type, std::move(lhs),
@@ -145,13 +216,57 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAssignExpr(
 
 // TODO: add parser for conditional expression
 std::unique_ptr<AST::ASTNode> Statement::ParseConditionalExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
-    return ParseLogicalOrExpr(context, tokens);
-    ;
+    AST::ASTContext& context, TokenList& tokens) {
+    auto lhs = ParseLogicalOrExpr(context, tokens);
+
+    if (peek(tokens).Type() == Lexical::TokenType::kQuestionMark) {
+        if (lhs == nullptr) {
+            DLOG(ERROR) << "Parse [LHS] for conditional expression failed";
+            return nullptr;
+        }
+
+        pop_list(tokens);  // pop '?'
+
+        // parse true expression
+
+        // todo only allow char
+        auto mhs = ParseConditionalExpr(context, tokens);
+        if (mhs == nullptr) {
+            DLOG(ERROR) << "Parse [MHS] for conditional expression failed";
+            return nullptr;
+        }
+
+        // pop ':'
+        MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kColon, tokens);
+
+        // parse false expression
+        auto next = tokens.front();
+        auto rhs = ParseConditionalExpr(context, tokens);
+        if (rhs == nullptr) {
+            DLOG(ERROR) << "Parse [RHS] for conditional expression failed";
+            return nullptr;
+        }
+
+        if (Options::Global_enable_type_checking &&
+            !mhs->GetType()->IsSame(rhs->GetType())) {
+            auto rhs_type = mhs->GetType();
+            rhs = AST::ASTNode::CastTo(mhs->GetType(), std::move(rhs));
+            if (rhs == nullptr) {
+                MYCC_PrintTokenError_ReturnNull(
+                    next, "Expect type " + lhs->GetType()->GetName() +
+                              " but get " + rhs_type->GetName());
+            }
+        }
+
+        return std::make_unique<AST::ConditionalExpr>(
+            std::move(lhs), std::move(mhs), std::move(rhs));
+    } else {
+        return lhs;
+    }
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseLogicalOrExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseLogicalAndExpr(context, tokens);
     if (lhs == nullptr) {
         DLOG(ERROR) << "Parse [LHS] for logical or expression failed";
@@ -159,15 +274,28 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalOrExpr(
     }
 
     // if we have a logical or, we should parse the next expression
+    auto next = peek(tokens);
     if (peek(tokens).Type() == Lexical::TokenType::kLogicalOr) {
-        tokens.pop_front();
+        pop_list(tokens);
         auto rhs = ParseLogicalOrExpr(context, tokens);
         if (rhs == nullptr) {
             DLOG(ERROR) << "Parse [RHS] for logical or expression failed";
             return nullptr;
         }
 
-        return std::make_unique<AST::LogicalExpr>("||", std::move(lhs),
+        // todo only allow char
+        if (Options::Global_enable_type_checking &&
+            !lhs->GetType()->IsSame(rhs->GetType())) {
+            auto rhs_type = rhs->GetType();
+            rhs = AST::ASTNode::CastTo(lhs->GetType(), std::move(rhs));
+            if (rhs == nullptr) {
+                MYCC_PrintTokenError_ReturnNull(
+                    next, "Expect type " + lhs->GetType()->GetName() +
+                              " but get " + rhs_type->GetName());
+            }
+        }
+
+        return std::make_unique<AST::LogicalExpr>(next, std::move(lhs),
                                                   std::move(rhs));
     } else {
         return lhs;
@@ -175,7 +303,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalOrExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseLogicalAndExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseBitwiseOrExpr(context, tokens);
     if (lhs == nullptr) {
         DLOG(ERROR) << "Parse [LHS] for logical and expression failed";
@@ -183,15 +311,28 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalAndExpr(
     }
 
     // if we have a logical and, we should parse the next expression
+    auto next = peek(tokens);
     if (peek(tokens).Type() == Lexical::TokenType::kLogicalAnd) {
-        tokens.pop_front();
+        pop_list(tokens);
         auto rhs = ParseLogicalAndExpr(context, tokens);
         if (rhs == nullptr) {
             DLOG(ERROR) << "Parse [RHS] for logical and expression failed";
             return nullptr;
         }
 
-        return std::make_unique<AST::LogicalExpr>("&&", std::move(lhs),
+        // todo only allow char
+        if (Options::Global_enable_type_checking &&
+            !lhs->GetType()->IsSame(rhs->GetType())) {
+            auto rhs_type = rhs->GetType();
+            rhs = AST::ASTNode::CastTo(lhs->GetType(), std::move(rhs));
+            if (rhs == nullptr) {
+                MYCC_PrintTokenError_ReturnNull(
+                    next, "Expect type " + lhs->GetType()->GetName() +
+                              " but get " + rhs_type->GetName());
+            }
+        }
+
+        return std::make_unique<AST::LogicalExpr>(next, std::move(lhs),
                                                   std::move(rhs));
     } else {
         return lhs;
@@ -199,7 +340,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalAndExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseOrExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseBitwiseXorExpr(context, tokens);
     if (lhs == nullptr) {
         DLOG(ERROR) << "Parse [LHS] for bitwise or expression failed";
@@ -207,15 +348,27 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseOrExpr(
     }
 
     // if we have a bitwise or, we should parse the next expression
+    auto next = peek(tokens);
     if (peek(tokens).Type() == Lexical::TokenType::kBitwiseOr) {
-        tokens.pop_front();
+        pop_list(tokens);
         auto rhs = ParseBitwiseOrExpr(context, tokens);
         if (rhs == nullptr) {
             DLOG(ERROR) << "Parse [RHS] for bitwise or expression failed";
             return nullptr;
         }
 
-        return std::make_unique<AST::BitwiseExpr>("|", std::move(lhs),
+        if (Options::Global_enable_type_checking &&
+            !lhs->GetType()->IsSame(rhs->GetType())) {
+            auto rhs_type = rhs->GetType();
+            rhs = AST::ASTNode::CastTo(lhs->GetType(), std::move(rhs));
+            if (rhs == nullptr) {
+                MYCC_PrintTokenError_ReturnNull(
+                    next, "Expect type " + lhs->GetType()->GetName() +
+                              " but get " + rhs_type->GetName());
+            }
+        }
+
+        return std::make_unique<AST::BitwiseExpr>(next, std::move(lhs),
                                                   std::move(rhs));
     } else {
         return lhs;
@@ -223,7 +376,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseOrExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseXorExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseBitwiseAndExpr(context, tokens);
     if (lhs == nullptr) {
         DLOG(ERROR) << "Parse [LHS] for bitwise xor expression failed";
@@ -231,15 +384,27 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseXorExpr(
     }
 
     // if we have a bitwise xor, we should parse the next expression
+    auto next = peek(tokens);
     if (peek(tokens).Type() == Lexical::TokenType::kBitwiseXor) {
-        tokens.pop_front();
+        pop_list(tokens);
         auto rhs = ParseBitwiseXorExpr(context, tokens);
         if (rhs == nullptr) {
             DLOG(ERROR) << "Parse [RHS] for bitwise xor expression failed";
             return nullptr;
         }
 
-        return std::make_unique<AST::BitwiseExpr>("^", std::move(lhs),
+        if (Options::Global_enable_type_checking &&
+            !lhs->GetType()->IsSame(rhs->GetType())) {
+            auto rhs_type = rhs->GetType();
+            rhs = AST::ASTNode::CastTo(lhs->GetType(), std::move(rhs));
+            if (rhs == nullptr) {
+                MYCC_PrintTokenError_ReturnNull(
+                    next, "Expect type " + lhs->GetType()->GetName() +
+                              " but get " + rhs_type->GetName());
+            }
+        }
+
+        return std::make_unique<AST::BitwiseExpr>(next, std::move(lhs),
                                                   std::move(rhs));
     } else {
         return lhs;
@@ -247,7 +412,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseXorExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseAndExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseEqualityExpr(context, tokens);
 
     if (lhs == nullptr) {
@@ -256,15 +421,26 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseAndExpr(
     }
 
     // if we have a bitwise and, we should parse the next expression
+    auto next = peek(tokens);
     if (peek(tokens).Type() == Lexical::TokenType::kBitwiseAnd) {
-        tokens.pop_front();
+        pop_list(tokens);
         auto rhs = ParseBitwiseAndExpr(context, tokens);
         if (rhs == nullptr) {
             DLOG(ERROR) << "Parse [RHS] for bitwise and expression failed";
             return nullptr;
         }
 
-        return std::make_unique<AST::BitwiseExpr>("&", std::move(lhs),
+        if (Options::Global_enable_type_checking &&
+            !lhs->GetType()->IsSame(rhs->GetType())) {
+            auto rhs_type = rhs->GetType();
+            rhs = AST::ASTNode::CastTo(lhs->GetType(), std::move(rhs));
+            if (rhs == nullptr) {
+                MYCC_PrintTokenError_ReturnNull(
+                    next, "Expect type " + lhs->GetType()->GetName() +
+                              " but get " + rhs_type->GetName());
+            }
+        }
+        return std::make_unique<AST::BitwiseExpr>(next, std::move(lhs),
                                                   std::move(rhs));
     } else {
         return lhs;
@@ -272,7 +448,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseAndExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseEqualityExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseRelationalExpr(context, tokens);
     if (lhs == nullptr) {
         DLOG(ERROR) << "Parse [LHS] for equality expression failed";
@@ -282,14 +458,24 @@ std::unique_ptr<AST::ASTNode> Statement::ParseEqualityExpr(
     // if we have a equality, we should parse the next expression
     if (peek(tokens).Type() == Lexical::TokenType::kEqual ||
         peek(tokens).Type() == Lexical::TokenType::kNotEqual) {
-        auto type = peek(tokens).Value();
-        tokens.pop_front();
+        auto type = peek(tokens);
+        pop_list(tokens);
         auto rhs = ParseEqualityExpr(context, tokens);
         if (rhs == nullptr) {
             DLOG(ERROR) << "Parse [RHS] for equality expression failed";
             return nullptr;
         }
 
+        if (Options::Global_enable_type_checking &&
+            !lhs->GetType()->IsSame(rhs->GetType())) {
+            auto rhs_type = rhs->GetType();
+            rhs = AST::ASTNode::CastTo(lhs->GetType(), std::move(rhs));
+            if (rhs == nullptr) {
+                MYCC_PrintTokenError_ReturnNull(
+                    type, "Expect type " + lhs->GetType()->GetName() +
+                              " but get " + rhs_type->GetName());
+            }
+        }
         return std::make_unique<AST::RelationalExpr>(type, std::move(lhs),
                                                      std::move(rhs));
     } else {
@@ -298,24 +484,37 @@ std::unique_ptr<AST::ASTNode> Statement::ParseEqualityExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseRelationalExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseShiftExpr(context, tokens);
     if (lhs == nullptr) {
         DLOG(ERROR) << "Parse [LHS] for relational expression failed";
         return nullptr;
     }
 
-    // if we have a relational, we should parse the next expression
+    // if we have a relational, we should parse the next
+    // expression
     if (peek(tokens).Type() == Lexical::TokenType::kLess ||
         peek(tokens).Type() == Lexical::TokenType::kGreater ||
         peek(tokens).Type() == Lexical::TokenType::kLessEqual ||
         peek(tokens).Type() == Lexical::TokenType::kGreaterEqual) {
-        auto type = peek(tokens).Value();
-        tokens.pop_front();
+        auto type = peek(tokens);
+        pop_list(tokens);
         auto rhs = ParseRelationalExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for relational expression failed";
+            DLOG(ERROR) << "Parse [RHS] for relational "
+                           "expression failed";
             return nullptr;
+        }
+
+        if (Options::Global_enable_type_checking &&
+            !lhs->GetType()->IsSame(rhs->GetType())) {
+            auto rhs_type = rhs->GetType();
+            rhs = AST::ASTNode::CastTo(lhs->GetType(), std::move(rhs));
+            if (rhs == nullptr) {
+                MYCC_PrintTokenError_ReturnNull(
+                    type, "Expect type " + lhs->GetType()->GetName() +
+                              " but get " + rhs_type->GetName());
+            }
         }
 
         return std::make_unique<AST::RelationalExpr>(type, std::move(lhs),
@@ -327,7 +526,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseRelationalExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseShiftExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseAdditiveExpr(context, tokens);
     if (lhs == nullptr) {
         DLOG(ERROR) << "Parse [LHS] for shift expression failed";
@@ -337,12 +536,23 @@ std::unique_ptr<AST::ASTNode> Statement::ParseShiftExpr(
     // if we have a shift, we should parse the next expression
     if (peek(tokens).Type() == Lexical::TokenType::kLeftShift ||
         peek(tokens).Type() == Lexical::TokenType::kRightShift) {
-        auto type = peek(tokens).Value();
-        tokens.pop_front();
+        auto type = peek(tokens);
+        pop_list(tokens);
         auto rhs = ParseShiftExpr(context, tokens);
         if (rhs == nullptr) {
             DLOG(ERROR) << "Parse [RHS] for shift expression failed";
             return nullptr;
+        }
+
+        if (Options::Global_enable_type_checking &&
+            !lhs->GetType()->IsSame(rhs->GetType())) {
+            auto rhs_type = rhs->GetType();
+            rhs = AST::ASTNode::CastTo(lhs->GetType(), std::move(rhs));
+            if (rhs == nullptr) {
+                MYCC_PrintTokenError_ReturnNull(
+                    type, "Expect type " + lhs->GetType()->GetName() +
+                              " but get " + rhs_type->GetName());
+            }
         }
 
         return std::make_unique<AST::BitwiseExpr>(type, std::move(lhs),
@@ -353,22 +563,39 @@ std::unique_ptr<AST::ASTNode> Statement::ParseShiftExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseAdditiveExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseMultiplicativeExpr(context, tokens);
     if (lhs == nullptr) {
         DLOG(ERROR) << "Parse [LHS] for additive expression failed";
         return nullptr;
     }
 
-    // if we have a additive, we should parse the next expression
+    // if we have a additive, we should parse the next
+    // expression
     if (peek(tokens).Type() == Lexical::TokenType::kAdd ||
         peek(tokens).Type() == Lexical::TokenType::kSub) {
-        auto type = peek(tokens).Value();
-        tokens.pop_front();
+        auto type = peek(tokens);
+        pop_list(tokens);
         auto rhs = ParseAdditiveExpr(context, tokens);
         if (rhs == nullptr) {
             DLOG(ERROR) << "Parse [RHS] for additive expression failed";
             return nullptr;
+        }
+
+        if (Options::Global_enable_type_checking) {
+            Message::set_current_part("Type checking");
+            // LHS == RHS
+            if (!lhs->GetType()->IsSame(rhs->GetType())) {
+                auto rhs_type = rhs->GetType();
+                rhs = AST::ASTNode::CastTo(lhs->GetType(), std::move(rhs));
+                if (rhs == nullptr) {
+                    MYCC_PrintTokenError_ReturnNull(
+                        type, "Expect type " + lhs->GetType()->GetName() +
+                                  " but get " + rhs_type->GetName());
+                }
+            }
+
+            Message::set_current_part("Parser");
         }
 
         return std::make_unique<AST::ArithmeticExpr>(type, std::move(lhs),
@@ -380,23 +607,43 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAdditiveExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseMultiplicativeExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseUnaryExpr(context, tokens);
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for multiplicative expression failed";
+        DLOG(ERROR) << "Parse [LHS] for multiplicative "
+                       "expression failed";
         return nullptr;
     }
 
-    // if we have a multiplicative, we should parse the next expression
+    // if we have a multiplicative, we should parse the next
+    // expression
     if (peek(tokens).Type() == Lexical::TokenType::kMul ||
         peek(tokens).Type() == Lexical::TokenType::kDiv ||
         peek(tokens).Type() == Lexical::TokenType::kMod) {
-        auto type = peek(tokens).Value();
-        tokens.pop_front();
+        auto type = peek(tokens);
+        pop_list(tokens);
         auto rhs = ParseMultiplicativeExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for multiplicative expression failed";
+            DLOG(ERROR) << "Parse [RHS] for multiplicative "
+                           "expression failed";
             return nullptr;
+        }
+
+        if (Options::Global_enable_type_checking) {
+            Message::set_current_part("Type checking");
+
+            // LHS == RHS
+            if (!lhs->GetType()->IsSame(rhs->GetType())) {
+                auto rhs_type = rhs->GetType();
+                rhs = AST::ASTNode::CastTo(lhs->GetType(), std::move(rhs));
+                if (rhs == nullptr) {
+                    MYCC_PrintTokenError_ReturnNull(
+                        type, "Expect type " + lhs->GetType()->GetName() +
+                                  " but get " + rhs_type->GetName());
+                }
+            }
+
+            Message::set_current_part("Parser");
         }
 
         return std::make_unique<AST::ArithmeticExpr>(type, std::move(lhs),
@@ -407,58 +654,49 @@ std::unique_ptr<AST::ASTNode> Statement::ParseMultiplicativeExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     // some of unary expression does not have LHS
     if (peek(tokens).Type() == Lexical::TokenType::kSub ||
         peek(tokens).Type() == Lexical::TokenType::kLogicalNot ||
         peek(tokens).Type() == Lexical::TokenType::kReference ||
         peek(tokens).Type() == Lexical::TokenType::kBitWiseNot ||
         peek(tokens).Type() == Lexical::TokenType::kDereference) {
-        auto type = peek(tokens).Type();
-        tokens.pop_front();
+        auto type = peek(tokens);
+        pop_list(tokens);
         auto rhs = ParseUnaryExpr(context, tokens);
         if (rhs == nullptr) {
             DLOG(ERROR) << "Parse [RHS] for unary expression failed";
             return nullptr;
         }
 
-        AST::UnaryExpr::UnaryType unaryType;
-        if (type == Lexical::TokenType::kSub) {
-            unaryType = AST::UnaryExpr::UnaryType::kUnaryMinus;
-        } else if (type == Lexical::TokenType::kLogicalNot) {
-            unaryType = AST::UnaryExpr::UnaryType::kLogicalNot;
-        } else if (type == Lexical::TokenType::kReference) {
-            unaryType = AST::UnaryExpr::UnaryType::kReference;
-        } else if (type == Lexical::TokenType::kBitWiseNot) {
-            unaryType = AST::UnaryExpr::UnaryType::kBitwiseNot;
-        } else if (type == Lexical::TokenType::kDereference) {
-            unaryType = AST::UnaryExpr::UnaryType::kDereference;
-        } else {
-            DLOG(ERROR) << "Unknown unary type";
-            return nullptr;
-        }
-        return std::make_unique<AST::UnaryExpr>(unaryType, std::move(rhs));
+        return std::make_unique<AST::UnaryExpr>(type, std::move(rhs));
     }
 
     // for cast expression, we should parse the next expression
-    else if (peek(tokens).Type() == Lexical::TokenType::kLParentheses ||
-             context.hasType(peek2(tokens).Value())) {
-        tokens.pop_front();  // consume the '('
+    else if (peek(tokens).Type() == Lexical::TokenType::kLParentheses &&
+             tokens.size() >= 2 && context.hasType(peek2(tokens).Value())) {
+        pop_list(tokens);  // consume the '('
 
         // get the type of the cast expression
         auto type = context.getType(tokens.front().Value());
-        tokens.pop_front();  // consume the type
+        pop_list(tokens);  // consume the type
 
         // consume the ')'
         MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRParentheses,
                                         tokens);
 
-        return std::make_unique<AST::CastExpr>(type);
+        auto rhs = ParseUnaryExpr(context, tokens);
+        if (rhs == nullptr) {
+            DLOG(ERROR) << "Parse [RHS] for cast expression failed";
+            return nullptr;
+        }
+
+        return std::make_unique<AST::CastExpr>(type, std::move(rhs));
     }
 
-    // sizeof operator
+    // sizeof expr
     else if (peek(tokens).Type() == Lexical::TokenType::kSizeOf) {
-        tokens.pop_front();  // consume the sizeof
+        pop_list(tokens);  // consume the sizeof
 
         // consume the '('
         MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLParentheses,
@@ -479,47 +717,74 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(
 
     // selfInc/selfDec and otherwise
     else {
-        // since self inc/dec could before the variable or after the
-        // variable we need to check the next token
+        // since self inc/dec could before the variable or after
+        // the variable we need to check the next token
         if (peek(tokens).Type() == Lexical::TokenType::kSelfIncrement ||
             peek(tokens).Type() == Lexical::TokenType::kSelfDecrement) {
-            auto type = peek(tokens).Type();
-            tokens.pop_front();
+            auto type = peek(tokens);
+            pop_list(tokens);
 
             // parsing RHS
             auto rhs = ParseUnaryExpr(context, tokens);
             if (rhs == nullptr) {
-                DLOG(ERROR) << "Parse [RHS] for unary expression failed";
+                DLOG(ERROR) << "Parse [RHS] for unary "
+                               "expression failed";
                 return nullptr;
             }
 
-            AST::UnaryExpr::UnaryType unaryType;
-            if (type == Lexical::TokenType::kSelfIncrement) {
-                unaryType = AST::UnaryExpr::UnaryType::kPreDec;
-            } else if (type == Lexical::TokenType::kSelfDecrement) {
-                unaryType = AST::UnaryExpr::UnaryType::kPreDec;
-            } else {
-                DLOG(ERROR) << "Unknown unary type";
-                return nullptr;
+            // LHS has to be a variable Node
+            if (!rhs->IsAssignable()) {
+                MYCC_PrintTokenError_ReturnNull(type,
+                                                "cannot add value to rvalue");
             }
-            return std::make_unique<AST::UnaryExpr>(unaryType, std::move(rhs));
+
+            // LHS has to be a variable Node
+            if (rhs->GetType()->IsConst()) {
+                MYCC_PrintTokenError_ReturnNull(
+                    type, "cannot set value to const variable");
+            }
+
+            return std::make_unique<AST::UnaryExpr>(type, std::move(rhs));
         } else {
-            auto lhs = ParsePostfixExpr(context, tokens);
+            auto lhs = ParseAccessExpr(context, tokens);
             if (lhs == nullptr) {
-                DLOG(ERROR) << "Parse [LHS] for unary expression failed";
+                DLOG(ERROR) << "Parse [LHS] for unary "
+                               "expression failed";
                 return nullptr;
             }
 
             // check the next token
             if (peek(tokens).Type() == Lexical::TokenType::kSelfIncrement) {
-                tokens.pop_front();
-                return std::make_unique<AST::UnaryExpr>(
-                    AST::UnaryExpr::UnaryType::kPostInc, std::move(lhs));
+                // LHS has to be a variable Node
+                if (!lhs->IsAssignable()) {
+                    MYCC_PrintFirstTokenError_ReturnNull(
+                        tokens, "Expression is not assignable")
+                }
+
+                // LHS has to be a variable Node
+                if (lhs->GetType()->IsConst()) {
+                    MYCC_PrintFirstTokenError_ReturnNull(
+                        tokens, "cannot set value to const variable")
+                }
+
+                return std::make_unique<AST::UnaryExpr>(pop_list(tokens),
+                                                        std::move(lhs));
             } else if (peek(tokens).Type() ==
                        Lexical::TokenType::kSelfDecrement) {
-                tokens.pop_front();
-                return std::make_unique<AST::UnaryExpr>(
-                    AST::UnaryExpr::UnaryType::kPostDec, std::move(lhs));
+                // LHS has to be a variable Node
+                if (!lhs->IsAssignable()) {
+                    MYCC_PrintFirstTokenError_ReturnNull(
+                        tokens, "Expression is not assignable")
+                }
+
+                // LHS has to be a variable Node
+                if (lhs->GetType()->IsConst()) {
+                    MYCC_PrintFirstTokenError_ReturnNull(
+                        tokens, "cannot set value to const variable");
+                }
+
+                return std::make_unique<AST::UnaryExpr>(pop_list(tokens),
+                                                        std::move(lhs));
             } else {
                 return std::move(lhs);
             }
@@ -527,11 +792,101 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(
     }
 }
 
+std::unique_ptr<AST::ASTNode> Statement::ParseAccessExpr(
+    AST::ASTContext& context, TokenList& tokens) {
+    auto currentExpr = ParsePostfixExpr(context, tokens);
+
+    // variable accessor
+    if (peek(tokens).Type() == Lexical::TokenType::kDot ||
+        peek(tokens).Type() == Lexical::TokenType::kArrow) {
+        do {
+            if (peek(tokens).Type() == Lexical::TokenType::kArrow ||
+                peek(tokens).Type() == Lexical::TokenType::kDot) {
+                // we need to know is it a pointer or not
+                bool isPtr =
+                    pop_list(tokens).Type() == Lexical::TokenType::kArrow;
+
+                // accessor should not be a keyword
+                if (peek(tokens).Type() != Lexical::TokenType::kIdentity) {
+                    MYCC_PrintFirstTokenError_ReturnNull(
+                        tokens,
+                        "Expect [IDENTITY] after '.' " + error_token.Value())
+                }
+
+                // to new a variable node
+                auto memberName = pop_list(tokens);
+
+                auto type = currentExpr->GetType();
+                // assert(type->IsStruct());
+                //  check if the type has this member
+                if (Options::Global_enable_type_checking) {
+                    Message::set_current_part("Type checking");
+
+                    if (!currentExpr->GetType()->IsStruct()) {
+                        MYCC_PrintFirstTokenError_ReturnNull(
+                            tokens,
+                            "Expect struct type for member "
+                            "access")
+                    }
+
+                    auto type = dynamic_cast<AST::StructType*>(
+                                    currentExpr->GetType().get())
+                                    ->GetChild(memberName.Value());
+
+                    // check member name
+                    if (type == nullptr) {
+                        MYCC_PrintFirstTokenError_ReturnNull(
+                            tokens, "Type " +
+                                        currentExpr->GetType()->GetName() +
+                                        " has no member " + memberName.Value())
+                    }
+                    Message::set_current_part("Parser");
+                }
+
+                currentExpr = std::make_unique<AST::AccessExpr>(
+                    isPtr, memberName, std::move(currentExpr));
+            } else {
+                // consume the ']'
+                auto start = tokens.front();
+                MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLBracket,
+                                                tokens);
+
+                // consume the index
+                auto indexExpr = ParseCommaExpr(context, tokens);
+                if (indexExpr == nullptr) {
+                    DLOG(ERROR) << "Parse [INDEX] for array "
+                                   "accessor failed";
+                    return nullptr;
+                }
+
+                // check type
+                if (!currentExpr->GetType()->IsArray()) {
+                    MYCC_PrintFirstTokenError_ReturnNull(
+                        tokens, "Expect array type for array accessor")
+                }
+
+                // consume the ']'
+
+                MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRBracket,
+                                                tokens);
+                currentExpr = std::make_unique<AST::ArraySubscriptExpr>(
+                    start, std::move(currentExpr), std::move(indexExpr));
+            }
+        } while (peek(tokens).Type() == Lexical::TokenType::kDot ||
+                 peek(tokens).Type() == Lexical::TokenType::kArrow ||
+                 peek(tokens).Type() == Lexical::TokenType::kLBracket);
+
+        return currentExpr;
+    } else {
+        return currentExpr;
+    }
+}
+
 std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::ASTContext& context, TokenList& tokens) {
     // first handle priority expression ("()")
     if (peek(tokens).Type() == Lexical::TokenType::kLParentheses) {
-        tokens.pop_front();  // consume the '('
+        pop_list(tokens);  // consume the '('
 
         auto expr = ParseCommaExpr(context, tokens);
         if (expr == nullptr) {
@@ -549,93 +904,221 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
     // handle access/array
     else if (peek(tokens).Type() == Lexical::TokenType::kIdentity &&
              !context.hasType(peek(tokens).Value())) {
-        auto name = pop(tokens).Value();
+        auto name = pop_list(tokens);
 
         // array
         if (peek(tokens).Type() == Lexical::TokenType::kLBracket) {
-            tokens.pop_front();  // consume the '['
+            auto start = pop_list(tokens);  // consume the '['
 
             // array accessor should be integer
             auto index = ParseCommaExpr(context, tokens);
+            if (index == nullptr) {
+                DLOG(ERROR) << "Parse [INDEX] for array "
+                               "accessor failed";
+                return nullptr;
+            }
+
+            // should be integer
+            if (Options::Global_enable_type_checking) {
+                Message::set_current_part("Type checking");
+
+                auto int_type = std::make_shared<AST::Type>("int");
+                if (!int_type->IsSame(index->GetType())) {
+                    auto index_type = index->GetType();
+                    index = AST::ASTNode::CastTo(int_type, std::move(index));
+                    if (index == nullptr) {
+                        MYCC_PrintTokenError_ReturnNull(
+                            start,
+                            "Expect type int but get " + index_type->GetName());
+                    }
+                }
+                Message::set_current_part("Parser");
+            }
 
             // consume the ']'
             MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRBracket,
                                             tokens);
-            return std::make_unique<AST::ArrayExpr>(name, std::move(index));
+
+            if (!context.hasVariable(name.Value())) {
+                MYCC_PrintTokenError_ReturnNull(
+                    name, "Undefined variable: " + name.Value());
+            }
+
+            auto type = context.getVariableType(name.Value());
+
+            if (type->IsArray()) {
+                return std::make_unique<AST::ArraySubscriptExpr>(
+                    start, std::make_unique<AST::DeclRefExpr>(name, type),
+                    std::move(index));
+            } else {
+                MYCC_PrintTokenError_ReturnNull(
+                    name, "Expect array type for array accessor");
+            }
         }
 
-        // variable accessor
-        else if (peek(tokens).Type() == Lexical::TokenType::kDot ||
-                 peek(tokens).Type() == Lexical::TokenType::kArrow) {
-            // get base type
-            std::unique_ptr<AST::ASTNode> currentExpr =
-                std::make_unique<AST::VariableExpr>(name);
+        // function caller
+        else if (peek(tokens).Type() == Lexical::TokenType::kLParentheses) {
+            pop_list(tokens);  // consume the '('
 
-            do {
-                // we need to know is it a pointer or not
-                bool isPtr = pop(tokens).Type() == Lexical::TokenType::kArrow;
+            // check function name is matched
+            if (Options::Global_enable_type_checking &&
+                !context.hasFunction(name.Value())) {
+                MYCC_PrintTokenError_ReturnNull(
+                    name, "Function " + name.Value() + " not found");
+            }
 
-                // accessor should not be a keyword
-                if (peek(tokens).Type() != Lexical::TokenType::kIdentity) {
-                    MYCC_PrintFirstTokenError_ReturnNull(
-                        tokens,
-                        "Expect [IDENTITY] after '.' " + error_token.Value())
+            // get function return type and argument types
+            auto [return_type, funcType] =
+                context.getFuncRetAndArgType(name.Value());
+
+            // next token should not be ", "
+            if (peek(tokens).Type() == Lexical::TokenType::kComma) {
+                MYCC_PrintFirstTokenError_ReturnNull(tokens, "Expected type");
+            }
+
+            // parse arguments
+            std::list<std::unique_ptr<AST::ASTNode>> args_expr;
+            std::list<std::shared_ptr<AST::Type>> func_args_tmp{
+                funcType.begin(), funcType.end()};
+            while (peek(tokens).Type() != Lexical::TokenType::kRParentheses) {
+                auto arg_token = tokens.front();
+                auto arg = ParseAssignExpr(context, tokens);
+                if (arg == nullptr) {
+                    DLOG(ERROR) << "Parse [ARG] for function "
+                                   "caller failed";
+                    return nullptr;
                 }
 
-                // insert to next level
-                auto memberName = pop(tokens).Value();
-                currentExpr = std::make_unique<AST::AccessExpr>(
-                    isPtr, memberName, std::move(currentExpr));
-            } while (peek(tokens).Type() == Lexical::TokenType::kDot ||
-                     peek(tokens).Type() == Lexical::TokenType::kArrow);
+                // consume the ',' if have other arguments
+                if (peek(tokens).Type() != Lexical::TokenType::kRParentheses) {
+                    MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kComma,
+                                                    tokens);
 
-            return currentExpr;
+                    // after consume the ',', we should have a
+                    // valid argument
+                    if (peek(tokens).Type() ==
+                        Lexical::TokenType::kRParentheses) {
+                        MYCC_PrintTokenError_ReturnNull(peek(tokens),
+                                                        "term expected");
+                    }
+                }
+
+                if (Options::Global_enable_type_checking) {
+                    Message::set_current_part("Type checking");
+
+                    if (!arg->GetType()->IsSame(func_args_tmp.front())) {
+                        auto arg_type = arg->GetType();
+                        arg = AST::ASTNode::CastTo(func_args_tmp.front(),
+                                                   std::move(arg));
+                        if (arg == nullptr) {
+                            MYCC_PrintTokenError_ReturnNull(
+                                arg_token,
+                                "Expect type " +
+                                    func_args_tmp.front()->GetName() +
+                                    " for argument " +
+                                    std::to_string(args_expr.size() + 1) +
+                                    " but get " + arg_type->GetName());
+                        } else {
+                            func_args_tmp.pop_front();
+                        }
+                    } else {
+                        func_args_tmp.pop_front();
+                    }
+                    Message::set_current_part("Parser");
+                }
+                args_expr.push_back(std::move(arg));
+            }
+
+            // function call need to have same number of arguments
+            if (Options::Global_enable_type_checking) {
+                if (!func_args_tmp.empty()) {
+                    // generate type string first
+                    std::string type_str = "(";
+                    for (const auto& arg : funcType) {
+                        type_str += arg->GetName() + ", ";
+                    }
+                    type_str.replace(type_str.end() - 2, type_str.end(), ")");
+
+                    // print out error message
+                    MYCC_PrintTokenError_ReturnNull(
+                        name, "Parameter mismatch in call to " +
+                                  return_type->GetName() + " " + name.Value() +
+                                  type_str + "\n\tExpected " +
+                                  std::to_string(funcType.size()) +
+                                  ", received " +
+                                  std::to_string(funcType.size() -
+                                                 func_args_tmp.size()) +
+                                  " parameters");
+                }
+            }
+
+            // consume the ')'
+            MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRParentheses,
+                                            tokens);
+
+            return std::make_unique<AST::FunctionCall>(name, return_type,
+                                                       std::move(args_expr));
         }
 
-        return std::make_unique<AST::VariableExpr>(name);
+        if (context.hasVariable(name.Value())) {
+            return std::make_unique<AST::DeclRefExpr>(
+                name, context.getVariableType(name.Value()));
+        } else {
+            MYCC_PrintTokenError_ReturnNull(
+                name, "Undefined variable: " + name.Value());
+        }
     }
 
-    // const values (string literal will handle differently since it
-    // could be concat)
+    // const values (string literal will handle differently
+    // since it could be concat)
     else if (peek(tokens).Type() == Lexical::TokenType::kChar ||
              peek(tokens).Type() == Lexical::TokenType::kInteger ||
              peek(tokens).Type() == Lexical::TokenType::kReal_number) {
-        auto value = peek(tokens).Value();
+        auto value = peek(tokens);
 
-        switch (pop(tokens).Type()) {
+        switch (pop_list(tokens).Type()) {
             case Lexical::TokenType::kChar:
-                return std::make_unique<AST::ValueNode>(AST::ValueNode::kChar,
-                                                        value);
+                return std::make_unique<AST::LiteralExpr>(
+                    AST::LiteralExpr::kChar, value);
             case Lexical::TokenType::kInteger:
-                return std::make_unique<AST::ValueNode>(
-                    AST::ValueNode::kInteger, value);
+                return std::make_unique<AST::LiteralExpr>(
+                    AST::LiteralExpr::kInteger, value);
                 ;
             case Lexical::TokenType::kReal_number:
-                return std::make_unique<AST::ValueNode>(
-                    AST::ValueNode::kReal_number, value);
+                return std::make_unique<AST::LiteralExpr>(
+                    AST::LiteralExpr::kReal_number, value);
             default:
                 DLOG(ERROR) << "Unreachable code: \n"
                             << "\t Current AST:\n";
                 // TODO: print AST(basic debug info
                 assert(false);
+                return nullptr;
         }
     }
 
     // handle string literal
     else if (peek(tokens).Type() == Lexical::TokenType::kString) {
-        auto value = pop(tokens).Value();
+        auto value = pop_list(tokens);
+        auto value_str = value.Value();
 
         while (peek(tokens).Type() == Lexical::TokenType::kString) {
-            value += pop(tokens).Value();
+            value_str += pop_list(tokens).Value();
         }
 
-        return std::make_unique<AST::ValueNode>(AST::ValueNode::kString, value);
+        return std::make_unique<AST::LiteralExpr>(
+            AST::LiteralExpr::kString,
+            Lexical::Token(value_str, value.Type(), value.Location().first,
+                           value.Location().second));
     }
 
-    // error here
+    // if we can detect types
     else {
-        MYCC_PrintFirstTokenError_ReturnNull(
-            tokens, "Expect [IDENTITY] " + error_token.Value())
+        if (peek(tokens).Type() == Lexical::TokenType::kElse) {
+            MYCC_PrintFirstTokenError_ReturnNull(
+                tokens, "Else has to be followed by if");
+        } else {
+            MYCC_PrintFirstTokenError_ReturnNull(tokens, "term expected")
+        }
     }
 }
 

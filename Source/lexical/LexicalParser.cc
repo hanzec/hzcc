@@ -29,7 +29,7 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
   }
 
   // read line by line
-  int row = 0;
+  int row = 1;
   bool multiple_line_comment = false;
   std::pair<int, int> multiple_line_comment_start{0, 0};
   for (std::string line; std::getline(source, line); row++) {

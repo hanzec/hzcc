@@ -26,10 +26,14 @@ void print_message(Level error_level, const std::string& message,
 void print_message(Level error_level, const std::string& message,
                    const std::string& line, std::pair<int, int> line_info);
 
+void print_message(Level error_level, const std::string& message,
+                   const std::string& line, std::pair<int, int> line_info,
+                   const std::string& error_string);
+
 #define MYCC_PrintTokenError(token, message)                                 \
     DLOG(WARNING) << "Source file error found!";                             \
     Message::print_message(Message::kError, (message), (token).SourceLine(), \
-                           (token).Location());
+                           (token).Location(), (token).Value());
 
 #define MYCC_PrintFirstTokenError(tokens, message) \
     auto error_token = (tokens).front();           \
@@ -38,9 +42,13 @@ void print_message(Level error_level, const std::string& message,
 #define MYCC_PrintTokenError_ReturnNull(token, message) \
     MYCC_PrintTokenError(token, message) return nullptr;
 
-#define MYCC_PrintFirstTokenError_ReturnNull(tokens, message) \
-    auto error_token = (tokens).front();                      \
+#define MYCC_PrintFirstTokenError_ReturnNull(tokens, message)      \
+    auto error_token =                                             \
+        (tokens).empty()                                           \
+            ? Lexical::Token(Lexical::TokenType::kUnknown, -1, -1) \
+            : (tokens).front();                                    \
     MYCC_PrintTokenError_ReturnNull(error_token, message)
+
 }  // namespace Mycc::Message
 
 #endif  // MYCC_PRINT_ERROR_MESSAGE_H

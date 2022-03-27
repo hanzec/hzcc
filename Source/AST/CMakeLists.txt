@@ -8,6 +8,15 @@ file(GLOB MYCC_AST_SRCS ${CMAKE_CURRENT_LIST_DIR}/*.cc)
 target_sources(mycc PRIVATE ${MYCC_AST_HDRS} ${MYCC_AST_SRCS})
 
 ###############################################################################
+## AST Cast ###################################################################
+###############################################################################
+file(GLOB MYCC_AST_CAST_HDRS ${CMAKE_CURRENT_LIST_DIR}/cast/*.h)
+file(GLOB MYCC_AST_CAST_SRCS ${CMAKE_CURRENT_LIST_DIR}/cast/*.cc)
+
+# project sources
+target_sources(mycc PRIVATE ${MYCC_AST_CAST_HDRS} ${MYCC_AST_CAST_SRCS})
+
+###############################################################################
 ## AST Type ###################################################################
 ###############################################################################
 file(GLOB MYCC_AST_TYPE_HDRS ${CMAKE_CURRENT_LIST_DIR}/type/*.h)
@@ -15,6 +24,15 @@ file(GLOB MYCC_AST_TYPE_SRCS ${CMAKE_CURRENT_LIST_DIR}/type/*.cc)
 
 # project sources
 target_sources(mycc PRIVATE ${MYCC_AST_TYPE_HDRS} ${MYCC_AST_TYPE_SRCS})
+
+###############################################################################
+## AST Utils ##################################################################
+###############################################################################
+file(GLOB MYCC_AST_UTILS_HDRS ${CMAKE_CURRENT_LIST_DIR}/utils/*.h)
+file(GLOB MYCC_AST_UTILS_SRCS ${CMAKE_CURRENT_LIST_DIR}/utils/*.cc)
+
+# project sources
+target_sources(mycc PRIVATE ${MYCC_AST_UTILS_HDRS} ${MYCC_AST_UTILS_SRCS})
 
 ###############################################################################
 ## AST Value ##################################################################
@@ -28,11 +46,14 @@ target_sources(mycc PRIVATE ${MYCC_AST_VALUE_HDRS} ${MYCC_AST_VALUE_SRCS})
 ###############################################################################
 ## AST Operator #############################################################
 ###############################################################################
-file(GLOB MYCC_AST_EXPRESSION_HDRS ${CMAKE_CURRENT_LIST_DIR}/operator/*.h)
-file(GLOB MYCC_AST_EXPRESSION_SRCS ${CMAKE_CURRENT_LIST_DIR}/operator/*.cc)
-
+file(GLOB MYCC_AST_EXPRESSION_HDRS ${CMAKE_CURRENT_LIST_DIR}/expr/*.h)
+file(GLOB MYCC_AST_EXPRESSION_SRCS ${CMAKE_CURRENT_LIST_DIR}/expr/*.cc)
+file(GLOB MYCC_AST_EXPRESSION_OP_HDRS ${CMAKE_CURRENT_LIST_DIR}/expr/operator/*.h)
+file(GLOB MYCC_AST_EXPRESSION_OP_SRCS ${CMAKE_CURRENT_LIST_DIR}/expr/operator/*.cc)
 # project sources
-target_sources(mycc PRIVATE ${MYCC_AST_EXPRESSION_HDRS} ${MYCC_AST_EXPRESSION_SRCS})
+target_sources(mycc PRIVATE
+        ${MYCC_AST_EXPRESSION_HDRS} ${MYCC_AST_EXPRESSION_SRCS}
+        ${MYCC_AST_EXPRESSION_OP_HDRS} ${MYCC_AST_EXPRESSION_OP_SRCS})
 
 ###############################################################################
 ## AST Statement #############################################################

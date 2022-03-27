@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/.vscode" />
         <option value="$PROJECT_DIR$/cmake-build-debug" />
         <option value="$PROJECT_DIR$/docker" />
+        <option value="$PROJECT_DIR$/cmake-build-release" />
       </list>
     </option>
   </component>

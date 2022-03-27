@@ -8,10 +8,9 @@
 namespace Mycc::Syntax::Parser {
 class DoStatement : public ParserBase {
   public:
-    DoStatement();
-    std::unique_ptr<AST::ASTNode> parse_impl(  // NOLINT
-        AST::ASTContext& context,              // NOLINT
-        std::list<Lexical::Token>& tokens) override;
+    DoStatement() noexcept;
+    std::unique_ptr<AST::ASTNode> parse_impl(AST::ASTContext& context,
+                                             TokenList& tokens) override;
 };
 }  // namespace Mycc::Syntax::Parser
 #endif  // MYCC_SOURCE_SYNTAX_PARSER_STATEMENTS_DO_PARSER_H_

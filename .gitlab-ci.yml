@@ -29,6 +29,12 @@ variables:
     - apt-get -qq update
     - apt-get -qq install -y texlive-base texlive-latex-recommended texlive-latex-extra
 
+.install_doxygen_dep: &install_doxygen_dep
+  before_script:
+    - apt-get -qq update
+    - apt-get -qq install -y graphviz doxygen-latex doxygen xapian-tools
+
+
 .install_ninja_build: &install_ninja_build
   before_script:
     - apt-get -qq update
@@ -73,8 +79,10 @@ variables:
   before_script:
     - !reference [ .install_vcpkg_dep, before_script ]
     - !reference [ .install_latex_dep, before_script ]
+    - !reference [ .install_doxygen_dep, before_script ]
     - !reference [ .install_ninja_build, before_script ]
     - !reference [ .install_cmake_3_16_0, before_script ]
+
 
 build_gcc_10_3_ninja_debug:
   <<: *compile_default

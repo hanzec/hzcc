@@ -179,12 +179,12 @@ class Check {
   Parts parts_;
 };
 
-// Equality operator for Check.
+// Equality expr for Check.
 inline bool operator==(const Check& lhs, const Check& rhs) {
   return lhs.type() == rhs.type() && lhs.param() == rhs.param();
 }
 
-// Inequality operator for Check.
+// Inequality expr for Check.
 inline bool operator!=(const Check& lhs, const Check& rhs) {
   return !(lhs == rhs);
 }

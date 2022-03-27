@@ -7,6 +7,8 @@
 #define MYCC_SOURCE_AST_STATEMENT_CONTINUE_H_
 namespace Mycc::AST {
 class ContinueStatement : public ASTNode {
+  protected:
+    [[nodiscard]] std::string GetNodeName() const override;
 };
 }  // namespace Mycc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_CONTINUE_H_

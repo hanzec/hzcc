@@ -6,6 +6,7 @@
 
 #include <glog/logging.h>
 
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -78,15 +79,11 @@ static void ALWAYS_INLINE internal_print_nice_message(
               << std::flush;
 }
 
-void set_current_part(const std::string_view& part) {
-    current_part = part;
-}
-
+void set_current_part(const std::string_view& part) { current_part = part; }
 
 void set_current_file(const std::filesystem::path& filename) {
     current_filename = filename;
 }
-
 
 void print_message(Level error_level, const std::string& message,
                    std::pair<int, int> line_info) {
@@ -108,17 +105,34 @@ void print_message(Level error_level, const std::string& message,
 
 void print_message(Level error_level, const std::string& message,
                    const std::string& line, std::pair<int, int> line_info) {
+    print_message(error_level, message, line, line_info,
+                  std::string() + line.at(line_info.second));
+}
+
+void print_message(Level error_level, const std::string& message,
+                   const std::string& line, std::pair<int, int> line_info,
+                   const std::string& error_string) {
     if (Options::Global_enable_nicer_print) {
         internal_print_nice_message(error_level, message, line, line_info);
     } else {
-        std::cerr << current_part << " error in file " << current_filename
-                  << " line " << line_info.first;
-
-        if (line_info.second >= 0) {
-            std::cerr << " near text: " << line[line_info.second] << std::endl
-                      << '\t' << message << std::endl
-                      << std::flush;
+        if (line_info.first == -1) {
+            std::ifstream file(current_filename);
+            line_info.first =
+                std::count(std::istreambuf_iterator<char>(file),
+                           std::istreambuf_iterator<char>(), '\n') +
+                1;
         }
+
+        std::cerr << current_part << " error in file "
+                  << current_filename.c_str() << " line " << line_info.first
+                  << " near "
+                  << (line_info.second == -1 ? "end of file"
+                                             : "text " + error_string)
+                  << "\n\t"
+                  << message.substr(message.find_first_not_of(' '),
+                                    message.find_last_not_of(' ') + 1)
+                  << std::endl
+                  << std::flush;
     }
 }
 

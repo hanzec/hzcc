@@ -22,7 +22,7 @@
 namespace effcee {
 
 // A Diagnostic contains a Result::Status value and can accumulate message
-// values via operator<<.  It is convertible to a Result object containing the
+// values via expr<<.  It is convertible to a Result object containing the
 // status and the stringified message.
 class Diagnostic {
  public:

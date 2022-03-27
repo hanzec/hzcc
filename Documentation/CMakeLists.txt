@@ -1,9 +1,10 @@
 ###############################################################################
-## Latex Requirements #########################################################
+## Document Requirements #########################################################
 ###############################################################################
 find_package(LATEX)
+find_package(Doxygen)
 
-if(LATEX_FOUND)
+if (LATEX_FOUND)
     if (LUALATEX__FOUND)
         MESSAGE(STATUS "lualatex found - ${LUALATEX_COMPILER}")
     endif ()
@@ -15,7 +16,7 @@ if(LATEX_FOUND)
     if (MAKEINDEX_FOUND)
         MESSAGE(STATUS "makeindex found - ${MAKEINDEX_COMPILER}")
     endif ()
-endif()
+endif ()
 
 ###############################################################################
 ## Latex Sources ##############################################################
@@ -27,15 +28,48 @@ set(TEXMFHOME ${CMAKE_CURRENT_BINARY_DIR})
 set(DOC_MAIN_TEX "${CMAKE_CURRENT_SOURCE_DIR}/developers.tex")
 
 ###############################################################################
+## Doxygen Targets ##############################################################
+###############################################################################
+if (DOXYGEN_FOUND)
+    # set input and output files
+    set(DOXYGEN_IN ${PROJECT_SOURCE_DIR}/Doxyfile)
+    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+
+    # generate doxygen configuration file
+    configure_file( ${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+
+    # note the option ALL which allows to build the docs together with the application
+    add_custom_target(doc_doxygen ALL
+            COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            COMMENT "Generating API documentation with Doxygen"
+            VERBATIM)
+endif ()
+
+###############################################################################
 ## Latex Targets ##############################################################
 ###############################################################################
-if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND)
+if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND AND DOXYGEN_FOUND)
     # copy the figure files to the build directory
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/figure)
+
+    # copy the figure files to the build directory
     file(GLOB LATEX_DOC_FIGURES "${CMAKE_CURRENT_SOURCE_DIR}/figure/*.png")
-    foreach(LATEX_DOC_FIGURE ${LATEX_DOC_FIGURES})
+    foreach (LATEX_DOC_FIGURE ${LATEX_DOC_FIGURES})
         configure_file(${LATEX_DOC_FIGURE} "${CMAKE_CURRENT_BINARY_DIR}/figure/" COPYONLY)
-    endforeach()
+    endforeach ()
+
+    # copy the latex files to the build directory
+    file(GLOB LATEX_DOC_FIGURES "${CMAKE_CURRENT_SOURCE_DIR}/*.tex")
+    foreach (LATEX_DOC_FIGURE ${LATEX_DOC_FIGURES})
+        configure_file(${LATEX_DOC_FIGURE} "${CMAKE_CURRENT_BINARY_DIR}/" COPYONLY)
+    endforeach ()
+
+    # copy the sty files to the build directory
+    file(GLOB LATEX_DOC_FIGURES "${CMAKE_CURRENT_SOURCE_DIR}/*.sty")
+    foreach (LATEX_DOC_FIGURE ${LATEX_DOC_FIGURES})
+        configure_file(${LATEX_DOC_FIGURE} "${CMAKE_CURRENT_BINARY_DIR}/" COPYONLY)
+    endforeach ()
 
     # Run the latex compiler with draft mode increasing the speed.
     string(REGEX REPLACE "[.]tex$" ".aux" LATEX_AUX_FILES ${DOC_MAIN_TEX})
@@ -49,7 +83,10 @@ if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND)
             COMMAND ${CMAKE_COMMAND} -E remove -f *.log
             COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} -draftmode -interaction=nonstopmode -halt-on-error -file-line-error ${DOC_MAIN_TEX} > ${CMAKE_CURRENT_BINARY_DIR}/latex_prebuild.log 2>&1
             COMMENT "Starting Prebuild."
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+    # build the latex document are required doxygen documents
+    add_dependencies(latex-prebuild doc_doxygen)
 
     # Generate the indices for the index table.
     string(REGEX REPLACE "[.]tex$" ".ind" LATEX_IND_FILES ${DOC_MAIN_TEX})
@@ -71,8 +108,8 @@ if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND)
             BYPRODUCTS ${LATEX_PDF_FILES}
             COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} ${DOC_MAIN_TEX} > ${CMAKE_CURRENT_BINARY_DIR}/pdflatex.log 2>&1
             COMMENT "Generating pdf file."
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     add_dependencies(documentation latex-prebuild latex-makeindex)
 ELSE ()
-    MESSAGE(FATAL_ERROR "No latex tools found!")
+    MESSAGE(FATAL_ERROR "No latex tools or doxygen found!")
 endif ()

@@ -44,19 +44,15 @@ struct TypeNameUtil {
         // ecs::TypeNameUtil::name_detail<class rstudio::math::Vector3>(void)"
         std::string_view pretty_name = name_detail<T>();
         std::string_view prefix =
-            "const char *__cdecl ecs::TypeNameUtil::name_detail<";
-        std::string_view suffix = ">(void)";
+            "const char *__cdecl ecs::TypeNameUtil::name_detail() ";
 
         pretty_name.remove_prefix(prefix.size());
-        pretty_name.remove_suffix(suffix.size());
-
-        size_t start_of = pretty_name.find_first_of(' ') + 1;
-        return pretty_name.substr(start_of);
+        return pretty_name;
     }
 #endif
 
     template <typename T>
-    static constexpr size_t hash() {
+    static constexpr size_t hash() noexcept {
         static_assert(!std::is_reference_v<T>, "dont send references to hash");
         static_assert(!std::is_const_v<T>, "dont send const to hash");
         return hash_64_fnv1a_const(name_detail<T>());

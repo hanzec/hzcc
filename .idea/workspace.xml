@@ -9,32 +9,25 @@
       <config projectName="mycc" targetName="FileCheck" />
       <config projectName="mycc" targetName="latex-prebuild" />
       <config projectName="mycc" targetName="documentation" />
+      <config projectName="mycc" targetName="doc_doxygen" />
       <config projectName="mycc" targetName="mycc_test" />
       <config projectName="mycc" targetName="mycc" />
       <config projectName="mycc" targetName="mycc_e2e_test" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
-    <configurations />
+    <configurations>
+      <configuration PROFILE_NAME="Release" ENABLED="true" CONFIG_NAME="Release" GENERATION_OPTIONS="-G Ninja" />
+    </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/AST/type/array_type.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/AST/type/func_ptr_type.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitlab-ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.gitlab-ci.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/ast_context.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ast_context.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/ast_context.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ast_context.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/function_node.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/function_node.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/operator/cast.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/operator/cast.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/type/type.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/Parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/Parser.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/SyntaxParser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/SyntaxParser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/block_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/block_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/utils/common_utils.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/utils/common_utils.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/utils/common_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/utils/common_utils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/Status.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/Status.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Documentation/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Documentation/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Documentation/developers.tex" beforeDir="false" afterPath="$PROJECT_DIR$/Documentation/developers.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CMakeLists.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,8 +71,9 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Test/part3" />
-    <property name="settings.editor.selected.configurable" value="dynamic.analysis.tools.sanitizers" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/cmake-build-release" />
+    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
+    <property name="structure.view.defaults.are.configured" value="true" />
   </component>
   <component name="ReaderModeSettings">
     <option name="showLigatures" value="true" />
@@ -89,18 +83,24 @@
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Test\part3" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\AST" />
-      <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\syntax\utils" />
-      <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\syntax" />
-      <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\syntax\parser" />
-      <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\utils" />
+      <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Test\part4" />
+      <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\AST\expr\operator" />
+      <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\AST\expr" />
+      <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\AST\type" />
+      <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\AST\statement" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake 应用程序.mycc">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
+  <component name="RunManager" selected="CMake 应用程序.documentation">
+    <configuration default="true" type="BIBTEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+      <texify-bibtex>
+        <compiler />
+        <compiler-path />
+        <compiler-arguments />
+        <envs />
+        <main-file />
+        <aux-dir />
+      </texify-bibtex>
+      <method v="2" />
     </configuration>
     <configuration name="mycc_test" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc_test" TEST_MODE="SUITE_TEST">
       <method v="2">
@@ -109,6 +109,16 @@
       </method>
     </configuration>
     <configuration name="FileCheck" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="FileCheck" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="FileCheck">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="doc_doxygen" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="doc_doxygen" CONFIG_NAME="Release">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -128,7 +138,10 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-3 /home/hanzech/mycc/Test/part3/array2.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
+    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-4 /home/hanzech/mycc/Test/part4/extra1.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
+      <envs>
+        <env name="GLOG_v" value="2" />
+      </envs>
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -138,6 +151,22 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="EXTERNAL_TOOL_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+      <texify-external>
+        <program>PYTHONTEX</program>
+        <main-file />
+        <work-dir />
+      </texify-external>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="MAKEINDEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+      <texify-makeindex>
+        <program>MAKEINDEX</program>
+        <main-file />
+        <work-dir />
+      </texify-makeindex>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="CMake 应用程序.FileCheck" />
       <item itemvalue="CMake 应用程序.documentation" />
@@ -145,6 +174,7 @@
       <item itemvalue="CMake 应用程序.latex-prebuild" />
       <item itemvalue="CMake 应用程序.mycc" />
       <item itemvalue="CMake 应用程序.mycc_e2e_test" />
+      <item itemvalue="CMake 应用程序.doc_doxygen" />
       <item itemvalue="Google Test.mycc_test" />
     </list>
   </component>
@@ -168,7 +198,13 @@
       <workItem from="1648135921403" duration="37666000" />
       <workItem from="1648224834800" duration="8670000" />
       <workItem from="1648243183588" duration="62000" />
-      <workItem from="1648243665152" duration="47721000" />
+      <workItem from="1648243665152" duration="113157000" />
+      <workItem from="1648509704800" duration="54680000" />
+      <workItem from="1648595778487" duration="1000" />
+      <workItem from="1648595912548" duration="50929000" />
+      <workItem from="1648760504420" duration="1133000" />
+      <workItem from="1648761805192" duration="1201000" />
+      <workItem from="1648763024460" duration="7098000" />
     </task>
     <servers />
   </component>
@@ -176,15 +212,87 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/syntax/parser/statements/block_parser.cc</url>
-          <line>36</line>
-          <option name="timeStamp" value="61" />
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statements/value_decl_parser.cc</url>
+          <line>77</line>
+          <option name="timeStamp" value="269" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc</url>
+          <line>831</line>
+          <option name="timeStamp" value="311" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc</url>
+          <line>250</line>
+          <option name="timeStamp" value="328" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc</url>
+          <line>1008</line>
+          <option name="timeStamp" value="336" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc</url>
+          <line>735</line>
+          <option name="timeStamp" value="337" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/AST/ast_context.h</url>
+          <line>79</line>
+          <option name="timeStamp" value="339" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc</url>
+          <line>1115</line>
+          <option name="timeStamp" value="350" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statements/if.cc</url>
+          <line>93</line>
+          <option name="timeStamp" value="352" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc</url>
+          <line>1055</line>
+          <option name="timeStamp" value="353" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statements/if.cc</url>
+          <line>82</line>
+          <option name="timeStamp" value="354" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statements/if.cc</url>
+          <line>87</line>
+          <option name="timeStamp" value="355" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statements/do.cc</url>
+          <line>30</line>
+          <option name="timeStamp" value="379" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc</url>
+          <line>183</line>
+          <option name="timeStamp" value="381" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint enabled="true" type="CidrExceptionBreakpoint" />
+      </default-breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
         <watch expression="_parserMap" />
+        <watch expression="this-&gt;_current_context.get()-&gt;_variable_lookup_table" />
+        <watch expression="lhs.get()-&gt;_type" />
+        <watch expression="this-&gt;_index_expr" />
+        <watch expression="name.get()-&gt;_type" />
+        <watch expression="name.get()-&gt;_type" />
+        <watch expression="name.get()-&gt;_type" />
+        <watch expression="context._named_types[0].second.get()-&gt;_id" />
+        <watch expression="context._named_types[0]" />
+        <watch expression="rhs.get()" />
       </configuration>
     </watches-manager>
   </component>
