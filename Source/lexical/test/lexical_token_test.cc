@@ -5,7 +5,7 @@
 
 #define private public  // hack compiler allow asserting private member
 #define protected public
-#include "lexical/lexical.h"
+#include "lexical/Token.h"
 #undef private
 #undef protected
 
@@ -13,7 +13,7 @@ namespace Mycc::Lexical {
 TEST(LEXICAL_TOKEN, construct_one_with_string_test) { // NOLINT
   EXPECT_EQ(Token::_const_value_storage.size(), 0);  // const vale pool should be empty
 
-  auto* new_token = new Token("test", Token::kIdentity, 0, 0);
+  auto* new_token = new Token("test", kIdentity, 0, 0);
 
   // const vale pool should have one element
   EXPECT_EQ(Token::_const_value_storage.size(), 1);
@@ -22,7 +22,7 @@ TEST(LEXICAL_TOKEN, construct_one_with_string_test) { // NOLINT
 
   // token should be constructed
   EXPECT_EQ(new_token->Value(), "test");
-  EXPECT_EQ(new_token->TokenType(), Token::kIdentity);
+  EXPECT_EQ(new_token->Type(), kIdentity);
   EXPECT_EQ(new_token->Location(), std::make_pair(0, 0));
 
   delete new_token;
@@ -33,14 +33,14 @@ TEST(LEXICAL_TOKEN, construct_one_with_string_test) { // NOLINT
 TEST(LEXICAL_TOKEN, construct_one_without_string_test) { // NOLINT
   EXPECT_EQ(Token::_const_value_storage.size(), 0);  // const vale pool should be empty
 
-  auto* new_token = new Token(Token::kAdd, 0, 0);
+  auto* new_token = new Token(kAdd, 0, 0);
 
   // const vale pool should have no element
   EXPECT_EQ(Token::_const_value_storage.size(), 0);
 
   // token should be constructed
   EXPECT_EQ(new_token->Value(), "+");
-  EXPECT_EQ(new_token->TokenType(), Token::kAdd);
+  EXPECT_EQ(new_token->Type(), kAdd);
   EXPECT_EQ(new_token->Location(), std::make_pair(0, 0));
 
   delete new_token;
@@ -51,7 +51,7 @@ TEST(LEXICAL_TOKEN, construct_one_without_string_test) { // NOLINT
 TEST(LEXICAL_TOKEN, construct_two_with_same_string_test) { // NOLINT
   EXPECT_EQ(Token::_const_value_storage.size(), 0);  // const vale pool should be empty
 
-  auto* new_token_0 = new Token("test", Token::kIdentity, 0, 0);
+  auto* new_token_0 = new Token("test", kIdentity, 0, 0);
 
   // const vale pool should have one element after first construction
   EXPECT_EQ(Token::_const_value_storage.size(), 1);
@@ -60,10 +60,10 @@ TEST(LEXICAL_TOKEN, construct_two_with_same_string_test) { // NOLINT
 
   // token should be constructed
   EXPECT_EQ(new_token_0->Value(), "test");
-  EXPECT_EQ(new_token_0->TokenType(), Token::kIdentity);
+  EXPECT_EQ(new_token_0->Type(), kIdentity);
   EXPECT_EQ(new_token_0->Location(), std::make_pair(0, 0));
 
-  auto* new_token_1 = new Token("test", Token::kIdentity, 0, 1);
+  auto* new_token_1 = new Token("test", kIdentity, 0, 1);
 
   // const vale pool should have one element after second construction
   EXPECT_EQ(Token::_const_value_storage.size(), 1);
@@ -72,7 +72,7 @@ TEST(LEXICAL_TOKEN, construct_two_with_same_string_test) { // NOLINT
 
   // token should be constructed
   EXPECT_EQ(new_token_1->Value(), "test");
-  EXPECT_EQ(new_token_1->TokenType(), Token::kIdentity);
+  EXPECT_EQ(new_token_1->Type(), kIdentity);
   EXPECT_EQ(new_token_1->Location(), std::make_pair(0, 1));
 
   delete new_token_0;
@@ -95,7 +95,7 @@ TEST(LEXICAL_TOKEN, construct_two_with_same_string_test) { // NOLINT
 TEST(LEXICAL_TOKEN, construct_three_string_test) { // NOLINT
   EXPECT_EQ(Token::_const_value_storage.size(), 0);  // const vale pool should be empty
 
-  auto* new_token_0 = new Token("test", Token::kIdentity, 0, 0);
+  auto* new_token_0 = new Token("test", kIdentity, 0, 0);
 
   // const vale pool should have one element after first construction
   EXPECT_EQ(Token::_const_value_storage.size(), 1);
@@ -104,10 +104,10 @@ TEST(LEXICAL_TOKEN, construct_three_string_test) { // NOLINT
 
   // token should be constructed
   EXPECT_EQ(new_token_0->Value(), "test");
-  EXPECT_EQ(new_token_0->TokenType(), Token::kIdentity);
+  EXPECT_EQ(new_token_0->Type(), kIdentity);
   EXPECT_EQ(new_token_0->Location(), std::make_pair(0, 0));
 
-  auto* new_token_1 = new Token("test_other", Token::kIdentity, 0, 1);
+  auto* new_token_1 = new Token("test_other", kIdentity, 0, 1);
 
   // const vale pool should have one element after second construction
   EXPECT_EQ(Token::_const_value_storage.size(), 2);
@@ -116,10 +116,10 @@ TEST(LEXICAL_TOKEN, construct_three_string_test) { // NOLINT
 
   // token should be constructed
   EXPECT_EQ(new_token_1->Value(), "test_other");
-  EXPECT_EQ(new_token_1->TokenType(), Token::kIdentity);
+  EXPECT_EQ(new_token_1->Type(), kIdentity);
   EXPECT_EQ(new_token_1->Location(), std::make_pair(0, 1));
 
-  auto* new_token_2 = new Token("test", Token::kIdentity, 0, 1);
+  auto* new_token_2 = new Token("test", kIdentity, 0, 1);
 
   // const vale pool should have one element after second construction
   EXPECT_EQ(Token::_const_value_storage.size(), 2);
@@ -129,7 +129,7 @@ TEST(LEXICAL_TOKEN, construct_three_string_test) { // NOLINT
 
   // token should be constructed
   EXPECT_EQ(new_token_2->Value(), "test");
-  EXPECT_EQ(new_token_2->TokenType(), Token::kIdentity);
+  EXPECT_EQ(new_token_2->Type(), kIdentity);
   EXPECT_EQ(new_token_2->Location(), std::make_pair(0, 1));
 
   delete new_token_0;

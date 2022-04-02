@@ -2,8 +2,8 @@
 // Created by chen_ on 2022/3/29.
 //
 #include "return.h"
-
 #include "lexical/Token.h"
+#include "AST/type/type.h"
 
 namespace Mycc::AST {
 std::string ReturnNode::GetNodeName() const { return "ReturnNode"; }

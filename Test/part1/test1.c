@@ -188,12 +188,12 @@ iffy
 /**
 * Base error message
 */
-//CHECK_ERR: Lexer error in file __FILE__ line 51 near text: 1
+//CHECK_ERR: Lexer error in file __FILE__ line 52 near text 1
 //CHECK_ERR-NEXT:         integer number out of range
 
 /**
 * Error checking for nice colored error messages
 */
-//CHECK_ERR_NICE:      __FILE__:51:0: error: integer number out of range
+//CHECK_ERR_NICE:      __FILE__:52:0: error: integer number out of range
 //CHECK_ERR_NICE-NEXT:            51|12345678901234567890
 //CHECK_ERR_NICE-NEXT:               ^

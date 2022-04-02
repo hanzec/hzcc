@@ -7,9 +7,7 @@
 #define MYCC_SOURCE_AST_STATEMENT_EMPTY_H_
 namespace Mycc::AST {
 class EmptyStatement : public ASTNode {
-    [[nodiscard]] std::shared_ptr<Type> GetType() const override {
-        return std::make_shared<Type>("void");
-    }
+    [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
   protected:
     [[nodiscard]] std::string GetNodeName() const override;

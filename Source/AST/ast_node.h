@@ -9,16 +9,20 @@
 #include <optional>
 #include <string>
 #include <utility>
-#include "AST/type/type.h"
-#include "value.h"
+
 namespace Mycc {
 
 namespace Lexical {
 class Token;
 }  // namespace Lexical
 
+/**
+ * @brief The base class of all AST nodes.
+ */
 namespace AST {
+class Type;
 class CastExpr;
+class DeduceValue;
 class ASTNode {
   public:
     ASTNode();

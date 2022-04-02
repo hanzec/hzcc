@@ -4,6 +4,7 @@
 #include "assign.h"
 
 #include "lexical/Token.h"
+#include "AST/type/type.h"
 namespace Mycc::AST {
 
 AssignExpr::AssignExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,

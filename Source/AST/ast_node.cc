@@ -11,6 +11,7 @@
 #include "AST/expr/cast.h"
 #include "AST/type/array_type.h"
 #include "utils/message_utils.h"
+#include "AST/value.h"
 namespace Mycc::AST {
 
 ASTNode::ASTNode() : ASTNode({-1, -1}) {}

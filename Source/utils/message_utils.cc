@@ -30,7 +30,8 @@ static void ALWAYS_INLINE internal_print_nice_message(
     Level error_level, const std::string& message, const std::string& line,
     std::pair<int, int> line_info) {
     // print colored message header
-    std::cerr << current_filename << ":" << line_info.first << ":"
+    // we add 1 to line_info.first because in code we count from 0.
+    std::cerr << current_filename.c_str() << ":" << (line_info.first + 1) << ":"
               << line_info.second << ": ";
 
     if (Options::Global_disable_color) {
@@ -85,8 +86,15 @@ void set_current_file(const std::filesystem::path& filename) {
     current_filename = filename;
 }
 
-void print_message(Level error_level, const std::string& message,
-                   std::pair<int, int> line_info) {
+void print_message_internal(Level error_level, const std::string& message,
+                            const std::string& line,
+                            std::pair<int, int> line_info) {
+    print_message_internal(error_level, message, line, line_info,
+                           std::string() + line.at(line_info.second));
+}
+
+void print_message_internal(Level error_level, const std::string& message,
+                            std::pair<int, int> line_info) {
     if (FsUtils::is_readable(current_filename)) {
         std::fstream file(current_filename);
         file.seekg(std::ios::beg);
@@ -103,15 +111,10 @@ void print_message(Level error_level, const std::string& message,
     }
 }
 
-void print_message(Level error_level, const std::string& message,
-                   const std::string& line, std::pair<int, int> line_info) {
-    print_message(error_level, message, line, line_info,
-                  std::string() + line.at(line_info.second));
-}
-
-void print_message(Level error_level, const std::string& message,
-                   const std::string& line, std::pair<int, int> line_info,
-                   const std::string& error_string) {
+void print_message_internal(Level error_level, const std::string& message,
+                            const std::string& line,
+                            std::pair<int, int> line_info,
+                            const std::string& error_string) {
     if (Options::Global_enable_nicer_print) {
         internal_print_nice_message(error_level, message, line, line_info);
     } else {
@@ -123,9 +126,10 @@ void print_message(Level error_level, const std::string& message,
                 1;
         }
 
+        // we add 1 to line_info.first because in code we count from 0.
         std::cerr << current_part << " error in file "
-                  << current_filename.c_str() << " line " << line_info.first
-                  << " near "
+                  << current_filename.c_str() << " line "
+                  << (line_info.first + 1) << " near "
                   << (line_info.second == -1 ? "end of file"
                                              : "text " + error_string)
                   << "\n\t"

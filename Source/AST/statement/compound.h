@@ -1,13 +1,13 @@
 //
 // Created by chen_ on 2022/3/24.
 //
+#ifndef MYCC_SOURCE_AST_STATEMENT_BLOCK_H_
+#define MYCC_SOURCE_AST_STATEMENT_BLOCK_H_
+#include <list>
 #include <memory>
 #include <vector>
 
 #include "AST/ast_node.h"
-#ifndef MYCC_SOURCE_AST_STATEMENT_BLOCK_H_
-#define MYCC_SOURCE_AST_STATEMENT_BLOCK_H_
-
 namespace Mycc::AST {
 class CompoundStmt : public ASTNode {
   public:
@@ -19,7 +19,7 @@ class CompoundStmt : public ASTNode {
     [[nodiscard]]  std::string Dump(std::string_view ident) const override;
 #endif
 
-    const std::unique_ptr<ASTNode>& GetLastStatement() const;
+    [[nodiscard]] const std::unique_ptr<ASTNode>& GetLastStatement() const;
 
   protected:
     [[nodiscard]] std::string GetNodeName() const override;

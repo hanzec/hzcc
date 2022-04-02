@@ -7,7 +7,8 @@
 
 #include "AST/type/array_type.h"
 #include "lexical/Token.h"
-
+#include "AST/type/type.h"
+#include "AST/value.h"
 namespace Mycc::AST {
 
 std::string LiteralExpr::GetNodeName() const {

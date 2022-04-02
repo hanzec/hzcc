@@ -1,16 +1,14 @@
 //
 // Created by chen_ on 2022/3/24.
 //
-#include <list>
-#include <memory>
-
-#include "lexical/token_type.h"
-#include "lexical/utils/symbol_utils.h"
-#include "macro.h"
-#include "syntax/utils/token_list_utils.h"
-#include "utils/message_utils.h"
 #ifndef MYCC_SOURCE_SYNTAX_PARSER_COMMON_UTILS_H_
 #define MYCC_SOURCE_SYNTAX_PARSER_COMMON_UTILS_H_
+#include <list>
+#include <memory>
+#include <string>
+#include "token_list_utils.h"
+#include "lexical/utils/symbol_utils.h"
+
 namespace Mycc {
 namespace AST {
 class Type;

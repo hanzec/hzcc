@@ -4,6 +4,8 @@
 #include "decl_ref.h"
 
 #include "lexical/Token.h"
+#include "AST/type/type.h"
+
 namespace Mycc::AST {
 std::string DeclRefExpr::GetNodeName() const { return "DeclRefExpr"; }
 DeclRefExpr::DeclRefExpr(const Lexical::Token& name, std::shared_ptr<Type> type)

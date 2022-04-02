@@ -1,14 +1,14 @@
 //
 // Created by chen_ on 2022/2/1.
 //
+#ifndef MYCC_SYMBOL_UTILS_H
+#define MYCC_SYMBOL_UTILS_H
 #include <array>
 #include <cstring>
+#include <string>
 
 #include "lexical/keywords.h"
 #include "lexical/token_type.h"
-
-#ifndef MYCC_SYMBOL_UTILS_H
-#define MYCC_SYMBOL_UTILS_H
 
 namespace Mycc::Lexical::SymbolUtils {
 /**

@@ -74,6 +74,7 @@
 find_program(GCOVR_PATH gcovr)
 find_program(LLVM_COV_PATH llvm-cov
         NAMES
+        "llvm-cov"
         "llvm-cov-14"
         "llvm-cov-13"
         "llvm-cov-12"
@@ -81,6 +82,7 @@ find_program(LLVM_COV_PATH llvm-cov
         "llvm-cov-10")
 find_program(LLVM_PROFDATA_PATH llvm-profdata
         NAMES
+        "llvm-profdata"
         "llvm-profdata-14"
         "llvm-profdata-13"
         "llvm-profdata-12"
@@ -263,7 +265,7 @@ function(target_code_coverage TARGET_NAME)
                     ${CMAKE_COMMAND} -E echo "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.profraw" >> ${CMAKE_COVERAGE_OUTPUT_DIRECTORY}/profraw.list
                     COMMAND
                     ${LLVM_PROFDATA_PATH} merge -sparse ${TARGET_NAME}.profraw
-                        -o ${TARGET_NAME}.profdata
+                    -o ${TARGET_NAME}.profdata
                     JOB_POOL ccov_serial_pool
                     DEPENDS ccov-clean ${TARGET_NAME})
 
@@ -279,18 +281,18 @@ function(target_code_coverage TARGET_NAME)
             add_custom_target(ccov-report-${TARGET_NAME}
                     COMMAND
                     ${LLVM_COV_PATH} report $<TARGET_FILE:${TARGET_NAME}> ${SO_OBJECTS}
-                        -instr-profile=${TARGET_NAME}.profdata ${EXCLUDE_REGEX}
+                    -instr-profile=${TARGET_NAME}.profdata ${EXCLUDE_REGEX}
                     DEPENDS ccov-${TARGET_NAME})
 
             # Generates xml output
             add_custom_target(ccov-export-${TARGET_NAME}
                     COMMAND
                     ${LLVM_COV_PATH} export $<TARGET_FILE:${TARGET_NAME}> ${SO_OBJECTS}
-                        -instr-profile=${TARGET_NAME}.profdata
-                        -format="lcov" ${EXCLUDE_REGEX} > ${TARGET_NAME}.lcov
+                    -instr-profile=${TARGET_NAME}.profdata
+                    -format="lcov" ${EXCLUDE_REGEX} > ${TARGET_NAME}.lcov
                     COMMAND
-                    ${Python3_EXECUTABLE} -m lcov_cobertura ${TARGET_NAME}.lcov
-                        -o "${CMAKE_COVERAGE_OUTPUT_DIRECTORY}/${TARGET_NAME}.xml"
+                    lcov_cobertura ${TARGET_NAME}.lcov
+                    -o "${CMAKE_COVERAGE_OUTPUT_DIRECTORY}/${TARGET_NAME}.xml"
                     DEPENDS ccov-${TARGET_NAME})
 
         elseif (CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -316,9 +318,9 @@ function(target_code_coverage TARGET_NAME)
             add_custom_target(ccov-export-${TARGET_NAME}
                     COMMAND
                     ${GCOVR_PATH}
-                        -r ${CMAKE_SOURCE_DIR}
-                        --xml "${CMAKE_COVERAGE_OUTPUT_DIRECTORY}/${TARGET_NAME}.xml"
-                        "${CMAKE_BINARY_DIR}/CMakeFiles/${TARGET_NAME}.dir"
+                    -r ${CMAKE_SOURCE_DIR}
+                    --xml "${CMAKE_COVERAGE_OUTPUT_DIRECTORY}/${TARGET_NAME}.xml"
+                    "${CMAKE_BINARY_DIR}/CMakeFiles/${TARGET_NAME}.dir"
                     DEPENDS ccov-${TARGET_NAME})
         endif ()
 

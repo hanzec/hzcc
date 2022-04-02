@@ -2,7 +2,6 @@
 // Created by chen_ on 2022/3/25.
 //
 #include <string>
-#include <string_view>
 
 #include "AST/ast_node.h"
 
@@ -32,7 +31,7 @@ class LiteralExpr : public ASTNode {
 
   private:
     ValueType _type;
-    std::basic_string<char> _value;
+    std::string _value;
 };
 
 }  // namespace Mycc::AST

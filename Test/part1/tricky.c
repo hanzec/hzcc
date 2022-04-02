@@ -126,9 +126,9 @@ void
 //CHECK-NEXT: File __FILE__ Line    36 Token 306 Text BYE
 
 
-//CHECK_ERR:      Lexer error in file __FILE__ line 39 near text: $
+//CHECK_ERR:      Lexer error in file __FILE__ line 40 near text $
 //CHECK_ERR-NEXT:         Unexpected symbol, ignoring.
-//CHECK_ERR-NEXT: Lexer error in file __FILE__ line 39 near text: `
+//CHECK_ERR-NEXT: Lexer error in file __FILE__ line 40 near text `
 //CHECK_ERR-NEXT:         Unexpected symbol, ignoring.
-//CHECK_ERR-NEXT: Lexer error in file __FILE__ line 41 near text: /
+//CHECK_ERR-NEXT: Lexer error in file __FILE__ line 42 near text /
 //CHECK_ERR-NEXT:         Unclosed comment

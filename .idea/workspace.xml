@@ -16,25 +16,19 @@
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
-    <configurations>
-      <configuration PROFILE_NAME="Release" ENABLED="true" CONFIG_NAME="Release" GENERATION_OPTIONS="-G Ninja" />
-    </configurations>
+    <configurations />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitlab-ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.gitlab-ci.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Documentation/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Documentation/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Documentation/developers.tex" beforeDir="false" afterPath="$PROJECT_DIR$/Documentation/developers.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/gcc_10_3.dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/gcc_10_3.dockerfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -72,7 +66,7 @@
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/cmake-build-release" />
-    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
     <property name="structure.view.defaults.are.configured" value="true" />
   </component>
   <component name="ReaderModeSettings">
@@ -90,17 +84,44 @@
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\AST\statement" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake 应用程序.documentation">
+  <component name="RunManager" selected="Google Test.mycc_test">
     <configuration default="true" type="BIBTEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
       <texify-bibtex>
         <compiler />
         <compiler-path />
         <compiler-arguments />
         <envs />
-        <main-file />
-        <aux-dir />
+        <main-file>$APPLICATION_HOME_DIR$/jbr/bin</main-file>
+        <aux-dir>$APPLICATION_HOME_DIR$/jbr/bin</aux-dir>
       </texify-bibtex>
       <method v="2" />
+    </configuration>
+    <configuration name="LEXICAL_PARSER" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc_test" TEST_PATTERN="LEXICAL_PARSER.*:LEXICAL_PARSER/*.*:LEXICAL_PARSER.*/*:*/LEXICAL_PARSER.*/*:*/LEXICAL_PARSER/*.*" TEST_MODE="PATTERN">
+      <envs>
+        <env name="GLOG_v" value="0" />
+      </envs>
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LEXICAL_PARSER.c_style_comment_3" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc_test" TEST_CLASS="LEXICAL_PARSER" TEST_METHOD="c_style_comment_3" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LEXICAL_PARSER.string_iteral_1" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc_test" TEST_CLASS="LEXICAL_PARSER" TEST_METHOD="string_iteral_1" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LEXICAL_UTILS_TOKEN_ID" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc_test" TEST_PATTERN="LEXICAL_UTILS_TOKEN_ID.*:LEXICAL_UTILS_TOKEN_ID/*.*:LEXICAL_UTILS_TOKEN_ID.*/*:*/LEXICAL_UTILS_TOKEN_ID.*/*:*/LEXICAL_UTILS_TOKEN_ID/*.*" TEST_MODE="PATTERN">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
     </configuration>
     <configuration name="mycc_test" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc_test" TEST_MODE="SUITE_TEST">
       <method v="2">
@@ -109,11 +130,6 @@
       </method>
     </configuration>
     <configuration name="FileCheck" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="FileCheck" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="FileCheck">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -138,7 +154,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-4 /home/hanzech/mycc/Test/part4/extra1.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
+    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-1 --fno_color --fnice_error /home/hanzech/mycc/Test/part1/pi.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
       <envs>
         <env name="GLOG_v" value="2" />
       </envs>
@@ -146,7 +162,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="mycc_e2e_test" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_e2e_test" CONFIG_NAME="Debug">
+    <configuration name="mycc_e2e_test" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_e2e_test" CONFIG_NAME="Release">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -157,6 +173,27 @@
         <main-file />
         <work-dir />
       </texify-external>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+      <texify>
+        <compiler>PDFLATEX</compiler>
+        <compiler-path />
+        <sumatra-path />
+        <pdf-viewer>NONE</pdf-viewer>
+        <viewer-command />
+        <compiler-arguments />
+        <envs />
+        <main-file />
+        <output-path>{projectDir}/out</output-path>
+        <auxil-path>{projectDir}/auxil</auxil-path>
+        <compile-twice>false</compile-twice>
+        <output-format>PDF</output-format>
+        <latex-distribution>MIKTEX</latex-distribution>
+        <has-been-run>false</has-been-run>
+        <bib-run-config>[]</bib-run-config>
+        <makeindex-run-config>[]</makeindex-run-config>
+      </texify>
       <method v="2" />
     </configuration>
     <configuration default="true" type="MAKEINDEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
@@ -176,7 +213,19 @@
       <item itemvalue="CMake 应用程序.mycc_e2e_test" />
       <item itemvalue="CMake 应用程序.doc_doxygen" />
       <item itemvalue="Google Test.mycc_test" />
+      <item itemvalue="Google Test.LEXICAL_UTILS_TOKEN_ID" />
+      <item itemvalue="Google Test.LEXICAL_PARSER" />
+      <item itemvalue="Google Test.LEXICAL_PARSER.string_iteral_1" />
+      <item itemvalue="Google Test.LEXICAL_PARSER.c_style_comment_3" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Google Test.LEXICAL_PARSER" />
+        <item itemvalue="Google Test.LEXICAL_PARSER.c_style_comment_3" />
+        <item itemvalue="Google Test.LEXICAL_PARSER.string_iteral_1" />
+        <item itemvalue="Google Test.LEXICAL_UTILS_TOKEN_ID" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -204,7 +253,13 @@
       <workItem from="1648595912548" duration="50929000" />
       <workItem from="1648760504420" duration="1133000" />
       <workItem from="1648761805192" duration="1201000" />
-      <workItem from="1648763024460" duration="7098000" />
+      <workItem from="1648763024460" duration="7876000" />
+      <workItem from="1648837772758" duration="9000" />
+      <workItem from="1648851961380" duration="6000" />
+      <workItem from="1648936061325" duration="16048000" />
+      <workItem from="1649013717961" duration="13744000" />
+      <workItem from="1649030965752" duration="624000" />
+      <workItem from="1649092739319" duration="3217000" />
     </task>
     <servers />
   </component>
@@ -275,6 +330,51 @@
           <url>file://$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc</url>
           <line>183</line>
           <option name="timeStamp" value="381" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/AST/ast_node.h</url>
+          <line>7</line>
+          <option name="timeStamp" value="383" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/AST/expr/decl_ref.cc</url>
+          <line>3</line>
+          <option name="timeStamp" value="385" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/AST/statement/return.cc</url>
+          <line>3</line>
+          <option name="timeStamp" value="386" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/syntax/utils/common_utils.cc</url>
+          <line>4</line>
+          <option name="timeStamp" value="387" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/lexical/test/parser_number_literal_test.cc</url>
+          <line>3</line>
+          <option name="timeStamp" value="388" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/lexical/test/parser_string_literal_test.cc</url>
+          <line>16</line>
+          <option name="timeStamp" value="390" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/lexical/test/parser_comment_test.cc</url>
+          <line>58</line>
+          <option name="timeStamp" value="394" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/lexical/LexicalParser.cc</url>
+          <line>377</line>
+          <option name="timeStamp" value="396" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/lexical/LexicalParser.cc</url>
+          <line>187</line>
+          <option name="timeStamp" value="397" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

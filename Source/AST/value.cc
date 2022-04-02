@@ -3,8 +3,8 @@
 //
 
 #include "value.h"
-
 #include <cstring>
+
 namespace Mycc::AST {
 
 DeduceValue::DeduceValue(uint64_t value) : _type(kInt) {
@@ -81,7 +81,7 @@ DeduceValue operator-(DeduceValue i, const DeduceValue& n) {
         return DeduceValue((uint64_t)(i.AsInt() - n.AsInt()));
     } else {
         return DeduceValue(i.AsReal() - n.AsReal());
-    };
+    }
 }
 
 DeduceValue operator*(DeduceValue i, const DeduceValue& n) {
@@ -90,7 +90,7 @@ DeduceValue operator*(DeduceValue i, const DeduceValue& n) {
         return DeduceValue((uint64_t)(i.AsInt() * n.AsInt()));
     } else {
         return DeduceValue(i.AsReal() * n.AsReal());
-    };
+    }
 }
 
 DeduceValue operator/(DeduceValue i, const DeduceValue& n) {
@@ -99,7 +99,7 @@ DeduceValue operator/(DeduceValue i, const DeduceValue& n) {
         return DeduceValue((uint64_t)(i.AsInt() / n.AsInt()));
     } else {
         return DeduceValue(i.AsReal() / n.AsReal());
-    };
+    }
 }
 
 DeduceValue operator%(DeduceValue i, const DeduceValue& n) {

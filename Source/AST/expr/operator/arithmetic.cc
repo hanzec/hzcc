@@ -2,7 +2,7 @@
 // Created by chen_ on 2022/3/29.
 //
 #include "arithmetic.h"
-
+#include "AST/value.h"
 #include "lexical/Token.h"
 
 namespace Mycc::AST {

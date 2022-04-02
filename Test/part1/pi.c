@@ -19,12 +19,12 @@ const float PI = 3.1415926535897932384626433832795028841971693993751058209749445
 /**
  * Base error message
  */
-//CHECK_ERR:      Lexer error in file __FILE__ line 1 near text: 3
-//CHECK_ERR-NEXT:        real number is greater than most possible significant digits, will truncating to 3.1415926535897932384
+//CHECK_ERR:      Lexer error in file __FILE__ line 2 near text 3
+//CHECK_ERR-NEXT: real number is greater than most possible significant digits, will truncating to 3.1415926535897932384
 
 /**
  * Error checking for nice colored error messages
  */
-//CHECK_ERR_NICE:      __FILE__:1:17: warning: real number is greater than most possible significant digits, will truncating to 3.1415926535897932384
+//CHECK_ERR_NICE:      __FILE__:2:17: warning: real number is greater than most possible significant digits, will truncating to 3.1415926535897932384
 //CHECK_ERR_NICE-NEXT:     1|const float PI = 3.{{[0-9]*}};
 //CHECK_ERR_NICE-NEXT:                        ^

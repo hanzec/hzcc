@@ -2,6 +2,7 @@
 // Created by chen_ on 2022/3/29.
 //
 #include "sizeof.h"
+#include "AST/type/type.h"
 
 namespace Mycc::AST {
 

@@ -4,8 +4,9 @@
 #include "unary.h"
 
 #include <cassert>
-
 #include "lexical/Token.h"
+#include "AST/type/type.h"
+
 namespace Mycc::AST {
 std::string UnaryExpr::GetNodeName() const { return "UnaryExpr"; }
 UnaryExpr::UnaryExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> expr)

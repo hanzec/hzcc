@@ -3,6 +3,7 @@
 #include <cassert>
 #include <utility>
 
+#include "AST/value.h"
 #include "AST/statement/compound.h"
 #include "AST/type/array_type.h"
 #include "AST/type/func_ptr_type.h"

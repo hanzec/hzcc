@@ -1,3 +1,5 @@
+#ifndef MYCC_AST_AST_H
+#define MYCC_AST_AST_H
 #include <memory>
 #include <string_view>
 #include <unordered_map>
@@ -10,8 +12,6 @@
 #include "AST/type/type.h"
 #include "lexical/Token.h"
 #include "utils/Status.h"
-#ifndef MYCC_AST_AST_H
-#define MYCC_AST_AST_H
 
 namespace Mycc::AST {
 class ASTContext {

@@ -104,7 +104,7 @@ int main(int argc, char* argv[]) {
     Mycc::Message::set_current_file(input_files[0]);
 
     // set message head to "Lexical"
-    Mycc::Message::set_current_part("Lexical");
+    Mycc::Message::set_current_part("Lexer");
 
     // do lexical analysis
     std::list<Mycc::Lexical::Token> tokens;

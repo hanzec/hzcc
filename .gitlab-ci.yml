@@ -1,109 +1,172 @@
 stages:
+  - dependency_build
+  - dependency_push
   - build
   - unit_test
   - end_to_end_test
   - documentation
 
 variables:
-  CMAKE_VERSION: "3.16.3"
+  DOCKER_TLS_CERTDIR: "/certs"
 
-.install_gcovr: &install_gcovr
+
+#####################################################################################################
+## Dependency Build                                                                         #########
+#####################################################################################################
+build_llvm_latest:
+  tags:
+    - docker
+  stage: dependency_build
   before_script:
-    - apt-get -qq update
-    - apt-get -qq install -y python3 python3-pip
-    - pip3 install gcovr
+    - docker info
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+  script:
+    - >
+      docker build
+      --pull
+      --cache-from $CI_REGISTRY_IMAGE/llvm_latest:latest
+      --label "org.opencontainers.image.title=$CI_PROJECT_TITLE"
+      --label "org.opencontainers.image.url=$CI_PROJECT_URL"
+      --label "org.opencontainers.image.created=$CI_JOB_STARTED_AT"
+      --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
+      --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME"
+      --tag $CI_REGISTRY_IMAGE/llvm_latest:$CI_COMMIT_SHA
+      - < docker/llvm_latest.dockerfile
+    - docker push $CI_REGISTRY_IMAGE/llvm_latest:$CI_COMMIT_SHA
+  services:
+    - docker:dind
+  rules:
+    - changes:
+        - docker/llvm_latest.dockerfile
 
-.install_lcov_cobertura: &install_lcov_cobertura
+push_llvm_latest:
+  tags:
+    - docker
+  variables:
+    GIT_STRATEGY: none
+  stage: dependency_push
   before_script:
-    - apt-get -qq update
-    - apt-get -qq install -y python3 python3-pip
-    - pip3 install lcov_cobertura
+    - docker info
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+  script:
+    - docker pull $CI_REGISTRY_IMAGE/llvm_latest:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE/llvm_latest:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/llvm_latest:latest
+    - docker push $CI_REGISTRY_IMAGE/llvm_latest:latest
+  services:
+    - docker:dind
+  rules:
+    - changes:
+        - docker/llvm_latest.dockerfile
+  needs:
+    - build_llvm_latest
 
-.install_vcpkg_dep: &install_vcpkg_dep
+build_gcc_10_3_latest:
+  tags:
+    - docker
+  stage: dependency_build
   before_script:
-    - apt-get -qq update
-    - apt-get -qq install -y curl zip unzip tar pkg-config cmake # install vcpkg dependencies
+    - docker info
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+  script:
+    - >
+      docker build
+      --pull
+      --cache-from $CI_REGISTRY_IMAGE/gcc_10_3:latest
+      --label "org.opencontainers.image.title=$CI_PROJECT_TITLE"
+      --label "org.opencontainers.image.url=$CI_PROJECT_URL"
+      --label "org.opencontainers.image.created=$CI_JOB_STARTED_AT"
+      --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
+      --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME"
+      --tag $CI_REGISTRY_IMAGE/gcc_10_3:$CI_COMMIT_SHA
+      - < docker/gcc_10_3.dockerfile
+    - docker push $CI_REGISTRY_IMAGE/gcc_10_3:$CI_COMMIT_SHA
+  services:
+    - docker:dind
+  rules:
+    - changes:
+        - docker/gcc_10_3.dockerfile
 
-.install_latex_dep: &install_latex_dep
+push_gcc_10_latest:
+  tags:
+    - docker
+  variables:
+    GIT_STRATEGY: none
+  stage: dependency_push
   before_script:
-    - apt-get -qq update
-    - apt-get -qq install -y texlive-base texlive-latex-recommended texlive-latex-extra
+    - docker info
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+  script:
+    - docker pull $CI_REGISTRY_IMAGE/gcc_10_3:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE/gcc_10_3:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/gcc_10_3:latest
+    - docker push $CI_REGISTRY_IMAGE/gcc_10_3:latest
+  services:
+    - docker:dind
+  rules:
+    - changes:
+        - docker/gcc_10_3.dockerfile
+  needs:
+    - build_gcc_10_3_latest
 
-.install_doxygen_dep: &install_doxygen_dep
-  before_script:
-    - apt-get -qq update
-    - apt-get -qq install -y graphviz doxygen-latex doxygen xapian-tools
-
-
-.install_ninja_build: &install_ninja_build
-  before_script:
-    - apt-get -qq update
-    - apt-get -qq install -y ninja-build
-
-.install_llvm_lit: &install_llvm_lit
-  before_script:
-    - apt-get -qq update
-    - apt-get -qq install -y python3 python3-pip
-    - pip3 install lit
-
-.install_cmake_3_16_0: &install_cmake_3_16_0
-  before_script:
-    - apt-get -qq update
-    - apt-get -qq install -y git wget
-    - mkdir -p /tmp && cd /tmp
-    - wget -q "https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.sh" -P /tmp
-    - chmod +x /tmp/cmake-$CMAKE_VERSION-linux-x86_64.sh
-    - /tmp/cmake-$CMAKE_VERSION-linux-x86_64.sh --skip-license --prefix=/usr/local
-
-.testing_default: &testing_default
-  before_script:
-    - !reference [ .install_gcovr, before_script ]
-    - !reference [ .install_vcpkg_dep, before_script ]
-    - !reference [ .install_ninja_build, before_script ]
-    - !reference [ .install_cmake_3_16_0, before_script ]
-    - !reference [ .install_lcov_cobertura, before_script ]
-
-.e2e_testing_default: &e2e_testing_default
-  before_script:
-    - !reference [ .install_llvm_lit, before_script ]
-    - !reference [ .install_vcpkg_dep, before_script ]
-    - !reference [ .install_ninja_build, before_script ]
-    - !reference [ .install_cmake_3_16_0, before_script ]
-
-.compile_default: &compile_default
-  before_script:
-    - !reference [ .install_vcpkg_dep, before_script ]
-    - !reference [ .install_cmake_3_16_0, before_script ]
-
-.documentation_default: &documentation_default
-  before_script:
-    - !reference [ .install_vcpkg_dep, before_script ]
-    - !reference [ .install_latex_dep, before_script ]
-    - !reference [ .install_doxygen_dep, before_script ]
-    - !reference [ .install_ninja_build, before_script ]
-    - !reference [ .install_cmake_3_16_0, before_script ]
-
-
+#####################################################################################################
+## Binary Build Test                                                                         ########
+#####################################################################################################
 build_gcc_10_3_ninja_debug:
-  <<: *compile_default
   stage: build
-  image: gcc:10.3
+  image: $CI_REGISTRY_IMAGE/gcc_10_3:latest
   tags:
     - docker
   script:
-    - apt-get -qq update
     - cd $CI_PROJECT_DIR
-    - apt-get -qq install -y ninja-build # install ninja
-    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug -G Ninja && cd ./build && ninja -j$(nproc) mycc
+    - >
+      cmake . 
+      -G Ninja
+      -B./build/
+      -DCMAKE_BUILD_TYPE=Debug
+      -D CMAKE_C_COMPILER=gcc
+      -D CMAKE_CXX_COMPILER=g++
+    - cd ./build && ninja -j$(nproc) mycc
+  needs:
+    - job: push_gcc_10_latest
+      optional: true
+    - job: build_gcc_10_3_latest
+      optional: true
   cache:
     - key: "gcc_10_3_deps($CI_RUNNER_ID)"
       paths:
         - "$CI_PROJECT_DIR/build/_deps"
         - "$CI_PROJECT_DIR/build/vcpkg_installed"
 
+build_llvm_latest_ninja_debug:
+  stage: build
+  image: $CI_REGISTRY_IMAGE/llvm_latest:latest
+  tags:
+    - docker
+  script:
+    - cd $CI_PROJECT_DIR
+    - >
+      cmake . 
+      -G Ninja
+      -B./build/
+      -DCMAKE_BUILD_TYPE=Debug
+      -D CMAKE_C_COMPILER=clang
+      -D CMAKE_CXX_COMPILER=clang++
+    - cd ./build && ninja -j$(nproc) mycc
+  needs:
+    - job: push_llvm_latest
+      optional: true
+    - job: build_llvm_latest
+      optional: true
+  cache:
+    - key: "llvm_latest_deps($CI_RUNNER_ID)"
+      paths:
+        - "$CI_PROJECT_DIR/build/_deps"
+        - "$CI_PROJECT_DIR/build/vcpkg_installed"
+
+#####################################################################################################
+## Binary Unit Test                                                                          ########
+#####################################################################################################
 test_gcc_10_3_debug:
-  <<: *testing_default
-  image: gcc:10.3
+  image: $CI_REGISTRY_IMAGE/gcc_10_3:latest
   stage: unit_test
   tags:
     - docker
@@ -111,12 +174,16 @@ test_gcc_10_3_debug:
     GTEST_OUTPUT: "xml:$CI_PROJECT_DIR/gtest_report.xml"
   script:
     - cd $CI_PROJECT_DIR
-    - |
-      cmake . -B./build/                   \
-        -DENABLE_TESTING=ON                \
-        -DENABLE_COVERAGE=ON               \
-        -DENABLE_DOCUMENTATION=OFF         \
-        -DCMAKE_BUILD_TYPE=Debug -G Ninja
+    - >
+      cmake .
+      -G Ninja
+      -B./build/                   
+      -DENABLE_TESTING=ON                
+      -DENABLE_COVERAGE=ON               
+      -DENABLE_DOCUMENTATION=OFF         
+      -D CMAKE_C_COMPILER=gcc
+      -D CMAKE_CXX_COMPILER=g++
+      -DCMAKE_BUILD_TYPE=Debug -G Ninja
     - cd ./build && ninja -j$(nproc) ccov-export-mycc_test
   artifacts:
     when: always
@@ -127,13 +194,45 @@ test_gcc_10_3_debug:
     - build_gcc_10_3_ninja_debug
   cache:
     - key: "gcc_10_3_deps($CI_RUNNER_ID)"
+      paths:
+        - "$CI_PROJECT_DIR/build/_deps"
+        - "$CI_PROJECT_DIR/build/vcpkg_installed"
+
+test_llvm_latest_debug:
+  image: $CI_REGISTRY_IMAGE/llvm_latest:latest
+  stage: unit_test
+  tags:
+    - docker
+  variables:
+    GTEST_OUTPUT: "xml:$CI_PROJECT_DIR/gtest_report.xml"
+  script:
+    - cd $CI_PROJECT_DIR
+    - >
+      cmake . 
+      -G Ninja
+      -B./build/                   
+      -DENABLE_TESTING=ON                
+      -DENABLE_COVERAGE=ON               
+      -DENABLE_DOCUMENTATION=OFF         
+      -D CMAKE_C_COMPILER=clang
+      -D CMAKE_CXX_COMPILER=clang++
+      -DCMAKE_BUILD_TYPE=Debug -G Ninja
+    - cd ./build && ninja -j$(nproc) ccov-export-mycc_test
+  artifacts:
+    when: always
+    reports:
+      junit: $CI_PROJECT_DIR/gtest_report.xml
+      cobertura: $CI_PROJECT_DIR/build/ccov/mycc_test.xml
+  needs:
+    - build_llvm_latest_ninja_debug
+  cache:
+    - key: "llvm_latest_deps($CI_RUNNER_ID)"
       paths:
         - "$CI_PROJECT_DIR/build/_deps"
         - "$CI_PROJECT_DIR/build/vcpkg_installed"
 
 test_gcc_10_3_release:
-  <<: *testing_default
-  image: gcc:10.3
+  image: $CI_REGISTRY_IMAGE/gcc_10_3:latest
   stage: unit_test
   tags:
     - docker
@@ -141,12 +240,16 @@ test_gcc_10_3_release:
     GTEST_OUTPUT: "xml:$CI_PROJECT_DIR/gtest_report.xml"
   script:
     - cd $CI_PROJECT_DIR
-    - |
-      cmake . -B./build/                   \
-        -DENABLE_TESTING=ON                \
-        -DENABLE_COVERAGE=ON               \
-        -DENABLE_DOCUMENTATION=OFF         \
-        -DCMAKE_BUILD_TYPE=Release -G Ninja
+    - >
+      cmake . 
+      -G Ninja
+      -B./build/                   
+      -DENABLE_TESTING=ON                
+      -DENABLE_COVERAGE=ON               
+      -DENABLE_DOCUMENTATION=OFF
+      -D CMAKE_C_COMPILER=gcc
+      -D CMAKE_CXX_COMPILER=g++
+      -DCMAKE_BUILD_TYPE=Release -G Ninja
     - cd ./build && ninja -j$(nproc) ccov-export-mycc_test
   artifacts:
     when: always
@@ -161,9 +264,44 @@ test_gcc_10_3_release:
         - "$CI_PROJECT_DIR/build/_deps"
         - "$CI_PROJECT_DIR/build/vcpkg_installed"
 
+test_llvm_latest_release:
+  image: $CI_REGISTRY_IMAGE/llvm_latest:latest
+  stage: unit_test
+  tags:
+    - docker
+  variables:
+    GTEST_OUTPUT: "xml:$CI_PROJECT_DIR/gtest_report.xml"
+  script:
+    - cd $CI_PROJECT_DIR
+    - >
+      cmake .
+      -G Ninja
+      -B./build/                   
+      -DENABLE_TESTING=ON                
+      -DENABLE_COVERAGE=ON               
+      -DENABLE_DOCUMENTATION=OFF         
+      -D CMAKE_C_COMPILER=clang
+      -D CMAKE_CXX_COMPILER=clang++
+      -DCMAKE_BUILD_TYPE=Release -G Ninja
+    - cd ./build && ninja -j$(nproc) ccov-export-mycc_test
+  artifacts:
+    when: always
+    reports:
+      junit: $CI_PROJECT_DIR/gtest_report.xml
+      cobertura: $CI_PROJECT_DIR/build/ccov/mycc_test.xml
+  needs:
+    - build_llvm_latest_ninja_debug
+  cache:
+    - key: "llvm_latest_deps($CI_RUNNER_ID)"
+      paths:
+        - "$CI_PROJECT_DIR/build/_deps"
+        - "$CI_PROJECT_DIR/build/vcpkg_installed"
+
+#####################################################################################################
+## End2End Tests                                                                             ########
+#####################################################################################################
 e2e_test_gcc_10_3_release:
-  <<: *e2e_testing_default
-  image: gcc:10.3
+  image: $CI_REGISTRY_IMAGE/gcc_10_3:latest
   stage: end_to_end_test
   tags:
     - docker
@@ -189,9 +327,38 @@ e2e_test_gcc_10_3_release:
         - "$CI_PROJECT_DIR/build/_deps"
         - "$CI_PROJECT_DIR/build/vcpkg_installed"
 
+e2e_test_llvm_latest_release:
+  image: $CI_REGISTRY_IMAGE/llvm_latest:latest
+  stage: end_to_end_test
+  tags:
+    - docker
+  script:
+    - cd $CI_PROJECT_DIR
+    - |
+      cmake . -B./build/                   \
+        -DENABLE_TESTING=ON                \
+        -DENABLE_E2E_TESTING=ON            \
+        -DENABLE_DOCUMENTATION=OFF         \
+        -DCMAKE_BUILD_TYPE=Release -G Ninja
+    - cd ./build && ninja -j$(nproc) mycc_e2e_test
+  artifacts:
+    when: always
+    reports:
+      junit: $CI_PROJECT_DIR/build/Test/test_output/*.xunit.xml
+  needs:
+    - test_llvm_latest_debug
+    - test_llvm_latest_release
+  cache:
+    - key: "llvm_latest_deps($CI_RUNNER_ID)"
+      paths:
+        - "$CI_PROJECT_DIR/build/_deps"
+        - "$CI_PROJECT_DIR/build/vcpkg_installed"
+
+#####################################################################################################
+## Documentation                                                                             ########
+#####################################################################################################
 build_latex_documentation:
-  <<: *documentation_default
-  image: gcc:10.3
+  image: $CI_REGISTRY_IMAGE/gcc_10_3:latest
   stage: documentation
   tags:
     - docker

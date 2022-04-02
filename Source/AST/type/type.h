@@ -10,29 +10,19 @@ class Type {
     explicit Type(const std::string& name,
                   const std::list<std::string>& attrs = {});
 
-    [[nodiscard]] virtual bool IsArray() const { return false; }
-    [[nodiscard]] virtual bool IsStruct() const { return false; }
-    [[nodiscard]] virtual bool IsFuncPtr() const { return false; }
+    [[nodiscard]] virtual bool IsArray() const;
+    [[nodiscard]] virtual bool IsStruct() const;
+    [[nodiscard]] virtual bool IsFuncPtr() const;
 
-    virtual std::string Dump() { return _name; }
+    virtual std::string Dump();
 
-    [[nodiscard]] bool IsConst() const { return _is_const; }
+    [[nodiscard]] bool IsConst() const;
 
-    [[nodiscard]] bool IsSame(const Type& type) const {
-        return type._is_const == this->_is_const && this->_name == type._name;
-    }
+    [[nodiscard]] bool IsSame(const Type& type) const;
 
-    [[nodiscard]] bool IsSame(const std::shared_ptr<Type>& type) const {
-        return type->_is_const == this->_is_const && this->_name == type->_name;
-    }
+    [[nodiscard]] bool IsSame(const std::shared_ptr<Type>& type) const;
 
-    [[nodiscard]] std::string GetName(bool without_attr = false) const {
-        if (without_attr) {
-            return _name;
-        } else {
-            return _is_const ? "const" : "" + _name;
-        }
-    }
+    [[nodiscard]] std::string GetName(bool without_attr = false) const;
 
   protected:
     [[nodiscard]] uint64_t GetTypeId() const { return _id; }
