@@ -20,8 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitlab-ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.gitlab-ci.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/gcc_10_3.dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker/gcc_10_3.dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Documentation/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Documentation/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doxyfile" beforeDir="false" afterPath="$PROJECT_DIR$/Doxyfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +86,7 @@
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\AST\statement" />
     </key>
   </component>
-  <component name="RunManager" selected="Google Test.mycc_test">
+  <component name="RunManager" selected="CMake 应用程序.documentation">
     <configuration default="true" type="BIBTEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
       <texify-bibtex>
         <compiler />
@@ -95,6 +97,11 @@
         <aux-dir>$APPLICATION_HOME_DIR$/jbr/bin</aux-dir>
       </texify-bibtex>
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
     </configuration>
     <configuration name="LEXICAL_PARSER" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc_test" TEST_PATTERN="LEXICAL_PARSER.*:LEXICAL_PARSER/*.*:LEXICAL_PARSER.*/*:*/LEXICAL_PARSER.*/*:*/LEXICAL_PARSER/*.*" TEST_MODE="PATTERN">
       <envs>
@@ -259,7 +266,7 @@
       <workItem from="1648936061325" duration="16048000" />
       <workItem from="1649013717961" duration="13744000" />
       <workItem from="1649030965752" duration="624000" />
-      <workItem from="1649092739319" duration="3217000" />
+      <workItem from="1649092739319" duration="4875000" />
     </task>
     <servers />
   </component>

@@ -363,7 +363,7 @@ build_latex_documentation:
   tags:
     - docker
   only:
-    - master
+    - main
   script:
     - cd $CI_PROJECT_DIR
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) documentation
@@ -371,7 +371,35 @@ build_latex_documentation:
   artifacts:
     when: always
     paths:
-      - $CI_PROJECT_DIR/developers.pdf\
+      - $CI_PROJECT_DIR/developers.pdf
+  needs:
+    - e2e_test_gcc_10_3_release
+    - e2e_test_llvm_latest_release
+  cache:
+    - key: "gcc_10_3_deps($CI_RUNNER_ID)"
+      paths:
+        - "$CI_PROJECT_DIR/build/_deps"
+        - "$CI_PROJECT_DIR/build/vcpkg_installed"
+
+#####################################################################################################
+## Gitlab Pages API Document                                                                 ########
+#####################################################################################################
+pages:
+  image: $CI_REGISTRY_IMAGE/gcc_10_3:latest
+  stage: documentation
+  tags:
+    - docker
+  only:
+    - main
+  script:
+    - cd $CI_PROJECT_DIR
+    - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) doc_doxygen
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/build/doxygen_html
+  needs:
+    - e2e_test_gcc_10_3_release
+    - e2e_test_llvm_latest_release
   cache:
     - key: "gcc_10_3_deps($CI_RUNNER_ID)"
       paths:

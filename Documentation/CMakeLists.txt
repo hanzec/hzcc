@@ -36,7 +36,7 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
     # generate doxygen configuration file
-    configure_file( ${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
 
     # note the option ALL which allows to build the docs together with the application
     add_custom_target(doc_doxygen ALL
@@ -106,7 +106,7 @@ if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND AND DOXYGEN_FOUND)
     add_custom_target(documentation
             DEPENDS ${DOC_MAIN_TEX} ${LATEX_IND_FILES} ${LATEX_AUX_FILES}
             BYPRODUCTS ${LATEX_PDF_FILES}
-            COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} ${DOC_MAIN_TEX} > ${CMAKE_CURRENT_BINARY_DIR}/pdflatex.log 2>&1
+            COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} ${DOC_MAIN_TEX} > ${CMAKE_CURRENT_BINARY_DIR}/pdflatex.log 2>&1 && cp ${CMAKE_CURRENT_BINARY_DIR}/*.pdf ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
             COMMENT "Generating pdf file."
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     add_dependencies(documentation latex-prebuild latex-makeindex)
