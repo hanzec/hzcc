@@ -20,7 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="Changes">
-      <change afterPath="$PROJECT_DIR$/Documentation/pict2e.sty" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Documentation/developers.tex" beforeDir="false" afterPath="$PROJECT_DIR$/Documentation/developers.tex" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -265,7 +266,7 @@
       <workItem from="1649030965752" duration="624000" />
       <workItem from="1649092739319" duration="4875000" />
       <workItem from="1649277542141" duration="1671000" />
-      <workItem from="1649279311076" duration="4356000" />
+      <workItem from="1649279311076" duration="4921000" />
     </task>
     <servers />
   </component>
