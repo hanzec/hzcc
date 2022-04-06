@@ -1,5 +1,5 @@
 ###############################################################################
-## Document Requirements #########################################################
+## Document Requirements ######################################################
 ###############################################################################
 find_package(LATEX)
 find_package(Doxygen)
@@ -28,23 +28,44 @@ set(TEXMFHOME ${CMAKE_CURRENT_BINARY_DIR})
 set(DOC_MAIN_TEX "${CMAKE_CURRENT_SOURCE_DIR}/developers.tex")
 
 ###############################################################################
-## Doxygen Targets ##############################################################
+## Doxygen Targets ############################################################
 ###############################################################################
-if (DOXYGEN_FOUND)
-    # set input and output files
-    set(DOXYGEN_IN ${PROJECT_SOURCE_DIR}/Doxyfile)
-    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+add_custom_target(doc_doxygen)
 
-    # generate doxygen configuration file
-    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+## if no doxygen found, we install the doxygen from pre-compiled binaries
+if(NOT DOXYGEN_FOUND)
+    MESSAGE(STATUS "Doxygen NOT found. trying to download...")
+    if(UNIX AND NOT MACOSX)
+        ## download doxygen and extract it
+        file(DOWNLOAD https://www.doxygen.nl/files/doxygen-1.9.3.linux.bin.tar.gz ${PROJECT_BINARY_DIR}/doxygen.tar.gz)
+        file(SHA256 ${PROJECT_BINARY_DIR}/doxygen.tar.gz "44df7b2d139eebb1017c7d6ec8c97082527d84a957c570c94c1301ee8eb4e1ec")
+        file(ARCHIVE_EXTRACT INPUT ${PROJECT_BINARY_DIR}/doxygen.tar.gz DESTINATION ${PROJECT_BINARY_DIR}/tools/doxygen)
 
-    # note the option ALL which allows to build the docs together with the application
-    add_custom_target(doc_doxygen ALL
-            COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-            COMMENT "Generating API documentation with Doxygen"
-            VERBATIM)
-endif ()
+        ## set true to use the downloaded doxygen
+        set(DOXYGEN_FOUND true)
+
+        ## add doxygen to the path
+        set(DOXYGEN_PATH ${PROJECT_BINARY_DIR}/tools/doxygen/doxygen-1.9.3/bin)
+        set(DOXYGEN_EXECUTABLE ${DOXYGEN_PATH}/doxygen)
+    else()
+        message(FATAL_ERROR "Doxygen not found")
+    endif()
+endif()
+
+# set input and output files
+set(DOXYGEN_IN ${PROJECT_SOURCE_DIR}/Doxyfile)
+set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+
+# generate doxygen configuration file
+configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+
+# note the option ALL which allows to build the docs together with the application
+add_custom_command(
+        TARGET doc_doxygen
+        COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM)
 
 ###############################################################################
 ## Latex Targets ##############################################################
@@ -67,6 +88,12 @@ if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND AND DOXYGEN_FOUND)
 
     # copy the sty files to the build directory
     file(GLOB LATEX_DOC_FIGURES "${CMAKE_CURRENT_SOURCE_DIR}/*.sty")
+    foreach (LATEX_DOC_FIGURE ${LATEX_DOC_FIGURES})
+        configure_file(${LATEX_DOC_FIGURE} "${CMAKE_CURRENT_BINARY_DIR}/" COPYONLY)
+    endforeach ()
+
+    # copy the def files to the build directory
+    file(GLOB LATEX_DOC_FIGURES "${CMAKE_CURRENT_SOURCE_DIR}/*.def")
     foreach (LATEX_DOC_FIGURE ${LATEX_DOC_FIGURES})
         configure_file(${LATEX_DOC_FIGURE} "${CMAKE_CURRENT_BINARY_DIR}/" COPYONLY)
     endforeach ()

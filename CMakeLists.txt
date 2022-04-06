@@ -66,6 +66,9 @@ FetchContent_MakeAvailable(vcpkg)
 # generate compile_commands.json for clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# append vcpkg cmake scripts to our project cmake scripts
+list(APPEND CMAKE_MODULE_PATH "${vcpkg_SOURCE_DIR}/scripts/cmake")
+
 ###############################################################################
 ## Setup vcpkg ################################################################
 ###############################################################################
