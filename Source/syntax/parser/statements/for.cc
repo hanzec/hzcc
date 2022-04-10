@@ -8,7 +8,7 @@
 
 #include <list>
 
-#include "AST/ast_context.h"
+#include "AST/ASTContext.h"
 #include "AST/statement/compound.h"
 #include "for_parser.h"
 #include "lexical/token_type.h"
@@ -77,7 +77,6 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::ASTContext& context,
         // check next token is )
         MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRParentheses,
                                         tokens);
-
     } else {
         pop_list(tokens);
     }

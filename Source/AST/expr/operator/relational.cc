@@ -2,8 +2,9 @@
 // Created by chen_ on 2022/3/29.
 //
 #include "relational.h"
+
+#include "AST/type/Type.h"
 #include "lexical/Token.h"
-#include "AST/type/type.h"
 
 namespace Mycc::AST {
 
@@ -28,7 +29,7 @@ RelationalExpr::RelationalExpr(const Lexical::Token& type,
     } else if (type_str == ">=") {
         this->_type = RelationalType::GE;
     } else {
-        assert(false);
+        DLOG(FATAL) << "Unknown relational operator: " << type_str;
     }
 }
 std::string RelationalExpr::PrintAdditionalInfo(std::string_view ident) const {
@@ -58,16 +59,23 @@ std::string RelationalExpr::PrintAdditionalInfo(std::string_view ident) const {
             ret += " >= ";
             break;
         default:
-            assert(false);
+            DLOG(FATAL) << "Unknown relational operator: " << _type;
     }
 
+    auto new_ident = (ident.find('`') == std::string::npos)
+                         ? std::string(ident)
+                         : std::string(ident.size(), ' ');
     // dump rhs
-    ret += "\n" + GetRHS()->Dump(std::string(ident) + " |") + "\n";
-    ret += GetLHS()->Dump(std::string(ident) + " `");
+    ret += "\n" + GetRHS()->Dump(new_ident + " |") + "\n";
+    ret += GetLHS()->Dump(new_ident + " `");
 
     return ret;
 }
 std::shared_ptr<Type> RelationalExpr::GetType() const {
-    return std::make_shared<Type>("char");
+    return Type::GetBasicType("char", {});
+}
+void RelationalExpr::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
 }
 }  // namespace Mycc::AST

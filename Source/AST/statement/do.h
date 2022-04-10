@@ -12,6 +12,9 @@ class DoStatement : public WhileStatement{
                 std::unique_ptr<AST::ASTNode> body)
         : WhileStatement(std::move(cond), std::move(body)){}
 
+    void visit(ASTVisitor& visitor) override;
+
+
     [[nodiscard]]  bool HasBody() const override{ return true; }
 
   protected:

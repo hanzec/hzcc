@@ -1,7 +1,7 @@
 #include <string>
 #include <utility>
 
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_VARIABLES_H
 #define MYCC_SOURCE_AST_VARIABLES_H
@@ -9,6 +9,9 @@ namespace Mycc::AST {
 class DeclRefExpr : public ASTNode {
   public:
     explicit DeclRefExpr(const Lexical::Token& name, std::shared_ptr<Type> type);
+
+    void visit(ASTVisitor& visitor) override;
+
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 

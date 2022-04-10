@@ -5,10 +5,10 @@
 
 #include <string>
 
-#include "AST/type/array_type.h"
+#include "AST/DeduceValue.h"
+#include "AST/type/ArrayType.h"
+#include "AST/type/Type.h"
 #include "lexical/Token.h"
-#include "AST/type/type.h"
-#include "AST/value.h"
 namespace Mycc::AST {
 
 std::string LiteralExpr::GetNodeName() const {
@@ -53,6 +53,9 @@ std::string LiteralExpr::PrintAdditionalInfo(std::string_view ident) const {
     }
     return "";
 }
+LiteralExpr::LiteralExpr(int64_t value)
+    : ASTNode({-1, -1}), _type(kInteger), _value(std::to_string(value)) {}
+
 LiteralExpr::LiteralExpr(LiteralExpr::ValueType type,
                          const Lexical::Token& value)
     : ASTNode(value.Location()), _type(type), _value(value.Value()) {}
@@ -62,18 +65,24 @@ std::shared_ptr<Type> LiteralExpr::GetType() const {
 
     switch (_type) {
         case ValueType::kChar:
-            return std::make_shared<Type>("char");
+            return Type::GetBasicType("char", {Lexical::TokenType::kConst});
         case ValueType::kReal_number:
-            return std::make_shared<Type>("double");
+            return Type::GetBasicType("double", {Lexical::TokenType::kConst});
         case ValueType::kString:
-            return std::make_shared<ArrayType>(std::make_shared<Type>("char"),
-                                               _value.size());
+            return ArrayType::GetArrayOfBasicType(
+                Type::GetBasicType("char", {}),
+                std::make_unique<LiteralExpr>(_value.size() + 1),
+                {Lexical::TokenType::kConst});
         case ValueType::kInteger:
-            return std::make_shared<Type>("int");
+            return Type::GetBasicType("int", {Lexical::TokenType::kConst});
     }
     return nullptr;
 }
 
 bool LiteralExpr::IsAssignable() const { return false; }
+void LiteralExpr::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
+}
 
 }  // namespace Mycc::AST

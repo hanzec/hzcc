@@ -4,7 +4,7 @@
 #include <string>
 #include <utility>
 
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_ARRAY_H_
 #define MYCC_SOURCE_AST_OPERATOR_ARRAY_H_
@@ -14,6 +14,8 @@ class ArraySubscriptExpr : public ASTNode {
     ArraySubscriptExpr(const Lexical::Token& token,
                        std::unique_ptr<AST::ASTNode> name,
                        std::unique_ptr<AST::ASTNode> index);
+
+    void visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool IsDeducible() const override { return true; }
 

@@ -3,17 +3,21 @@
 //
 #include "array.h"
 
+#include <glog/logging.h>
+
 #include <cassert>
 
-#include "AST/type/array_type.h"
+#include "AST/type/ArrayType.h"
 #include "lexical/Token.h"
+#include "options.h"
 namespace Mycc::AST {
 
 std::string AST::ArraySubscriptExpr::GetNodeName() const {
     return "ArraySubscriptExpr";
 }
 std::shared_ptr<Type> ArraySubscriptExpr::GetType() const {
-    return dynamic_cast<AST::ArrayType*>(_name->GetType().get())->GetBaseType();
+    return std::dynamic_pointer_cast<AST::ArrayType>(_name->GetType())
+        ->GetBaseType();
 }
 
 std::string ArraySubscriptExpr::PrintAdditionalInfo(
@@ -33,8 +37,17 @@ ArraySubscriptExpr::ArraySubscriptExpr(const Lexical::Token& token,
     : ASTNode(token.Location()),
       _index_expr(std::move(index)),
       _name(std::move(name)) {
-    assert(_name->GetType()->IsArray());
+    if (Options::Global_enable_type_checking) {
+        DLOG_IF(FATAL, !_name->GetType()->IsArray())
+            << "ArraySubscriptExpr: " + _name->Dump("") +
+                   " should have array type";
+    }
 }
-bool ArraySubscriptExpr::IsAssignable() const { return true; };
+
+bool ArraySubscriptExpr::IsAssignable() const { return true; }
+void ArraySubscriptExpr::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
+};
 
 }  // namespace Mycc::AST

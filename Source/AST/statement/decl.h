@@ -3,7 +3,7 @@
 //
 #include <string>
 
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_DECL_H_
 #define MYCC_SOURCE_AST_STATEMENT_DECL_H_
@@ -15,6 +15,11 @@ namespace AST {
 class DeclNode : public ASTNode {
   public:
     explicit DeclNode(const Lexical::Token& decl_name);
+
+    void visit(ASTVisitor& visitor) override;
+
+
+    DeclNode(const Lexical::Token& decl_loc, std::string  decl_name);
 
     [[nodiscard]] bool IsDeclNode() const override { return true; }
 

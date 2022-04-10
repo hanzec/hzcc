@@ -122,14 +122,14 @@ set_target_properties(mycc PROPERTIES CXX_VISIBILITY_PRESET hidden) # not export
 target_include_directories(mycc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # testing target options
-if(ENABLE_TESTING MATCHES "ON")
+if (ENABLE_TESTING MATCHES "ON")
     # compile under cxx 17
     target_compile_features(mycc_test PRIVATE cxx_std_17)
     set_property(TARGET mycc_test PROPERTY CXX_STANDARD_REQUIRED ON)
 
     # change include base to project root
     target_include_directories(mycc_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-endif()
+endif ()
 
 ###############################################################################
 ## Project Source #############################################################
@@ -137,6 +137,11 @@ endif()
 target_sources(mycc
         PRIVATE
         "const_msg.h" "macro.h" "main.cc" "options.cc")
+
+###############################################################################
+## Code Generation ############################################################
+###############################################################################
+add_subdirectory(codegen)
 
 ###############################################################################
 ## ASTs #######################################################################

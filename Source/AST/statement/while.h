@@ -3,7 +3,7 @@
 //
 #include <memory>
 
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_WHILE_H_
 #define MYCC_SOURCE_AST_STATEMENT_WHILE_H_
@@ -14,10 +14,12 @@ class WhileStatement : public ASTNode {
     WhileStatement(std::unique_ptr<ASTNode> cond, std::unique_ptr<ASTNode> body)
         : cond_(std::move(cond)), body_(std::move(cond)) {}
 
-    [[nodiscard]]  bool HasBody() const override{ return true; }
+    void visit(ASTVisitor& visitor) override;
+
+    [[nodiscard]] bool HasBody() const override { return true; }
 
 #ifdef NDEBUG
-    [[nodiscard]]  std::string Dump(std::string_view ident) const override;
+    [[nodiscard]] std::string Dump(std::string_view ident) const override;
 #endif
 
   protected:

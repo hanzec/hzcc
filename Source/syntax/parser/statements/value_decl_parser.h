@@ -1,7 +1,7 @@
 //
 // Created by chen_ on 2022/3/26.
 //
-#include "AST/type/type.h"
+#include "AST/type/Type.h"
 #include "syntax/parser/base_parser.h"
 #include "syntax/parser/statement_parser.h"
 

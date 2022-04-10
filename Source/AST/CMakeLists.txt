@@ -10,8 +10,8 @@ target_sources(mycc PRIVATE ${MYCC_AST_HDRS} ${MYCC_AST_SRCS})
 ###############################################################################
 ## AST Cast ###################################################################
 ###############################################################################
-file(GLOB MYCC_AST_CAST_HDRS ${CMAKE_CURRENT_LIST_DIR}/cast/*.h)
-file(GLOB MYCC_AST_CAST_SRCS ${CMAKE_CURRENT_LIST_DIR}/cast/*.cc)
+file(GLOB MYCC_AST_CAST_HDRS expr/cast/*.h)
+file(GLOB MYCC_AST_CAST_SRCS expr/cast/*.cc)
 
 # project sources
 target_sources(mycc PRIVATE ${MYCC_AST_CAST_HDRS} ${MYCC_AST_CAST_SRCS})

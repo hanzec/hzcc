@@ -11,11 +11,11 @@
 #include <unordered_map>
 #include <utility>
 
-#include "AST/ast_node.h"
-#include "AST/statement/function_decl.h"
+#include "AST/ASTNode.h"
 #include "AST/statement/compound.h"
 #include "AST/statement/do.h"
 #include "AST/statement/for.h"
+#include "AST/statement/function_decl.h"
 #include "AST/statement/if.h"
 #include "AST/statement/struct.h"
 #include "AST/statement/value_decl.h"
@@ -56,11 +56,9 @@ class ParserFactory {
     static std::shared_ptr<Parser::ParserBase> GetParser(size_t parser) {
         static std::shared_ptr<Parser::ParserBase> parser_ = _parserMap[parser];
 
-        if (parser_ == nullptr) {
-            LOG(FATAL) << "Parser not found: "
-                       << TypeNameUtil::name_pretty<name>();
-            assert(false);
-        }
+        DLOG_ASSERT(parser_ != nullptr)
+            << "Parser not found: " << TypeNameUtil::name_pretty<name>();
+
         return parser_;
     }
 
@@ -86,6 +84,7 @@ class ParserFactory {
                       {TypeNameUtil::hash<AST::StructDeclareNode>(),
                        std::make_shared<Parser::StructDeclare>()}};
 };
+
 #ifndef NDEBUG
 class ParserFactoryReporter {
   public:

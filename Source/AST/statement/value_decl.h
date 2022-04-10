@@ -6,7 +6,7 @@
 #include <string_view>
 #include <utility>
 
-#include "AST/type/type.h"
+#include "AST/type/Type.h"
 #include "decl.h"
 #ifndef MYCC_SOURCE_AST_STATEMENT_VALUE_DECL_H_
 #define MYCC_SOURCE_AST_STATEMENT_VALUE_DECL_H_
@@ -17,6 +17,9 @@ class VarDecl : public DeclNode {
     explicit VarDecl(std::shared_ptr<Type>  type,
                      std::list<Lexical::Token>& attrs,
                      const Lexical::Token& decl_name);
+
+    void visit(ASTVisitor& visitor) override;
+
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 

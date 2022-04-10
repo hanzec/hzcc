@@ -6,12 +6,10 @@
 #include <memory>
 #include <utility>
 
-
 #include "lexical/Token.h"
 namespace Mycc::AST {
 
-VarDecl::VarDecl(std::shared_ptr<Type>  type,
-                 std::list<Lexical::Token>& attrs,
+VarDecl::VarDecl(std::shared_ptr<Type> type, std::list<Lexical::Token>& attrs,
                  const Lexical::Token& decl_name)
     : DeclNode(decl_name), _type(std::move(type)) {
     attrs.clear();
@@ -19,7 +17,11 @@ VarDecl::VarDecl(std::shared_ptr<Type>  type,
 }
 std::string VarDecl::GetNodeName() const { return "VarDecl"; }
 std::string VarDecl::PrintAdditionalInfo(std::string_view ident) const {
-    return GetName() + " " + _type->GetName();
+    return GetName();
 }
 std::shared_ptr<Type> VarDecl::GetType() const { return _type; }
+void VarDecl::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
+}
 }  // namespace Mycc::AST

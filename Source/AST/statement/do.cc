@@ -5,7 +5,9 @@
 
 namespace Mycc::AST {
 
-std::string AST::DoStatement::GetNodeName() const {
-    return "DoStatement";
+std::string AST::DoStatement::GetNodeName() const { return "DoStatement"; }
+void DoStatement::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
 }
-}
+}  // namespace Mycc::AST

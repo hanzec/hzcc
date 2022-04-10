@@ -4,7 +4,7 @@
 #include <cassert>
 #include <memory>
 
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 #include "AST/expr/operator/operator.h"
 #ifndef MYCC_SOURCE_AST_OPERATOR_ASSIGN_H_
 #define MYCC_SOURCE_AST_OPERATOR_ASSIGN_H_
@@ -14,7 +14,8 @@ class AssignExpr : public OperatorBase {
     AssignExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
                std::unique_ptr<ASTNode> rhs);
 
-  protected:
+    void visit(ASTVisitor& visitor) override;
+
     enum AssignType {
         kAssign,
         kAddAssign,
@@ -28,6 +29,8 @@ class AssignExpr : public OperatorBase {
         kOrAssign,
         kXorAssign,
     };
+
+    AssignType GetAssignType() const;
 
   protected:
     [[nodiscard]] std::string GetNodeName() const override;

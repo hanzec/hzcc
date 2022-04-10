@@ -3,7 +3,7 @@
 //
 #include <string>
 
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_VALUE_VALUE_H_
 #define MYCC_SOURCE_AST_VALUE_VALUE_H_
@@ -12,7 +12,11 @@ class LiteralExpr : public ASTNode {
   public:
     enum ValueType { kChar, kInteger, kReal_number, kString };
 
+    explicit LiteralExpr(int64_t);
+
     LiteralExpr(ValueType type, const Lexical::Token &value);
+
+    void visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool IsDeducible() const override;
 

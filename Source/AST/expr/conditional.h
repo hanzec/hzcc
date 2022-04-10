@@ -3,7 +3,7 @@
 //
 #include <memory>
 
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_CONDITIONAL_H_
 #define MYCC_SOURCE_AST_OPERATOR_CONDITIONAL_H_
@@ -16,6 +16,8 @@ class ConditionalExpr : public ASTNode {
         : _cond(std::move(cond)),
           _true_expr(std::move(true_expr)),
           _false_expr(std::move(false_expr)){};
+
+    void visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 

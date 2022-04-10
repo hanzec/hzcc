@@ -3,7 +3,7 @@
 #include <list>
 #include <memory>
 
-#include "AST/ast_context.h"
+#include "AST/ASTContext.h"
 #include "lexical/Token.h"
 #include "lexical/utils/token_utils.h"
 #include "syntax/Parser.h"
@@ -40,12 +40,14 @@ Status GenerateAST(AST::ASTContext& context, TokenList& tokens) {
             ConcatAttribute(attrs, tokens);
 
             // if struct or union, parse as struct or union
-            if (peek(tokens).Type() == Lexical::kLBrace) {
+            if (peek(tokens).Type() == Lexical::kLBrace &&
+                type_name.front().Type() == Lexical::kStruct) {
                 // parsing as function definition
                 tokens.insert(tokens.begin(), type_name.begin(),
                               type_name.end());
-                if (!context.addDecl(ParserFactory::ParseAST<AST::ASTNode>(
-                        context, tokens, attrs))) {
+                if (!context.addDecl(
+                        ParserFactory::ParseAST<AST::StructDeclareNode>(
+                            context, tokens, attrs))) {
                     DVLOG(SYNTAX_LOG_LEVEL)
                         << "Failed to parse struct declaration";
                     return {Status::Code::SyntaxError,
@@ -54,7 +56,8 @@ Status GenerateAST(AST::ASTContext& context, TokenList& tokens) {
             }
 
             // if funcdecl
-            else if (tokens.size() >=2 && peek2(tokens).Type() == Lexical::kLParentheses) {
+            else if (tokens.size() >= 2 &&
+                     peek2(tokens).Type() == Lexical::kLParentheses) {
                 tokens.insert(tokens.begin(), type_name.begin(),
                               type_name.end());
                 if (!context.addDecl(
@@ -65,10 +68,11 @@ Status GenerateAST(AST::ASTContext& context, TokenList& tokens) {
                     return {Status::Code::SyntaxError,
                             "Failed to parse function declaration"};
                 }
-            } else if (tokens.size() >= 2 &&(peek2(tokens).Type() == Lexical::kSemiColon ||
-                       peek2(tokens).Type() == Lexical::kComma ||
-                       peek2(tokens).Type() == Lexical::kAssign||
-                       peek2(tokens).Type() == Lexical::kLBracket)) {
+            } else if (tokens.size() >= 2 &&
+                       (peek2(tokens).Type() == Lexical::kSemiColon ||
+                        peek2(tokens).Type() == Lexical::kComma ||
+                        peek2(tokens).Type() == Lexical::kAssign ||
+                        peek2(tokens).Type() == Lexical::kLBracket)) {
                 tokens.insert(tokens.begin(), type_name.begin(),
                               type_name.end());
                 if (!context.addDecl(ParserFactory::ParseAST<AST::ASTNode>(
@@ -93,8 +97,33 @@ Status GenerateAST(AST::ASTContext& context, TokenList& tokens) {
             }
             // handle error
             else {
-                MYCC_PrintFirstTokenError(tokens, "Expected type name");
-                return {Status::INVALID_ARGUMENT, "unexpected token"};
+                if (tokens.front().Type() == Lexical::TokenType::kLBrace &&
+                    !context.AtRoot()) {
+                    MYCC_PrintFirstTokenError(tokens, "Unmatched '{'");
+                    return {Status::INVALID_ARGUMENT, "unexpected token"};
+                } else if (tokens.front().Type() == Lexical::TokenType::kType) {
+                    MYCC_PrintFirstTokenError(tokens, "Expected identifier");
+                    return {Status::INVALID_ARGUMENT, "unexpected token"};
+                } else if (tokens.front().Type() ==
+                               Lexical::TokenType::kSemiColon &&
+                           !type_name.empty()) {
+                    MYCC_PrintFirstTokenError(tokens, "Expected identifier");
+                    return {Status::INVALID_ARGUMENT, "unexpected token"};
+                } else if (tokens.front().Type() ==
+                           Lexical::TokenType::kComma) {
+                    MYCC_PrintFirstTokenError(tokens, "Expected identifier");
+                    return {Status::INVALID_ARGUMENT, "unexpected token"};
+                } else if (tokens.front().Type() ==
+                           Lexical::TokenType::kRBrace) {
+                    MYCC_PrintFirstTokenError(tokens, "Expected identifier");
+                    return {Status::INVALID_ARGUMENT, "unexpected token"};
+                } else if (context.AtRoot()) {
+                    MYCC_PrintFirstTokenError(tokens, "Expected type name");
+                    return {Status::INVALID_ARGUMENT, "unexpected token"};
+                } else {
+                    MYCC_PrintFirstTokenError(tokens, "Expected identifier");
+                    return {Status::INVALID_ARGUMENT, "unexpected token"};
+                }
             }
         }
     }

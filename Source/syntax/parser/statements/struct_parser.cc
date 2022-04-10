@@ -6,7 +6,7 @@
 
 #include <cassert>
 
-#include "AST/ast_context.h"
+#include "AST/ASTContext.h"
 #include "AST/statement/struct.h"
 #include "syntax/utils/common_utils.h"
 #include "syntax/utils/token_list_utils.h"
@@ -18,24 +18,31 @@ StructDeclare::StructDeclare() noexcept
     : ParserBase(TypeNameUtil::hash<AST::StructDeclareNode>(),
                  TypeNameUtil::name_pretty<AST::StructDeclareNode>()) {}
 
-std::unique_ptr<AST::StructType> StructDeclare::parse_internal(
+std::shared_ptr<AST::StructType> StructDeclare::parse_internal(
     AST::ASTContext& context, TokenList& tokens, TokenList& attributes) {
     // consume struct
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kStruct, tokens);
 
-    // consume name
+    // consume struct_name
     if (peek(tokens).Type() != Lexical::TokenType::kIdentity) {
-        MYCC_PrintFirstTokenError_ReturnNull(tokens, "struct name expected");
+        MYCC_PrintFirstTokenError_ReturnNull(tokens,
+                                             "struct struct_name expected");
     }
-    auto name = pop_list(tokens).Value();
+
+    auto struct_name = pop_list(tokens).Value();
 
     // consume {
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLBrace, tokens);
 
-    // consume fields
-    auto struct_node = std::make_unique<AST::StructType>(
-        name, ConsumeTokenListToStr(attributes));
+    // collecting attributes
+    std::list<Lexical::TokenType> struct_attributes;
+    for (const auto& attribute : attributes) {
+        struct_attributes.push_back(attribute.Type());
+        attributes.pop_front();
+    }
 
+    // parse struct body
+    auto struct_node = context.addStructType(struct_name, struct_attributes);
     while (TokenListUtils::peek(tokens).Type() != Lexical::TokenType::kRBrace) {
         // we also allowed struct inside struct
         ConcatAttribute(attributes, tokens);
@@ -46,24 +53,32 @@ std::unique_ptr<AST::StructType> StructDeclare::parse_internal(
                 Lexical::TokenType::kLBrace) {
             if (!struct_node->AddChild(
                     parse_internal(context, tokens, attributes))) {
-                DLOG(ERROR) << "parse sub-struct in [" << name << "] failed";
+                DLOG(ERROR)
+                    << "parse sub-struct in [" << struct_name << "] failed";
                 return nullptr;
             }
         }
 
         // consume type
         else {
+            // get attrs
+            std::list<Lexical::TokenType> inner_struct_attributes;
+            for (const auto& attribute : attributes) {
+                inner_struct_attributes.push_back(attribute.Type());
+                attributes.pop_front();
+            }
+
             auto start = tokens.front();
-            auto attr_string = ConsumeTokenListToStr(attributes);
             auto type_name = ParseTypeName(context, tokens);
             auto [type, attrs, var_name] =
                 ParseTypeDecl(TokenListToString(type_name), context, tokens);
 
             if (type == nullptr) {
-                MYCC_PrintTokenError_ReturnNull(start, "type expected");
+                MYCC_PrintTokenError_ReturnNull(start, "Expected type name");
             }
 
-            if (!struct_node->AddChild(var_name.Value(), type, attr_string)) {
+            if (!struct_node->AddChild(var_name.Value(), type,
+                                       inner_struct_attributes)) {
                 DLOG(ERROR) << "parse struct field in [" << var_name.Value()
                             << "] failed";
                 return nullptr;
@@ -95,13 +110,13 @@ std::unique_ptr<AST::StructType> StructDeclare::parse_internal(
                     // add variable to context
                     if (array_shape.empty()) {
                         if (!struct_node->AddChild(variable.Value(), type,
-                                                   attr_string)) {
+                                                   inner_struct_attributes)) {
                             return nullptr;
                         }
                     } else {
                         auto array_type = context.getType(type, array_shape);
                         if (!struct_node->AddChild(variable.Value(), array_type,
-                                                   attr_string)) {
+                                                   inner_struct_attributes)) {
                             return nullptr;
                         }
                     }
@@ -133,13 +148,7 @@ std::unique_ptr<AST::ASTNode> StructDeclare::parse_impl(
         return nullptr;
     }
 
-    // add to variable table
-    if (!context.addType(struct_node->GetName(), struct_node)) {
-        DLOG(ERROR) << "add struct to context failed";
-        return nullptr;
-    }
-
-    assert(struct_node->IsStruct());
-    return std::make_unique<AST::StructDeclareNode>(ref, struct_node);
+    return std::make_unique<AST::StructDeclareNode>(struct_node->GetName(), ref,
+                                                    struct_node);
 }
 }  // namespace Mycc::Syntax::Parser

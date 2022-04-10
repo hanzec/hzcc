@@ -2,8 +2,9 @@
 // Created by chen_ on 2022/3/29.
 //
 #include "return.h"
+
+#include "AST/type/Type.h"
 #include "lexical/Token.h"
-#include "AST/type/type.h"
 
 namespace Mycc::AST {
 std::string ReturnNode::GetNodeName() const { return "ReturnNode"; }
@@ -13,12 +14,16 @@ ReturnNode::ReturnNode(const Lexical::Token& token,
 
 std::string ReturnNode::PrintAdditionalInfo(std::string_view ident) const {
     std::string info{_return_val->GetType()->GetName()};
-
-    // print node if avaliable
+    // print node if available
     if (_return_val) {
-        info += "\n" + _return_val->Dump(std::string(ident) + " `");
+        info +=
+            "\n" + _return_val->Dump(std::string(ident.length(), ' ') + " `");
     }
     return info;
+}
+void ReturnNode::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
 };
 
 }  // namespace Mycc::AST

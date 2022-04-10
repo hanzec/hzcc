@@ -20,10 +20,22 @@ const std::unique_ptr<ASTNode>& CompoundStmt::GetLastStatement() const {
     return statements_.back();
 }
 
+const std::list<std::unique_ptr<ASTNode>>& CompoundStmt::GetBodyStatements()
+    const {
+    return statements_;
+}
+
+void CompoundStmt::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
+}
 std::string CompoundStmt::PrintAdditionalInfo(std::string_view ident) const {
     std::string ret = "\n";
     for (const auto& statement : statements_) {
-        ret += statement->Dump(std::string(ident.size(), ' ') + "  |") + "\n";
+        ret +=
+            statement->Dump(std::string(ident.size(), ' ') +
+                            (statement == statements_.back() ? "  `" : "  |")) +
+            (statement == statements_.back() ? "" : "\n");
     }
 
     return ret;
@@ -35,7 +47,7 @@ std::string CompoundStmt::Dump(std::string_view ident) const {
 
     // print parameter
     for (const auto& arg : statements_) {
-        ret += arg->Dump(ident) + "\n";
+        ret += arg->Dump(ident) + (arg == statements_.back() ? "" : "\n");
     }
     return ret;
 }

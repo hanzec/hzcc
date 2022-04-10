@@ -5,5 +5,11 @@
 
 namespace Mycc::AST {
 
-std::string AST::BreakStatement::GetNodeName() const { return "BreakStatement"; }
+std::string AST::BreakStatement::GetNodeName() const {
+    return "BreakStatement";
 }
+void BreakStatement::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
+}
+}  // namespace Mycc::AST

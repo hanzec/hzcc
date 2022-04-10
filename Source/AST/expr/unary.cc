@@ -4,9 +4,9 @@
 #include "unary.h"
 
 #include <cassert>
-#include "lexical/Token.h"
-#include "AST/type/type.h"
 
+#include "AST/type/Type.h"
+#include "lexical/Token.h"
 namespace Mycc::AST {
 std::string UnaryExpr::GetNodeName() const { return "UnaryExpr"; }
 UnaryExpr::UnaryExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> expr)
@@ -34,13 +34,18 @@ UnaryExpr::UnaryExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> expr)
             _type = UnaryType::kPreDec;
             break;
         default:
-            assert(false);
+            DLOG(FATAL) << "UnaryExpr: Type [" << type.Type()
+                        << "] not supported";
     }
 }
 std::shared_ptr<Type> UnaryExpr::GetType() const {
     if (_type == kLogicalNot)
-        return std::make_shared<Type>("char");
+        return Type::GetBasicType("char", {Lexical::TokenType::kConst});
     else
         return _expr->GetType();
+}
+void UnaryExpr::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
 }
 }  // namespace Mycc::AST

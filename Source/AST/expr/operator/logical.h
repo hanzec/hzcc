@@ -11,6 +11,8 @@ class LogicalExpr : public OperatorBase {
     LogicalExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
                 std::unique_ptr<ASTNode> rhs);
 
+    void visit(ASTVisitor& visitor) override;
+
   protected:
     enum LogicalType {
         kAnd,

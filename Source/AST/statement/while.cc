@@ -7,6 +7,11 @@ std::string Mycc::AST::WhileStatement::GetNodeName() const {
     return "WhileStatement";
 }
 
+void WhileStatement::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
+}
+
 #ifdef NDEBUG
 std::string WhileStatement::Dump(std::string_view ident) const {
     std::string ret;

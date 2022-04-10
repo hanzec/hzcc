@@ -2,7 +2,7 @@
 // Created by chen_ on 2022/3/25.
 //
 #include <memory>
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_FOR_H_
 #define MYCC_SOURCE_AST_STATEMENT_FOR_H_
@@ -15,6 +15,9 @@ class ForStatement : public ASTNode {
           _cond(std::move(cond)),
           _step(std::move(step)),
           _body(std::move(body)) {}
+
+    void visit(ASTVisitor& visitor) override;
+
 
     [[nodiscard]]  bool HasBody() const override{ return true; }
 

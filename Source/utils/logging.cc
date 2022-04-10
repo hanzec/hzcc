@@ -8,8 +8,6 @@ int MYCC_LOG_LEVEL = 0;
 
 void initLogging(char argv[]) {
     google::InitGoogleLogging(argv);
-#ifndef NDEBUG
     google::SetStderrLogging(google::GLOG_INFO);
-#endif
 }
 }  // namespace Mycc

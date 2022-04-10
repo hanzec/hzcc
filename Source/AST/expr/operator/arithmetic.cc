@@ -2,9 +2,9 @@
 // Created by chen_ on 2022/3/29.
 //
 #include "arithmetic.h"
-#include "AST/value.h"
+#include "AST/DeduceValue.h"
 #include "lexical/Token.h"
-
+#include <glog/logging.h>
 namespace Mycc::AST {
 std::string ArithmeticExpr::GetNodeName() const { return "ArithmeticExpr"; }
 
@@ -58,8 +58,12 @@ ArithmeticExpr::ArithmeticExpr(const Lexical::Token& type,
             this->_type = ArithmeticType::kMod;
             break;
         default:
-            assert(false);
+            DLOG(FATAL) << "Unknown arithmetic operator: " << type.Value();
     }
+}
+void ArithmeticExpr::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
 };
 
 }  // namespace Mycc::AST

@@ -21,6 +21,8 @@ class UnaryExpr : public ASTNode{
         kBitwiseNot,
     };
 
+    void visit(ASTVisitor& visitor) override;
+
     UnaryExpr(const Lexical::Token& type,std::unique_ptr<ASTNode> expr);
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;

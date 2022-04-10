@@ -4,7 +4,7 @@
 
 #include <memory>
 
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_RETURN_H_
 #define MYCC_SOURCE_AST_STATEMENT_RETURN_H_
@@ -14,9 +14,15 @@ class ReturnNode : public ASTNode {
     explicit ReturnNode(const Lexical::Token& token,
                         std::unique_ptr<ASTNode> return_val);
 
+    void visit(ASTVisitor& visitor) override;
+
 #ifdef NDEBUG
-    [[nodiscard]]  std::string Dump(std::string_view ident) const override{ return ""; }
+    [[nodiscard]] std::string Dump(std::string_view ident) const override {
+        return "";
+    }
 #endif
+
+    [[nodiscard]] bool IsReturn() const override { return true; }
 
   protected:
     [[nodiscard]] std::string GetNodeName() const override;

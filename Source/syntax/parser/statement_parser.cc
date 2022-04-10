@@ -5,10 +5,10 @@
 
 #include <list>
 
-#include "AST/ast_context.h"
+#include "AST/ASTContext.h"
 #include "AST/expr/access.h"
 #include "AST/expr/array.h"
-#include "AST/expr/cast.h"
+#include "AST/expr/cast/cast.h"
 #include "AST/expr/conditional.h"
 #include "AST/expr/literal.h"
 #include "AST/expr/operator/arithmetic.h"
@@ -29,7 +29,7 @@
 #include "AST/statement/return.h"
 #include "AST/statement/struct.h"
 #include "AST/statement/value_decl.h"
-#include "AST/type/array_type.h"
+#include "AST/type/ArrayType.h"
 #include "lexical/Token.h"
 #include "lexical/token_type.h"
 #include "syntax/Parser.h"
@@ -59,7 +59,7 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(AST::ASTContext& context,
                     node = std::make_unique<AST::ReturnNode>(
                         token, std::move(ret_expr));
                 } else {
-                    DLOG(ERROR) << "parse return statement error";
+                    VLOG(SYNTAX_LOG_LEVEL) << "parse return statement error";
                     return nullptr;
                 }
             } else {
@@ -118,8 +118,10 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(AST::ASTContext& context,
     }
 
     if (node == nullptr) {
-        DLOG(WARNING) << "statement is empty";
+        VLOG(SYNTAX_LOG_LEVEL) << "statement is empty";
     }
+
+    attributes.clear();
     return node;
 }
 
@@ -128,7 +130,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseCommaExpr(
     // parsing left-hand side of expression
     auto lhs = ParseAssignExpr(context, tokens);
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for comma expression failed";
+        VLOG(SYNTAX_LOG_LEVEL) << "Parse [LHS] for comma expression failed";
         return nullptr;
     }
 
@@ -138,7 +140,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseCommaExpr(
         pop_list(tokens);
         auto rhs = ParseCommaExpr(context, tokens);
         if (lhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for comma expression failed";
+            VLOG(SYNTAX_LOG_LEVEL) << "Parse [RHS] for comma expression failed";
             return nullptr;
         }
 
@@ -153,7 +155,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAssignExpr(
     AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseConditionalExpr(context, tokens);
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for assign expression failed";
+        VLOG(SYNTAX_LOG_LEVEL) << "Parse [LHS] for assign expression failed";
         return nullptr;
     }
 
@@ -175,23 +177,24 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAssignExpr(
         // parse rhs expression
         auto rhs = ParseAssignExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for assign expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [RHS] for assign expression failed";
             return nullptr;
         }
 
+        // LHS has to be an assignable node
+        if (!lhs->IsAssignable()) {
+            MYCC_PrintTokenError_ReturnNull(assign_type,
+                                            "Left-hand side is not assignable")
+        }
 
         if (Options::Global_enable_type_checking) {
             Message::set_current_part("Type checking");
-            // LHS has to be an assignable node
-            if (!lhs->IsAssignable()) {
-                MYCC_PrintTokenError_ReturnNull(assign_type,
-                                                "Left hand side is not assignable")
-            }
-
             // LHS cannot be const variable
             if (lhs->GetType()->IsConst()) {
-                MYCC_PrintTokenError_ReturnNull(assign_type,
-                                                "Left hand side is not assignable")
+                VLOG(SYNTAX_LOG_LEVEL) << "LHS：" << lhs->Dump("");
+                MYCC_PrintTokenError_ReturnNull(
+                    assign_type, "Left hand side is not assignable")
             }
 
             if (!lhs->GetType()->IsSame(rhs->GetType())) {
@@ -221,7 +224,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseConditionalExpr(
 
     if (peek(tokens).Type() == Lexical::TokenType::kQuestionMark) {
         if (lhs == nullptr) {
-            DLOG(ERROR) << "Parse [LHS] for conditional expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [LHS] for conditional expression failed";
             return nullptr;
         }
 
@@ -232,7 +236,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseConditionalExpr(
         // todo only allow char
         auto mhs = ParseConditionalExpr(context, tokens);
         if (mhs == nullptr) {
-            DLOG(ERROR) << "Parse [MHS] for conditional expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [MHS] for conditional expression failed";
             return nullptr;
         }
 
@@ -243,7 +248,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseConditionalExpr(
         auto next = tokens.front();
         auto rhs = ParseConditionalExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for conditional expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [RHS] for conditional expression failed";
             return nullptr;
         }
 
@@ -269,7 +275,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalOrExpr(
     AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseLogicalAndExpr(context, tokens);
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for logical or expression failed";
+        VLOG(SYNTAX_LOG_LEVEL)
+            << "Parse [LHS] for logical or expression failed";
         return nullptr;
     }
 
@@ -279,7 +286,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalOrExpr(
         pop_list(tokens);
         auto rhs = ParseLogicalOrExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for logical or expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [RHS] for logical or expression failed";
             return nullptr;
         }
 
@@ -306,7 +314,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalAndExpr(
     AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseBitwiseOrExpr(context, tokens);
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for logical and expression failed";
+        VLOG(SYNTAX_LOG_LEVEL)
+            << "Parse [LHS] for logical and expression failed";
         return nullptr;
     }
 
@@ -316,7 +325,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalAndExpr(
         pop_list(tokens);
         auto rhs = ParseLogicalAndExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for logical and expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [RHS] for logical and expression failed";
             return nullptr;
         }
 
@@ -343,7 +353,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseOrExpr(
     AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseBitwiseXorExpr(context, tokens);
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for bitwise or expression failed";
+        VLOG(SYNTAX_LOG_LEVEL)
+            << "Parse [LHS] for bitwise or expression failed";
         return nullptr;
     }
 
@@ -353,7 +364,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseOrExpr(
         pop_list(tokens);
         auto rhs = ParseBitwiseOrExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for bitwise or expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [RHS] for bitwise or expression failed";
             return nullptr;
         }
 
@@ -379,7 +391,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseXorExpr(
     AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseBitwiseAndExpr(context, tokens);
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for bitwise xor expression failed";
+        VLOG(SYNTAX_LOG_LEVEL)
+            << "Parse [LHS] for bitwise xor expression failed";
         return nullptr;
     }
 
@@ -389,7 +402,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseXorExpr(
         pop_list(tokens);
         auto rhs = ParseBitwiseXorExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for bitwise xor expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [RHS] for bitwise xor expression failed";
             return nullptr;
         }
 
@@ -416,7 +430,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseAndExpr(
     auto lhs = ParseEqualityExpr(context, tokens);
 
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for bitwise and expression failed";
+        VLOG(SYNTAX_LOG_LEVEL)
+            << "Parse [LHS] for bitwise and expression failed";
         return nullptr;
     }
 
@@ -426,7 +441,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseAndExpr(
         pop_list(tokens);
         auto rhs = ParseBitwiseAndExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for bitwise and expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [RHS] for bitwise and expression failed";
             return nullptr;
         }
 
@@ -451,7 +467,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseEqualityExpr(
     AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseRelationalExpr(context, tokens);
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for equality expression failed";
+        VLOG(SYNTAX_LOG_LEVEL) << "Parse [LHS] for equality expression failed";
         return nullptr;
     }
 
@@ -462,7 +478,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseEqualityExpr(
         pop_list(tokens);
         auto rhs = ParseEqualityExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for equality expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [RHS] for equality expression failed";
             return nullptr;
         }
 
@@ -487,7 +504,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseRelationalExpr(
     AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseShiftExpr(context, tokens);
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for relational expression failed";
+        VLOG(SYNTAX_LOG_LEVEL)
+            << "Parse [LHS] for relational expression failed";
         return nullptr;
     }
 
@@ -501,8 +519,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseRelationalExpr(
         pop_list(tokens);
         auto rhs = ParseRelationalExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for relational "
-                           "expression failed";
+            VLOG(SYNTAX_LOG_LEVEL) << "Parse [RHS] for relational "
+                                      "expression failed";
             return nullptr;
         }
 
@@ -529,7 +547,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseShiftExpr(
     AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseAdditiveExpr(context, tokens);
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for shift expression failed";
+        VLOG(SYNTAX_LOG_LEVEL) << "Parse [LHS] for shift expression failed";
         return nullptr;
     }
 
@@ -540,7 +558,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseShiftExpr(
         pop_list(tokens);
         auto rhs = ParseShiftExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for shift expression failed";
+            VLOG(SYNTAX_LOG_LEVEL) << "Parse [RHS] for shift expression failed";
             return nullptr;
         }
 
@@ -566,7 +584,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAdditiveExpr(
     AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseMultiplicativeExpr(context, tokens);
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for additive expression failed";
+        VLOG(SYNTAX_LOG_LEVEL) << "Parse [LHS] for additive expression failed";
         return nullptr;
     }
 
@@ -578,7 +596,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAdditiveExpr(
         pop_list(tokens);
         auto rhs = ParseAdditiveExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for additive expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [RHS] for additive expression failed";
             return nullptr;
         }
 
@@ -610,8 +629,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseMultiplicativeExpr(
     AST::ASTContext& context, TokenList& tokens) {
     auto lhs = ParseUnaryExpr(context, tokens);
     if (lhs == nullptr) {
-        DLOG(ERROR) << "Parse [LHS] for multiplicative "
-                       "expression failed";
+        VLOG(SYNTAX_LOG_LEVEL) << "Parse [LHS] for multiplicative "
+                                  "expression failed";
         return nullptr;
     }
 
@@ -624,8 +643,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseMultiplicativeExpr(
         pop_list(tokens);
         auto rhs = ParseMultiplicativeExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for multiplicative "
-                           "expression failed";
+            VLOG(SYNTAX_LOG_LEVEL) << "Parse [RHS] for multiplicative "
+                                      "expression failed";
             return nullptr;
         }
 
@@ -665,7 +684,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(
         pop_list(tokens);
         auto rhs = ParseUnaryExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for unary expression failed";
+            VLOG(SYNTAX_LOG_LEVEL) << "Parse [RHS] for unary expression failed";
             return nullptr;
         }
 
@@ -678,8 +697,15 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(
         pop_list(tokens);  // consume the '('
 
         // get the type of the cast expression
-        auto type = context.getType(tokens.front().Value());
-        pop_list(tokens);  // consume the type
+        auto type_name = ParseTypeName(context, tokens);
+
+        if (type_name.empty()) {
+            MYCC_PrintTokenError(peek(tokens), "Expected type name");
+            return nullptr;
+        }
+
+        auto [argument_type, attrs, name_token] =
+            ParseTypeDecl(TokenListToString(type_name), context, tokens);
 
         // consume the ')'
         MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRParentheses,
@@ -687,11 +713,11 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(
 
         auto rhs = ParseUnaryExpr(context, tokens);
         if (rhs == nullptr) {
-            DLOG(ERROR) << "Parse [RHS] for cast expression failed";
+            VLOG(SYNTAX_LOG_LEVEL) << "Parse [RHS] for cast expression failed";
             return nullptr;
         }
 
-        return std::make_unique<AST::CastExpr>(type, std::move(rhs));
+        return std::make_unique<AST::CastExpr>(argument_type, std::move(rhs));
     }
 
     // sizeof expr
@@ -704,7 +730,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(
 
         auto expr = ParseUnaryExpr(context, tokens);
         if (expr == nullptr) {
-            DLOG(ERROR) << "Parse [EXPR] for sizeof expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [EXPR] for sizeof expression failed";
             return nullptr;
         }
 
@@ -727,8 +754,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(
             // parsing RHS
             auto rhs = ParseUnaryExpr(context, tokens);
             if (rhs == nullptr) {
-                DLOG(ERROR) << "Parse [RHS] for unary "
-                               "expression failed";
+                VLOG(SYNTAX_LOG_LEVEL) << "Parse [RHS] for unary "
+                                          "expression failed";
                 return nullptr;
             }
 
@@ -748,8 +775,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(
         } else {
             auto lhs = ParseAccessExpr(context, tokens);
             if (lhs == nullptr) {
-                DLOG(ERROR) << "Parse [LHS] for unary "
-                               "expression failed";
+                VLOG(SYNTAX_LOG_LEVEL) << "Parse [LHS] for unary "
+                                          "expression failed";
                 return nullptr;
             }
 
@@ -796,6 +823,11 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAccessExpr(
     AST::ASTContext& context, TokenList& tokens) {
     auto currentExpr = ParsePostfixExpr(context, tokens);
 
+    if (currentExpr == nullptr) {
+        VLOG(SYNTAX_LOG_LEVEL) << "Parse [EXPR] for access expression failed";
+        return nullptr;
+    }
+
     // variable accessor
     if (peek(tokens).Type() == Lexical::TokenType::kDot ||
         peek(tokens).Type() == Lexical::TokenType::kArrow) {
@@ -808,16 +840,13 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAccessExpr(
 
                 // accessor should not be a keyword
                 if (peek(tokens).Type() != Lexical::TokenType::kIdentity) {
-                    MYCC_PrintFirstTokenError_ReturnNull(
-                        tokens,
-                        "Expect [IDENTITY] after '.' " + error_token.Value())
+                    MYCC_PrintFirstTokenError_ReturnNull(tokens,
+                                                         "Expect identifier")
                 }
 
                 // to new a variable node
                 auto memberName = pop_list(tokens);
 
-                auto type = currentExpr->GetType();
-                // assert(type->IsStruct());
                 //  check if the type has this member
                 if (Options::Global_enable_type_checking) {
                     Message::set_current_part("Type checking");
@@ -836,9 +865,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAccessExpr(
                     // check member name
                     if (type == nullptr) {
                         MYCC_PrintFirstTokenError_ReturnNull(
-                            tokens, "Type " +
-                                        currentExpr->GetType()->GetName() +
-                                        " has no member " + memberName.Value())
+                            tokens, "Unknown member '" + memberName.Value() +
+                                        "' in " + currentExpr->GetType()->GetName())
                     }
                     Message::set_current_part("Parser");
                 }
@@ -854,13 +882,14 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAccessExpr(
                 // consume the index
                 auto indexExpr = ParseCommaExpr(context, tokens);
                 if (indexExpr == nullptr) {
-                    DLOG(ERROR) << "Parse [INDEX] for array "
-                                   "accessor failed";
+                    VLOG(SYNTAX_LOG_LEVEL) << "Parse [INDEX] for array "
+                                              "accessor failed";
                     return nullptr;
                 }
 
                 // check type
-                if (!currentExpr->GetType()->IsArray()) {
+                if (Options::Global_enable_type_checking &&
+                    !currentExpr->GetType()->IsArray()) {
                     MYCC_PrintFirstTokenError_ReturnNull(
                         tokens, "Expect array type for array accessor")
                 }
@@ -890,7 +919,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
 
         auto expr = ParseCommaExpr(context, tokens);
         if (expr == nullptr) {
-            DLOG(ERROR) << "Parse [EXPR] for postfix expression failed";
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Parse [EXPR] for postfix expression failed";
             return nullptr;
         }
 
@@ -913,16 +943,15 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
             // array accessor should be integer
             auto index = ParseCommaExpr(context, tokens);
             if (index == nullptr) {
-                DLOG(ERROR) << "Parse [INDEX] for array "
-                               "accessor failed";
+                VLOG(SYNTAX_LOG_LEVEL) << "Parse [INDEX] for array "
+                                          "accessor failed";
                 return nullptr;
             }
 
             // should be integer
             if (Options::Global_enable_type_checking) {
                 Message::set_current_part("Type checking");
-
-                auto int_type = std::make_shared<AST::Type>("int");
+                auto int_type = AST::Type::GetBasicType("int", {});
                 if (!int_type->IsSame(index->GetType())) {
                     auto index_type = index->GetType();
                     index = AST::ASTNode::CastTo(int_type, std::move(index));
@@ -946,7 +975,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
 
             auto type = context.getVariableType(name.Value());
 
-            if (type->IsArray()) {
+            if (type->IsArray() || !Options::Global_enable_type_checking) {
                 return std::make_unique<AST::ArraySubscriptExpr>(
                     start, std::make_unique<AST::DeclRefExpr>(name, type),
                     std::move(index));
@@ -973,7 +1002,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
 
             // next token should not be ", "
             if (peek(tokens).Type() == Lexical::TokenType::kComma) {
-                MYCC_PrintFirstTokenError_ReturnNull(tokens, "Expected type");
+                MYCC_PrintFirstTokenError_ReturnNull(tokens, "term expected");
             }
 
             // parse arguments
@@ -984,8 +1013,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
                 auto arg_token = tokens.front();
                 auto arg = ParseAssignExpr(context, tokens);
                 if (arg == nullptr) {
-                    DLOG(ERROR) << "Parse [ARG] for function "
-                                   "caller failed";
+                    VLOG(SYNTAX_LOG_LEVEL) << "Parse [ARG] for function "
+                                              "caller failed";
                     return nullptr;
                 }
 
@@ -1031,6 +1060,11 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
 
             // function call need to have same number of arguments
             if (Options::Global_enable_type_checking) {
+                if (!context.hasFunction(name.Value())) {
+                    MYCC_PrintTokenError_ReturnNull(
+                        name, "Function " + name.Value() + " not found");
+                }
+
                 if (!func_args_tmp.empty()) {
                     // generate type string first
                     std::string type_str = "(";
@@ -1050,6 +1084,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
                                                  func_args_tmp.size()) +
                                   " parameters");
                 }
+            } else {
+                return_type = context.getType("void", {});
             }
 
             // consume the ')'
@@ -1060,7 +1096,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
                                                        std::move(args_expr));
         }
 
-        if (context.hasVariable(name.Value())) {
+        if (context.hasVariable(name.Value()) ||
+            !Options::Global_enable_type_checking) {
             return std::make_unique<AST::DeclRefExpr>(
                 name, context.getVariableType(name.Value()));
         } else {
@@ -1088,10 +1125,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
                 return std::make_unique<AST::LiteralExpr>(
                     AST::LiteralExpr::kReal_number, value);
             default:
-                DLOG(ERROR) << "Unreachable code: \n"
-                            << "\t Current AST:\n";
-                // TODO: print AST(basic debug info
-                assert(false);
+                LOG(FATAL) << "Unreachable code: \n"
+                           << "\t Current AST:\n";
                 return nullptr;
         }
     }

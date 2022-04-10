@@ -7,6 +7,7 @@
 
 #include "lexical/Token.h"
 #include "macro.h"
+#include "options.h"
 #include "utils/logging.h"
 
 namespace Mycc::Message {
@@ -59,23 +60,23 @@ class PrintMessageReporter {
 
     void operator()(Level error_level, const std::string& message,
                     std::pair<int, int> line_info) {
-        DLOG(ERROR) << "Error raised by [" << caller_ << "] "
-                                 << file_ << ":" << line_ << std::endl;
+        DVLOG(MESSAGE_ERROR_TRACING) << "Error raised by [" << caller_ << "] "
+                                     << file_ << ":" << line_ << std::endl;
         return print_message(error_level, message, line_info);
     }
 
     void operator()(Level error_level, const std::string& message,
                     const std::string& line, std::pair<int, int> line_info) {
-        DLOG(ERROR) << "Error raised by [" << caller_ << "] "
-                                 << file_ << ":" << line_ << std::endl;
+        DVLOG(MESSAGE_ERROR_TRACING) << "Error raised by [" << caller_ << "] "
+                                     << file_ << ":" << line_ << std::endl;
         return print_message(error_level, message, line, line_info);
     }
 
     void operator()(Level error_level, const std::string& message,
                     const std::string& line, std::pair<int, int> line_info,
                     const std::string& error_string) {
-        DLOG(ERROR) << "Error raised by [" << caller_ << "] "
-                                 << file_ << ":" << line_ << std::endl;
+        DVLOG(MESSAGE_ERROR_TRACING) << "Error raised by [" << caller_ << "] "
+                                     << file_ << ":" << line_ << std::endl;
         return print_message(error_level, message, line, line_info,
                              error_string);
     }

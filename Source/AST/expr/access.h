@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_ACCESS_H_
 #define MYCC_SOURCE_AST_OPERATOR_ACCESS_H_
@@ -14,6 +14,8 @@ class AccessExpr : public ASTNode {
   public:
     AccessExpr(bool isPtr, const Lexical::Token& field,
                std::unique_ptr<ASTNode> expr);
+
+    void visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool IsAssignable() const override;
 

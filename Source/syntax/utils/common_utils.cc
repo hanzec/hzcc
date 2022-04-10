@@ -4,7 +4,7 @@
 
 #include "common_utils.h"
 
-#include "AST/ast_context.h"
+#include "AST/ASTContext.h"
 #include "AST/statement/compound.h"
 #include "lexical/Token.h"
 #include "lexical/token_type.h"
@@ -43,17 +43,20 @@ std::string TokenListToString(std::list<Lexical::Token>& tokens) {
 
 std::list<Lexical::Token> ParseTypeName(AST::ASTContext& context,
                                         std::list<Lexical::Token>& tokens) {
-    auto token = tokens.front();
+    bool is_struct = false;
+    tokens.front();
+    std::list<Lexical::Token> attr_list;
     std::list<Lexical::Token> final_type_name;
 
     // append attrs to final_type_name
     while (Lexical::TokenUtils::IsAttribute(tokens.front().Type())) {
-        final_type_name.push_back(pop_list(tokens));
+        attr_list.push_back(pop_list(tokens));
     }
 
     // struct or union
     if (peek(tokens).Type() == Lexical::TokenType::kStruct ||
         peek(tokens).Type() == Lexical::TokenType::kUnion) {
+        is_struct = true;
         final_type_name.push_back(pop_list(tokens));
 
         // struct or union name
@@ -70,6 +73,8 @@ std::list<Lexical::Token> ParseTypeName(AST::ASTContext& context,
          context.hasType(peek(tokens).Value())) ||
         peek(tokens).Type() == Lexical::TokenType::kType) {
         final_type_name.push_back(pop_list(tokens));
+    } else if (!is_struct) {
+        return {};
     }
 
     // type name also could have reference and dereference
@@ -101,6 +106,11 @@ std::list<Lexical::Token> ParseTypeName(AST::ASTContext& context,
                 final_type_name.push_back(pop_list(tokens));
             }
         }
+    }
+
+    // append attrs to final_type_name
+    for (auto& token : attr_list) {
+        tokens.push_front(token);
     }
 
     return final_type_name;
@@ -233,6 +243,11 @@ ParseTypeDecl(                            // NOLINT
     std::list<Lexical::Token>& tokens) {  // NOLINT
     auto attrs = GetAttribute(tokens);
 
+    std::list<Lexical::TokenType> attrs_list;
+    for (const auto& attr : attrs) {
+        attrs_list.push_back(attr.Type());
+    }
+
     /**
      * Parse name of variable
      */
@@ -248,12 +263,12 @@ ParseTypeDecl(                            // NOLINT
 
         // check if current type is array
         if (!array_shape.empty()) {
-            auto context_type = context.getType(type_name);
+            auto context_type = context.getType(type_name, {});
             return std::make_tuple(context.getType(context_type, array_shape),
                                    attrs, variable_name);
         } else {
-            return std::make_tuple(context.getType(type_name), attrs,
-                                   variable_name);
+            return std::make_tuple(context.getType(type_name, attrs_list),
+                                   attrs, variable_name);
         }
     }
 
@@ -339,8 +354,8 @@ ParseTypeDecl(                            // NOLINT
         }
 
         return std::make_tuple(
-            context.getType(context.getType(type_name), func_arguments), attrs,
-            name);
+            context.getType(context.getType(type_name, {}), func_arguments),
+            attrs, name);
     }
 
     /**
@@ -349,7 +364,7 @@ ParseTypeDecl(                            // NOLINT
     else {
         if (context.hasType(type_name)) {
             return std::make_tuple(
-                context.getType(type_name), attrs,
+                context.getType(type_name, attrs_list), attrs,
                 Lexical::Token(Lexical::TokenType::kUnknown, -1, -1));
         } else {
             // TODO we need print more useful error message

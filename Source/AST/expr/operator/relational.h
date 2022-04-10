@@ -13,6 +13,8 @@ class RelationalExpr : public OperatorBase {
     RelationalExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
                    std::unique_ptr<ASTNode> rhs);
 
+    void visit(ASTVisitor& visitor) override;
+
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
   protected:

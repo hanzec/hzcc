@@ -3,7 +3,7 @@
 //
 #include <memory>
 
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_OPERATOR_H_
 #define MYCC_SOURCE_AST_OPERATOR_OPERATOR_H_
@@ -16,10 +16,11 @@ class OperatorBase : public ASTNode {
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
-  protected:
-    [[nodiscard]] std::string GetNodeName() const override;
     [[nodiscard]] const std::unique_ptr<ASTNode>& GetLHS() const;
     [[nodiscard]] const std::unique_ptr<ASTNode>& GetRHS() const;
+
+  protected:
+    [[nodiscard]] std::string GetNodeName() const override;
 
   private:
     std::unique_ptr<ASTNode> _lhs;

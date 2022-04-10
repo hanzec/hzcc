@@ -7,7 +7,8 @@
 #include <utility>
 #include <vector>
 
-#include "AST/type/type.h"
+#include "AST/ASTNode.h"
+#include "AST/type/Type.h"
 #include "decl.h"
 #include "param_val_decl.h"
 #ifndef MYCC_FUNCTION_NODE_H
@@ -16,7 +17,6 @@
 namespace Mycc::AST {
 using ArgumentList =
     std::list<std::pair<std::string, std::shared_ptr<AST::Type>>>;
-
 
 class FunctionDeclNode : public DeclNode {
   public:
@@ -28,12 +28,16 @@ class FunctionDeclNode : public DeclNode {
      * @param arguments the arguments of the function
      */
     FunctionDeclNode(const Lexical::Token& function_name,    // NOLINT
-                     std::shared_ptr<Type> return_type,     // NOLINT
+                     std::shared_ptr<Type> return_type,      // NOLINT
                      std::list<Lexical::Token>& attribute);  // NOLINT
 
     ~FunctionDeclNode() override = default;
 
+    void visit(ASTVisitor& visitor) override;
+
     bool set_body(std::unique_ptr<AST::ASTNode> declaration);
+
+    std::unique_ptr<AST::ASTNode>& GetBody();
 
     ArgumentList getArguments();
 
@@ -41,14 +45,11 @@ class FunctionDeclNode : public DeclNode {
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
-
 #ifdef NDEBUG
-    [[nodiscard]]  std::string Dump(std::string_view ident) const override;
+    [[nodiscard]] std::string Dump(std::string_view ident) const override;
 #endif
 
-    [[nodiscard]]  bool IsFuncDecl() const override;
-
-    [[nodiscard]] std::list<std::shared_ptr<Type>> get_argument() const;
+    [[nodiscard]] bool IsFuncDecl() const override;
 
     bool AddFunctionArgument(std::unique_ptr<ParamVarDecl> type);
 

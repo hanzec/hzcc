@@ -34,9 +34,19 @@ class ParserBase {
         // attributes should not have any duplicate token or attribute is empty
         if (attributes.empty()) {
             return parse_impl(context, token);
-        } else if (!checkDuplicateToken(attributes)) {
+        }
+#ifndef NDEBUG
+        else if (!checkDuplicateToken(attributes)) {
+            auto ret = parse_impl(context, token, attributes);
+            DLOG_ASSERT(attributes.empty())
+                << " attributes list should be empty after parsing";
+            return std::move(ret);
+        }
+#else
+        else {
             return parse_impl(context, token, attributes);
         }
+#endif
         return nullptr;
     };
 
@@ -49,7 +59,15 @@ class ParserBase {
   protected:
     virtual std::unique_ptr<AST::ASTNode> parse_impl(AST::ASTContext& context,
                                                      TokenList& tokens) {
+#ifndef NDEBUG
+        auto ret = parse_impl(context, tokens, kEmptyTokenList);
+        DLOG_ASSERT(kEmptyTokenList.empty())
+            << " attributes list should be empty after parsing ["
+            << _astNodeName << "]";
+        return std::move(ret);
+#else
         return parse_impl(context, tokens, kEmptyTokenList);
+#endif
     };
 
     virtual std::unique_ptr<AST::ASTNode> parse_impl(  // NOLINT

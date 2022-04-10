@@ -5,9 +5,8 @@
 #ifndef MYCC_OPTIONS_H
 #define MYCC_OPTIONS_H
 namespace Mycc::Options {
-  extern bool Global_disable_color;
-  extern bool Global_enable_nicer_print;
-  extern bool Global_enable_type_checking;
-
-}
+extern bool Global_disable_color;
+extern bool Global_enable_nicer_print;
+extern bool Global_enable_type_checking;
+}  // namespace Mycc::Options
 #endif  // MYCC_OPTIONS_H

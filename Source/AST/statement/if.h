@@ -3,7 +3,7 @@
 //
 #include <memory>
 #include <vector>
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_IF_H_
 #define MYCC_SOURCE_AST_STATEMENT_IF_H_
@@ -12,6 +12,9 @@ class IfStatement : public ASTNode {
   public:
     IfStatement(std::unique_ptr<ASTNode> cond, std::unique_ptr<ASTNode> body)
         : _condition(std::move(cond)),_if_body_statement(std::move(body)){};
+
+    void visit(ASTVisitor& visitor) override;
+
 
     [[nodiscard]] bool hasElse() const { return _else_statement_ != nullptr; }
 

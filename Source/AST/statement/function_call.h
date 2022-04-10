@@ -6,7 +6,7 @@
 #include <string>
 #include <string_view>
 
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_FUNCTION_CALL_H_
 #define MYCC_SOURCE_AST_STATEMENT_FUNCTION_CALL_H_
@@ -16,6 +16,9 @@ class FunctionCall : public ASTNode {
     FunctionCall(const Lexical::Token& name,
                  const std::shared_ptr<Type>& return_type,
                  std::list<std::unique_ptr<ASTNode>> args);
+
+    void visit(ASTVisitor& visitor) override;
+
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 

@@ -7,7 +7,7 @@
 #include <CLI/CLI.hpp>
 #include <iostream>
 
-#include "AST/ast_context.h"
+#include "AST/ASTContext.h"
 #include "const_msg.h"
 #include "lexical//Token.h"
 #include "lexical/lexical.h"
@@ -147,9 +147,9 @@ int main(int argc, char* argv[]) {
                   << std::endl;
     }
 
-    if (flag4 && syntax_result.Ok()) {
-        DVLOG(AST_LOG_LEVEL) << "AST Dump\n" << context.Dump();
+    DVLOG(AST_LOG_LEVEL) << "AST Dump\n" << context.Dump();
 
+    if (flag4 && syntax_result.Ok()) {
         if (output_file.empty()) {
             std::cout << context.Dump() << std::endl;
 

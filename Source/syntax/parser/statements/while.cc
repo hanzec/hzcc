@@ -9,7 +9,7 @@
 
 #include <list>
 
-#include "AST/ast_context.h"
+#include "AST/ASTContext.h"
 #include "AST/statement/compound.h"
 #include "AST/statement/do.h"
 #include "lexical/Token.h"

@@ -1,8 +1,9 @@
 //
 // Created by chen_ on 2022/3/29.
 //
-#include <cassert>
 #include "function_call.h"
+
+#include <cassert>
 
 #include "lexical/Token.h"
 
@@ -15,7 +16,7 @@ FunctionCall::FunctionCall(const Lexical::Token& name,
       _name(name.Value()),
       _args(std::move(args)),
       _return_type(return_type) {
-    assert(return_type);
+    DLOG_ASSERT(return_type != nullptr) << "return type is nullptr";
 }
 
 std::shared_ptr<Type> FunctionCall::GetType() const { return _return_type; }
@@ -25,10 +26,15 @@ std::string FunctionCall::PrintAdditionalInfo(std::string_view ident) const {
 
     if (!_args.empty()) {
         for (auto& arg : _args) {
-            info += "\n" + arg->Dump(std::string(ident) + " |");
+            info += "\n" + arg->Dump(std::string(ident) +
+                                     (arg == _args.back() ? " `" : " |"));
         }
     }
-    return ASTNode::PrintAdditionalInfo(ident);
+    return info;
+}
+void FunctionCall::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
 };
 
 }  // namespace Mycc::AST

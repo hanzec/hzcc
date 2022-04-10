@@ -5,7 +5,7 @@
 
 #include <list>
 
-#include "AST/ast_context.h"
+#include "AST/ASTContext.h"
 #include "block_parser.h"
 #include "lexical/Token.h"
 #include "syntax/Parser.h"
@@ -33,19 +33,20 @@ std::unique_ptr<AST::ASTNode> BlockStatement::parse_impl(
            tokens.front().Type() != Lexical::TokenType::kRBrace) {
         if (!block_node->AddStatement(
                 ParserFactory::ParseAST<AST::ASTNode>(context, tokens))) {
-            DLOG(ERROR) << "Parse block statement error";
+            DVLOG(SYNTAX_LOG_LEVEL) << "Parse block statement error";
             return nullptr;
         }
 
-        if(!block_node->GetLastStatement()->HasBody()) {
+        if (!block_node->GetLastStatement()->HasBody()) {
             // statement need end with ';'
-            MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon, tokens);
+            MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon,
+                                            tokens);
         }
     }
 
     // consume '}'
     if (tokens.empty()) {
-        MYCC_PrintTokenError_ReturnNull(prev_token, "Unmatched '{'");
+        MYCC_PrintTokenError_ReturnNull(prev_token, "Unmatched '{', need '}'");
     } else {
         MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRBrace, tokens);
     }

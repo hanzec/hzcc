@@ -7,19 +7,24 @@
 #include <memory>
 #include <vector>
 
-#include "AST/ast_node.h"
+#include "AST/ASTNode.h"
 namespace Mycc::AST {
 class CompoundStmt : public ASTNode {
   public:
-    explicit CompoundStmt(std::pair<int,int> loc);
+    explicit CompoundStmt(std::pair<int, int> loc);
+
+    void visit(ASTVisitor& visitor) override;
 
     bool AddStatement(std::unique_ptr<ASTNode> statement);
 
 #ifdef NDEBUG
-    [[nodiscard]]  std::string Dump(std::string_view ident) const override;
+    [[nodiscard]] std::string Dump(std::string_view ident) const override;
 #endif
 
     [[nodiscard]] const std::unique_ptr<ASTNode>& GetLastStatement() const;
+
+    [[nodiscard]] const std::list<std::unique_ptr<ASTNode>>& GetBodyStatements()
+        const;
 
   protected:
     [[nodiscard]] std::string GetNodeName() const override;

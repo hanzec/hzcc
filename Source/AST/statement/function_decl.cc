@@ -3,6 +3,7 @@
 //
 #include "function_decl.h"
 
+#include <iomanip>
 #include <ios>
 
 #include "lexical/Token.h"
@@ -21,18 +22,12 @@ bool FunctionDeclNode::set_body(std::unique_ptr<AST::ASTNode> declaration) {
         DLOG(WARNING) << "function body is nullptr";
         return false;
     }
-    DVLOG(AST_LOG_LEVEL) << "set function body for function " << GetName();
+    DVLOG(AST_LOG_LEVEL) << "set function body for function [" << GetName()
+                         << "]";
     _function_body = std::move(declaration);
     return true;
 }
 
-std::list<std::shared_ptr<Type>> FunctionDeclNode::get_argument() const {
-    std::list<std::shared_ptr<Type>> result;
-    for (const auto& arg : _function_param) {
-        result.push_back(arg->GetType());
-    }
-    return result;
-}
 std::string FunctionDeclNode::PrintAdditionalInfo(
     std::string_view ident) const {
     std::string result = std::string();
@@ -47,21 +42,21 @@ std::string FunctionDeclNode::PrintAdditionalInfo(
     if (!_function_param.empty()) {
         result.pop_back();
     }
-    result += ")\n";
+    result += ")";
 
     // print argument node
     if (!_function_param.empty()) {
         for (const auto& arg : _function_param) {
-            result += arg->Dump(std::string(ident.size(), ' ') + " |") + "\n";
+            result += "\n" + arg->Dump(std::string(ident.size(), ' ') + " |") +
+                      (arg == _function_param.back() ? "" : "\n");
         }
     }
 
     // print its body
     if (_function_body != nullptr) {
-        result +=
-            _function_body->Dump(std::string(ident.size(), ' ') +
-                                 (_function_param.empty() ? " |" : " `")) +
-            "\n";
+        result += "\n" +
+                  _function_body->Dump(std::string(ident.size(), ' ') +
+                                       (_function_param.empty() ? " |" : " `"));
     } else {
         result += ")";
     }
@@ -94,22 +89,47 @@ std::shared_ptr<Type> FunctionDeclNode::GetType() const { return _return_type; }
 
 bool FunctionDeclNode::HasBody() const { return _function_body != nullptr; }
 
+void FunctionDeclNode::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
+}
+
+std::unique_ptr<AST::ASTNode>& FunctionDeclNode::GetBody() {
+    return _function_body;
+}
+
 #ifdef NDEBUG
 std::string FunctionDeclNode::Dump(std::string_view ident) const {
-    std::string ret;
+    std::stringstream ret;
 
     // print parameter
     for (const auto& arg : _function_param) {
-        ret += "\tLine " + std::to_string(GetLine()) + ": " + "parameter " +
-               arg->GetType()->GetName() + " " + arg->GetName() + "\n";
+        auto type_name = arg->GetType()->GetName();
+        if (type_name.find('[') != std::string::npos) {
+            ret << "\tLine " << std::setw(3) << std::to_string(GetLine() + 1)
+                << std::setw(0)
+                << ": parameter " +
+                       arg->GetType()->GetName().substr(
+                           0, type_name.find_first_of('[')) +
+                       " " + arg->GetName() +
+                       arg->GetType()->GetName().substr(
+                           type_name.find_first_of('['),
+                           type_name.find_last_of(']')) +
+                       "\n";
+        } else {
+            ret << "\tLine " << std::setw(3) << std::to_string(GetLine() + 1)
+                << std::setw(0)
+                << ": parameter " + arg->GetType()->GetName() + " " +
+                       arg->GetName() + "\n";
+        }
     }
 
     // print body
     if (_function_body != nullptr) {
-        ret += _function_body->Dump(ident) + "\n";
+        ret << _function_body->Dump(ident);
     }
 
-    return ret;
+    return ret.str();
 }
 #endif
 

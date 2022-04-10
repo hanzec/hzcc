@@ -4,7 +4,7 @@
 
 #include "value_decl_parser.h"
 
-#include "AST/ast_context.h"
+#include "AST/ASTContext.h"
 #include "AST/statement/value_decl.h"
 #include "lexical/Token.h"
 #include "syntax/utils/common_utils.h"
@@ -17,6 +17,9 @@ ValueDeclare::ValueDeclare() noexcept
 std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
     Mycc::AST::ASTContext& context, Mycc::Syntax::TokenList& tokens,
     Mycc::Syntax::TokenList& attributes) {
+    // push attrs back to token stream
+    tokens.insert(tokens.begin(), attributes.begin(), attributes.end());
+
     // consume type and val define
     auto type_name = ParseTypeName(context, tokens);
     auto [type, attrs, name] =
@@ -27,10 +30,6 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
         DLOG(ERROR) << "Parse type failed";
         return nullptr;
     }
-
-    // create final attrs type
-    auto final_attr = TokenList(attributes.begin(), attributes.end());
-    final_attr.insert(final_attr.end(), attrs.begin(), attrs.end());
 
     // for a function definition, we only allow one per line.
     if (type->IsFuncPtr()) {
@@ -81,9 +80,9 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
                 if (value == nullptr) {
                     MYCC_PrintTokenError_ReturnNull(
                         value_node,
-                        "Type mismatch, "
-                        "expected " +
-                            type->GetName() + ", got " + orig_type->GetName());
+                        "Initialization for ' " + name.Value() +
+                            "' has wrong type: " + orig_type->GetName() +
+                            " expected: " + type->GetName());
                 }
             }
         }
@@ -103,20 +102,25 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
 
         // push all types back to tokens
         tokens.insert(tokens.begin(), type_name.begin(), type_name.end());
+
+        // push attrs back to tokens
+        tokens.insert(tokens.begin(), attrs.begin(), attrs.end());
+
         tokens.push_front(
             Lexical::Token(Lexical::TokenType::kSemiColon, -1, -1));
     }
 
     // create new variable if not in root context
-    if (!context.AtRot()) {
+    if (!context.AtRoot()) {
         auto status = context.addVariable(name.Value(), type);
         if (!status.Ok()) {
             MYCC_PrintTokenError(name, status.Message());
             return nullptr;
         }
     }
+    attributes.clear();
 
-    return std::make_unique<AST::VarDecl>(type, final_attr, name);
+    return std::make_unique<AST::VarDecl>(type, attrs, name);
 }
 
 }  // namespace Mycc::Syntax::Parser

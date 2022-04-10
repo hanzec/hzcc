@@ -3,8 +3,8 @@
 //
 #include "assign.h"
 
+#include "AST/type/Type.h"
 #include "lexical/Token.h"
-#include "AST/type/type.h"
 namespace Mycc::AST {
 
 AssignExpr::AssignExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
@@ -45,7 +45,7 @@ AssignExpr::AssignExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
             this->_type = AssignType::kXorAssign;
             break;
         default:
-            assert(false);
+            DLOG(FATAL) << "Unknown assign operator: " << type.Value();
     }
 };
 
@@ -99,6 +99,13 @@ std::string AssignExpr::PrintAdditionalInfo(std::string_view ident) const {
     string += GetLHS()->Dump(std::string(ident) + " |") + "\n";
     string += GetRHS()->Dump(std::string(ident) + " `");
     return string;
+}
+void AssignExpr::visit(ASTVisitor& visitor) {
+    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
+    visitor.visit(this);
+}
+AssignExpr::AssignType AssignExpr::GetAssignType() const {
+    return _type;
 }
 
 }  // namespace Mycc::AST

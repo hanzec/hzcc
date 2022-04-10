@@ -11,6 +11,8 @@ class BitwiseExpr : public OperatorBase {
     BitwiseExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
                 std::unique_ptr<ASTNode> rhs);
 
+    void visit(ASTVisitor& visitor) override;
+
   protected:
     enum BitwiseType {
         kAND,
