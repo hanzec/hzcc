@@ -1,5 +1,9 @@
 # mycc
 
+[![pipeline status](https://gitlab.hanzec.com/personalproject/hzcc/badges/main/pipeline.svg)](https://gitlab.hanzec.com/personalproject/hzcc/-/commits/main)
+[![coverage report](https://gitlab.hanzec.com/personalproject/hzcc/badges/main/coverage.svg)](https://gitlab.hanzec.com/personalproject/hzcc/-/commits/main)
+[![Latest Release](https://gitlab.hanzec.com/personalproject/hzcc/-/badges/release.svg)](https://gitlab.hanzec.com/personalproject/hzcc/-/releases)
+
 My awesome the c programming language compiler implementation with C++ 17
 
 ## Dependency

@@ -22,9 +22,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/optmization/pass/FunctionPass.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optmization/pass/FunctionPass.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/optmization/pass/ImmutablePass.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optmization/pass/ImmutablePass.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/optmization/pass/ModulePass.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optmization/pass/ModulePass.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
