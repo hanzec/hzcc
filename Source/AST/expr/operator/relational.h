@@ -22,8 +22,9 @@ class RelationalExpr : public OperatorBase {
 
     [[nodiscard]] std::string GetNodeName() const override;
 
-    [[nodiscard]]  std::string PrintAdditionalInfo(
+    [[nodiscard]] std::string PrintAdditionalInfo(
         std::string_view ident) const override;
+
   private:
     RelationalType _type;
 };

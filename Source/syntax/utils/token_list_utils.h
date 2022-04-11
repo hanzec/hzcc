@@ -93,9 +93,10 @@ class PopFuncReporter {
         : caller_(std::move(Caller)), file_(std::move(File)), line_(Line) {}
 
     Lexical::Token operator()(TokenList &list) {
-        DVLOG(SYNTAX_LOG_LEVEL) << "Token: " << MYCC_PRETTY_PRINT_TOKEN(list.front())
-                   << " is consumed by [" << caller_ << "] " << file_ << ":"
-                   << line_ << std::endl;
+        DVLOG(SYNTAX_LOG_LEVEL)
+            << "Token: " << MYCC_PRETTY_PRINT_TOKEN(list.front())
+            << " is consumed by [" << caller_ << "] " << file_ << ":" << line_
+            << std::endl;
         return pop_list(list);
     }
 

@@ -16,7 +16,6 @@ class ParamVarDecl : public VarDecl {
 
     void visit(ASTVisitor& visitor) override;
 
-
   protected:
     [[nodiscard]] std::string GetNodeName() const override;
 };

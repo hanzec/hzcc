@@ -42,8 +42,7 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::ASTContext& context,
             return nullptr;
         }
         // check ';'  and consume
-        MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon,
-                                        tokens);
+        MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon, tokens);
     } else {
         // consume ';'
         pop_list(tokens);
@@ -59,8 +58,7 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::ASTContext& context,
         }
 
         // check ';'  and consume
-        MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon,
-                                        tokens);
+        MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon, tokens);
     } else {
         // consume ';'
         pop_list(tokens);

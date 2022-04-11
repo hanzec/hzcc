@@ -72,7 +72,7 @@ Following symbol are plan to supported in the future:
 
     ```
     Usage:
-        mycc -mode [options] 
+        mycc -mode [options]
     Valid modes:
         -0: Version information only
         -1: Part 1 (not yet implemented)

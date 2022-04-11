@@ -5,20 +5,19 @@
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_DO_H_
 #define MYCC_SOURCE_AST_STATEMENT_DO_H_
-namespace Mycc::AST{
-class DoStatement : public WhileStatement{
+namespace Mycc::AST {
+class DoStatement : public WhileStatement {
   public:
     DoStatement(std::unique_ptr<AST::ASTNode> cond,
                 std::unique_ptr<AST::ASTNode> body)
-        : WhileStatement(std::move(cond), std::move(body)){}
+        : WhileStatement(std::move(cond), std::move(body)) {}
 
     void visit(ASTVisitor& visitor) override;
 
-
-    [[nodiscard]]  bool HasBody() const override{ return true; }
+    [[nodiscard]] bool HasBody() const override { return true; }
 
   protected:
     [[nodiscard]] std::string GetNodeName() const override;
 };
-} // namespace Mycc::AST
+}  // namespace Mycc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_DO_H_

@@ -2,9 +2,11 @@
 // Created by chen_ on 2022/3/29.
 //
 #include "arithmetic.h"
+
+#include <glog/logging.h>
+
 #include "AST/DeduceValue.h"
 #include "lexical/Token.h"
-#include <glog/logging.h>
 namespace Mycc::AST {
 std::string ArithmeticExpr::GetNodeName() const { return "ArithmeticExpr"; }
 

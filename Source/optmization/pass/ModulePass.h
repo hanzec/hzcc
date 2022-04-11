@@ -4,8 +4,8 @@
 
 #ifndef MYCC_SOURCE_OPTMIZATION_PASS_MODULEPASS_H_
 #define MYCC_SOURCE_OPTMIZATION_PASS_MODULEPASS_H_
-namespace Mycc::Pass{
+namespace Mycc::Pass {
 class ModulePass {};
 
-}
+}  // namespace Mycc::Pass
 #endif  // MYCC_SOURCE_OPTMIZATION_PASS_MODULEPASS_H_

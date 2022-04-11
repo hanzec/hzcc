@@ -52,8 +52,9 @@ class ASTContext {
     std::shared_ptr<StructType> addStructType(
         const std::string& name, std::list<Lexical::TokenType>& attr_list);
 
-    std::shared_ptr<Type> getType(const std::string& name,
-                                  const std::list<Lexical::TokenType>& attr_list);
+    std::shared_ptr<Type> getType(
+        const std::string& name,
+        const std::list<Lexical::TokenType>& attr_list);
 
     std::shared_ptr<Type> getType(
         std::shared_ptr<Type> name,

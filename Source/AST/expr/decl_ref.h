@@ -8,21 +8,21 @@
 namespace Mycc::AST {
 class DeclRefExpr : public ASTNode {
   public:
-    explicit DeclRefExpr(const Lexical::Token& name, std::shared_ptr<Type> type);
+    explicit DeclRefExpr(const Lexical::Token& name,
+                         std::shared_ptr<Type> type);
 
     void visit(ASTVisitor& visitor) override;
-
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
     [[nodiscard]] bool IsAssignable() const override;
-
 
   protected:
     [[nodiscard]] std::string GetNodeName() const override;
 
     [[nodiscard]] std::string PrintAdditionalInfo(
         std::string_view ident) const override;
+
   private:
     std::string _name{};
     std::shared_ptr<Type> _type{};

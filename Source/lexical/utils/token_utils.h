@@ -23,16 +23,16 @@ constexpr ALWAYS_INLINE bool IsAttribute(Lexical::TokenType type) {
 #ifdef __clang__
 #pragma clang loop unroll(full)
 #endif
-  for (auto atrribute : kAtrributeTable) {
-    if (type == atrribute) {
-      return true;
+    for (auto atrribute : kAtrributeTable) {
+        if (type == atrribute) {
+            return true;
+        }
     }
-  }
-  return false;
+    return false;
 }
 #if !defined(__clang__) && defined(__GNUC__)
 #pragma GCC pop_options
 #endif
 
-}  // namespace Mycc::Lexical::TokenTypeUtils
+}  // namespace Mycc::Lexical::TokenUtils
 #endif  // MYCC_LEXICAL_UTILS_TOKEN_UTILS_H

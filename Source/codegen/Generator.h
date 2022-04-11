@@ -16,7 +16,7 @@ class Generator {
 
     virtual bool FinalizedSource() = 0;
 
-    void RedirectOutputStream(std::ostream &out);
+    void RedirectOutputStream(std::ostream& out);
 
     const std::string& GetInputFile() const;
 

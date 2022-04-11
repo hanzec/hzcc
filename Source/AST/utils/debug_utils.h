@@ -15,9 +15,9 @@
 namespace Mycc::AST {
 class FunctionDeclNode;
 std::string ToString(
-    const std::list <
-        std::pair<std::string, std::unique_ptr<AST::FunctionDeclNode>>> &
-    functions);
+    const std::list<
+        std::pair<std::string, std::unique_ptr<AST::FunctionDeclNode>>>&
+        functions);
 
 }  // namespace Mycc::AST
 #endif  // MYCC_SOURCE_AST_UTILS_DEBUG_UTILS_H_

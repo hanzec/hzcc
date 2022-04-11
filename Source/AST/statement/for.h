@@ -2,6 +2,7 @@
 // Created by chen_ on 2022/3/25.
 //
 #include <memory>
+
 #include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_FOR_H_
@@ -18,13 +19,11 @@ class ForStatement : public ASTNode {
 
     void visit(ASTVisitor& visitor) override;
 
-
-    [[nodiscard]]  bool HasBody() const override{ return true; }
+    [[nodiscard]] bool HasBody() const override { return true; }
 
 #ifdef NDEBUG
-    [[nodiscard]]  std::string Dump(std::string_view ident) const override;
+    [[nodiscard]] std::string Dump(std::string_view ident) const override;
 #endif
-
 
   protected:
     [[nodiscard]] std::string GetNodeName() const override;

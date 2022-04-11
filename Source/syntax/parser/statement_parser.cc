@@ -866,7 +866,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAccessExpr(
                     if (type == nullptr) {
                         MYCC_PrintFirstTokenError_ReturnNull(
                             tokens, "Unknown member '" + memberName.Value() +
-                                        "' in " + currentExpr->GetType()->GetName())
+                                        "' in " +
+                                        currentExpr->GetType()->GetName())
                     }
                     Message::set_current_part("Parser");
                 }

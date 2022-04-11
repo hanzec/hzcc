@@ -20,7 +20,6 @@ class StructDeclareNode : public DeclNode {
 
     void visit(ASTVisitor& visitor) override;
 
-
     [[nodiscard]] bool IsStructDecl() const override { return true; }
 
   protected:

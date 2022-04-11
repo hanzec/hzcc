@@ -14,12 +14,11 @@
 namespace Mycc::AST {
 class VarDecl : public DeclNode {
   public:
-    explicit VarDecl(std::shared_ptr<Type>  type,
+    explicit VarDecl(std::shared_ptr<Type> type,
                      std::list<Lexical::Token>& attrs,
                      const Lexical::Token& decl_name);
 
     void visit(ASTVisitor& visitor) override;
-
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 

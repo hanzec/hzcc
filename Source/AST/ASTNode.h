@@ -63,7 +63,6 @@ class ASTNode {
 
     [[nodiscard]] int GetLineNumber() const;
 
-
   protected:
     [[nodiscard]] uint64_t GetNodeId() const;
 

@@ -19,7 +19,6 @@ class FunctionCall : public ASTNode {
 
     void visit(ASTVisitor& visitor) override;
 
-
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
   protected:

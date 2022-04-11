@@ -21,8 +21,6 @@ class ConditionalExpr : public ASTNode {
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
-
-
   protected:
     [[nodiscard]] std::string GetNodeName() const override;
 

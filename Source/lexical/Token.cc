@@ -53,9 +53,11 @@ Token::Token(TokenType token_type, int row, int col,
     if (ref != _const_value_storage.end()) {
         ref->second += 1;
         _source_line_val_ref = &ref->first;
-        DVLOG(LEXICAL_LOG_LEVEL) << "increasing recount source line cache: [" << line << "]";
+        DVLOG(LEXICAL_LOG_LEVEL)
+            << "increasing recount source line cache: [" << line << "]";
     } else {
-        DVLOG(LEXICAL_LOG_LEVEL) << "insert new source line cache: [" << line << "]";
+        DVLOG(LEXICAL_LOG_LEVEL)
+            << "insert new source line cache: [" << line << "]";
         _source_line_val_ref =
             &(_const_value_storage.emplace(line, 1).first->first);
     }
@@ -68,9 +70,11 @@ Token::Token(const std::string& token_string, TokenType token_type, int row,
     if (ref != _const_value_storage.end()) {
         ref->second += 1;
         _token_val_ref = &ref->first;
-        DVLOG(LEXICAL_LOG_LEVEL) << "increasing recount for string: [" << token_string << "]";
+        DVLOG(LEXICAL_LOG_LEVEL)
+            << "increasing recount for string: [" << token_string << "]";
     } else {
-        DVLOG(LEXICAL_LOG_LEVEL) << "insert new token string: [" << token_string << "]";
+        DVLOG(LEXICAL_LOG_LEVEL)
+            << "insert new token string: [" << token_string << "]";
         _token_val_ref =
             &(_const_value_storage.emplace(token_string, 1).first->first);
     }
@@ -83,9 +87,11 @@ Token::Token(const std::string& token_string, TokenType token_type, int row,
     if (ref != _const_value_storage.end()) {
         ref->second += 1;
         _source_line_val_ref = &ref->first;
-        DVLOG(LEXICAL_LOG_LEVEL) << "increasing recount source line cache: [" << line << "]";
+        DVLOG(LEXICAL_LOG_LEVEL)
+            << "increasing recount source line cache: [" << line << "]";
     } else {
-        DVLOG(LEXICAL_LOG_LEVEL) << "insert new source line cache: [" << line << "]";
+        DVLOG(LEXICAL_LOG_LEVEL)
+            << "insert new source line cache: [" << line << "]";
         _source_line_val_ref =
             &(_const_value_storage.emplace(line, 1).first->first);
     }

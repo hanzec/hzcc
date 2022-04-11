@@ -30,7 +30,8 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::ASTContext& context,
         return nullptr;
     }
 
-    auto return_type = context.getType(TokenListToString(return_type_name_str), {});
+    auto return_type =
+        context.getType(TokenListToString(return_type_name_str), {});
 
     auto func_name = pop_list(tokens);
 
@@ -69,8 +70,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::ASTContext& context,
             if (peek(tokens).Type() == Lexical::TokenType::kRParentheses) {
                 break;
             } else if (first) {
-                MYCC_PrintFirstTokenError_ReturnNull(tokens,
-                                                     "Expected ','");
+                MYCC_PrintFirstTokenError_ReturnNull(tokens, "Expected ','");
             }
         }
 

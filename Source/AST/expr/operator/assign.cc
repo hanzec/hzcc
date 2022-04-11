@@ -104,8 +104,6 @@ void AssignExpr::visit(ASTVisitor& visitor) {
     DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
     visitor.visit(this);
 }
-AssignExpr::AssignType AssignExpr::GetAssignType() const {
-    return _type;
-}
+AssignExpr::AssignType AssignExpr::GetAssignType() const { return _type; }
 
 }  // namespace Mycc::AST

@@ -3,8 +3,8 @@
 //
 #ifndef MYCC_SOURCE_AST_DEDUCEVALUE_H_
 #define MYCC_SOURCE_AST_DEDUCEVALUE_H_
-#include <string>
 #include <cstdint>
+#include <string>
 
 namespace Mycc::AST {
 /**

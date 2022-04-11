@@ -92,7 +92,7 @@ permission and use it as the build root. This will significantly improve the bui
 
 ### Release build
 
-In release build, we will use `-O3` optimization level. In order to compile, you need to run following command at the 
+In release build, we will use `-O3` optimization level. In order to compile, you need to run following command at the
 **root folder of git repository**:
 
 ```bash

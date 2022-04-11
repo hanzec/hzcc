@@ -14,6 +14,7 @@ class ValueDeclare : public Statement {
     std::unique_ptr<AST::ASTNode> parse_impl(AST::ASTContext& context,
                                              TokenList& tokens,
                                              TokenList& attributes) override;
+
   private:
 };
 }  // namespace Mycc::Syntax::Parser

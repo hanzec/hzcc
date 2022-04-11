@@ -18,8 +18,7 @@ class DeclNode : public ASTNode {
 
     void visit(ASTVisitor& visitor) override;
 
-
-    DeclNode(const Lexical::Token& decl_loc, std::string  decl_name);
+    DeclNode(const Lexical::Token& decl_loc, std::string decl_name);
 
     [[nodiscard]] bool IsDeclNode() const override { return true; }
 

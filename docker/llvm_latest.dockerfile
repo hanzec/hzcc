@@ -55,4 +55,3 @@ RUN apt-get -qq install -y texlive texlive-latex-extra
 ###############################################################################
 RUN apt-get -qq update
 RUN apt-get -qq install -y default-jdk # install vcpkg dependencies
-

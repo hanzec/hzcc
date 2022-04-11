@@ -11,8 +11,6 @@ void JVMGenerator::visit(Mycc::AST::VarDecl *p_expr) {
     auto stack_id = BindStack(
         var_name, TypeUtils::GetJVMTypename(p_expr->GetType()->GetName()),
         true);
-
-
 }
 int JVMGenerator::PushReturnStack() { return 0; }
 int JVMGenerator::ConsumeReturnStack() { return 0; }

@@ -46,7 +46,8 @@ ArrayType::ArrayType(const std::shared_ptr<Type>& base_type,
                                  "]"
                            : "[VLA]")),
            {}),
-      _size_node(std::move(array_size)),_base_type(base_type) {}
+      _size_node(std::move(array_size)),
+      _base_type(base_type) {}
 
 uint64_t ArrayType::GetSize() const {
     return _size_node->IsDeducible() ? 0

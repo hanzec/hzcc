@@ -51,7 +51,7 @@ Type::Type(const std::string& name, const std::list<Lexical::TokenType>& attrs)
     : _name(name), _id(++_counter_), _is_const(false) {
     // check type name
     DLOG_ASSERT(!(name.find(' ') != std::string::npos &&
-                name.find("struct") == std::string::npos))
+                  name.find("struct") == std::string::npos))
         << "type name cannot contain space";
 
     // check attrs

@@ -24,7 +24,6 @@ bool JVMGenerator::FinalizedSource() {
     return true;
 }
 
-
 void JVMGenerator::IncLindeIndent() { _indent += _indent_str; }
 
 void JVMGenerator::DecLindeIndent() {

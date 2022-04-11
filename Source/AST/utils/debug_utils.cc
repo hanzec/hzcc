@@ -7,7 +7,8 @@
 
 namespace Mycc::AST {
 std::string ToString(
-    const std::list<std::pair<std::string, std::unique_ptr<AST::FunctionDeclNode>>>&
+    const std::list<
+        std::pair<std::string, std::unique_ptr<AST::FunctionDeclNode>>>&
         functions) {
     std::string ret;
     for (const auto& function : functions) {

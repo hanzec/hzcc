@@ -5,8 +5,6 @@
 // Created by chen_ on 2022/3/25.
 //
 
-#include "while_parser.h"
-
 #include <list>
 
 #include "AST/ASTContext.h"
@@ -17,6 +15,7 @@
 #include "syntax/utils/common_utils.h"
 #include "utils/message_utils.h"
 #include "utils/type_name_utils.h"
+#include "while_parser.h"
 
 namespace Mycc::Syntax::Parser {
 WhileStatement::WhileStatement() noexcept

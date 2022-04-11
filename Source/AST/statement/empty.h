@@ -11,7 +11,6 @@ class EmptyStatement : public ASTNode {
 
     void visit(ASTVisitor& visitor) override;
 
-
   protected:
     [[nodiscard]] std::string GetNodeName() const override;
 };

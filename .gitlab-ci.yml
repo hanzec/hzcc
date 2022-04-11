@@ -118,7 +118,7 @@ build_gcc_10_3_ninja_debug:
   script:
     - cd $CI_PROJECT_DIR
     - >
-      cmake . 
+      cmake .
       -G Ninja
       -B./build/
       -DCMAKE_BUILD_TYPE=Debug
@@ -144,7 +144,7 @@ build_llvm_latest_ninja_debug:
   script:
     - cd $CI_PROJECT_DIR
     - >
-      cmake . 
+      cmake .
       -G Ninja
       -B./build/
       -DCMAKE_BUILD_TYPE=Debug
@@ -177,10 +177,10 @@ test_gcc_10_3_debug:
     - >
       cmake .
       -G Ninja
-      -B./build/                   
-      -DENABLE_TESTING=ON                
-      -DENABLE_COVERAGE=ON               
-      -DENABLE_DOCUMENTATION=OFF         
+      -B./build/
+      -DENABLE_TESTING=ON
+      -DENABLE_COVERAGE=ON
+      -DENABLE_DOCUMENTATION=OFF
       -D CMAKE_C_COMPILER=gcc
       -D CMAKE_CXX_COMPILER=g++
       -DCMAKE_BUILD_TYPE=Debug -G Ninja
@@ -208,12 +208,12 @@ test_llvm_latest_debug:
   script:
     - cd $CI_PROJECT_DIR
     - >
-      cmake . 
+      cmake .
       -G Ninja
-      -B./build/                   
-      -DENABLE_TESTING=ON                
-      -DENABLE_COVERAGE=ON               
-      -DENABLE_DOCUMENTATION=OFF         
+      -B./build/
+      -DENABLE_TESTING=ON
+      -DENABLE_COVERAGE=ON
+      -DENABLE_DOCUMENTATION=OFF
       -D CMAKE_C_COMPILER=clang
       -D CMAKE_CXX_COMPILER=clang++
       -DCMAKE_BUILD_TYPE=Debug -G Ninja
@@ -241,11 +241,11 @@ test_gcc_10_3_release:
   script:
     - cd $CI_PROJECT_DIR
     - >
-      cmake . 
+      cmake .
       -G Ninja
-      -B./build/                   
-      -DENABLE_TESTING=ON                
-      -DENABLE_COVERAGE=ON               
+      -B./build/
+      -DENABLE_TESTING=ON
+      -DENABLE_COVERAGE=ON
       -DENABLE_DOCUMENTATION=OFF
       -D CMAKE_C_COMPILER=gcc
       -D CMAKE_CXX_COMPILER=g++
@@ -276,10 +276,10 @@ test_llvm_latest_release:
     - >
       cmake .
       -G Ninja
-      -B./build/                   
-      -DENABLE_TESTING=ON                
-      -DENABLE_COVERAGE=ON               
-      -DENABLE_DOCUMENTATION=OFF         
+      -B./build/
+      -DENABLE_TESTING=ON
+      -DENABLE_COVERAGE=ON
+      -DENABLE_DOCUMENTATION=OFF
       -D CMAKE_C_COMPILER=clang
       -D CMAKE_CXX_COMPILER=clang++
       -DCMAKE_BUILD_TYPE=Release -G Ninja

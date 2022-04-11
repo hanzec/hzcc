@@ -6,7 +6,7 @@
 
 namespace Mycc::Codegen::TypeUtils {
 
-char GetJVMTypename(const std::string &typename_){
+char GetJVMTypename(const std::string &typename_) {
     if (typename_ == "int") {
         return 'I';
     } else if (typename_ == "float") {
@@ -30,4 +30,4 @@ char GetJVMTypename(const std::string &typename_){
     }
 }
 
-}
+}  // namespace Mycc::Codegen::TypeUtils

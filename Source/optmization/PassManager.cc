@@ -4,6 +4,4 @@
 
 #include "PassManager.h"
 
-namespace Mycc::Pass{
-
-}
+namespace Mycc::Pass {}

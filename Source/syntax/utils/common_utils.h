@@ -6,8 +6,9 @@
 #include <list>
 #include <memory>
 #include <string>
-#include "token_list_utils.h"
+
 #include "lexical/utils/symbol_utils.h"
+#include "token_list_utils.h"
 
 namespace Mycc {
 namespace AST {
@@ -30,9 +31,9 @@ std::unique_ptr<AST::ASTNode> ParseCondition(  // NOLINT
     AST::ASTContext& context,                  // NOLINT
     std::list<Lexical::Token>& tokens);        // NOLINT
 
-std::unique_ptr<AST::ASTNode> ParseBodyStatement(  // NOLINT
-    AST::ASTContext& context,                      // NOLINT
-    std::list<Lexical::Token>& tokens, bool add_semicolon = true);            // NOLINT
+std::unique_ptr<AST::ASTNode> ParseBodyStatement(                   // NOLINT
+    AST::ASTContext& context,                                       // NOLINT
+    std::list<Lexical::Token>& tokens, bool add_semicolon = true);  // NOLINT
 
 std::tuple<std::shared_ptr<AST::Type>, TokenList, Lexical::Token>
 ParseTypeDecl(  // NOLINT

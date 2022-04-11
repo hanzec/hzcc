@@ -2,18 +2,18 @@
 // Created by chen_ on 2022/3/25.
 //
 #include <memory>
+
 #include "AST/ASTNode.h"
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_SIZEOF_H_
 #define MYCC_SOURCE_AST_OPERATOR_SIZEOF_H_
 namespace Mycc::AST {
-class SizeofExpr : public ASTNode{
+class SizeofExpr : public ASTNode {
   public:
     explicit SizeofExpr(std::unique_ptr<ASTNode> expr)
         : _expr(std::move(expr)) {}
 
     void visit(ASTVisitor& visitor) override;
-
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 

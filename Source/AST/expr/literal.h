@@ -14,7 +14,7 @@ class LiteralExpr : public ASTNode {
 
     explicit LiteralExpr(int64_t);
 
-    LiteralExpr(ValueType type, const Lexical::Token &value);
+    LiteralExpr(ValueType type, const Lexical::Token& value);
 
     void visit(ASTVisitor& visitor) override;
 

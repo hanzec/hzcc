@@ -3,6 +3,7 @@
 //
 
 #include "DeduceValue.h"
+
 #include <cstring>
 
 namespace Mycc::AST {

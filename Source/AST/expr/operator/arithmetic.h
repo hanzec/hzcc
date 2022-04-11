@@ -14,7 +14,6 @@ class ArithmeticExpr : public OperatorBase {
 
     void visit(ASTVisitor& visitor) override;
 
-
   protected:
     enum ArithmeticType {
         kAdd,

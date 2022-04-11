@@ -5,6 +5,7 @@
 #ifndef MYCC_LEXICAL_H
 #define MYCC_LEXICAL_H
 #include <list>
+
 #include "utils/Status.h"
 namespace Mycc::Lexical {
 // forward declare of Token
