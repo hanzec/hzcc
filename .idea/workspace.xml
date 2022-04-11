@@ -7,6 +7,7 @@
     <generated>
       <config projectName="mycc" targetName="latex-makeindex" />
       <config projectName="mycc" targetName="FileCheck" />
+      <config projectName="mycc" targetName="libc-java" />
       <config projectName="mycc" targetName="latex-prebuild" />
       <config projectName="mycc" targetName="doc_doxygen" />
       <config projectName="mycc" targetName="documentation" />
@@ -20,108 +21,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="Changes">
-      <change afterPath="$PROJECT_DIR$/Source/AST/ASTVisitor.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/Generator.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/Generator.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/const_code_block.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/expr/operator/arithmetic.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/expr/operator/assign.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/statement/compound.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/statement/decl.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/statement/function_decl.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/statement/value_decl.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/libc-java/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/libc-java/libc.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/utils/TypeUtils.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/utils/TypeUtils.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/optmization/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/part4/lit.cfg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/ASTContext.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTContext.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/ASTContext.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTContext.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/ASTNode.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTNode.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/ASTNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/cast/const_add.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/cast/const_add.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/cast/const_add.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/cast/const_add.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/cast/const_remove.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/cast/const_remove.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/cast/const_remove.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/cast/const_remove.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/access.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/access.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/access.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/access.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/array.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/array.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/array.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/array.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/cast.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/cast/cast.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/cast.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/cast/cast.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/conditional.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/conditional.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/conditional.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/conditional.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/decl_ref.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/decl_ref.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/decl_ref.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/decl_ref.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/literal.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/literal.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/literal.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/literal.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/arithmetic.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/arithmetic.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/arithmetic.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/arithmetic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/assign.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/assign.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/assign.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/assign.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/bitwise.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/bitwise.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/bitwise.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/bitwise.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/comma.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/comma.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/comma.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/comma.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/logical.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/logical.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/logical.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/logical.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/operator.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/operator.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/operator.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/operator.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/relational.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/relational.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/relational.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/relational.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/sizeof.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/sizeof.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/sizeof.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/sizeof.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/unary.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/unary.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/unary.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/unary.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/break.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/break.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/break.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/break.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/compound.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/compound.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/compound.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/compound.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/continue.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/continue.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/continue.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/continue.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/decl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/decl.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/decl.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/decl.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/do.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/do.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/do.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/do.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/empty.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/empty.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/empty.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/empty.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/for.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/for.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/for.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/for.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/function_call.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/function_call.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/function_call.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/function_call.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/function_decl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/function_decl.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/function_decl.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/function_decl.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/if.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/if.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/if.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/if.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/param_val_decl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/param_val_decl.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/param_val_decl.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/param_val_decl.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/return.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/return.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/return.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/return.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/struct.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/struct.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/struct.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/struct.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/value_decl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/value_decl.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/value_decl.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/value_decl.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/while.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/while.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/statement/while.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/while.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/type/ArrayType.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/ArrayType.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/type/Type.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/Type.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/main.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/main.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/base_parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/base_parser.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/value_decl_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/value_decl_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/utils/common_utils.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/utils/common_utils.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/logging.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/logging.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/logging.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/logging.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/part4/extra1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/part4/extra1.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/optmization/pass/FunctionPass.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optmization/pass/FunctionPass.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/optmization/pass/ImmutablePass.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optmization/pass/ImmutablePass.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/optmization/pass/ModulePass.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optmization/pass/ModulePass.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,7 +34,7 @@
   <component name="ClangdSettings">
     <option name="parameterInfoViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -165,12 +68,18 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.advertisement.text.overridden" value="true" />
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
     <property name="full.screen.before.presentation.mode" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Source/codegen/jvm" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="configurable.group.dynamic.analysis.tools" />
     <property name="structure.view.defaults.are.configured" value="true" />
   </component>
@@ -188,7 +97,7 @@
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\AST\cast" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake 应用程序.mycc">
+  <component name="RunManager" selected="CMake 应用程序.documentation">
     <configuration default="true" type="BIBTEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
       <texify-bibtex>
         <compiler />
@@ -198,6 +107,43 @@
         <main-file>$APPLICATION_HOME_DIR$/jbr/bin</main-file>
         <aux-dir>$APPLICATION_HOME_DIR$/jbr/bin</aux-dir>
       </texify-bibtex>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="EXTERNAL_TOOL_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+      <texify-external>
+        <program>PYTHONTEX</program>
+        <main-file />
+        <work-dir />
+      </texify-external>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+      <texify>
+        <compiler>PDFLATEX</compiler>
+        <compiler-path />
+        <sumatra-path />
+        <pdf-viewer>NONE</pdf-viewer>
+        <viewer-command />
+        <compiler-arguments />
+        <envs />
+        <main-file />
+        <output-path>{projectDir}/out</output-path>
+        <auxil-path>{projectDir}/auxil</auxil-path>
+        <compile-twice>false</compile-twice>
+        <output-format>PDF</output-format>
+        <latex-distribution>MIKTEX</latex-distribution>
+        <has-been-run>false</has-been-run>
+        <bib-run-config>[]</bib-run-config>
+        <makeindex-run-config>[]</makeindex-run-config>
+      </texify>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="MAKEINDEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+      <texify-makeindex>
+        <program>MAKEINDEX</program>
+        <main-file />
+        <work-dir />
+      </texify-makeindex>
       <method v="2" />
     </configuration>
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
@@ -241,7 +187,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-4 /home/hanzech/mycc/Test/part4/extra2.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
+    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-4 $PROJECT_DIR$/Test/part4/extra2.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
       <envs>
         <env name="GLOG_v" value="4" />
       </envs>
@@ -253,43 +199,6 @@
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
-    </configuration>
-    <configuration default="true" type="EXTERNAL_TOOL_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
-      <texify-external>
-        <program>PYTHONTEX</program>
-        <main-file />
-        <work-dir />
-      </texify-external>
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
-      <texify>
-        <compiler>PDFLATEX</compiler>
-        <compiler-path />
-        <sumatra-path />
-        <pdf-viewer>NONE</pdf-viewer>
-        <viewer-command />
-        <compiler-arguments />
-        <envs />
-        <main-file />
-        <output-path>{projectDir}/out</output-path>
-        <auxil-path>{projectDir}/auxil</auxil-path>
-        <compile-twice>false</compile-twice>
-        <output-format>PDF</output-format>
-        <latex-distribution>MIKTEX</latex-distribution>
-        <has-been-run>false</has-been-run>
-        <bib-run-config>[]</bib-run-config>
-        <makeindex-run-config>[]</makeindex-run-config>
-      </texify>
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="MAKEINDEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
-      <texify-makeindex>
-        <program>MAKEINDEX</program>
-        <main-file />
-        <work-dir />
-      </texify-makeindex>
-      <method v="2" />
     </configuration>
     <list>
       <item itemvalue="CMake 应用程序.mycc" />
@@ -320,8 +229,25 @@
       <workItem from="1649645265076" duration="4961000" />
       <workItem from="1649693999530" duration="1063000" />
       <workItem from="1649696238361" duration="267000" />
+      <workItem from="1649697686488" duration="499000" />
+      <workItem from="1649704255552" duration="59000" />
+      <workItem from="1649707901609" duration="5300000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

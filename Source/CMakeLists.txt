@@ -102,8 +102,8 @@ endif ()
 add_compile_options(-Wall -Wextra -frtti)
 
 # hide static link symbols
-if (MACOSX)
-    target_link_options(mycc PRIVATE -hidden-lssl)
+if (APPLE)
+#    target_link_options(mycc PRIVATE -hidden-lssl)
 else ()
     target_link_options(mycc PRIVATE -Wl,--exclude-libs,ALL)
 endif ()

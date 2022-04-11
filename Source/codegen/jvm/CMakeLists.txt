@@ -37,5 +37,6 @@ if (ENABLE_TESTING MATCHES "ON")
     target_sources(mycc_test
             PRIVATE
             ${MYCC_CODE_GEN_TEST_SRCS}
-            ${MYCC_CODE_GEN_HDRS} ${MYCC_CODE_GEN_SRCS})
+            ${MYCC_CODE_GEN_HDRS} ${MYCC_CODE_GEN_SRCS}
+            ${MYCC_CODE_GEN_UTILS_HDRS} ${MYCC_CODE_GEN_UTILS_SRCS})
 endif ()

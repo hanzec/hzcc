@@ -18,14 +18,14 @@ RUN apt-get -qq install -y python3 python3-pip build-essential
 RUN pip3 install gcovr
 
 ###############################################################################
-## CMake 3.16.3                                                              ##
+## CMake 3.18.0                                                              ##
 ###############################################################################
 RUN apt-get -qq update
 RUN apt-get -qq install -y git wget
 RUN mkdir -p /tmp && cd /tmp
-RUN wget -q "https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-linux-x86_64.sh" -P /tmp
-RUN chmod +x /tmp/cmake-3.16.3-linux-x86_64.sh
-RUN /tmp/cmake-3.16.3-linux-x86_64.sh --skip-license --prefix=/usr/local
+RUN wget -q "https://github.com/Kitware/CMake/releases/download/v3.20.0/cmake-3.20.0-linux-x86_64.sh" -P /tmp
+RUN chmod +x /tmp/cmake-3.20.0-linux-x86_64.sh
+RUN /tmp/cmake-3.20.0-linux-x86_64.sh --skip-license --prefix=/usr/local
 
 ###############################################################################
 ## Ninja Build                                                               ##
@@ -44,8 +44,10 @@ RUN apt-get -qq install -y curl zip unzip tar pkg-config cmake # install vcpkg d
 ###############################################################################
 ## Install LaTeX
 RUN apt-get -qq update
-RUN apt-get -qq install -y texlive-base texlive-latex-recommended texlive-latex-extra
+RUN apt-get -qq install -y texlive texlive-latex-extra
 
-## Install Doxygen
+###############################################################################
+## JAVA Deps                                                                ##
+###############################################################################
 RUN apt-get -qq update
-RUN apt-get -qq install -y graphviz doxygen-latex doxygen xapian-tools
+RUN apt-get -qq install -y default-jdk # install vcpkg dependencies

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.3) # we need FetchContent
+cmake_minimum_required(VERSION 3.20.0) # we need unzip files
 
 ###############################################################################
 ## CMake Settings #############################################################
@@ -141,7 +141,7 @@ project(mycc VERSION 0.1.0)
 ###############################################################################
 ## Compiler Targets ###########################################################
 ###############################################################################
-add_executable(mycc Source/syntax/Parser.h)
+add_executable(mycc Source/syntax/Parser.h Source/optmization/PassManager.cc Source/optmization/PassManager.h Source/optmization/pass/ImmutablePass.h Source/optmization/pass/FunctionPass.h Source/optmization/pass/ModulePass.h)
 set_target_properties(mycc PROPERTIES FOLDER MyCC_Target)
 
 if (ENABLE_TESTING MATCHES "ON")
