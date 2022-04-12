@@ -11,8 +11,8 @@ add_executable(FileCheck)
 target_compile_features(FileCheck PRIVATE cxx_std_17)
 
 # hide static link symbols
-if(MACOSX)
-    target_link_options(FileCheck PRIVATE -hidden-lssl)
+if(APPLE)
+#    target_link_options(FileCheck PRIVATE -hidden-lssl)
 else()
     target_link_options(FileCheck PRIVATE -Wl,--exclude-libs,ALL)
 endif()

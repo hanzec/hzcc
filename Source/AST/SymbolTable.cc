@@ -73,7 +73,7 @@ void SymbolTable::addVariable(int line_no, const std::string& name,
         << "Variable " << name << " is already defined as a type";
     DLOG_ASSERT(token_types != nullptr)
         << "Variable " << name << " has passed a nullptr type";
-    DLOG_ASSERT(hasVariable(name, true))
+    DLOG_ASSERT(!hasVariable(name, true))
         << "Variable " << name << " has already been defined";
 
     _variable_lookup_table.insert(
@@ -102,7 +102,7 @@ int SymbolTable::getVariableDeclLine(const std::string& name) {
     DLOG_ASSERT(hasVariable(name, false))
         << "Variable " << name << " has not been defined";
 
-    if(_variable_lookup_table.find(name) != _variable_lookup_table.end()) {
+    if (_variable_lookup_table.find(name) != _variable_lookup_table.end()) {
         return _variable_lookup_table[name].first;
     } else {
         if (_upper_scope_table.lock() != nullptr) {

@@ -105,7 +105,7 @@ add_compile_options(-Wall -Wextra -frtti)
 if (APPLE)
 #    target_link_options(mycc PRIVATE -hidden-lssl)
 else ()
-    target_link_options(mycc PRIVATE -Wl,--exclude-libs,ALL)
+#    target_link_options(mycc PRIVATE -Wl,--exclude-libs,ALL)
 endif ()
 
 # compile under cxx 17

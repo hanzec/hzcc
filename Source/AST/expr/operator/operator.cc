@@ -4,6 +4,7 @@
 #include "operator.h"
 
 #include "AST/type/Type.h"
+#include "options.h"
 namespace Mycc::AST {
 
 std::string OperatorBase::GetNodeName() const { return "OperatorBase"; }
@@ -22,7 +23,11 @@ OperatorBase::OperatorBase(std::pair<int, int> loc,
     : ASTNode(loc), _lhs(std::move(lhs)), _rhs(std::move(rhs)) {
     DLOG_ASSERT(_lhs != nullptr) << " OperatorBase: lhs is nullptr";
     DLOG_ASSERT(_rhs != nullptr) << " OperatorBase: rhs is nullptr";
-    DLOG_ASSERT(!_lhs->GetType()->IsArray()) << " OperatorBase: rhs is array";
-    DLOG_ASSERT(!_rhs->GetType()->IsArray()) << " OperatorBase: rhs is array";
+    DLOG_ASSERT(!Options::Global_enable_type_checking ||
+                !_lhs->GetType()->IsArray())
+        << " OperatorBase: rhs is array";
+    DLOG_ASSERT(!Options::Global_enable_type_checking ||
+                !_rhs->GetType()->IsArray())
+        << " OperatorBase: rhs is array";
 }
 }  // namespace Mycc::AST

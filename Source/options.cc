@@ -5,5 +5,7 @@
 namespace Mycc::Options {
 bool Global_disable_color = false;
 bool Global_enable_nicer_print = false;
-bool Global_enable_type_checking = true;
+bool Global_enable_type_checking = false;
+bool Global_enable_naming_checking = false;
+
 }  // namespace Mycc::Options

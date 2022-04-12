@@ -79,9 +79,10 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    // type check will not available at part3
-    if (flag3) {
-        Mycc::Options::Global_enable_type_checking = false;
+    // func name check and type check will not available until part4
+    if (flag4) {
+        Mycc::Options::Global_enable_type_checking = true;
+        Mycc::Options::Global_enable_naming_checking = true;
     }
 
     // if -0 is selected, will only print version information

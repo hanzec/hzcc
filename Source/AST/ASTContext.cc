@@ -11,6 +11,7 @@
 #include "AST/type/StructType.h"
 #include "AST/utils/debug_utils.h"
 #include "lexical/utils/symbol_utils.h"
+#include "options.h"
 namespace Mycc::AST {
 
 ALWAYS_INLINE static std::string &ltrim(std::string &str) {
@@ -211,7 +212,8 @@ void ASTContext::addDecl(std::unique_ptr<ASTNode> node) {
             });
 
         // we need to make sure function/decl name is unique
-        if (node_ptr != _global_decl.end()) {
+        if (node_ptr != _global_decl.end() &&
+            Options::Global_enable_naming_checking) {
             DLOG(FATAL) << "Decl name: " << fuc_name << " already defined !";
         } else {
             // move ownership of decl node to global_decl

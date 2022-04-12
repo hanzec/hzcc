@@ -54,6 +54,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::ASTContext& context,
 
     // function name cannot be empty
     if (Options::Global_enable_type_checking &&
+        Options::Global_enable_naming_checking &&
         context.hasVariable(func_name.Value(), true)) {
         MYCC_PrintTokenError_ReturnNull(
             func_name, "Function '" + func_name.Value() +
