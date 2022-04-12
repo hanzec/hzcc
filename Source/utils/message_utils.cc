@@ -89,8 +89,9 @@ void set_current_file(const std::filesystem::path& filename) {
 void print_message_internal(Level error_level, const std::string& message,
                             const std::string& line,
                             std::pair<int, int> line_info) {
-    print_message_internal(error_level, message, line, line_info,
-                           std::string() + line.at(line_info.second));
+    print_message_internal(
+        error_level, message, line, line_info,
+        std::string() + (line.empty() ? ' ' : line.at(line_info.second)));
 }
 
 void print_message_internal(Level error_level, const std::string& message,

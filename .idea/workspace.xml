@@ -21,7 +21,286 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="Changes">
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith1.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith1.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith2.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith3.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith4.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith5.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith5.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith5.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith6.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith6.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/arith6.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/array1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/array1.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/array2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/array2.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/array3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/array3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/array4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/array4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/assign1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/assign1.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/assign2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/assign2.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/assign3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/assign3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/assign3.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/assign4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/assign4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/assign4.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/cast1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/cast1.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/cast1.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/cast2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/cast2.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/cast3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/cast3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/cast3.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/cast4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/cast4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/cast4.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall1.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall2.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall2.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall3.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall5.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall5.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall6.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall6.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall6.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall7.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall7.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall7.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall8.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall8.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall8.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall9.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall9.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/fcall9.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents1.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents1.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents2.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents3.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents4.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents5.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents5.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents6.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents6.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents6.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents7.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents7.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents7.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents8.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents8.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents9.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/idents9.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/inc1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/inc1.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/inc2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/inc2.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/inc3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/inc3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/inc3.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/inc4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/inc4.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/literals1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/literals1.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/literals1.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/literals2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/literals2.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/literals2.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/literals3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/literals3.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/literals3.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/literals4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/literals4.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/literals4.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic1.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic2.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic3.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic4.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic4.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic5.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic5.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic5.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic6.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic6.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/logic6.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/proto1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/proto1.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/proto1.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/proto2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/proto2.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/proto2.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/proto3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/proto3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/proto3.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/proto4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/proto4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/proto4.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/return1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/return1.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/return2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/return2.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/return2.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/return3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/return3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/return3.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/return4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/return4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/return4.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/ternary1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/ternary1.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/ternary2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/ternary2.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/ternary3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/ternary3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/ternary3.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/ternary4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/ternary4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/ternary4.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/unary1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/unary1.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/unary1.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/unary2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/unary2.c.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/unary3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/unary3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/unary3.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/unary4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/unary4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/unary4.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const1.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const1.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const2.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const2.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const3.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const4.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const5.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const5.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_const5.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init1.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init1.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init2.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init2.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init3.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init4.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init5.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init5.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_init5.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member1.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member1.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member2.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member2.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member3.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member4.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member5.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member5.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_member5.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct1.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct1.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct2.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct2.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct3.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct4.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct5.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct5.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct5.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct6.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct6.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct6.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct7.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct7.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct7.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct8.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct8.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct8.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct9.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct9.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_struct9.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_structA.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_structA.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_structA.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen1.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen1.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen2.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen2.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen3.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen3.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen3.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen4.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen4.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen4.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen5.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen5.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen5.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen6.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen6.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen6.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen7.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen7.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen7.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen8.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen8.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen8.c.extra.output4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen9.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen9.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widen9.c.extra.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widenA.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widenA.c.error4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Test/part4/xc_widenA.c.extra.error4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/mycc.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mycc.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/part4/Check_4.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Test/part4/Check_4.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,13 +367,14 @@
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Test\part4" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Test/part4" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\codegen\jvm\generator_impl\statement" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\AST\expr\cast" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\AST\expr" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\AST\cast" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake 应用程序.documentation">
+  <component name="RunManager" selected="CMake 应用程序.mycc">
     <configuration default="true" type="BIBTEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
       <texify-bibtex>
         <compiler />
@@ -143,11 +423,6 @@
       </texify-makeindex>
       <method v="2" />
     </configuration>
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="mycc_test" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_test" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc_test" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -155,6 +430,11 @@
       </method>
     </configuration>
     <configuration name="FileCheck" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="FileCheck" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="FileCheck">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -184,7 +464,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-4 $PROJECT_DIR$/Test/part4/extra2.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
+    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-4 $PROJECT_DIR$/Test/part4/arith1.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
       <envs>
         <env name="GLOG_v" value="4" />
       </envs>
@@ -198,14 +478,14 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="CMake 应用程序.mycc" />
+      <item itemvalue="CMake 应用程序.FileCheck" />
       <item itemvalue="CMake 应用程序.doc_doxygen" />
       <item itemvalue="CMake 应用程序.documentation" />
       <item itemvalue="CMake 应用程序.latex-makeindex" />
       <item itemvalue="CMake 应用程序.latex-prebuild" />
       <item itemvalue="CMake 应用程序.libc-java" />
+      <item itemvalue="CMake 应用程序.mycc" />
       <item itemvalue="CMake 应用程序.mycc_e2e_test" />
-      <item itemvalue="CMake 应用程序.FileCheck" />
       <item itemvalue="Google Test.mycc_test" />
     </list>
   </component>
@@ -229,6 +509,7 @@
       <workItem from="1649697686488" duration="499000" />
       <workItem from="1649704255552" duration="59000" />
       <workItem from="1649707901609" duration="5300000" />
+      <workItem from="1649727627361" duration="165000" />
     </task>
     <servers />
   </component>

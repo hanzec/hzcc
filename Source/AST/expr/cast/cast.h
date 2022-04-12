@@ -20,6 +20,10 @@ class CastExpr : public ASTNode {
 
     [[nodiscard]] bool IsAssignable() const override;
 
+    [[nodiscard]] bool IsLiteral() const override {
+        return _cast_expr->IsLiteral();
+    }
+
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
   protected:

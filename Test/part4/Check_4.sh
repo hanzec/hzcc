@@ -5,6 +5,7 @@ SCRIPT=$0
 DASHO=""
 SUMMARY=""
 MODE=4
+ERRLINES=10
 
 usage()
 {
@@ -150,9 +151,10 @@ removeRedundant()
 #
 # Writes:
 #   : missing oracle
-#   G output matches and empty error (Green)
-#   Y output matches but nonempty error (Yellow)
-#   R output different (Red)
+#   G output matches perfectly, and empty error (Green)
+#   C stripped output matches, empty error (Cyan)
+#   Y stripped output matches but nonempty error (Yellow)
+#   R stripped output different (Red)
 #
 compareValid()
 {
@@ -166,9 +168,20 @@ compareValid()
     else
       echo "G"
     fi
+    return 0
+  fi
+  # Strip off any blank lines
+  awk '!/^[ \t]*$/' $2 > $2.stripped
+  if diff -w -q $1 $2.stripped > /dev/null; then
+    if [ -s $3 ]; then
+      echo "Y"
+    else
+      echo "C"
+    fi
   else
     echo "R"
   fi
+  rm $2.stripped
 }
 
 # Arg1: oracle error file
@@ -225,23 +238,25 @@ compareInvalid()
 showStatus()
 {
   if [ "$1" == "G" ]; then
-    green  "Output OK;  no errors" "$2"
+    green  "Output good.  No errors" "$2"
+  elif [ "$1" == "C" ]; then
+    cyan   "Output good; empty line" "$2"
   elif [ "$1" == "Y" ]; then
-    yellow "Output OK; has errors" "$2"
+    yellow "Output good; but errors" "$2"
   elif [ "$1" == "R" ]; then
-    red    "Output  is  different" "$2"
+    red    "Output  does  not match" "$2"
   elif [ "$1" == "g" ]; then
-    green  "First  error  matches" "$2"
+    green  "First error exact match" "$2"
   elif [ "$1" == "c" ]; then
-    cyan   "First error line+text" "$2"
+    cyan   "First error token match" "$2"
   elif [ "$1" == "y" ]; then
-    yellow "First error same line" "$2"
+    yellow "First error line# match" "$2"
   elif [ "$1" == "r" ]; then
-    red    "First error different" "$2"
+    red    "Manually compare errors" "$2"
   elif [ "$1" == "m" ]; then
-    red    "Did not find error(s)" "$2"
+    red    "Error(s)  not  detected" "$2"
   else
-    printf "                     " "$2"
+    printf "                       " "$2"
   fi
 }
 
@@ -270,9 +285,9 @@ summaryLine()
     showStatus $extra
 		printf "\n"
   else
-    printf "%-25s   ---------------------    ---------------------\n" "-------------------------"
-    printf "%-25s   Basic Implementation     Extra Implementation \n" "Test file"
-    printf "%-25s   ---------------------    ---------------------\n" "-------------------------"
+    printf "%-25s   -----------------------    -----------------------\n" "-------------------------"
+    printf "%-25s    Basic Implementation       Extra Implementation  \n" "Test file"
+    printf "%-25s   -----------------------    -----------------------\n" "-------------------------"
   fi
 }
 
@@ -304,24 +319,24 @@ detailLine()
     st="Y"
   fi
   if [ "$st" == "Y" ]; then
-    echo "        Complete error stream given (should be empty):"
+    echo "        First $ERRLINES lines of error stream (should be empty):"
     echo "        ---------------------------------------------------------"
-    awk '{print "        | " $0}' $6
+    awk "(NR<=$ERRLINES){print \"        | \" \$0}" $6
     echo "        ---------------------------------------------------------"
     return 0
   fi
   echo "        Expected first error:"
   echo "        ---------------------------------------------------------"
-  cat $4 | awk '{print "        | " $0}'
+  firstError $4 | awk '{print "        | " $0}'
   echo "        ---------------------------------------------------------"
   echo
   echo "        Given first error:"
   echo "        ---------------------------------------------------------"
   firstError $6 | awk '{print "        | " $0}'
   echo "        ---------------------------------------------------------"
-  echo "        Complete error stream given:"
+  echo "        First $ERRLINES lines of error stream:"
   echo "        ---------------------------------------------------------"
-  awk '{print "        | " $0}' $6
+  awk "(NR<=$ERRLINES){print \"        | \" \$0}" $6
   echo "        ---------------------------------------------------------"
 }
 
