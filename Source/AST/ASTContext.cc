@@ -165,7 +165,7 @@ bool ASTContext::hasFunctionBody(const std::string &name) {
 }
 
 bool ASTContext::addFunction(
-    const std::string &name, std::shared_ptr<Type> &output,
+    int line_no, const std::string &name, std::shared_ptr<Type> &output,
     const std::list<std::shared_ptr<Type>> &argument_list) {
     if (output == nullptr) {
         DLOG(FATAL) << "Output type is nullptr for function " << name;
@@ -176,19 +176,21 @@ bool ASTContext::addFunction(
         return false;
     } else {
         DVLOG(AST_LOG_LEVEL) << "Add new Function [" << name << "]";
-        _function_table.insert(
-            std::make_pair(name, std::make_pair(output, argument_list)));
+        _function_table.insert(std::make_pair(
+            name, std::make_tuple(output, argument_list, line_no)));
         return true;
     }
 }
 
-std::tuple<std::shared_ptr<Type>, std::list<std::shared_ptr<Type>>>
+std::tuple<std::shared_ptr<Type>, std::list<std::shared_ptr<Type>>, int>
 ASTContext::getFuncRetAndArgType(const std::basic_string<char> &name) {
     if (hasFunction(name)) {
-        return _function_table[name];
+        return {
+            _function_table[name],
+        };
     } else {
         DVLOG(SYNTAX_LOG_LEVEL) << "Function " << name << " does not exist";
-        return {nullptr, {}};
+        return {nullptr, {}, -1};
     }
 }
 
@@ -416,5 +418,10 @@ ASTContext::~ASTContext() {}
 ASTContext::ASTContext(std::string file_name)
     : _file_name(std::move(file_name)) {}
 std::string ASTContext::GetFileName() const { return _file_name; }
+std::shared_ptr<Type> ASTContext::GetReturnType() {
+    DLOG_ASSERT(_current_context.lock() != nullptr)
+        << " should never call GetReturnType when in root context";
+    return _current_context.lock()->GetReturnType();
+}
 
 }  // namespace Mycc::AST

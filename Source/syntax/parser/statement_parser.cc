@@ -57,6 +57,22 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(AST::ASTContext& context,
             if (peek(tokens).Type() != Lexical::TokenType::kSemiColon) {
                 auto ret_expr = ParseCommaExpr(context, tokens);
                 if (ret_expr) {
+                    if (Options::Global_enable_type_checking) {
+                        if (context.AtRoot()) {
+                            MYCC_PrintTokenError_ReturnNull(
+                                token,
+                                "return statement is not allowed in the root "
+                                "scope");
+                        } else if (!ret_expr->GetType()->IsSame(
+                                       context.GetReturnType())) {
+                            MYCC_PrintTokenError_ReturnNull(
+                                token, "Return type mismatch: was " +
+                                           ret_expr->GetType()->GetName() +
+                                           ", expected " +
+                                           context.GetReturnType()->GetName());
+                        }
+                    }
+
                     node = std::make_unique<AST::ReturnNode>(
                         token, std::move(ret_expr));
                 } else {
@@ -199,26 +215,6 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAssignExpr(
                 VLOG(SYNTAX_LOG_LEVEL) << "LHS：" << lhs->Dump("");
                 MYCC_PrintTokenError_ReturnNull(
                     assign_type, "Left hand side is not assignable")
-            }
-
-            // LHS and rhs should not be void
-            if (lhs->GetType()->GetName(true) == "void" ||
-                rhs->GetType()->GetName() == "void") {
-                MYCC_PrintTokenError_ReturnNull(
-                    assign_type, "No match for binary operation void " +
-                                     Lexical::SymbolUtils::TokenTypeToString(
-                                         assign_type.Type()) +
-                                     " void")
-            }
-
-            // LHS and rhs should not be void
-            if (lhs->GetType()->GetName(true) == "void" ||
-                rhs->GetType()->GetName() == "void") {
-                MYCC_PrintTokenError_ReturnNull(
-                    assign_type, "No match for binary operation void " +
-                                     Lexical::SymbolUtils::TokenTypeToString(
-                                         assign_type.Type()) +
-                                     " void")
             }
 
             // lhs and rhs should not be arrayed
@@ -988,15 +984,15 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(
         if (Options::Global_enable_type_checking) {
             Message::set_current_part("Type checking");
             // Type == RHS
-            if (!argument_type->IsSame(rhs->GetType())) {
-                auto rhs_type = rhs->GetType();
-                rhs = AST::ASTNode::CastTo(argument_type, std::move(rhs));
-                if (rhs == nullptr) {
-                    MYCC_PrintTokenError_ReturnNull(
-                        cast_loc, "Cannot cast expression of type " +
-                                      rhs_type->GetName() + " to " +
-                                      argument_type->GetName());
-                }
+
+            if ((argument_type->IsArray() && !rhs->GetType()->IsArray()) ||
+                (!argument_type->IsArray() && rhs->GetType()->IsArray()) ||
+                (argument_type->GetName() == "void" ||
+                 rhs->GetType()->GetName() == "void")) {
+                MYCC_PrintTokenError_ReturnNull(
+                    cast_loc, "Cannot cast expression of type " +
+                                  rhs->GetType()->GetName() + " to " +
+                                  argument_type->GetName());
             }
 
             Message::set_current_part("Parser");
@@ -1323,7 +1319,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
             }
 
             // get function return type and argument types
-            auto [return_type, funcType] =
+            auto [return_type, funcType, line_no] =
                 context.getFuncRetAndArgType(name.Value());
 
             // function call need to have same number of arguments

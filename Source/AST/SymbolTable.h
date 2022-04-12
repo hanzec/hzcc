@@ -94,6 +94,8 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
      */
     std::shared_ptr<SymbolTable> EnterScope();
 
+    std::shared_ptr<Type> GetReturnType();
+
   private:
     /**
      * Current Scoped Information

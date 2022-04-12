@@ -85,12 +85,13 @@ class ASTContext {
      */
     bool hasFunction(const std::string& name);
 
-    bool addFunction(const std::string& name, std::shared_ptr<Type>& output,
+    bool addFunction(int line_no, const std::string& name,
+                     std::shared_ptr<Type>& output,
                      const std::list<std::shared_ptr<Type>>& argument_list);
 
     bool hasFunctionBody(const std::string& name);
 
-    std::tuple<std::shared_ptr<Type>, std::list<std::shared_ptr<Type>>>
+    std::tuple<std::shared_ptr<Type>, std::list<std::shared_ptr<Type>>, int>
     getFuncRetAndArgType(const std::basic_string<char>& name);
 
     /**
@@ -104,6 +105,8 @@ class ASTContext {
 
     void enterScope(const std::string& name,
                     const std::shared_ptr<Type>& return_type);
+
+    std::shared_ptr<Type> GetReturnType();
 
   protected:
     const std::string _file_name;
@@ -123,8 +126,9 @@ class ASTContext {
     std::unordered_map<std::string, std::shared_ptr<SymbolTable>>
         _scoped_symbol_table;
 
-    std::unordered_map<std::string, std::pair<std::shared_ptr<Type>,
-                                              std::list<std::shared_ptr<Type>>>>
+    std::unordered_map<std::string,
+                       std::tuple<std::shared_ptr<Type>,
+                                  std::list<std::shared_ptr<Type>>, int>>
         _function_table;
 };
 

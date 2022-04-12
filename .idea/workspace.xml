@@ -23,11 +23,14 @@
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/ASTContext.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTContext.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/options.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/options.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/options.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/options.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/ASTContext.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTContext.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/SymbolTable.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/SymbolTable.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/SymbolTable.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/SymbolTable.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/value_decl_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/value_decl_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/part4/Jjczt0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/part4/Jjczt0.error4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/part4/Jjczt0.output4" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Test/part4/mycc" beforeDir="false" afterPath="$PROJECT_DIR$/Test/part4/mycc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +41,7 @@
   <component name="ClangdSettings">
     <option name="parameterInfoViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -192,7 +195,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-4 $PROJECT_DIR$/Test/part4/logic5.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
+    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-4 $PROJECT_DIR$/Test/part4/cast1.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
       <envs>
         <env name="GLOG_v" value="5" />
       </envs>
@@ -237,7 +240,7 @@
       <workItem from="1649697686488" duration="499000" />
       <workItem from="1649704255552" duration="59000" />
       <workItem from="1649707901609" duration="5300000" />
-      <workItem from="1649727627361" duration="4549000" />
+      <workItem from="1649727627361" duration="7322000" />
     </task>
     <servers />
   </component>
@@ -305,12 +308,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/AST/ASTContext.cc</url>
-          <line>216</line>
+          <line>217</line>
           <option name="timeStamp" value="476" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/AST/ASTContext.cc</url>
-          <line>360</line>
+          <line>362</line>
           <option name="timeStamp" value="478" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">

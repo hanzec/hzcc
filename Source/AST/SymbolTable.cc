@@ -112,5 +112,6 @@ int SymbolTable::getVariableDeclLine(const std::string& name) {
         }
     }
 }
+std::shared_ptr<Type> SymbolTable::GetReturnType() { return _return_type; }
 
 }  // namespace Mycc::AST

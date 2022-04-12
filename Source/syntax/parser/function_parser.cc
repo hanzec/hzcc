@@ -123,8 +123,49 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::ASTContext& context,
     // check ')'  and consume
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRParentheses, tokens);
 
+    // function with same name must match previous definition
+    if (Options::Global_enable_type_checking &&
+        context.hasFunction(func_name.Value())) {
+        auto [func_type, func_type_attributes, line_no] =
+            context.getFuncRetAndArgType(func_name.Value());
+
+        // compare argument number
+        if (func_type_attributes.size() != arg_types.size()) {
+            MYCC_PrintTokenError_ReturnNull(
+                func_name, "Function '" + func_name.Value() +
+                               "' already defined with different argument "
+                               "number from previous definition in " +
+                               context.GetFileName() + ":" +
+                               std::to_string(line_no));
+        }
+
+        // compare return type
+        if (!func_type->IsSame(return_type)) {
+            MYCC_PrintTokenError_ReturnNull(
+                func_name, "Function " + return_type->GetName() + " " +
+                               func_name.Value() + " already defined with " +
+                               func_type->GetName() + " return type in fine " +
+                               context.GetFileName() + ":" +
+                               std::to_string(line_no));
+        }
+
+        // compare all argument type
+        for (const auto& type : arg_types) {
+            if (!type->IsSame(func_type_attributes.front())) {
+                MYCC_PrintTokenError_ReturnNull(
+                    func_name, "Function " + func_name.Value() +
+                                   " already defined with different argument "
+                                   "type in fine " +
+                                   context.GetFileName() + ":" +
+                                   std::to_string(line_no));
+            }
+            func_type_attributes.pop_front();
+        }
+    }
+
     // add function definition to context
-    context.addFunction(func_name.Value(), return_type, arg_types);
+    context.addFunction(func_name.Location().first, func_name.Value(),
+                        return_type, arg_types);
 
     // trying to parse the function body if it exists
     if (peek(tokens).Type() == Lexical::TokenType::kLBrace) {
