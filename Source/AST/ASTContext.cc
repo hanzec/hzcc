@@ -335,7 +335,8 @@ std::pair<bool, int> ASTContext::getVariableInfo(
     DLOG_ASSERT(hasVariable(name, false))
         << "Variable " << name << " not found";
 
-    if (_current_context.lock()->hasVariable(name, false)) {
+    if (_current_context.lock() != nullptr &&
+        _current_context.lock()->hasVariable(name, false)) {
         return std::make_pair(
             false, _current_context.lock()->getVariableDeclLine(name));
     } else {

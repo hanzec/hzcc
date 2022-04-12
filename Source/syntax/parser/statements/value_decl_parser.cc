@@ -46,6 +46,12 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
                 std::to_string(line_no));
     }
 
+    // variable cannot be defined as void
+    if (type->GetName(true) == "void") {
+        MYCC_PrintFirstTokenError_ReturnNull(
+            tokens, "Variable '" + name.Value() + "' has type void");
+    }
+
     // for a function definition, we only allow one per line.
     if (type->IsFuncPtr()) {
         if (tokens.front().Type() != Lexical::TokenType::kSemiColon) {

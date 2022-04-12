@@ -201,6 +201,26 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAssignExpr(
                     assign_type, "Left hand side is not assignable")
             }
 
+            // LHS and rhs should not be void
+            if (lhs->GetType()->GetName(true) == "void" ||
+                rhs->GetType()->GetName() == "void") {
+                MYCC_PrintTokenError_ReturnNull(
+                    assign_type, "No match for binary operation void " +
+                                     Lexical::SymbolUtils::TokenTypeToString(
+                                         assign_type.Type()) +
+                                     " void")
+            }
+
+            // LHS and rhs should not be void
+            if (lhs->GetType()->GetName(true) == "void" ||
+                rhs->GetType()->GetName() == "void") {
+                MYCC_PrintTokenError_ReturnNull(
+                    assign_type, "No match for binary operation void " +
+                                     Lexical::SymbolUtils::TokenTypeToString(
+                                         assign_type.Type()) +
+                                     " void")
+            }
+
             // lhs and rhs should not be arrayed
             if (lhs->GetType()->IsArray() || rhs->GetType()->IsArray()) {
                 MYCC_PrintTokenError_ReturnNull(
@@ -314,6 +334,16 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalOrExpr(
             !lhs->GetType()->IsSame(rhs->GetType())) {
             Message::set_current_part("Type checking");
 
+            // LHS and rhs should not be void
+            if (lhs->GetType()->GetName(true) == "void" ||
+                rhs->GetType()->GetName() == "void") {
+                MYCC_PrintTokenError_ReturnNull(
+                    next,
+                    "No match for binary operation void " +
+                        Lexical::SymbolUtils::TokenTypeToString(next.Type()) +
+                        " void")
+            }
+
             // lhs and rhs should not be arrayed
             if (lhs->GetType()->IsArray() || rhs->GetType()->IsArray()) {
                 MYCC_PrintTokenError_ReturnNull(
@@ -365,6 +395,16 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalAndExpr(
         if (Options::Global_enable_type_checking &&
             !lhs->GetType()->IsSame(rhs->GetType())) {
             Message::set_current_part("Type checking");
+
+            // LHS and rhs should not be void
+            if (lhs->GetType()->GetName(true) == "void" ||
+                rhs->GetType()->GetName() == "void") {
+                MYCC_PrintTokenError_ReturnNull(
+                    next,
+                    "No match for binary operation void " +
+                        Lexical::SymbolUtils::TokenTypeToString(next.Type()) +
+                        " void")
+            }
 
             // lhs and rhs should not be arrayed
             if (lhs->GetType()->IsArray() || rhs->GetType()->IsArray()) {
@@ -418,6 +458,16 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseOrExpr(
             !lhs->GetType()->IsSame(rhs->GetType())) {
             Message::set_current_part("Type checking");
 
+            // LHS and rhs should not be void
+            if (lhs->GetType()->GetName(true) == "void" ||
+                rhs->GetType()->GetName() == "void") {
+                MYCC_PrintTokenError_ReturnNull(
+                    next,
+                    "No match for binary operation void " +
+                        Lexical::SymbolUtils::TokenTypeToString(next.Type()) +
+                        " void")
+            }
+
             // lhs and rhs should not be arrayed
             if (lhs->GetType()->IsArray() || rhs->GetType()->IsArray()) {
                 MYCC_PrintTokenError_ReturnNull(
@@ -469,6 +519,16 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseXorExpr(
         if (Options::Global_enable_type_checking &&
             !lhs->GetType()->IsSame(rhs->GetType())) {
             Message::set_current_part("Type checking");
+
+            // LHS and rhs should not be void
+            if (lhs->GetType()->GetName(true) == "void" ||
+                rhs->GetType()->GetName() == "void") {
+                MYCC_PrintTokenError_ReturnNull(
+                    next,
+                    "No match for binary operation void " +
+                        Lexical::SymbolUtils::TokenTypeToString(next.Type()) +
+                        " void")
+            }
 
             // lhs and rhs should not be arrayed
             if (lhs->GetType()->IsArray() || rhs->GetType()->IsArray()) {
@@ -522,6 +582,16 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseAndExpr(
             !lhs->GetType()->IsSame(rhs->GetType())) {
             Message::set_current_part("Type checking");
 
+            // LHS and rhs should not be void
+            if (lhs->GetType()->GetName(true) == "void" ||
+                rhs->GetType()->GetName() == "void") {
+                MYCC_PrintTokenError_ReturnNull(
+                    next,
+                    "No match for binary operation void " +
+                        Lexical::SymbolUtils::TokenTypeToString(next.Type()) +
+                        " void")
+            }
+
             // lhs and rhs should not be arrayed
             if (lhs->GetType()->IsArray() || rhs->GetType()->IsArray()) {
                 MYCC_PrintTokenError_ReturnNull(
@@ -572,6 +642,16 @@ std::unique_ptr<AST::ASTNode> Statement::ParseEqualityExpr(
         if (Options::Global_enable_type_checking &&
             !lhs->GetType()->IsSame(rhs->GetType())) {
             Message::set_current_part("Type checking");
+
+            // LHS and rhs should not be void
+            if (lhs->GetType()->GetName(true) == "void" ||
+                rhs->GetType()->GetName() == "void") {
+                MYCC_PrintTokenError_ReturnNull(
+                    type,
+                    "No match for binary operation void " +
+                        Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
+                        " void")
+            }
 
             // lhs and rhs should not be arrayed
             if (lhs->GetType()->IsArray() || rhs->GetType()->IsArray()) {
@@ -629,6 +709,16 @@ std::unique_ptr<AST::ASTNode> Statement::ParseRelationalExpr(
             !lhs->GetType()->IsSame(rhs->GetType())) {
             Message::set_current_part("Type checking");
 
+            // LHS and rhs should not be void
+            if (lhs->GetType()->GetName(true) == "void" ||
+                rhs->GetType()->GetName() == "void") {
+                MYCC_PrintTokenError_ReturnNull(
+                    type,
+                    "No match for binary operation void " +
+                        Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
+                        " void")
+            }
+
             // lhs and rhs should not be arrayed
             if (lhs->GetType()->IsArray() || rhs->GetType()->IsArray()) {
                 MYCC_PrintTokenError_ReturnNull(
@@ -680,6 +770,16 @@ std::unique_ptr<AST::ASTNode> Statement::ParseShiftExpr(
             !lhs->GetType()->IsSame(rhs->GetType())) {
             Message::set_current_part("Type checking");
 
+            // LHS and rhs should not be void
+            if (lhs->GetType()->GetName(true) == "void" ||
+                rhs->GetType()->GetName() == "void") {
+                MYCC_PrintTokenError_ReturnNull(
+                    type,
+                    "No match for binary operation void " +
+                        Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
+                        " void")
+            }
+
             // lhs and rhs should not be arrayed
             if (lhs->GetType()->IsArray() || rhs->GetType()->IsArray()) {
                 MYCC_PrintTokenError_ReturnNull(
@@ -729,6 +829,16 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAdditiveExpr(
 
         if (Options::Global_enable_type_checking) {
             Message::set_current_part("Type checking");
+
+            // LHS and rhs should not be void
+            if (lhs->GetType()->GetName(true) == "void" ||
+                rhs->GetType()->GetName() == "void") {
+                MYCC_PrintTokenError_ReturnNull(
+                    type,
+                    "No match for binary operation void " +
+                        Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
+                        " void")
+            }
 
             // lhs and rhs should not be arrayed
             if (lhs->GetType()->IsArray() || rhs->GetType()->IsArray()) {
@@ -787,6 +897,16 @@ std::unique_ptr<AST::ASTNode> Statement::ParseMultiplicativeExpr(
 
         if (Options::Global_enable_type_checking) {
             Message::set_current_part("Type checking");
+
+            // LHS and rhs should not be void
+            if (lhs->GetType()->GetName(true) == "void" ||
+                rhs->GetType()->GetName() == "void") {
+                MYCC_PrintTokenError_ReturnNull(
+                    type,
+                    "No match for binary operation void " +
+                        Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
+                        " void")
+            }
 
             // lhs and rhs should not be arrayed
             if (lhs->GetType()->IsArray() || rhs->GetType()->IsArray()) {
