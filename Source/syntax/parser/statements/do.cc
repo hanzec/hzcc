@@ -21,6 +21,7 @@ DoStatement::DoStatement() noexcept
 std::unique_ptr<AST::ASTNode> DoStatement::parse_impl(AST::ASTContext& context,
                                                       TokenList& tokens) {
     // check if the next token is [do]
+    auto do_loc = tokens.front().Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kDo, tokens);
 
     // parse body statement
@@ -35,7 +36,7 @@ std::unique_ptr<AST::ASTNode> DoStatement::parse_impl(AST::ASTContext& context,
     if (condition == nullptr) return nullptr;
 
     return std::make_unique<AST::DoStatement>(std::move(body),
-                                              std::move(condition));
+                                              std::move(condition), do_loc);
 }
 
 }  // namespace Mycc::Syntax::Parser

@@ -94,8 +94,8 @@ bool Type::IsSame(const Type& type) const {
 }
 
 bool Type::IsSame(const std::shared_ptr<Type>& type) const {
-    DLOG_ASSERT(type != nullptr) << "comparing current type with nullptr!";
-    return type->_is_const == this->_is_const && this->_name == type->_name;
+    DLOG_ASSERT(type != nullptr) << " comparing current type with nullptr!";
+    return this->_name == type->_name;
 }
 std::string Type::GetName(bool without_attr) const {
     if (without_attr) {
@@ -112,13 +112,6 @@ std::shared_ptr<Type> Type::GetConstType() const {
     }
 }
 
-std::shared_ptr<Type> Type::GetUnConstType() const {
-    if (_is_const) {
-        return GetBasicType(_name, {});
-    } else {
-        return std::make_shared<Type>(*this);
-    }
-}
 std::list<Lexical::TokenType> Type::GetAttributes() const {
     if (_is_const) {
         return {Lexical::TokenType::kConst};

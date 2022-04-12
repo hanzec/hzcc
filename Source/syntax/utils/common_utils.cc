@@ -263,11 +263,12 @@ ParseTypeDecl(                            // NOLINT
 
         // check if current type is array
         if (!array_shape.empty()) {
-            auto context_type = context.getType(type_name, {});
-            return std::make_tuple(context.getType(context_type, array_shape),
+            auto context_type = context.getNamedType(type_name, {});
+            return std::make_tuple(
+                context.getArrayType(context_type, array_shape),
                                    attrs, variable_name);
         } else {
-            return std::make_tuple(context.getType(type_name, attrs_list),
+            return std::make_tuple(context.getNamedType(type_name, attrs_list),
                                    attrs, variable_name);
         }
     }
@@ -354,7 +355,8 @@ ParseTypeDecl(                            // NOLINT
         }
 
         return std::make_tuple(
-            context.getType(context.getType(type_name, {}), func_arguments),
+            context.getFuncPtrType(context.getNamedType(type_name, {}),
+                                   func_arguments),
             attrs, name);
     }
 
@@ -364,7 +366,7 @@ ParseTypeDecl(                            // NOLINT
     else {
         if (context.hasType(type_name)) {
             return std::make_tuple(
-                context.getType(type_name, attrs_list), attrs,
+                context.getNamedType(type_name, attrs_list), attrs,
                 Lexical::Token(Lexical::TokenType::kUnknown, -1, -1));
         } else {
             // TODO we need print more useful error message

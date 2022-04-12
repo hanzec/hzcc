@@ -53,30 +53,36 @@ std::shared_ptr<Type> SymbolTable::getType(const std::string& name) {
         }
     }
 }
-bool SymbolTable::hasVariable(const std::string& name) {
+bool SymbolTable::hasVariable(const std::string& name, bool current_scope) {
     if (_variable_lookup_table.find(name) != _variable_lookup_table.end()) {
         return true;
-    } else {
+    } else if (!current_scope) {
         if (_upper_scope_table.lock() != nullptr) {
-            return _upper_scope_table.lock()->hasVariable(name);
+            return _upper_scope_table.lock()->hasVariable(name, false);
         } else {
             return false;
         }
+    } else {
+        return false;
     }
 }
 
-bool SymbolTable::addVariable(const std::string& name,
+void SymbolTable::addVariable(int line_no, const std::string& name,
                               std::shared_ptr<Type>& token_types) {
-    if (hasVariable(name) || token_types == nullptr || hasType(name)) {
-        return false;
-    } else {
-        _variable_lookup_table.insert(std::make_pair(name, token_types));
-        return true;
-    }
+    DLOG_ASSERT(!hasType(name))
+        << "Variable " << name << " is already defined as a type";
+    DLOG_ASSERT(token_types != nullptr)
+        << "Variable " << name << " has passed a nullptr type";
+    DLOG_ASSERT(hasVariable(name, true))
+        << "Variable " << name << " has already been defined";
+
+    _variable_lookup_table.insert(
+        std::make_pair(name, std::make_pair(line_no, token_types)));
 }
+
 std::shared_ptr<Type> SymbolTable::getVariableType(const std::string& name) {
     if (_variable_lookup_table.find(name) != _variable_lookup_table.end()) {
-        return _variable_lookup_table[name];
+        return _variable_lookup_table[name].second;
     } else {
         if (_upper_scope_table.lock() != nullptr) {
             return _upper_scope_table.lock()->getVariableType(name);
@@ -90,6 +96,21 @@ std::shared_ptr<SymbolTable> SymbolTable::EnterScope() {
     auto new_scope = std::make_shared<SymbolTable>(_return_type, current_scope);
     _scoped_contexts.push_back(new_scope);
     return new_scope;
+}
+
+int SymbolTable::getVariableDeclLine(const std::string& name) {
+    DLOG_ASSERT(hasVariable(name, false))
+        << "Variable " << name << " has not been defined";
+
+    if(_variable_lookup_table.find(name) != _variable_lookup_table.end()) {
+        return _variable_lookup_table[name].first;
+    } else {
+        if (_upper_scope_table.lock() != nullptr) {
+            return _upper_scope_table.lock()->getVariableDeclLine(name);
+        } else {
+            LOG(FATAL) << "Variable " << name << " has not been defined";
+        }
+    }
 }
 
 }  // namespace Mycc::AST

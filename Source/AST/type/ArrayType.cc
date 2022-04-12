@@ -38,7 +38,7 @@ ArrayType::ArrayType(const std::shared_ptr<Type>& base_type,
     : Type(base_type->GetName() +
                (array_size == nullptr
                     ? "[]"
-                    : (array_size->IsDeducible()
+                    : (array_size->GetType()->IsConst()
                            ? "[" +
                                  std::to_string(array_size->GetDeducedValue()
                                                     .value()
@@ -50,8 +50,9 @@ ArrayType::ArrayType(const std::shared_ptr<Type>& base_type,
       _base_type(base_type) {}
 
 uint64_t ArrayType::GetSize() const {
-    return _size_node->IsDeducible() ? 0
-                                     : _size_node->GetDeducedValue()->AsInt();
+    return _size_node->GetType()->IsConst()
+               ? 0
+               : _size_node->GetDeducedValue()->AsInt();
 }
 bool ArrayType::HasSize() { return _size_node != nullptr; }
 

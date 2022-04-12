@@ -114,7 +114,8 @@ std::shared_ptr<AST::StructType> StructDeclare::parse_internal(
                             return nullptr;
                         }
                     } else {
-                        auto array_type = context.getType(type, array_shape);
+                        auto array_type =
+                            context.getArrayType(type, array_shape);
                         if (!struct_node->AddChild(variable.Value(), array_type,
                                                    inner_struct_attributes)) {
                             return nullptr;

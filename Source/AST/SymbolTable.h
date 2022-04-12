@@ -59,21 +59,25 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
     /**
      * @brief Check if the symbol table has a variable with the given name.
      * @param name The name of the variable.
+     * @param current_scope true when limit the search to the current scope.
      * @return true if variable is existed.
      * @return false if variable is not existed.
      */
-    bool hasVariable(const std::string& name);
+    bool hasVariable(const std::string& name, bool current_scope);
 
     /**
      * @brief Register a variable to the symbol table.
+     * @param line_no the line number of the variable.
      * @param name the identifier of the variable to be registered.
      * @param token_types The shared_ptr of the variable types to be registered.
      * @return true if variable is successfully registered.
      * @return false if variable name is existed as other variable or as
      * registered type identifier.
      */
-    bool addVariable(const std::string& name,
+    void addVariable(int line_no, const std::string& name,
                      std::shared_ptr<Type>& token_types);
+
+    int getVariableDeclLine(const std::string& name);
 
     /**
      * @brief Get the variable's shared_ptr with the given name.
@@ -105,7 +109,7 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
     /**
      * Variables table
      */
-    std::unordered_map<std::string, std::shared_ptr<Type>>
+    std::unordered_map<std::string, std::pair<int, std::shared_ptr<Type>>>
         _variable_lookup_table;
 
     /**

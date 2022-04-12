@@ -17,8 +17,6 @@ class ArraySubscriptExpr : public ASTNode {
 
     void visit(ASTVisitor& visitor) override;
 
-    [[nodiscard]] bool IsDeducible() const override { return true; }
-
     [[nodiscard]] bool IsAssignable() const override;
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;

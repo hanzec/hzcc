@@ -16,7 +16,7 @@
 
 namespace Mycc::AST {
 using ArgumentList =
-    std::list<std::pair<std::string, std::shared_ptr<AST::Type>>>;
+    std::list<std::tuple<std::string, std::shared_ptr<AST::Type>, int>>;
 
 class FunctionDeclNode : public DeclNode {
   public:

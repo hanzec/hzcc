@@ -24,8 +24,6 @@ class ArithmeticExpr : public OperatorBase {
     };
 
   protected:
-    [[nodiscard]] bool IsDeducible() const override;
-
     [[nodiscard]] std::string GetNodeName() const override;
 
     [[nodiscard]] std::optional<DeduceValue> GetDeducedValue() const override;

@@ -12,8 +12,10 @@ class ConditionalExpr : public ASTNode {
   public:
     ConditionalExpr(std::unique_ptr<ASTNode> cond,
                     std::unique_ptr<ASTNode> true_expr,
-                    std::unique_ptr<ASTNode> false_expr)
-        : _cond(std::move(cond)),
+                    std::unique_ptr<ASTNode> false_expr,
+                    std::pair<int, int> location)
+        : ASTNode(location),
+          _cond(std::move(cond)),
           _true_expr(std::move(true_expr)),
           _false_expr(std::move(false_expr)){};
 

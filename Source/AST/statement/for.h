@@ -11,8 +11,10 @@ namespace Mycc::AST {
 class ForStatement : public ASTNode {
   public:
     ForStatement(std::unique_ptr<ASTNode> init, std::unique_ptr<ASTNode> cond,
-                 std::unique_ptr<ASTNode> step, std::unique_ptr<ASTNode> body)
-        : _init(std::move(init)),
+                 std::unique_ptr<ASTNode> step, std::unique_ptr<ASTNode> body,
+                 std::pair<int, int> location)
+        : ASTNode(location),
+          _init(std::move(init)),
           _cond(std::move(cond)),
           _step(std::move(step)),
           _body(std::move(body)) {}

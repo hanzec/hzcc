@@ -8,6 +8,9 @@ namespace Mycc::AST {
 class BreakStatement : public ASTNode {
     void visit(ASTVisitor& visitor) override;
 
+  public:
+    BreakStatement(std::pair<int, int> pair_1);
+
   protected:
     [[nodiscard]] std::string GetNodeName() const override;
 };

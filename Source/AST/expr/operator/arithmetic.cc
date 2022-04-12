@@ -6,16 +6,13 @@
 #include <glog/logging.h>
 
 #include "AST/DeduceValue.h"
+#include "AST/type/Type.h"
 #include "lexical/Token.h"
 namespace Mycc::AST {
 std::string ArithmeticExpr::GetNodeName() const { return "ArithmeticExpr"; }
 
-bool ArithmeticExpr::IsDeducible() const {
-    return GetLHS()->IsDeducible() && GetRHS()->IsDeducible();
-}
-
 std::optional<DeduceValue> ArithmeticExpr::GetDeducedValue() const {
-    if (!IsDeducible()) {
+    if (!GetType()->IsConst()) {
         return std::nullopt;
     }
 

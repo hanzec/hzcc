@@ -12,4 +12,5 @@ void BreakStatement::visit(ASTVisitor& visitor) {
     DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
     visitor.visit(this);
 }
+BreakStatement::BreakStatement(std::pair<int, int> pair_1) : ASTNode(pair_1) {}
 }  // namespace Mycc::AST

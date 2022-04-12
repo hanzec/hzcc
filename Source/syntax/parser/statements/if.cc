@@ -24,6 +24,7 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(AST::ASTContext& context,
     auto ref = tokens.front();
 
     // check first if
+    auto if_loc = tokens.front().Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kIf, tokens);
 
     // parsing condition
@@ -39,8 +40,8 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(AST::ASTContext& context,
     }
 
     // generate ifNode
-    auto ifNode =
-        std::make_unique<AST::IfStatement>(std::move(cond), std::move(body));
+    auto ifNode = std::make_unique<AST::IfStatement>(std::move(cond),
+                                                     std::move(body), if_loc);
 
     // parsing [else] and [else if] statement
     while (peek(tokens).Type() == Lexical::TokenType::kElse) {

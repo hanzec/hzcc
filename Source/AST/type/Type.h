@@ -85,14 +85,6 @@ class Type : public std::enable_shared_from_this<Type> {
      * return copy of self.
      * @return std::string The declare name of the type.
      */
-    [[nodiscard]] std::shared_ptr<Type> GetUnConstType() const;
-
-    /**
-     * @brief Return the same type of this type but without const attribute.
-     * @note For the type does not have const attribute, this function will
-     * return copy of self.
-     * @return std::string The declare name of the type.
-     */
     [[nodiscard]] std::list<Lexical::TokenType> GetAttributes() const;
 
     /**

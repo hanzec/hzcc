@@ -18,8 +18,6 @@ class LiteralExpr : public ASTNode {
 
     void visit(ASTVisitor& visitor) override;
 
-    [[nodiscard]] bool IsDeducible() const override;
-
     [[nodiscard]] bool IsAssignable() const override;
 
     [[nodiscard]] bool IsLiteral() const override { return true; }

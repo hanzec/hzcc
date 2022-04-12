@@ -39,7 +39,6 @@ std::optional<DeduceValue> LiteralExpr::GetDeducedValue() const {
     return std::nullopt;
 }
 
-bool LiteralExpr::IsDeducible() const { return _type != kString; }
 std::string LiteralExpr::PrintAdditionalInfo(std::string_view ident) const {
     switch (_type) {
         case ValueType::kChar:

@@ -31,9 +31,15 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::ASTContext& context,
     }
 
     auto return_type =
-        context.getType(TokenListToString(return_type_name_str), {});
+        context.getNamedType(TokenListToString(return_type_name_str), {});
 
     auto func_name = pop_list(tokens);
+
+    // function can only be defined in global scope
+    if (!context.AtRoot()) {
+        MYCC_PrintTokenError_ReturnNull(
+            func_name, "function can only be defined in global scope");
+    }
 
     /**
      * Parse Argument List
@@ -48,7 +54,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::ASTContext& context,
 
     // function name cannot be empty
     if (Options::Global_enable_type_checking &&
-        context.hasVariable(func_name.Value())) {
+        context.hasVariable(func_name.Value(), true)) {
         MYCC_PrintTokenError_ReturnNull(
             func_name, "Function '" + func_name.Value() +
                            "' already defined as global variable");
@@ -125,7 +131,8 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::ASTContext& context,
 
         // add all arguments to the scope
         for (auto& arg : func_node->getArguments()) {
-            context.addVariable(arg.first, arg.second);
+            context.addVariable(std::get<2>(arg), std::get<0>(arg),
+                                std::get<1>(arg));
         }
 
         // trying to parser the function body

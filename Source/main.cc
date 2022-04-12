@@ -139,7 +139,7 @@ int main(int argc, char* argv[]) {
     Mycc::Message::set_current_part("Parser");
 
     // do syntax analysis
-    Mycc::AST::ASTContext context;
+    Mycc::AST::ASTContext context(input_files[0]);
     auto syntax_result = Mycc::Syntax::GenerateAST(context, tokens);
 
     if (flag3 && syntax_result.Ok()) {

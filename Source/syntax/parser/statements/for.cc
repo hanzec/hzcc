@@ -25,6 +25,7 @@ ForStatement::ForStatement() noexcept
 std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::ASTContext& context,
                                                        TokenList& tokens) {
     // check first token is for
+    auto for_loc = tokens.front().Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kFor, tokens);
 
     // check next token is (
@@ -96,7 +97,7 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::ASTContext& context,
 
     return std::make_unique<AST::ForStatement>(
         std::move(initializer), std::move(condition), std::move(increment),
-        std::move(body));
+        std::move(body), for_loc);
 }
 
 }  // namespace Mycc::Syntax::Parser

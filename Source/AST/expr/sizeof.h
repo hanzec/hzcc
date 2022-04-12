@@ -10,8 +10,8 @@
 namespace Mycc::AST {
 class SizeofExpr : public ASTNode {
   public:
-    explicit SizeofExpr(std::unique_ptr<ASTNode> expr)
-        : _expr(std::move(expr)) {}
+    SizeofExpr(std::unique_ptr<ASTNode> expr, std::pair<int, int> location)
+        : ASTNode(location), _expr(std::move(expr)) {}
 
     void visit(ASTVisitor& visitor) override;
 

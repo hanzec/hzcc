@@ -21,7 +21,8 @@ void JVMGenerator::visit(Mycc::AST::FunctionDeclNode *p_expr) {
 
     // write function parameters
     for (auto &param : p_expr->getArguments()) {
-        file_handler << TypeUtils::GetJVMTypename(param.second->GetName());
+        file_handler << TypeUtils::GetJVMTypename(
+            std::get<1>(param)->GetName());
     }
 
     // write function return type

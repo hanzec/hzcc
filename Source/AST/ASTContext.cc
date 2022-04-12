@@ -76,7 +76,7 @@ bool ASTContext::hasType(const std::string &basicString) {
     };
 }
 
-std::shared_ptr<Type> ASTContext::getType(
+std::shared_ptr<Type> ASTContext::getNamedType(
     const std::string &name, const std::list<Lexical::TokenType> &attr_list) {
     auto final_name = name;
     for (const auto &type : attr_list) {
@@ -93,7 +93,8 @@ std::shared_ptr<Type> ASTContext::getType(
                 return _named_types[name];
             } else {
                 // TODO: modify here since assume only accept const attribute
-                return _named_types[name]->GetConstType();
+                return Type::GetBasicType(_named_types[name]->GetName(),
+                                          {Lexical::TokenType::kConst});
             }
         } else {
             if (Lexical::SymbolUtils::IsPrimitiveType(name.c_str())) {
@@ -190,11 +191,9 @@ ASTContext::getFuncRetAndArgType(const std::basic_string<char> &name) {
     }
 }
 
-bool ASTContext::addDecl(std::unique_ptr<ASTNode> node) {
+void ASTContext::addDecl(std::unique_ptr<ASTNode> node) {
     // node muse be not a nullptr
-    if (node == nullptr) {
-        return false;
-    }
+    DLOG_ASSERT(node != nullptr) << " Node is nullptr";
 
     // if we are adding a function Node
     if (node->IsDeclNode()) {
@@ -213,18 +212,14 @@ bool ASTContext::addDecl(std::unique_ptr<ASTNode> node) {
 
         // we need to make sure function/decl name is unique
         if (node_ptr != _global_decl.end()) {
-            DLOG(WARNING) << "Decl node with name: " << fuc_name
-                          << " already exists, will be overwritten";
-            node_ptr->second = std::move(derivedPointer);
+            DLOG(FATAL) << "Decl name: " << fuc_name << " already defined !";
         } else {
             // move ownership of decl node to global_decl
             _global_decl.emplace_back(fuc_name, std::move(derivedPointer));
         }
-        return true;
+    } else {
+        DLOG(FATAL) << "Unsupported ASTNode type, only support decl node";
     }
-
-    DLOG(ERROR) << "Unsupported ASTNode type, only support decl node";
-    return false;
 }
 
 void ASTContext::leaveScope() {
@@ -255,13 +250,13 @@ void ASTContext::enterScope(const std::string &name,
     }
 }
 
-std::shared_ptr<Type> ASTContext::getType(
+std::shared_ptr<Type> ASTContext::getFuncPtrType(
     std::shared_ptr<Type> name,
-    const std::list<std::shared_ptr<AST::Type>> &argument_list) {
-    return std::make_shared<FuncPtrType>(name, argument_list);
+    const std::list<std::shared_ptr<AST::Type>> &attrs) {
+    return std::make_shared<FuncPtrType>(name, attrs);
 }
 
-std::shared_ptr<Type> ASTContext::getType(
+std::shared_ptr<Type> ASTContext::getArrayType(
     const std::shared_ptr<AST::Type> &base_type,
     std::list<std::unique_ptr<AST::ASTNode>> &shape) {
     if (base_type == nullptr || !hasType(base_type->GetName())) {
@@ -283,7 +278,7 @@ std::shared_ptr<Type> ASTContext::getType(
 bool ASTContext::hasVariable(const std::string &name, bool current_scope) {
     if (!current_scope) {
         if (_current_context.lock() == nullptr ||
-            !_current_context.lock()->hasVariable(name)) {
+            !_current_context.lock()->hasVariable(name, false)) {
             for (auto &var : _global_decl) {
                 if (var.first == name) {
                     if (var.second->IsFuncDecl()) {
@@ -294,20 +289,28 @@ bool ASTContext::hasVariable(const std::string &name, bool current_scope) {
             }
             return false;
         } else {
-            return _current_context.lock()->hasVariable(name);
+            return _current_context.lock()->hasVariable(name, false);
         }
     } else {
         if (_current_context.lock() != nullptr) {
-            return _current_context.lock()->hasVariable(name);
+            return _current_context.lock()->hasVariable(name, true);
         } else {
+            for (auto &var : _global_decl) {
+                if (var.first == name) {
+                    if (var.second->IsFuncDecl()) {
+                        return false;
+                    }
+                    return true;
+                }
+            }
             return false;
         }
     }
 }
 
 std::shared_ptr<Type> ASTContext::getVariableType(const std::string &name) {
-    if (hasVariable(name)) {
-        if (_current_context.lock()->hasVariable(name)) {
+    if (hasVariable(name, false)) {
+        if (_current_context.lock()->hasVariable(name, false)) {
             return _current_context.lock()->getVariableType(name);
         } else {
             for (auto &var : _global_decl) {
@@ -324,29 +327,33 @@ std::shared_ptr<Type> ASTContext::getVariableType(const std::string &name) {
     }
 }
 
-Status ASTContext::addVariable(const std::string &name,
-                               std::shared_ptr<Type> &variable_type) {
-    if (_current_context.lock() == nullptr) {
-        DLOG(FATAL) << "should never call addVariable when in root context";
+std::pair<bool, int> ASTContext::getVariableInfo(
+    const std::basic_string<char> &name) {
+    DLOG_ASSERT(name.empty() == false) << "Variable name cannot be empty";
+    DLOG_ASSERT(hasVariable(name, false))
+        << "Variable " << name << " not found";
+
+    if (_current_context.lock()->hasVariable(name, false)) {
+        return std::make_pair(
+            false, _current_context.lock()->getVariableDeclLine(name));
     } else {
-        if (_current_context.lock()->hasVariable(name)) {
-            DLOG(ERROR) << "Variable " << name << " already exists";
-            return {Status::Code::INVALID_ARGUMENT,
-                    "Variable " + name + " already exists"};
-        } else {
-            if (_current_context.lock()->addVariable(name, variable_type)) {
-                DVLOG(AST_LOG_LEVEL)
-                    << "Add variable " << name << " to current context";
-                return Status::OkStatus();
-            } else {
-                DLOG(ERROR) << "Failed to add variable " << name
-                            << "when hasVariable is false";
-                return {Status::Code::INTERNAL,
-                        "failed to add variable " + name};
+        for (auto &var : _global_decl) {
+            if (var.first == name) {
+                return std::make_pair(true, var.second->GetLine());
             }
         }
+        DLOG(ERROR) << "Variable " << name << " not found";
+        return std::make_pair(false, 0);
     }
-    return Status::OkStatus();
+}
+
+void ASTContext::addVariable(int line_no, const std::string &name,
+                             std::shared_ptr<Type> &variable_type) {
+    DLOG_ASSERT(_current_context.lock() != nullptr)
+        << " should never call addVariable when in root context";
+    DLOG_ASSERT(!_current_context.lock()->hasVariable(name, true))
+        << "variable already exists";
+    _current_context.lock()->addVariable(line_no, name, variable_type);
 }
 
 std::string ASTContext::Dump() const {
@@ -403,4 +410,8 @@ std::string ASTContext::Dump() const {
 }
 bool ASTContext::AtRoot() { return _current_context.lock() == nullptr; }
 ASTContext::~ASTContext() {}
+ASTContext::ASTContext(std::string file_name)
+    : _file_name(std::move(file_name)) {}
+std::string ASTContext::GetFileName() const { return _file_name; }
+
 }  // namespace Mycc::AST

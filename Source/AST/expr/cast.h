@@ -11,12 +11,13 @@
 namespace Mycc::AST {
 class CastExpr : public ASTNode {
   public:
-    explicit CastExpr(std::shared_ptr<Type> type, std::unique_ptr<ASTNode> expr)
-        : _cast_type(std::move(type)), _cast_expr(std::move(expr)) {}
+    CastExpr(std::shared_ptr<Type> type, std::unique_ptr<ASTNode> expr,
+             std::pair<int, int> location)
+        : ASTNode(location),
+          _cast_type(std::move(type)),
+          _cast_expr(std::move(expr)) {}
 
     void visit(ASTVisitor& visitor) override;
-
-    [[nodiscard]] bool IsDeducible() const override;
 
     [[nodiscard]] bool IsAssignable() const override;
 

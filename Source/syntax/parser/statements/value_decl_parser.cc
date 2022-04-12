@@ -31,6 +31,21 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
         return nullptr;
     }
 
+    // check duplicate variable, here we only check if the variable is
+    // already defined in the current scope. since we can musk the
+    // definition of the variable in the parent scope.
+    if (context.hasVariable(name.Value(), true)) {
+        auto [is_global, line_no] = context.getVariableInfo(name.Value());
+        MYCC_PrintFirstTokenError_ReturnNull(
+            tokens,
+            (context.AtRoot() ? "Global variable '" : "Local variable '") +
+                name.Value() +
+                (is_global ? "' duplicates global variable declared in\n"
+                           : "' duplicates local variable declared in\n") +
+                "\t\tfile " + context.GetFileName() + " line " +
+                std::to_string(line_no));
+    }
+
     // for a function definition, we only allow one per line.
     if (type->IsFuncPtr()) {
         if (tokens.front().Type() != Lexical::TokenType::kSemiColon) {
@@ -51,12 +66,6 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
     if (tokens.front().Type() == Lexical::TokenType::kAssign) {
         // consume assign
         pop_list(tokens);
-
-        // check duplicate variable
-        if (context.hasVariable(name.Value(), true)) {
-            MYCC_PrintFirstTokenError_ReturnNull(tokens,
-                                                 "Duplicate variable name");
-        }
 
         // parse initial value
         auto value_node = tokens.front();
@@ -112,11 +121,11 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
 
     // create new variable if not in root context
     if (!context.AtRoot()) {
-        auto status = context.addVariable(name.Value(), type);
-        if (!status.Ok()) {
-            MYCC_PrintTokenError(name, status.Message());
-            return nullptr;
+        if (context.hasVariable(name.Value(), true)) {
+            MYCC_PrintFirstTokenError_ReturnNull(tokens,
+                                                 "Duplicate variable name");
         }
+        context.addVariable(name.Location().first, name.Value(), type);
     }
     attributes.clear();
 

@@ -9,6 +9,9 @@ namespace Mycc::AST {
 class ContinueStatement : public ASTNode {
     void visit(ASTVisitor& visitor) override;
 
+  public:
+    ContinueStatement(std::pair<int, int> pair_1);
+
   protected:
     [[nodiscard]] std::string GetNodeName() const override;
 };

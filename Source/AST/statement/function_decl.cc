@@ -78,7 +78,8 @@ std::string FunctionDeclNode::GetNodeName() const { return "FunctionDecl"; }
 ArgumentList FunctionDeclNode::getArguments() {
     ArgumentList result;
     for (const auto& arg : _function_param) {
-        result.push_back(std::pair(arg->GetName(), arg->GetType()));
+        result.push_back(
+            std::make_tuple(arg->GetName(), arg->GetType(), arg->GetLine()));
     }
     return result;
 }
@@ -126,7 +127,7 @@ std::string FunctionDeclNode::Dump(std::string_view ident) const {
 
     // print body
     if (_function_body != nullptr) {
-        ret << _function_body->Dump(ident);
+        ret << _function_body->Dump(ident) + "\n";
     }
 
     return ret.str();

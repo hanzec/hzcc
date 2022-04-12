@@ -8,7 +8,6 @@
 namespace Mycc::AST {
 
 std::string AST::CastExpr::GetNodeName() const { return "CastExpr"; }
-bool CastExpr::IsDeducible() const { return _cast_expr->IsDeclNode(); }
 bool CastExpr::IsAssignable() const { return _cast_expr->IsAssignable(); }
 std::shared_ptr<Type> CastExpr::GetType() const { return _cast_type; }
 

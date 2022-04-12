@@ -18,7 +18,7 @@ namespace Mycc::AST {
 class StructType;
 class ASTContext {
   public:
-    ASTContext() = default;
+    ASTContext(std::string file_name);
 
     ~ASTContext();
 
@@ -26,6 +26,7 @@ class ASTContext {
 
     bool AtRoot();
 
+    std::string GetFileName() const;
     /**
      * #############################################################
      * ###############     AST related Functions     ###############
@@ -40,7 +41,7 @@ class ASTContext {
      * @param node
      * @return
      */
-    bool addDecl(std::unique_ptr<ASTNode> node);
+    void addDecl(std::unique_ptr<ASTNode> node);
 
     /**
      * #############################################################
@@ -52,27 +53,28 @@ class ASTContext {
     std::shared_ptr<StructType> addStructType(
         const std::string& name, std::list<Lexical::TokenType>& attr_list);
 
-    std::shared_ptr<Type> getType(
+    std::shared_ptr<Type> getNamedType(
         const std::string& name,
         const std::list<Lexical::TokenType>& attr_list);
 
-    std::shared_ptr<Type> getType(
-        std::shared_ptr<Type> name,
-        const std::list<std::shared_ptr<AST::Type>>& attrs);
-
-    std::shared_ptr<Type> getType(
+    std::shared_ptr<Type> getArrayType(
         const std::shared_ptr<AST::Type>& base_type,
         std::list<std::unique_ptr<AST::ASTNode>>& shape);
 
+    std::shared_ptr<Type> getFuncPtrType(
+        std::shared_ptr<Type> name,
+        const std::list<std::shared_ptr<AST::Type>>& attrs);
     /**
      * #############################################################
      * ###############   Variable related Functions  ###############
      * #############################################################
      */
-    bool hasVariable(const std::string& name, bool sam_type = false);
+    bool hasVariable(const std::string& name, bool current_scope);
 
-    Status addVariable(const std::string& name,                // NOLINT
-                       std::shared_ptr<Type>& variable_type);  // NOLINT
+    void addVariable(int line_no, const std::string& name,   // NOLINT
+                     std::shared_ptr<Type>& variable_type);  // NOLINT
+
+    std::pair<bool, int> getVariableInfo(const std::basic_string<char>& name);
 
     std::shared_ptr<Type> getVariableType(const std::basic_string<char>& name);
 
@@ -104,6 +106,7 @@ class ASTContext {
                     const std::shared_ptr<Type>& return_type);
 
   protected:
+    const std::string _file_name;
     std::weak_ptr<SymbolTable> _current_context;
 
     /**

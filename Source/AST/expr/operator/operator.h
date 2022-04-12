@@ -11,8 +11,7 @@ namespace Mycc::AST {
 class OperatorBase : public ASTNode {
   public:
     OperatorBase(std::pair<int, int> loc, std::unique_ptr<ASTNode> lhs,
-                 std::unique_ptr<ASTNode> rhs)
-        : ASTNode(loc), _lhs(std::move(lhs)), _rhs(std::move(rhs)) {}
+                 std::unique_ptr<ASTNode> rhs);
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 

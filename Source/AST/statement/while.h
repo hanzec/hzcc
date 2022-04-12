@@ -11,8 +11,9 @@ namespace Mycc::AST {
 
 class WhileStatement : public ASTNode {
   public:
-    WhileStatement(std::unique_ptr<ASTNode> cond, std::unique_ptr<ASTNode> body)
-        : cond_(std::move(cond)), body_(std::move(cond)) {}
+    WhileStatement(std::unique_ptr<ASTNode> cond, std::unique_ptr<ASTNode> body,
+                   std::pair<int, int> location)
+        : ASTNode(location), cond_(std::move(cond)), body_(std::move(cond)) {}
 
     void visit(ASTVisitor& visitor) override;
 

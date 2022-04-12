@@ -28,8 +28,6 @@ class CastExpr;
 class DeduceValue;
 class ASTNode {
   public:
-    ASTNode();
-
     virtual ~ASTNode();
 
     explicit ASTNode(std::pair<int, int> loc);
@@ -43,8 +41,6 @@ class ASTNode {
     [[nodiscard]] virtual bool IsDeclNode() const { return false; }
 
     [[nodiscard]] virtual bool IsStructDecl() const { return false; }
-
-    [[nodiscard]] virtual bool IsDeducible() const { return false; }
 
     [[nodiscard]] virtual bool IsLiteral() const { return false; }
 
@@ -66,7 +62,7 @@ class ASTNode {
   protected:
     [[nodiscard]] uint64_t GetNodeId() const;
 
-    [[nodiscard]] std::string GetLocation() const;
+    [[nodiscard]] std::pair<int,int> GetLocation() const;
 
     [[nodiscard]] virtual std::string GetNodeName() const = 0;
 

@@ -9,8 +9,8 @@ namespace Mycc::AST {
 class DoStatement : public WhileStatement {
   public:
     DoStatement(std::unique_ptr<AST::ASTNode> cond,
-                std::unique_ptr<AST::ASTNode> body)
-        : WhileStatement(std::move(cond), std::move(body)) {}
+                std::unique_ptr<AST::ASTNode> body, std::pair<int, int> pos)
+        : WhileStatement(std::move(cond), std::move(body), pos) {}
 
     void visit(ASTVisitor& visitor) override;
 

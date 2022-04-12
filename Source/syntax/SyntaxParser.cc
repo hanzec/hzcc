@@ -45,14 +45,18 @@ Status GenerateAST(AST::ASTContext& context, TokenList& tokens) {
                 // parsing as function definition
                 tokens.insert(tokens.begin(), type_name.begin(),
                               type_name.end());
-                if (!context.addDecl(
-                        ParserFactory::ParseAST<AST::StructDeclareNode>(
-                            context, tokens, attrs))) {
+                auto new_node = ParserFactory::ParseAST<AST::StructDeclareNode>(
+                    context, tokens, attrs);
+
+                if (new_node != nullptr) {
+                    context.addDecl(std::move(new_node));
+                } else {
                     DVLOG(SYNTAX_LOG_LEVEL)
-                        << "Failed to parse struct declaration";
+                        << "failed to parse struct declaration";
                     return {Status::Code::SyntaxError,
                             "Failed to parse struct declaration"};
                 }
+
             }
 
             // if funcdecl
@@ -60,9 +64,13 @@ Status GenerateAST(AST::ASTContext& context, TokenList& tokens) {
                      peek2(tokens).Type() == Lexical::kLParentheses) {
                 tokens.insert(tokens.begin(), type_name.begin(),
                               type_name.end());
-                if (!context.addDecl(
-                        ParserFactory::ParseAST<AST::FunctionDeclNode>(
-                            context, tokens, attrs))) {
+
+                auto new_node = ParserFactory::ParseAST<AST::FunctionDeclNode>(
+                    context, tokens, attrs);
+
+                if (new_node != nullptr) {
+                    context.addDecl(std::move(new_node));
+                } else {
                     DVLOG(SYNTAX_LOG_LEVEL)
                         << "Failed to parse function declaration";
                     return {Status::Code::SyntaxError,
@@ -75,8 +83,12 @@ Status GenerateAST(AST::ASTContext& context, TokenList& tokens) {
                         peek2(tokens).Type() == Lexical::kLBracket)) {
                 tokens.insert(tokens.begin(), type_name.begin(),
                               type_name.end());
-                if (!context.addDecl(ParserFactory::ParseAST<AST::ASTNode>(
-                        context, tokens, attrs))) {
+
+                auto new_node = ParserFactory::ParseAST<AST::ASTNode>(
+                    context, tokens, attrs);
+                if (new_node != nullptr) {
+                    context.addDecl(std::move(new_node));
+                } else {
                     DVLOG(SYNTAX_LOG_LEVEL)
                         << "Failed to parse variable declaration";
                     return {Status::Code::SyntaxError,

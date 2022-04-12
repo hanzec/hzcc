@@ -11,8 +11,11 @@
 namespace Mycc::AST {
 class IfStatement : public ASTNode {
   public:
-    IfStatement(std::unique_ptr<ASTNode> cond, std::unique_ptr<ASTNode> body)
-        : _condition(std::move(cond)), _if_body_statement(std::move(body)){};
+    IfStatement(std::unique_ptr<ASTNode> cond, std::unique_ptr<ASTNode> body,
+                std::pair<int, int> location)
+        : ASTNode(location),
+          _condition(std::move(cond)),
+          _if_body_statement(std::move(body)){};
 
     void visit(ASTVisitor& visitor) override;
 
