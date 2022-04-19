@@ -103,9 +103,9 @@ add_compile_options(-Wall -Wextra -frtti)
 
 # hide static link symbols
 if (APPLE)
-#    target_link_options(mycc PRIVATE -hidden-lssl)
+    #    target_link_options(mycc PRIVATE -hidden-lssl)
 else ()
-#    target_link_options(mycc PRIVATE -Wl,--exclude-libs,ALL)
+    #    target_link_options(mycc PRIVATE -Wl,--exclude-libs,ALL)
 endif ()
 
 # compile under cxx 17
@@ -136,12 +136,17 @@ endif ()
 ###############################################################################
 target_sources(mycc
         PRIVATE
-        "const_msg.h" "macro.h" "main.cc" "options.cc")
+        "const_msg.h" "macro.h" "main.cc" "options.cc" "CompileContext.cc" "CompileContext.h")
 
 ###############################################################################
 ## Code Generation ############################################################
 ###############################################################################
 add_subdirectory(codegen)
+
+###############################################################################
+## Optimization  ##############################################################
+###############################################################################
+add_subdirectory(optimization)
 
 ###############################################################################
 ## ASTs #######################################################################

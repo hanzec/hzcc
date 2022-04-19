@@ -13,4 +13,5 @@ void JVMGenerator::visit(Mycc::AST::DeclNode *p_expr) {
     BindStack(var_name, TypeUtils::GetJVMTypename(p_expr->GetType()->GetName()),
               true);
 }
+void JVMGenerator::visit(Mycc::AST::VarDecl *p_expr) {}
 }  // namespace Mycc::Codegen

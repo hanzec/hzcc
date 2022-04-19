@@ -59,12 +59,12 @@ class ASTNode {
 
     [[nodiscard]] int GetLineNumber() const;
 
+    [[nodiscard]] virtual std::string GetNodeName() const = 0;
+
   protected:
     [[nodiscard]] uint64_t GetNodeId() const;
 
     [[nodiscard]] std::pair<int,int> GetLocation() const;
-
-    [[nodiscard]] virtual std::string GetNodeName() const = 0;
 
     [[nodiscard]] virtual std::string PrintAdditionalInfo(
         std::string_view ident) const;

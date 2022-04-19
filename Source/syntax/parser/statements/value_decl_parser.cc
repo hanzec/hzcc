@@ -4,7 +4,7 @@
 
 #include "value_decl_parser.h"
 
-#include "AST/ASTContext.h"
+#include "AST/CompilationUnit.h"
 #include "AST/statement/value_decl.h"
 #include "lexical/Token.h"
 #include "syntax/utils/common_utils.h"
@@ -15,7 +15,7 @@ ValueDeclare::ValueDeclare() noexcept
                 TypeNameUtil::name_pretty<AST::VarDecl>()) {}
 
 std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
-    Mycc::AST::ASTContext& context, Mycc::Syntax::TokenList& tokens,
+    Mycc::AST::CompilationUnit& context, Mycc::Syntax::TokenList& tokens,
     Mycc::Syntax::TokenList& attributes) {
     // push attrs back to token stream
     tokens.insert(tokens.begin(), attributes.begin(), attributes.end());

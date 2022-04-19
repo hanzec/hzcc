@@ -1,5 +1,5 @@
-
-
+#ifndef MYCC_FUNCTION_NODE_H
+#define MYCC_FUNCTION_NODE_H
 #include <algorithm>
 #include <list>
 #include <memory>
@@ -11,8 +11,6 @@
 #include "AST/type/Type.h"
 #include "decl.h"
 #include "param_val_decl.h"
-#ifndef MYCC_FUNCTION_NODE_H
-#define MYCC_FUNCTION_NODE_H
 
 namespace Mycc::AST {
 using ArgumentList =
@@ -35,9 +33,9 @@ class FunctionDeclNode : public DeclNode {
 
     void visit(ASTVisitor& visitor) override;
 
-    bool set_body(std::unique_ptr<AST::ASTNode> declaration);
+    bool set_body(std::unique_ptr<AST::CompoundStmt> declaration);
 
-    std::unique_ptr<AST::ASTNode>& GetBody();
+    std::unique_ptr<AST::CompoundStmt>& GetBody();
 
     ArgumentList getArguments();
 
@@ -60,7 +58,7 @@ class FunctionDeclNode : public DeclNode {
 
   private:
     std::shared_ptr<Type> _return_type;
-    std::unique_ptr<ASTNode> _function_body;
+    std::unique_ptr<CompoundStmt> _function_body;
     std::list<std::unique_ptr<ParamVarDecl>> _function_param;
 };
 }  // namespace Mycc::AST

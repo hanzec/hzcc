@@ -8,7 +8,7 @@
 
 #include <list>
 
-#include "AST/ASTContext.h"
+#include "AST/CompilationUnit.h"
 #include "AST/statement/compound.h"
 #include "for_parser.h"
 #include "lexical/token_type.h"
@@ -22,7 +22,7 @@ using namespace TokenListUtils;
 ForStatement::ForStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::ForStatement>(),
                  TypeNameUtil::name_pretty<AST::ForStatement>()) {}
-std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::ASTContext& context,
+std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::CompilationUnit& context,
                                                        TokenList& tokens) {
     // check first token is for
     auto for_loc = tokens.front().Location();

@@ -9,13 +9,13 @@ namespace Mycc::Syntax::Parser {
 class StructDeclare : public ParserBase {
   public:
     StructDeclare() noexcept;
-    std::unique_ptr<AST::ASTNode> parse_impl(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> parse_impl(AST::CompilationUnit& context,
                                              TokenList& tokens,
                                              TokenList& attributes) override;
 
   protected:
     static std::shared_ptr<AST::StructType> parse_internal(
-        AST::ASTContext& context, TokenList& tokens, TokenList& attributes);
+        AST::CompilationUnit& context, TokenList& tokens, TokenList& attributes);
 };
 }  // namespace Mycc::Syntax::Parser
 #endif  // MYCC_SOURCE_SYNTAX_PARSER_STATEMENTS_STRUCT_PARSER_H_

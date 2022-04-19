@@ -96,8 +96,8 @@ class Type : public std::enable_shared_from_this<Type> {
         const std::string& name, const std::list<Lexical::TokenType>& attrs);
 
   protected:
-    friend class ASTContext;  // can only create/destroy Type through
-                              // ASTContext.
+    friend class CompilationUnit;  // can only create/destroy Type through
+                              // CompilationUnit.
     /**
      * @brief Constructor of Type.
      * @param name The name of the type.

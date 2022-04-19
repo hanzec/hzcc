@@ -5,7 +5,7 @@
 
 #include <list>
 
-#include "AST/ASTContext.h"
+#include "AST/CompilationUnit.h"
 #include "AST/statement/compound.h"
 #include "AST/statement/function_decl.h"
 #include "lexical/Token.h"
@@ -19,7 +19,7 @@ Function::Function() noexcept
     : ParserBase(TypeNameUtil::hash<AST::FunctionDeclNode>(),
                  TypeNameUtil::name_pretty<AST::FunctionDeclNode>()) {}
 
-std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::ASTContext& context,
+std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context,
                                                    TokenList& tokens,
                                                    TokenList& attributes) {
     ConcatAttribute(attributes, tokens);

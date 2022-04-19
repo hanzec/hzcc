@@ -35,20 +35,23 @@ namespace Mycc::Syntax {
 class ParserFactory {
   public:
     template <class name>
-    static std::unique_ptr<AST::ASTNode> ParseAST(
-        AST::ASTContext& context,  // NOLINT
-        std::list<Lexical::Token>& tokens) {
-        return GetParser<name>(TypeNameUtil::hash<name>())
-            ->parse(context, tokens);
+    static std::unique_ptr<name> ParseAST(AST::CompilationUnit& context,  // NOLINT
+                                          std::list<Lexical::Token>& tokens) {
+        return std::unique_ptr<name>(
+            static_cast<name*>(GetParser<name>(TypeNameUtil::hash<name>())
+                                   ->parse(context, tokens)
+                                   .release()));
     }
 
     template <class name>
-    static std::unique_ptr<AST::ASTNode> ParseAST(
-        AST::ASTContext& context,           // NOLINT
+    static std::unique_ptr<name> ParseAST(
+        AST::CompilationUnit& context,           // NOLINT
         std::list<Lexical::Token>& tokens,  // NOLINT
         std::list<Lexical::Token> attributes) {
-        return GetParser<name>(TypeNameUtil::hash<name>())
-            ->parse(context, tokens, attributes);
+        return std::unique_ptr<name>(
+            static_cast<name*>(GetParser<name>(TypeNameUtil::hash<name>())
+                                   ->parse(context, tokens, attributes)
+                                   .release()));
     }
 
   protected:
@@ -97,8 +100,8 @@ class ParserFactoryReporter {
     }
 
     template <class name>
-    std::unique_ptr<AST::ASTNode> ParseAST(AST::ASTContext& context,
-                                           std::list<Lexical::Token>& tokens) {
+    std::unique_ptr<name> ParseAST(AST::CompilationUnit& context,
+                                   std::list<Lexical::Token>& tokens) {
         DVLOG(SYNTAX_LOG_LEVEL)
             << "\nRequest Parser From: [" << _caller << "] " << _file << ":"
             << _line << "\n"
@@ -111,10 +114,9 @@ class ParserFactoryReporter {
     }
 
     template <class name>
-    std::unique_ptr<AST::ASTNode> ParseAST(
-        AST::ASTContext& context,
-        std::list<Lexical::Token>& tokens,  // NOLINT
-        std::list<Lexical::Token>& attributes) {
+    std::unique_ptr<name> ParseAST(AST::CompilationUnit& context,
+                                   std::list<Lexical::Token>& tokens,  // NOLINT
+                                   std::list<Lexical::Token>& attributes) {
         DVLOG(SYNTAX_LOG_LEVEL)
             << "\nRequest Parser From: [" << _caller << "] " << _file << ":"
             << _line << "\n"
@@ -122,7 +124,7 @@ class ParserFactoryReporter {
             << "\tToken: " << MYCC_PRETTY_PRINT_TOKEN(tokens.front()) << "\n"
             << "\tattributes: " << Debug::PrintAttributeList(attributes) << "\n"
             << "\tUsingParser: " << std::hex << TypeNameUtil::hash<name>();
-        return ParserFactory::ParseAST<name>(context, tokens);
+        return ParserFactory::ParseAST<name>(context, tokens, attributes);
     }
 
   private:

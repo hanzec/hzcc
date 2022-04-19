@@ -16,11 +16,11 @@
 
 namespace Mycc::AST {
 class StructType;
-class ASTContext {
+class CompilationUnit {
   public:
-    ASTContext(std::string file_name);
+    CompilationUnit(std::string file_name);
 
-    ~ASTContext();
+    ~CompilationUnit();
 
     std::string Dump() const;
 

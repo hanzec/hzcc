@@ -9,7 +9,7 @@ namespace Mycc::Syntax::Parser {
 class IfStatement : public ParserBase {
   public:
     IfStatement() noexcept;
-    std::unique_ptr<AST::ASTNode> parse_impl(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> parse_impl(AST::CompilationUnit& context,
                                              TokenList& tokens) override;
 };
 }  // namespace Mycc::Syntax::Parser

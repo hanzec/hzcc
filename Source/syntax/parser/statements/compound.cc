@@ -5,7 +5,7 @@
 
 #include <list>
 
-#include "AST/ASTContext.h"
+#include "AST/CompilationUnit.h"
 #include "block_parser.h"
 #include "lexical/Token.h"
 #include "syntax/Parser.h"
@@ -19,7 +19,7 @@ BlockStatement::BlockStatement() noexcept
                  TypeNameUtil::name_pretty<AST::CompoundStmt>()){};
 
 std::unique_ptr<AST::ASTNode> BlockStatement::parse_impl(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     // check if the next token is '{'
     auto prev_token = tokens.front();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLBrace, tokens);

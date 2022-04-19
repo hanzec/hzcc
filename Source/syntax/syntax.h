@@ -5,7 +5,7 @@
 #ifndef MYCC_SYNTX_H
 #define MYCC_SYNTX_H
 namespace Mycc::Syntax {
-Status GenerateAST(AST::ASTContext& context, std::list<Lexical::Token>& tokens);
+Status GenerateAST(AST::CompilationUnit& context, std::list<Lexical::Token>& tokens);
 }  // namespace Mycc::Syntax
 
 #endif  // MYCC_SYNTX_H

@@ -1,4 +1,4 @@
-#include "ASTContext.h"
+#include "CompilationUnit.h"
 
 #include <cassert>
 #include <iomanip>
@@ -41,7 +41,7 @@ ALWAYS_INLINE static void replaceAll(std::string &str, const std::string &from,
     }
 }
 
-bool ASTContext::hasType(const std::string &basicString) {
+bool CompilationUnit::hasType(const std::string &basicString) {
     if (basicString.empty()) {
         return false;
     }
@@ -77,7 +77,7 @@ bool ASTContext::hasType(const std::string &basicString) {
     };
 }
 
-std::shared_ptr<Type> ASTContext::getNamedType(
+std::shared_ptr<Type> CompilationUnit::getNamedType(
     const std::string &name, const std::list<Lexical::TokenType> &attr_list) {
     auto final_name = name;
     for (const auto &type : attr_list) {
@@ -107,7 +107,7 @@ std::shared_ptr<Type> ASTContext::getNamedType(
     }
 }
 
-std::shared_ptr<StructType> ASTContext::addStructType(
+std::shared_ptr<StructType> CompilationUnit::addStructType(
     const std::string &struct_name, std::list<Lexical::TokenType> &attr_list) {
     auto name = "struct " + struct_name;
 
@@ -148,7 +148,7 @@ std::shared_ptr<StructType> ASTContext::addStructType(
     }
 }
 
-bool ASTContext::hasFunction(const std::string &name) {
+bool CompilationUnit::hasFunction(const std::string &name) {
     if (_function_table.find(name) != _function_table.end()) {
         return true;
     } else {
@@ -156,7 +156,7 @@ bool ASTContext::hasFunction(const std::string &name) {
     }
 }
 
-bool ASTContext::hasFunctionBody(const std::string &name) {
+bool CompilationUnit::hasFunctionBody(const std::string &name) {
     if (_function_table.find(name + "_decl") != _function_table.end()) {
         return true;
     } else {
@@ -164,7 +164,7 @@ bool ASTContext::hasFunctionBody(const std::string &name) {
     }
 }
 
-bool ASTContext::addFunction(
+bool CompilationUnit::addFunction(
     int line_no, const std::string &name, std::shared_ptr<Type> &output,
     const std::list<std::shared_ptr<Type>> &argument_list) {
     if (output == nullptr) {
@@ -183,7 +183,7 @@ bool ASTContext::addFunction(
 }
 
 std::tuple<std::shared_ptr<Type>, std::list<std::shared_ptr<Type>>, int>
-ASTContext::getFuncRetAndArgType(const std::basic_string<char> &name) {
+CompilationUnit::getFuncRetAndArgType(const std::basic_string<char> &name) {
     if (hasFunction(name)) {
         return {
             _function_table[name],
@@ -194,7 +194,7 @@ ASTContext::getFuncRetAndArgType(const std::basic_string<char> &name) {
     }
 }
 
-void ASTContext::addDecl(std::unique_ptr<ASTNode> node) {
+void CompilationUnit::addDecl(std::unique_ptr<ASTNode> node) {
     // node muse be not a nullptr
     DLOG_ASSERT(node != nullptr) << " Node is nullptr";
 
@@ -226,7 +226,7 @@ void ASTContext::addDecl(std::unique_ptr<ASTNode> node) {
     }
 }
 
-void ASTContext::leaveScope() {
+void CompilationUnit::leaveScope() {
     if (_current_context.lock() == nullptr) {
         DLOG(FATAL) << "cannot leave scope, already at root";
     } else {
@@ -234,7 +234,7 @@ void ASTContext::leaveScope() {
     }
 }
 
-void ASTContext::enterScope() {
+void CompilationUnit::enterScope() {
     if (_current_context.lock() == nullptr) {
         DLOG(FATAL) << "Cannot enter scope while current context is null";
     } else {
@@ -243,7 +243,7 @@ void ASTContext::enterScope() {
     }
 }
 
-void ASTContext::enterScope(const std::string &name,
+void CompilationUnit::enterScope(const std::string &name,
                             const std::shared_ptr<Type> &return_type) {
     if (_current_context.lock() != nullptr) {
         DLOG(FATAL) << "Only root context can enter a named scope";
@@ -254,13 +254,13 @@ void ASTContext::enterScope(const std::string &name,
     }
 }
 
-std::shared_ptr<Type> ASTContext::getFuncPtrType(
+std::shared_ptr<Type> CompilationUnit::getFuncPtrType(
     std::shared_ptr<Type> name,
     const std::list<std::shared_ptr<AST::Type>> &attrs) {
     return std::make_shared<FuncPtrType>(name, attrs);
 }
 
-std::shared_ptr<Type> ASTContext::getArrayType(
+std::shared_ptr<Type> CompilationUnit::getArrayType(
     const std::shared_ptr<AST::Type> &base_type,
     std::list<std::unique_ptr<AST::ASTNode>> &shape) {
     if (base_type == nullptr || !hasType(base_type->GetName())) {
@@ -279,7 +279,7 @@ std::shared_ptr<Type> ASTContext::getArrayType(
     }
 }
 
-bool ASTContext::hasVariable(const std::string &name, bool current_scope) {
+bool CompilationUnit::hasVariable(const std::string &name, bool current_scope) {
     if (!current_scope) {
         if (_current_context.lock() == nullptr ||
             !_current_context.lock()->hasVariable(name, false)) {
@@ -312,7 +312,7 @@ bool ASTContext::hasVariable(const std::string &name, bool current_scope) {
     }
 }
 
-std::shared_ptr<Type> ASTContext::getVariableType(const std::string &name) {
+std::shared_ptr<Type> CompilationUnit::getVariableType(const std::string &name) {
     if (hasVariable(name, false)) {
         if (_current_context.lock()->hasVariable(name, false)) {
             return _current_context.lock()->getVariableType(name);
@@ -331,7 +331,7 @@ std::shared_ptr<Type> ASTContext::getVariableType(const std::string &name) {
     }
 }
 
-std::pair<bool, int> ASTContext::getVariableInfo(
+std::pair<bool, int> CompilationUnit::getVariableInfo(
     const std::basic_string<char> &name) {
     DLOG_ASSERT(name.empty() == false) << "Variable name cannot be empty";
     DLOG_ASSERT(hasVariable(name, false))
@@ -352,7 +352,7 @@ std::pair<bool, int> ASTContext::getVariableInfo(
     }
 }
 
-void ASTContext::addVariable(int line_no, const std::string &name,
+void CompilationUnit::addVariable(int line_no, const std::string &name,
                              std::shared_ptr<Type> &variable_type) {
     DLOG_ASSERT(_current_context.lock() != nullptr)
         << " should never call addVariable when in root context";
@@ -361,7 +361,7 @@ void ASTContext::addVariable(int line_no, const std::string &name,
     _current_context.lock()->addVariable(line_no, name, variable_type);
 }
 
-std::string ASTContext::Dump() const {
+std::string CompilationUnit::Dump() const {
     std::stringstream ret;
 #ifndef NDEBUG
     std::string indent;
@@ -413,12 +413,12 @@ std::string ASTContext::Dump() const {
 #endif
     return ret.str();
 }
-bool ASTContext::AtRoot() { return _current_context.lock() == nullptr; }
-ASTContext::~ASTContext() {}
-ASTContext::ASTContext(std::string file_name)
+bool CompilationUnit::AtRoot() { return _current_context.lock() == nullptr; }
+CompilationUnit::~CompilationUnit() {}
+CompilationUnit::CompilationUnit(std::string file_name)
     : _file_name(std::move(file_name)) {}
-std::string ASTContext::GetFileName() const { return _file_name; }
-std::shared_ptr<Type> ASTContext::GetReturnType() {
+std::string CompilationUnit::GetFileName() const { return _file_name; }
+std::shared_ptr<Type> CompilationUnit::GetReturnType() {
     DLOG_ASSERT(_current_context.lock() != nullptr)
         << " should never call GetReturnType when in root context";
     return _current_context.lock()->GetReturnType();

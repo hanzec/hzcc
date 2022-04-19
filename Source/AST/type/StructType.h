@@ -41,7 +41,7 @@ class StructType : public Type {
     }
 
   protected:
-    friend class ASTContext;
+    friend class CompilationUnit;
     friend class SymbolTable;
     explicit StructType(const std::string &name,
                         const std::list<Lexical::TokenType> &attr_list)

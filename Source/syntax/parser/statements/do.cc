@@ -6,7 +6,7 @@
 
 #include <list>
 
-#include "AST/ASTContext.h"
+#include "AST/CompilationUnit.h"
 #include "do_parser.h"
 #include "lexical/Token.h"
 #include "syntax/Parser.h"
@@ -18,7 +18,7 @@ DoStatement::DoStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::DoStatement>(),
                  TypeNameUtil::name_pretty<AST::DoStatement>()) {}
 
-std::unique_ptr<AST::ASTNode> DoStatement::parse_impl(AST::ASTContext& context,
+std::unique_ptr<AST::ASTNode> DoStatement::parse_impl(AST::CompilationUnit& context,
                                                       TokenList& tokens) {
     // check if the next token is [do]
     auto do_loc = tokens.front().Location();

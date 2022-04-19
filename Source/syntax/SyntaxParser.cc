@@ -3,7 +3,7 @@
 #include <list>
 #include <memory>
 
-#include "AST/ASTContext.h"
+#include "AST/CompilationUnit.h"
 #include "lexical/Token.h"
 #include "lexical/utils/token_utils.h"
 #include "syntax/Parser.h"
@@ -15,7 +15,7 @@
 namespace Mycc::Syntax {
 using namespace TokenListUtils;
 
-Status GenerateAST(AST::ASTContext& context, TokenList& tokens) {
+Status GenerateAST(AST::CompilationUnit& context, TokenList& tokens) {
     // in the most top level of the file only contains function definitions,
     // function prototypes and variables declarations
     while (!tokens.empty()) {

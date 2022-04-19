@@ -23,8 +23,7 @@ class CompoundStmt : public ASTNode {
 
     [[nodiscard]] const std::unique_ptr<ASTNode>& GetLastStatement() const;
 
-    [[nodiscard]] const std::list<std::unique_ptr<ASTNode>>& GetBodyStatements()
-        const;
+    [[nodiscard]] std::list<std::unique_ptr<ASTNode>>& GetBodyStatements();
 
   protected:
     [[nodiscard]] std::string GetNodeName() const override;

@@ -4,8 +4,8 @@
 #include "function_decl.h"
 
 #include <iomanip>
-#include <ios>
 
+#include "AST/statement/compound.h"
 #include "lexical/Token.h"
 #include "utils/logging.h"
 
@@ -17,7 +17,8 @@ FunctionDeclNode::FunctionDeclNode(const Lexical::Token& function_name,
     : DeclNode(function_name), _return_type(std::move(return_type)) {
     attribute.clear();  // TODO need modify
 }
-bool FunctionDeclNode::set_body(std::unique_ptr<AST::ASTNode> declaration) {
+bool FunctionDeclNode::set_body(
+    std::unique_ptr<AST::CompoundStmt> declaration) {
     if (declaration == nullptr) {
         DLOG(WARNING) << "function body is nullptr";
         return false;
@@ -95,7 +96,7 @@ void FunctionDeclNode::visit(ASTVisitor& visitor) {
     visitor.visit(this);
 }
 
-std::unique_ptr<AST::ASTNode>& FunctionDeclNode::GetBody() {
+std::unique_ptr<AST::CompoundStmt>& FunctionDeclNode::GetBody() {
     return _function_body;
 }
 

@@ -5,7 +5,7 @@
 
 #include <list>
 
-#include "AST/ASTContext.h"
+#include "AST/CompilationUnit.h"
 #include "AST/expr/access.h"
 #include "AST/expr/array.h"
 #include "AST/expr/cast.h"
@@ -42,7 +42,7 @@ Statement::Statement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::ASTNode>(),
                  TypeNameUtil::name_pretty<AST::ASTNode>()) {}
 
-std::unique_ptr<AST::ASTNode> Statement::parse_impl(AST::ASTContext& context,
+std::unique_ptr<AST::ASTNode> Statement::parse_impl(AST::CompilationUnit& context,
                                                     TokenList& tokens,
                                                     TokenList& attributes) {
     ConcatAttribute(attributes, tokens);
@@ -146,7 +146,7 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(AST::ASTContext& context,
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseCommaExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     // parsing left-hand side of expression
     auto lhs = ParseAssignExpr(context, tokens);
     if (lhs == nullptr) {
@@ -172,7 +172,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseCommaExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseAssignExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto lhs = ParseConditionalExpr(context, tokens);
     if (lhs == nullptr) {
         VLOG(SYNTAX_LOG_LEVEL) << "Parse [LHS] for assign expression failed";
@@ -248,7 +248,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAssignExpr(
 
 // TODO: add parser for conditional expression
 std::unique_ptr<AST::ASTNode> Statement::ParseConditionalExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto lhs = ParseLogicalOrExpr(context, tokens);
 
     if (peek(tokens).Type() == Lexical::TokenType::kQuestionMark) {
@@ -306,7 +306,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseConditionalExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseLogicalOrExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto lhs = ParseLogicalAndExpr(context, tokens);
     if (lhs == nullptr) {
         VLOG(SYNTAX_LOG_LEVEL)
@@ -368,7 +368,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalOrExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseLogicalAndExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto lhs = ParseBitwiseOrExpr(context, tokens);
     if (lhs == nullptr) {
         VLOG(SYNTAX_LOG_LEVEL)
@@ -431,7 +431,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalAndExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseOrExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto lhs = ParseBitwiseXorExpr(context, tokens);
     if (lhs == nullptr) {
         VLOG(SYNTAX_LOG_LEVEL)
@@ -493,7 +493,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseOrExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseXorExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto lhs = ParseBitwiseAndExpr(context, tokens);
     if (lhs == nullptr) {
         VLOG(SYNTAX_LOG_LEVEL)
@@ -554,7 +554,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseXorExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseAndExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto lhs = ParseEqualityExpr(context, tokens);
 
     if (lhs == nullptr) {
@@ -616,7 +616,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseAndExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseEqualityExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto lhs = ParseRelationalExpr(context, tokens);
     if (lhs == nullptr) {
         VLOG(SYNTAX_LOG_LEVEL) << "Parse [LHS] for equality expression failed";
@@ -678,7 +678,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseEqualityExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseRelationalExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto lhs = ParseShiftExpr(context, tokens);
     if (lhs == nullptr) {
         VLOG(SYNTAX_LOG_LEVEL)
@@ -744,7 +744,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseRelationalExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseShiftExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto lhs = ParseAdditiveExpr(context, tokens);
     if (lhs == nullptr) {
         VLOG(SYNTAX_LOG_LEVEL) << "Parse [LHS] for shift expression failed";
@@ -803,7 +803,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseShiftExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseAdditiveExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto lhs = ParseMultiplicativeExpr(context, tokens);
     if (lhs == nullptr) {
         VLOG(SYNTAX_LOG_LEVEL) << "Parse [LHS] for additive expression failed";
@@ -869,7 +869,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAdditiveExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseMultiplicativeExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto lhs = ParseUnaryExpr(context, tokens);
     if (lhs == nullptr) {
         VLOG(SYNTAX_LOG_LEVEL) << "Parse [LHS] for multiplicative "
@@ -936,7 +936,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseMultiplicativeExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     // some of unary expression does not have LHS
     if (peek(tokens).Type() == Lexical::TokenType::kSub ||
         peek(tokens).Type() == Lexical::TokenType::kLogicalNot ||
@@ -1109,7 +1109,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParseAccessExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto currentExpr = ParsePostfixExpr(context, tokens);
 
     if (currentExpr == nullptr) {
@@ -1202,7 +1202,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAccessExpr(
 }
 
 std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     // first handle priority expression ("()")
     if (peek(tokens).Type() == Lexical::TokenType::kLParentheses) {
         pop_list(tokens);  // consume the '('

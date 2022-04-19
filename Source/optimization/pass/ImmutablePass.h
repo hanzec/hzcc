@@ -4,6 +4,8 @@
 
 #ifndef MYCC_SOURCE_OPTMIZATION_PASS_IMMUTABLEPASS_H_
 #define MYCC_SOURCE_OPTMIZATION_PASS_IMMUTABLEPASS_H_
+#include "PassBase.h"
+
 namespace Mycc::Pass {
 class ImmutablePass {};
 

@@ -19,7 +19,7 @@ using namespace TokenListUtils;
 class Statement : public ParserBase {
   public:
     Statement() noexcept;
-    std::unique_ptr<AST::ASTNode> parse_impl(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> parse_impl(AST::CompilationUnit& context,
                                              TokenList& tokens,
                                              TokenList& attributes) override;
 
@@ -28,53 +28,53 @@ class Statement : public ParserBase {
         : ParserBase(id, ASTNodeName){};
 
     // TODO should be all static function
-    std::unique_ptr<AST::ASTNode> ParseCommaExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseCommaExpr(AST::CompilationUnit& context,
                                                  TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParseAssignExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseAssignExpr(AST::CompilationUnit& context,
                                                   TokenList& tokens);
 
     // TODO: add parser for conditional expression
-    std::unique_ptr<AST::ASTNode> ParseConditionalExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseConditionalExpr(AST::CompilationUnit& context,
                                                        TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParseLogicalOrExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseLogicalOrExpr(AST::CompilationUnit& context,
                                                      TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParseLogicalAndExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseLogicalAndExpr(AST::CompilationUnit& context,
                                                       TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParseBitwiseOrExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseBitwiseOrExpr(AST::CompilationUnit& context,
                                                      TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParseBitwiseXorExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseBitwiseXorExpr(AST::CompilationUnit& context,
                                                       TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParseBitwiseAndExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseBitwiseAndExpr(AST::CompilationUnit& context,
                                                       TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParseEqualityExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseEqualityExpr(AST::CompilationUnit& context,
                                                     TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParseRelationalExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseRelationalExpr(AST::CompilationUnit& context,
                                                       TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParseShiftExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseShiftExpr(AST::CompilationUnit& context,
                                                  TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParseAdditiveExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseAdditiveExpr(AST::CompilationUnit& context,
                                                     TokenList& tokens);
 
     std::unique_ptr<AST::ASTNode> ParseMultiplicativeExpr(
-        AST::ASTContext& context, TokenList& tokens);
+        AST::CompilationUnit& context, TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParseUnaryExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseUnaryExpr(AST::CompilationUnit& context,
                                                  TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParseAccessExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParseAccessExpr(AST::CompilationUnit& context,
                                                   TokenList& tokens);
 
-    std::unique_ptr<AST::ASTNode> ParsePostfixExpr(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> ParsePostfixExpr(AST::CompilationUnit& context,
                                                    TokenList& tokens);
 };
 }  // namespace Syntax::Parser

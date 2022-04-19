@@ -7,7 +7,7 @@
 #include <CLI/CLI.hpp>
 #include <iostream>
 
-#include "AST/ASTContext.h"
+#include "AST/CompilationUnit.h"
 #include "const_msg.h"
 #include "lexical//Token.h"
 #include "lexical/lexical.h"
@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
     Mycc::Message::set_current_part("Parser");
 
     // do syntax analysis
-    Mycc::AST::ASTContext context(input_files[0]);
+    Mycc::AST::CompilationUnit context(input_files[0]);
     auto syntax_result = Mycc::Syntax::GenerateAST(context, tokens);
 
     if (flag3 && syntax_result.Ok()) {

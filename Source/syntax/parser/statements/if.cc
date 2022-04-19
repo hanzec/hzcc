@@ -5,7 +5,7 @@
 
 #include <list>
 
-#include "AST/ASTContext.h"
+#include "AST/CompilationUnit.h"
 #include "AST/statement/compound.h"
 #include "if_parser.h"
 #include "lexical/Token.h"
@@ -19,7 +19,7 @@ using namespace TokenListUtils;
 IfStatement::IfStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::IfStatement>(),
                  TypeNameUtil::name_pretty<AST::IfStatement>()) {}
-std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(AST::ASTContext& context,
+std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(AST::CompilationUnit& context,
                                                       TokenList& tokens) {
     auto ref = tokens.front();
 

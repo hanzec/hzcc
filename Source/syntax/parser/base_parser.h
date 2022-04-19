@@ -11,7 +11,7 @@
 namespace Mycc {
 namespace AST {
 class ASTNode;
-class ASTContext;
+class CompilationUnit;
 }  // namespace AST
 namespace Lexical {
 class Token;
@@ -23,12 +23,12 @@ class ParserBase {
         : _id(id), _astNodeName(ASTNodeName) {}
     virtual ~ParserBase() = default;
 
-    std::unique_ptr<AST::ASTNode> parse(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> parse(AST::CompilationUnit& context,
                                         TokenList& token) {
         return parse_impl(context, token);
     };
 
-    std::unique_ptr<AST::ASTNode> parse(AST::ASTContext& context,
+    std::unique_ptr<AST::ASTNode> parse(AST::CompilationUnit& context,
                                         TokenList& token,
                                         TokenList& attributes) {
         // attributes should not have any duplicate token or attribute is empty
@@ -57,7 +57,7 @@ class ParserBase {
     }
 
   protected:
-    virtual std::unique_ptr<AST::ASTNode> parse_impl(AST::ASTContext& context,
+    virtual std::unique_ptr<AST::ASTNode> parse_impl(AST::CompilationUnit& context,
                                                      TokenList& tokens) {
 #ifndef NDEBUG
         auto ret = parse_impl(context, tokens, kEmptyTokenList);
@@ -71,7 +71,7 @@ class ParserBase {
     };
 
     virtual std::unique_ptr<AST::ASTNode> parse_impl(  // NOLINT
-        AST::ASTContext& context,                      // NOLINT
+        AST::CompilationUnit& context,                      // NOLINT
         TokenList& token,                              // NOLINT
         TokenList& attributes) {                       // NOLINT
         MYCC_PrintFirstTokenError_ReturnNull(

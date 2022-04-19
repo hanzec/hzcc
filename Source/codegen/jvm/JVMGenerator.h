@@ -14,6 +14,8 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
     explicit JVMGenerator(const std::string &output_name,
                           const std::string &input_name);
 
+    bool InitSource() override;
+
     bool FinalizedSource() override;
 
     void visit(Mycc::AST::VarDecl *p_expr) override;

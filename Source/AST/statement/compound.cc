@@ -20,8 +20,7 @@ const std::unique_ptr<ASTNode>& CompoundStmt::GetLastStatement() const {
     return statements_.back();
 }
 
-const std::list<std::unique_ptr<ASTNode>>& CompoundStmt::GetBodyStatements()
-    const {
+std::list<std::unique_ptr<ASTNode>>& CompoundStmt::GetBodyStatements() {
     return statements_;
 }
 

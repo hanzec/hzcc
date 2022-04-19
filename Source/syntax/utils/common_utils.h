@@ -14,7 +14,7 @@ namespace Mycc {
 namespace AST {
 class Type;
 class ASTNode;
-class ASTContext;
+class CompilationUnit;
 }  // namespace AST
 namespace Lexical {
 class Token;
@@ -24,26 +24,26 @@ namespace Syntax::Parser {
 std::string TokenListToString(std::list<Lexical::Token>& tokens);
 
 std::list<Lexical::Token> ParseTypeName(  // NOLINT
-    AST::ASTContext& context,             // NOLINT
+    AST::CompilationUnit& context,             // NOLINT
     std::list<Lexical::Token>& tokens);   // NOLINT
 
 std::unique_ptr<AST::ASTNode> ParseCondition(  // NOLINT
-    AST::ASTContext& context,                  // NOLINT
+    AST::CompilationUnit& context,                  // NOLINT
     std::list<Lexical::Token>& tokens);        // NOLINT
 
 std::unique_ptr<AST::ASTNode> ParseBodyStatement(                   // NOLINT
-    AST::ASTContext& context,                                       // NOLINT
+    AST::CompilationUnit& context,                                       // NOLINT
     std::list<Lexical::Token>& tokens, bool add_semicolon = true);  // NOLINT
 
 std::tuple<std::shared_ptr<AST::Type>, TokenList, Lexical::Token>
 ParseTypeDecl(  // NOLINT
     std::string param,
-    AST::ASTContext& context,            // NOLINT
+    AST::CompilationUnit& context,            // NOLINT
     std::list<Lexical::Token>& tokens);  // NOLINT
 
 std::tuple<Lexical::Token, std::list<std::unique_ptr<AST::ASTNode>>>
 ParseVariable(                           // NOLINT
-    AST::ASTContext& context,            // NOLINT
+    AST::CompilationUnit& context,            // NOLINT
     std::list<Lexical::Token>& tokens);  // NOLINT
 
 #define MYCC_CheckElse_MSG_ReturnNull(except, tokens, message)                 \

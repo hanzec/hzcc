@@ -6,7 +6,7 @@
 
 #include <cassert>
 
-#include "AST/ASTContext.h"
+#include "AST/CompilationUnit.h"
 #include "AST/statement/struct.h"
 #include "syntax/utils/common_utils.h"
 #include "syntax/utils/token_list_utils.h"
@@ -19,7 +19,7 @@ StructDeclare::StructDeclare() noexcept
                  TypeNameUtil::name_pretty<AST::StructDeclareNode>()) {}
 
 std::shared_ptr<AST::StructType> StructDeclare::parse_internal(
-    AST::ASTContext& context, TokenList& tokens, TokenList& attributes) {
+    AST::CompilationUnit& context, TokenList& tokens, TokenList& attributes) {
     // consume struct
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kStruct, tokens);
 
@@ -137,7 +137,7 @@ std::shared_ptr<AST::StructType> StructDeclare::parse_internal(
 }
 
 std::unique_ptr<AST::ASTNode> StructDeclare::parse_impl(
-    AST::ASTContext& context, TokenList& tokens, TokenList& attributes) {
+    AST::CompilationUnit& context, TokenList& tokens, TokenList& attributes) {
     ConcatAttribute(attributes, tokens);
 
     // parsing struct

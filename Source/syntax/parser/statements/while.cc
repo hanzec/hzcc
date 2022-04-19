@@ -7,7 +7,7 @@
 
 #include <list>
 
-#include "AST/ASTContext.h"
+#include "AST/CompilationUnit.h"
 #include "AST/statement/compound.h"
 #include "AST/statement/do.h"
 #include "lexical/Token.h"
@@ -23,7 +23,7 @@ WhileStatement::WhileStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::WhileStatement>(),
                  TypeNameUtil::name_pretty<AST::WhileStatement>()) {}
 std::unique_ptr<AST::ASTNode> WhileStatement::parse_impl(
-    AST::ASTContext& context, TokenList& tokens) {
+    AST::CompilationUnit& context, TokenList& tokens) {
     // check if the next token is [while]
     auto while_loc = TokenListUtils::peek(tokens).Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kWhile, tokens);

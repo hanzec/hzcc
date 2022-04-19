@@ -4,7 +4,7 @@
 
 #include "common_utils.h"
 
-#include "AST/ASTContext.h"
+#include "AST/CompilationUnit.h"
 #include "AST/statement/compound.h"
 #include "lexical/Token.h"
 #include "lexical/token_type.h"
@@ -41,7 +41,7 @@ std::string TokenListToString(std::list<Lexical::Token>& tokens) {
     return str.replace(str.end() - 1, str.end(), "");
 }
 
-std::list<Lexical::Token> ParseTypeName(AST::ASTContext& context,
+std::list<Lexical::Token> ParseTypeName(AST::CompilationUnit& context,
                                         std::list<Lexical::Token>& tokens) {
     bool is_struct = false;
     tokens.front();
@@ -117,7 +117,7 @@ std::list<Lexical::Token> ParseTypeName(AST::ASTContext& context,
 }
 
 std::unique_ptr<AST::ASTNode> ParseCondition(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens) {
+    AST::CompilationUnit& context, std::list<Lexical::Token>& tokens) {
     // next token is (
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLParentheses, tokens);
 
@@ -135,7 +135,7 @@ std::unique_ptr<AST::ASTNode> ParseCondition(
 }
 
 std::unique_ptr<AST::ASTNode> ParseBodyStatement(
-    AST::ASTContext& context, std::list<Lexical::Token>& tokens,
+    AST::CompilationUnit& context, std::list<Lexical::Token>& tokens,
     bool add_semicolon) {
     if (TokenListUtils::peek(tokens).Type() == Lexical::TokenType::kLBrace) {
         // enter new scope
@@ -179,7 +179,7 @@ std::unique_ptr<AST::ASTNode> ParseBodyStatement(
 
 std::tuple<Lexical::Token, std::list<std::unique_ptr<AST::ASTNode>>>
 ParseVariable(                 // NOLINT
-    AST::ASTContext& context,  // NOLINT
+    AST::CompilationUnit& context,  // NOLINT
     std::list<Lexical::Token>& tokens) {
     auto variable_name = pop_list(tokens);
     std::list<std::unique_ptr<AST::ASTNode>> array_shape;
@@ -239,7 +239,7 @@ ParseVariable(                 // NOLINT
 std::tuple<std::shared_ptr<AST::Type>, TokenList, Lexical::Token>
 ParseTypeDecl(                            // NOLINT
     std::string type_name,                // NOLINT
-    AST::ASTContext& context,             // NOLINT
+    AST::CompilationUnit& context,             // NOLINT
     std::list<Lexical::Token>& tokens) {  // NOLINT
     auto attrs = GetAttribute(tokens);
 

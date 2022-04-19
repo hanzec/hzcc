@@ -14,7 +14,7 @@ void JVMGenerator::visit(Mycc::AST::FunctionDeclNode *p_expr) {
     // variable count
     std::stringstream ss;
     RedirectOutputStream(ss);
-    p_expr->GetBody()->visit(*this);
+//    p_expr->GetBody()->visit(*this);
 
     // write function header
     file_handler << ".method public static " << p_expr->GetName() << " : (";

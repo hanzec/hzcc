@@ -14,6 +14,8 @@ class Generator {
   protected:
     std::ostream& GetOstream();
 
+    virtual bool InitSource() = 0;
+
     virtual bool FinalizedSource() = 0;
 
     void RedirectOutputStream(std::ostream& out);

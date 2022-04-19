@@ -21,17 +21,60 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="Changes">
+      <change afterPath="$PROJECT_DIR$/Source/CompileContext.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/CompileContext.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/optimization/PassManagerImpl.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/optimization/PassManagerImpl.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/optimization/pass/PassBase.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/optimization/pass_impl/DeadCodeElimination.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/ASTContext.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTContext.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/ASTContext.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTContext.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/SymbolTable.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/SymbolTable.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/SymbolTable.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/SymbolTable.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/ASTContext.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/CompilationUnit.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/ASTContext.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/CompilationUnit.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/ASTNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/statement/compound.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/compound.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/statement/compound.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/compound.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/statement/function_decl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/function_decl.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/statement/function_decl.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/function_decl.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/StructType.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/StructType.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/Type.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/Type.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/Generator.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/Generator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/statement/decl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/statement/decl.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/statement/function_decl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/statement/function_decl.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/statement/value_decl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/generator_impl/statement/value_decl.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/main.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/main.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/optmization/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optimization/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/optmization/PassManager.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/optmization/PassManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optimization/PassManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/optmization/pass/FunctionPass.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optimization/pass/FunctionPass.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/optmization/pass/ImmutablePass.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optimization/pass/ImmutablePass.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/optmization/pass/ModulePass.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optimization/pass/ModulePass.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/Parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/Parser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/SyntaxParser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/SyntaxParser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/base_parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/base_parser.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/function_parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/function_parser.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/part4/Jjczt0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/part4/Jjczt0.error4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/part4/Jjczt0.output4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/part4/mycc" beforeDir="false" afterPath="$PROJECT_DIR$/Test/part4/mycc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/block_parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/block_parser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/compound.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/compound.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/do.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/do.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/do_parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/do_parser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/for.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/for.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/for_parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/for_parser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/if.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/if.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/if_parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/if_parser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/struct_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/struct_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/struct_parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/struct_parser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/value_decl_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/value_decl_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/value_decl_parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/value_decl_parser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/while.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/while.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/while_parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/while_parser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/syntax.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/syntax.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/utils/common_utils.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/utils/common_utils.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/utils/common_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/utils/common_utils.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +84,7 @@
   <component name="ClangdSettings">
     <option name="parameterInfoViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -87,7 +130,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.dynamic.analysis.tools" />
+    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
     <property name="structure.view.defaults.are.configured" value="true" />
   </component>
   <component name="RecentsManager">
@@ -117,42 +160,10 @@
       </texify-bibtex>
       <method v="2" />
     </configuration>
-    <configuration default="true" type="EXTERNAL_TOOL_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
-      <texify-external>
-        <program>PYTHONTEX</program>
-        <main-file />
-        <work-dir />
-      </texify-external>
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
-      <texify>
-        <compiler>PDFLATEX</compiler>
-        <compiler-path />
-        <sumatra-path />
-        <pdf-viewer>NONE</pdf-viewer>
-        <viewer-command />
-        <compiler-arguments />
-        <envs />
-        <main-file />
-        <output-path>{projectDir}/out</output-path>
-        <auxil-path>{projectDir}/auxil</auxil-path>
-        <compile-twice>false</compile-twice>
-        <output-format>PDF</output-format>
-        <latex-distribution>MIKTEX</latex-distribution>
-        <has-been-run>false</has-been-run>
-        <bib-run-config>[]</bib-run-config>
-        <makeindex-run-config>[]</makeindex-run-config>
-      </texify>
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="MAKEINDEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
-      <texify-makeindex>
-        <program>MAKEINDEX</program>
-        <main-file />
-        <work-dir />
-      </texify-makeindex>
-      <method v="2" />
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
     </configuration>
     <configuration name="mycc_test" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_test" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc_test" TEST_MODE="SUITE_TEST">
       <method v="2">
@@ -161,11 +172,6 @@
       </method>
     </configuration>
     <configuration name="FileCheck" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="FileCheck" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="FileCheck">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -208,6 +214,43 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="EXTERNAL_TOOL_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+      <texify-external>
+        <program>PYTHONTEX</program>
+        <main-file />
+        <work-dir />
+      </texify-external>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="LATEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+      <texify>
+        <compiler>PDFLATEX</compiler>
+        <compiler-path />
+        <sumatra-path />
+        <pdf-viewer>NONE</pdf-viewer>
+        <viewer-command />
+        <compiler-arguments />
+        <envs />
+        <main-file />
+        <output-path>{projectDir}/out</output-path>
+        <auxil-path>{projectDir}/auxil</auxil-path>
+        <compile-twice>false</compile-twice>
+        <output-format>PDF</output-format>
+        <latex-distribution>MIKTEX</latex-distribution>
+        <has-been-run>false</has-been-run>
+        <bib-run-config>[]</bib-run-config>
+        <makeindex-run-config>[]</makeindex-run-config>
+      </texify>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="MAKEINDEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
+      <texify-makeindex>
+        <program>MAKEINDEX</program>
+        <main-file />
+        <work-dir />
+      </texify-makeindex>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="CMake 应用程序.FileCheck" />
       <item itemvalue="CMake 应用程序.doc_doxygen" />
@@ -241,6 +284,9 @@
       <workItem from="1649704255552" duration="59000" />
       <workItem from="1649707901609" duration="5300000" />
       <workItem from="1649727627361" duration="7322000" />
+      <workItem from="1650331481859" duration="1210000" />
+      <workItem from="1650332713523" duration="9490000" />
+      <workItem from="1650386177259" duration="1932000" />
     </task>
     <servers />
   </component>
@@ -292,11 +338,6 @@
           <option name="timeStamp" value="471" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.h</url>
-          <line>23</line>
-          <option name="timeStamp" value="472" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/AST/ASTVisitor.h</url>
           <line>45</line>
           <option name="timeStamp" value="473" />
@@ -307,12 +348,12 @@
           <option name="timeStamp" value="474" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/AST/ASTContext.cc</url>
+          <url>file://$PROJECT_DIR$/Source/AST/CompilationUnit.cc</url>
           <line>217</line>
           <option name="timeStamp" value="476" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/AST/ASTContext.cc</url>
+          <url>file://$PROJECT_DIR$/Source/AST/CompilationUnit.cc</url>
           <line>362</line>
           <option name="timeStamp" value="478" />
         </line-breakpoint>
