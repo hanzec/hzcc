@@ -26,6 +26,8 @@ constexpr const char* KEnableGreen = "\033[1;32m";
 constexpr const char* KEnableYellow = "\033[1;33m";
 constexpr const char* KDisableColor = "\033[0m";
 
+std::string get_current_file() { return current_filename.string(); }
+
 static void ALWAYS_INLINE internal_print_nice_message(
     Level error_level, const std::string& message, const std::string& line,
     std::pair<int, int> line_info) {
@@ -131,8 +133,10 @@ void print_message_internal(Level error_level, const std::string& message,
         std::cerr << current_part << " error in file "
                   << current_filename.c_str() << " line "
                   << (line_info.first + 1) << " near "
-                  << (line_info.second == -1 ? "end of file"
-                                             : "text " + error_string)
+                  << (line_info.second == -1
+                          ? "end of file"
+                          : (line_info.second == -2 ? ""
+                                                    : "text " + error_string))
                   << "\n\t"
                   << message.substr(message.find_first_not_of(' '),
                                     message.find_last_not_of(' ') + 1)

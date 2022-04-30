@@ -6,27 +6,28 @@
 #define MYCC_SOURCE_CODEGEN_GENERATOR_H_
 #include <fstream>
 #include <string>
-namespace Mycc::Codegen {
+#include <utility>
+
+#include "utils/Status.h"
+namespace Mycc {
+namespace AST {
+class CompilationUnit;
+}
+namespace Codegen {
 class Generator {
   public:
-    explicit Generator(std::string output_file, std::string input_file);
-
-  protected:
-    std::ostream& GetOstream();
-
-    virtual bool InitSource() = 0;
-
-    virtual bool FinalizedSource() = 0;
-
-    void RedirectOutputStream(std::ostream& out);
-
-    const std::string& GetInputFile() const;
-
-  private:
-    std::fstream _file_handler;
-    const std::string _input_file_name;
-    const std::string _output_file_name;
+    /**
+     * @brief Generate the code for the given compilation unit.
+     * @param input_file  The input file.
+     * @param output_file The output file to write the generated code to.
+     * @param unit      The compilation unit to generate code for.
+     * @return Status   The status of the generation.
+     */
+    virtual Status Generate(
+        const std::string& input_file,                           // NOLINT
+        const std::string& output_file,                          // NOLINT
+        const std::unique_ptr<AST::CompilationUnit>& unit) = 0;  // NOLINT
 };
-}  // namespace Mycc::Codegen
-
+}  // namespace Codegen
+}  // namespace Mycc
 #endif  // MYCC_SOURCE_CODEGEN_GENERATOR_H_

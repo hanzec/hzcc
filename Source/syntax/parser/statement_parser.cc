@@ -113,13 +113,6 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(AST::CompilationUnit& contex
                 peek(tokens).Location());
             pop_list(tokens);
             break;
-        case Lexical::TokenType::kStruct:
-            if (!context.hasType(peek(tokens).Value() + " " +
-                                 peek2(tokens).Value())) {
-                node = ParserFactory::ParseAST<AST::StructDeclareNode>(
-                    context, tokens, attributes);
-                break;
-            }
         case Lexical::TokenType::kType:
         case Lexical::TokenType::kIdentity: {
             auto type = Parser::ParseTypeName(context, tokens);

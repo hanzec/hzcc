@@ -4,6 +4,7 @@
 
 #ifndef MYCC_SOURCE_AST_ASTVISITOR_H_
 #define MYCC_SOURCE_AST_ASTVISITOR_H_
+#include "utils/Status.h"
 #include "utils/logging.h"
 
 namespace Mycc::AST {
@@ -41,34 +42,34 @@ class WhileStatement;
 class ASTVisitor {
   public:
     virtual ~ASTVisitor() = default;
-    virtual void visit(Mycc::AST::CastExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::ArithmeticExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::AssignExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::BitwiseExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::LogicalExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::CommaExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::RelationalExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::AccessExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::ArraySubscriptExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::ConditionalExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::DeclRefExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::SizeofExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::UnaryExpr* p_expr) = 0;
-    virtual void visit(Mycc::AST::BreakStatement* p_expr) = 0;
-    virtual void visit(Mycc::AST::CompoundStmt* p_expr) = 0;
-    virtual void visit(Mycc::AST::ContinueStatement* p_expr) = 0;
-    virtual void visit(Mycc::AST::DoStatement* p_expr) = 0;
-    virtual void visit(Mycc::AST::EmptyStatement* p_expr) = 0;
-    virtual void visit(Mycc::AST::ForStatement* p_expr) = 0;
-    virtual void visit(Mycc::AST::FunctionCall* p_expr) = 0;
-    virtual void visit(Mycc::AST::FunctionDeclNode* p_expr) = 0;
-    virtual void visit(Mycc::AST::DeclNode* p_expr) = 0;
-    virtual void visit(Mycc::AST::IfStatement* p_expr) = 0;
-    virtual void visit(Mycc::AST::ParamVarDecl* p_expr) = 0;
-    virtual void visit(Mycc::AST::ReturnNode* p_expr) = 0;
-    virtual void visit(Mycc::AST::VarDecl* p_expr) = 0;
-    virtual void visit(Mycc::AST::WhileStatement* p_expr) = 0;
-    virtual void visit(Mycc::AST::LiteralExpr* p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::CastExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::ArithmeticExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::AssignExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::BitwiseExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::LogicalExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::CommaExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::RelationalExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::AccessExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::ArraySubscriptExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::ConditionalExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::DeclRefExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::SizeofExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::UnaryExpr>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::BreakStatement>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::CompoundStmt>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::ContinueStatement>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::DoStatement>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::EmptyStatement>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::ForStatement>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::FunctionCall>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::FunctionDeclNode>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::DeclNode>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::IfStatement>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::ParamVarDecl>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::ReturnNode>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::VarDecl>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::WhileStatement>& p_expr) = 0;
+    virtual Status visit(std::unique_ptr<Mycc::AST::LiteralExpr>& p_expr) = 0;
 };
 }  // namespace Mycc::AST
 

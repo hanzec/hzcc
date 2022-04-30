@@ -31,7 +31,7 @@ class PassManagerImpl : public PassManager {
      * @param command_name the name of the command
      * @param command_ptr the pointer to the command
      */
-    Status RunFunctionPass() override;
+    Status RunFunctionPass(std::unique_ptr<AST::FunctionDeclNode>& F) override;
 
     /**
      * @brief Helper class for expose the private method outside

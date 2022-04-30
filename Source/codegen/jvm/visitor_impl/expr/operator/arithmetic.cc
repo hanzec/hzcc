@@ -6,7 +6,7 @@
 #include "codegen/jvm/JVMGenerator.h"
 
 namespace Mycc::Codegen {
-void JVMGenerator::visit(Mycc::AST::ArithmeticExpr *p_expr) {
+Status JVMGenerator::visit(std::unique_ptr<Mycc::AST::ArithmeticExpr> &p_expr) {
     p_expr->GetLHS()->visit(*this);
     p_expr->GetRHS()->visit(*this);
     GetOstream() << GetLineIndent() << "iadd\n";

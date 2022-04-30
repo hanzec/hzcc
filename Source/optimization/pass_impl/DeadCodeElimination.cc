@@ -13,6 +13,8 @@ class DeadCodeElimination : public FunctionPass {
         /**
          * Case: delete all code after return statement
          */
+        DVLOG(OPT_LOG_LEVEL) << "[DeadCodeElimination] cast 1: Before: \n"
+                             << F->Dump("").c_str();
         auto& body = F->GetBody();
         auto& stmts = body->GetBodyStatements();
         for (auto it = stmts.begin(); it != stmts.begin(); ++it) {
@@ -21,6 +23,8 @@ class DeadCodeElimination : public FunctionPass {
                 break;
             }
         }
+        DVLOG(OPT_LOG_LEVEL) << "[DeadCodeElimination] cast 1: After: \n"
+                             << F->Dump("").c_str();
         return true;
     }
 };

@@ -61,7 +61,6 @@ class ParserFactory {
 
         DLOG_ASSERT(parser_ != nullptr)
             << "Parser not found: " << TypeNameUtil::name_pretty<name>();
-
         return parser_;
     }
 

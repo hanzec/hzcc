@@ -6,7 +6,7 @@
 #include "codegen/jvm/JVMGenerator.h"
 namespace Mycc::Codegen {
 
-void JVMGenerator::visit(Mycc::AST::CompoundStmt *p_expr) {
+Status JVMGenerator::visit(std::unique_ptr<Mycc::AST::CompoundStmt>&p_expr) {
     IncLindeIndent();
 
     // generate the body

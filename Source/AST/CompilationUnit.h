@@ -18,7 +18,10 @@ namespace Mycc::AST {
 class StructType;
 class CompilationUnit {
   public:
-    CompilationUnit(std::string file_name);
+    int a;
+    explicit CompilationUnit(std::string file_name);
+
+    CompilationUnit(CompilationUnit &&) = default;
 
     ~CompilationUnit();
 
@@ -41,7 +44,9 @@ class CompilationUnit {
      * @param node
      * @return
      */
-    void addDecl(std::unique_ptr<ASTNode> node);
+    void addDecl(std::unique_ptr<DeclNode> node);
+
+    std::list<std::pair<std::string, std::unique_ptr<AST::DeclNode>>>& GetDecls();
 
     /**
      * #############################################################
@@ -112,9 +117,6 @@ class CompilationUnit {
     const std::string _file_name;
     std::weak_ptr<SymbolTable> _current_context;
 
-    /**
-     * Function table
-     */
     std::list<std::pair<std::string, std::unique_ptr<AST::DeclNode>>>
         _global_decl;
 
@@ -126,10 +128,13 @@ class CompilationUnit {
     std::unordered_map<std::string, std::shared_ptr<SymbolTable>>
         _scoped_symbol_table;
 
+    /**
+     * Function table
+     */
     std::unordered_map<std::string,
                        std::tuple<std::shared_ptr<Type>,
                                   std::list<std::shared_ptr<Type>>, int>>
-        _function_table;
+        _function_impl_table;
 };
 
 }  // namespace Mycc::AST

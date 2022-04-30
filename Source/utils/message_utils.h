@@ -20,7 +20,10 @@ enum Level {
 
 void set_current_part(const std::string_view& part);
 
+std::string get_current_file();
+
 void set_current_file(const std::filesystem::path& filename);
+
 
 void print_message_internal(Level error_level, const std::string& message,
                             std::pair<int, int> line_info);
@@ -56,19 +59,19 @@ void ALWAYS_INLINE print_message(Level error_level, const std::string& message,
 class PrintMessageReporter {
   public:
     PrintMessageReporter(std::string Caller, std::string File, int Line)
-        : caller_(std::move(Caller)), file_(std::move(File)), line_(Line) {}
+        : caller_(std::move(Caller)), _input_file(std::move(File)), line_(Line) {}
 
     void operator()(Level error_level, const std::string& message,
                     std::pair<int, int> line_info) {
         DVLOG(MESSAGE_ERROR_TRACING) << "Error raised by [" << caller_ << "] "
-                                     << file_ << ":" << line_ << std::endl;
+                                     << _input_file << ":" << line_ << std::endl;
         return print_message(error_level, message, line_info);
     }
 
     void operator()(Level error_level, const std::string& message,
                     const std::string& line, std::pair<int, int> line_info) {
         DVLOG(MESSAGE_ERROR_TRACING) << "Error raised by [" << caller_ << "] "
-                                     << file_ << ":" << line_ << std::endl;
+                                     << _input_file << ":" << line_ << std::endl;
         return print_message(error_level, message, line, line_info);
     }
 
@@ -76,14 +79,14 @@ class PrintMessageReporter {
                     const std::string& line, std::pair<int, int> line_info,
                     const std::string& error_string) {
         DVLOG(MESSAGE_ERROR_TRACING) << "Error raised by [" << caller_ << "] "
-                                     << file_ << ":" << line_ << std::endl;
+                                     << _input_file << ":" << line_ << std::endl;
         return print_message(error_level, message, line, line_info,
                              error_string);
     }
 
   private:
     int line_;
-    std::string file_;
+    std::string _input_file;
     std::string caller_;
 };
 

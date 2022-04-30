@@ -149,7 +149,7 @@ std::shared_ptr<StructType> CompilationUnit::addStructType(
 }
 
 bool CompilationUnit::hasFunction(const std::string &name) {
-    if (_function_table.find(name) != _function_table.end()) {
+    if (_function_impl_table.find(name) != _function_impl_table.end()) {
         return true;
     } else {
         return false;
@@ -157,7 +157,8 @@ bool CompilationUnit::hasFunction(const std::string &name) {
 }
 
 bool CompilationUnit::hasFunctionBody(const std::string &name) {
-    if (_function_table.find(name + "_decl") != _function_table.end()) {
+    if (_function_impl_table.find(name + "_decl") !=
+        _function_impl_table.end()) {
         return true;
     } else {
         return false;
@@ -171,12 +172,12 @@ bool CompilationUnit::addFunction(
         DLOG(FATAL) << "Output type is nullptr for function " << name;
     }
 
-    if (_function_table.find(name) != _function_table.end()) {
+    if (_function_impl_table.find(name) != _function_impl_table.end()) {
         DLOG(ERROR) << "Function " << name << " already exists";
         return false;
     } else {
         DVLOG(AST_LOG_LEVEL) << "Add new Function [" << name << "]";
-        _function_table.insert(std::make_pair(
+        _function_impl_table.insert(std::make_pair(
             name, std::make_tuple(output, argument_list, line_no)));
         return true;
     }
@@ -186,7 +187,7 @@ std::tuple<std::shared_ptr<Type>, std::list<std::shared_ptr<Type>>, int>
 CompilationUnit::getFuncRetAndArgType(const std::basic_string<char> &name) {
     if (hasFunction(name)) {
         return {
-            _function_table[name],
+            _function_impl_table[name],
         };
     } else {
         DVLOG(SYNTAX_LOG_LEVEL) << "Function " << name << " does not exist";
@@ -194,7 +195,7 @@ CompilationUnit::getFuncRetAndArgType(const std::basic_string<char> &name) {
     }
 }
 
-void CompilationUnit::addDecl(std::unique_ptr<ASTNode> node) {
+void CompilationUnit::addDecl(std::unique_ptr<DeclNode> node) {
     // node muse be not a nullptr
     DLOG_ASSERT(node != nullptr) << " Node is nullptr";
 
@@ -414,7 +415,7 @@ std::string CompilationUnit::Dump() const {
     return ret.str();
 }
 bool CompilationUnit::AtRoot() { return _current_context.lock() == nullptr; }
-CompilationUnit::~CompilationUnit() {}
+CompilationUnit::~CompilationUnit() = default;
 CompilationUnit::CompilationUnit(std::string file_name)
     : _file_name(std::move(file_name)) {}
 std::string CompilationUnit::GetFileName() const { return _file_name; }
@@ -422,6 +423,10 @@ std::shared_ptr<Type> CompilationUnit::GetReturnType() {
     DLOG_ASSERT(_current_context.lock() != nullptr)
         << " should never call GetReturnType when in root context";
     return _current_context.lock()->GetReturnType();
+}
+std::list<std::pair<std::string, std::unique_ptr<AST::DeclNode>>>
+    &CompilationUnit::GetDecls() {
+    return _global_decl;
 }
 
 }  // namespace Mycc::AST

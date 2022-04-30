@@ -8,10 +8,9 @@
 #include "codegen/jvm/utils/TypeUtils.h"
 
 namespace Mycc::Codegen {
-void JVMGenerator::visit(Mycc::AST::DeclNode *p_expr) {
+Status JVMGenerator::visit(std::unique_ptr<Mycc::AST::DeclNode>&p_expr) {
     auto var_name = p_expr->GetName();
     BindStack(var_name, TypeUtils::GetJVMTypename(p_expr->GetType()->GetName()),
               true);
 }
-void JVMGenerator::visit(Mycc::AST::VarDecl *p_expr) {}
 }  // namespace Mycc::Codegen

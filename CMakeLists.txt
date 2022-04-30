@@ -141,7 +141,7 @@ project(mycc VERSION 0.1.0)
 ###############################################################################
 ## Compiler Targets ###########################################################
 ###############################################################################
-add_executable(mycc)
+add_executable(mycc Source/lexical/Preprocessor.cc Source/codegen/jvm/visitor_impl/CompliationUnit.cc)
 set_target_properties(mycc PROPERTIES FOLDER MyCC_Target)
 
 if (ENABLE_TESTING MATCHES "ON")

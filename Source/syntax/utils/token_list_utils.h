@@ -90,19 +90,19 @@ ALWAYS_INLINE std::list<std::string> ConsumeTokenListToStr(TokenList &tokens) {
 class PopFuncReporter {
   public:
     PopFuncReporter(std::string Caller, std::string File, int Line)
-        : caller_(std::move(Caller)), file_(std::move(File)), line_(Line) {}
+        : caller_(std::move(Caller)), _input_file(std::move(File)), line_(Line) {}
 
     Lexical::Token operator()(TokenList &list) {
         DVLOG(SYNTAX_LOG_LEVEL)
             << "Token: " << MYCC_PRETTY_PRINT_TOKEN(list.front())
-            << " is consumed by [" << caller_ << "] " << file_ << ":" << line_
+            << " is consumed by [" << caller_ << "] " << _input_file << ":" << line_
             << std::endl;
         return pop_list(list);
     }
 
   private:
     std::string caller_;
-    std::string file_;
+    std::string _input_file;
     int line_;
 };
 

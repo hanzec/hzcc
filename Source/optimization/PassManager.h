@@ -12,7 +12,13 @@
 namespace Mycc::Pass {
 class PassManager {
   public:
-    virtual Status RunFunctionPass() = 0;
+    /**
+     * @brief Run all function passes in the current pass manager.
+     * @param F The function to be run.
+     * @return Status the status of the pass.
+     */
+    virtual Status RunFunctionPass(
+        std::unique_ptr<AST::FunctionDeclNode>& F) = 0;
 };
 
 }  // namespace Mycc::Pass

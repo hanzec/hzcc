@@ -4,6 +4,7 @@
 
 #ifndef MYCC_SOURCE_CODEGEN_JVM_JVMGENERATOR_H_
 #define MYCC_SOURCE_CODEGEN_JVM_JVMGENERATOR_H_
+#include <memory>
 #include <string_view>
 
 #include "AST/ASTVisitor.h"
@@ -11,22 +12,41 @@
 namespace Mycc::Codegen {
 class JVMGenerator : public AST::ASTVisitor, public Generator {
   public:
-    explicit JVMGenerator(const std::string &output_name,
-                          const std::string &input_name);
+    /**
+     * @brief Generate the JVM Bytecode for the given compilation unit.
+     *
+     * @note output file name is related to the input file name. For example, if
+     *       the input file is "test.c", the output file is "test.class". There
+     *       will be no effect setting the output file name.
+     *
+     * @param input_file  The input file.
+     * @param output_file The output file to write the generated code to.
+     * @param unit      The compilation unit to generate code for.
+     * @return Status   The status of the generation.
+     */
+    Status Generate(
+        const std::string &intput,                                    // NOLINT
+        const std::string &output,                                    // NOLINT
+        const std::unique_ptr<AST::CompilationUnit> &unit) override;  // NOLINT
 
-    bool InitSource() override;
+    bool InitSource();
 
-    bool FinalizedSource() override;
-
-    void visit(Mycc::AST::VarDecl *p_expr) override;
-    void visit(Mycc::AST::DeclNode *p_expr) override;
-    void visit(Mycc::AST::AssignExpr *p_expr) override;
-    void visit(Mycc::AST::CompoundStmt *p_expr) override;
-    void visit(Mycc::AST::ArithmeticExpr *p_expr) override;
-    void visit(Mycc::AST::FunctionDeclNode *p_expr) override;
+    bool FinalizedSource();
 
     /**######################################################
-     * ##Stack Management                                  ##
+     * ## AST Visitor                                      ##
+     **#######################################################**/
+    Status VisitAllAST(const std::unique_ptr<Mycc::AST::CompilationUnit> &p_expr);
+
+    Status visit(std::unique_ptr<Mycc::AST::VarDecl> &p_expr) override;
+    Status visit(std::unique_ptr<Mycc::AST::DeclNode> &p_expr) override;
+    Status visit(std::unique_ptr<Mycc::AST::AssignExpr> &p_expr) override;
+    Status visit(std::unique_ptr<Mycc::AST::CompoundStmt> &p_expr) override;
+    Status visit(std::unique_ptr<Mycc::AST::ArithmeticExpr> &p_expr) override;
+    Status visit(std::unique_ptr<Mycc::AST::FunctionDeclNode> &p_expr) override;
+
+    /**######################################################
+     * ## Stack Management                                  ##
      **#######################################################**/
 
     int PushReturnStack();
@@ -42,10 +62,17 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
 
     void DecLindeIndent();
 
-    const std::string &GetLineIndent() const;
+    void AddToCache(const std::istream &output);
+    void EnterScope();
+    void ExitScope();
+
+    std::string GetAllCachedLines();
+
+    [[nodiscard]] const std::string &GetLineIndent() const;
 
   private:
     std::string _indent;
+    std::stringstream _output;
     constexpr static const char *_indent_str = "    ";
 };
 

@@ -7,7 +7,7 @@
 #include "codegen/jvm/utils/TypeUtils.h"
 
 namespace Mycc::Codegen {
-void JVMGenerator::visit(Mycc::AST::FunctionDeclNode *p_expr) {
+Status JVMGenerator::visit(std::unique_ptr<Mycc::AST::FunctionDeclNode>&p_expr) {
     auto &file_handler = GetOstream();
 
     // we first generate the function body in order to get the stack depth and

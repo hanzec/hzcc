@@ -21,12 +21,30 @@ Status GenerateAST(AST::CompilationUnit& context, TokenList& tokens) {
     while (!tokens.empty()) {
         auto attrs = GetAttribute(tokens);
 
-        // handle enumerable definition
+        // handle enumerable or union definition
         if (tokens.front().Type() == Lexical::kEnum ||
             tokens.front().Type() == Lexical::kUnion) {
-            // parsing as statement declaration
-            context.addDecl(
-                ParserFactory::ParseAST<AST::ASTNode>(context, tokens, attrs));
+            auto token_type = pop_list(tokens).Type();
+            if (!context.hasType(peek(tokens).Value() + " " +
+                                 peek2(tokens).Value())) {
+                if (token_type == Lexical::kEnum) {
+                    MYCC_PrintFirstTokenError(
+                        tokens, "Enum definition are not supported yet!");
+                    return {Status::INVALID_ARGUMENT,
+                            "Enum definition are not supported yet!"};
+                } else {
+                    MYCC_PrintFirstTokenError(
+                        tokens, "Union definition are not supported yet!");
+                    return {Status::INVALID_ARGUMENT,
+                            "Union definition are not supported yet!"};
+                }
+            } else {
+                MYCC_PrintFirstTokenError(
+                    tokens,
+                    "Duplicate definition of type " + peek(tokens).Value());
+                return {Status::INVALID_ARGUMENT,
+                        "Duplicate definition of type " + peek(tokens).Value()};
+            }
         }
         // ignore single semicolon
         else if (tokens.front().Type() == Lexical::kSemiColon) {
@@ -59,7 +77,7 @@ Status GenerateAST(AST::CompilationUnit& context, TokenList& tokens) {
 
             }
 
-            // if funcdecl
+            // if func_decl
             else if (tokens.size() >= 2 &&
                      peek2(tokens).Type() == Lexical::kLParentheses) {
                 tokens.insert(tokens.begin(), type_name.begin(),
@@ -84,8 +102,16 @@ Status GenerateAST(AST::CompilationUnit& context, TokenList& tokens) {
                 tokens.insert(tokens.begin(), type_name.begin(),
                               type_name.end());
 
-                auto new_node = ParserFactory::ParseAST<AST::ASTNode>(
-                    context, tokens, attrs);
+                auto type = Parser::ParseTypeName(context, tokens);
+                if (context.hasType(Parser::TokenListToString(type))) {
+                    tokens.insert(tokens.begin(), type.begin(), type.end());
+                    node = ParserFactory::ParseAST<AST::VarDecl>(context, tokens,
+                                                                 attributes);
+                    break;
+                } else {
+                    tokens.insert(tokens.begin(), type.begin(), type.end());
+                }
+                
                 if (new_node != nullptr) {
                     context.addDecl(std::move(new_node));
                 } else {

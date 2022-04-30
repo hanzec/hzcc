@@ -7,7 +7,7 @@
 #include "codegen/jvm/JVMGenerator.h"
 #include "codegen/jvm/utils/TypeUtils.h"
 namespace Mycc::Codegen {
-void JVMGenerator::visit(Mycc::AST::AssignExpr *p_expr) {
+Status JVMGenerator::visit(std::unique_ptr<AST::AssignExpr>& p_expr) {
     // first we acquire RHS
     p_expr->GetRHS()->visit(*this);
 
@@ -18,7 +18,7 @@ void JVMGenerator::visit(Mycc::AST::AssignExpr *p_expr) {
         TypeUtils::GetJVMTypename(p_expr->GetLHS()->GetType()->GetName()));
 
     // perform assignment
-    auto &output = GetOstream();
+    auto& output = GetOstream();
     switch (p_expr->GetAssignType()) {
         case AST::AssignExpr::kAssign:
             // do nothing

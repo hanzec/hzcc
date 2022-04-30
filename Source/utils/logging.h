@@ -9,10 +9,13 @@ void initLogging(char argv[]);
 
 #define VLOG_ERROR 0
 #define CODE_GEN_LEVEL 1
-#define AST_LOG_LEVEL 2
-#define SYNTAX_LOG_LEVEL 3
-#define LEXICAL_LOG_LEVEL 4
-#define MESSAGE_ERROR_TRACING 5
+#define OPT_LOG_LEVEL 2
+#define AST_LOG_LEVEL 3
+#define SYNTAX_LOG_LEVEL 4
+#define LEXICAL_LOG_LEVEL 5
+#define MESSAGE_ERROR_TRACING 6
+
+#define DVLOG_IF(level, cond) (cond) ? (void)0 : DVLOG(level)
 
 #define MYCC_PRETTY_PRINT_TOKEN(token)                                        \
     std::setfill(' ') << "\033[0;33m[" << std::setw(8) << std::right          \
