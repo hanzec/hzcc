@@ -141,7 +141,7 @@ project(mycc VERSION 0.1.0)
 ###############################################################################
 ## Compiler Targets ###########################################################
 ###############################################################################
-add_executable(mycc Source/lexical/Preprocessor.cc Source/codegen/jvm/visitor_impl/CompliationUnit.cc Source/codegen/jvm/FuncAnalyzer.cc Source/codegen/jvm/FuncAnalyzer.h Source/codegen/utils/macro.h Source/codegen/jvm/utils/macro.h)
+add_executable(mycc Source/lexical/Preprocessor.cc Source/codegen/jvm/FuncAnalyzer.cc Source/codegen/jvm/FuncAnalyzer.h Source/codegen/utils/macro.h Source/codegen/jvm/utils/macro.h)
 set_target_properties(mycc PROPERTIES FOLDER MyCC_Target)
 
 if (ENABLE_TESTING MATCHES "ON")

@@ -179,12 +179,15 @@ int main(int argc, char* argv[]) {
     /** ##################################################################
      * Code Generation                                                  #
      * ##################################################################*/
+
     Hzcc::Message::set_current_part("Code Generator");
+    Hzcc::Codegen::JVMGenerator jvm_generator;
     Hzcc::Pass::PassManagerImpl pass_manager;
 
-    // run pass
+    // Compile to JVM bytecode
     for (auto& unit : compilation_units) {
         pass_manager.RunPass(unit);
+        jvm_generator.Generate(output_file[0], unit);
     }
 
     return 0;

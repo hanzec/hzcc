@@ -134,7 +134,7 @@ class CompilationUnit {
     std::unordered_map<std::string,
                        std::tuple<std::shared_ptr<Type>,
                                   std::list<std::shared_ptr<Type>>, int>>
-        _function_impl_table;
+        _function_def_table;
 };
 
 }  // namespace Hzcc::AST

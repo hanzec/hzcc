@@ -7,6 +7,7 @@
 #include "AST/expr/cast.h"
 #include "AST/expr/operator/arithmetic.h"
 #include "AST/expr/operator/assign.h"
+#include "AST/statement/compound.h"
 #include "codegen/jvm/utils/macro.h"
 
 namespace Hzcc::Codegen {
@@ -137,8 +138,17 @@ Status FuncAnalyzer::visit(Hzcc::AST::UnaryExpr *p_expr) {
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::CompoundStmt *p_expr) {
+    /**
+     * CompoundStmt is a list of statements. We will visit each statement
+     * in the list in order to get the stack size and variables;
+     */
+
+    for (auto &stmt : p_expr->GetBodyStatements()) {
+        HZCC_JVM_Visit_Node(stmt);
+    }
     return Status::OkStatus();
 }
+
 Status FuncAnalyzer::visit(Hzcc::AST::BreakStatement *p_expr) {
     return Status::OkStatus();
 }

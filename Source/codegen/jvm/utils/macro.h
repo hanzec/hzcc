@@ -34,7 +34,7 @@
         "Macro type mismatch, need std::unique_ptr<Hzcc::AST::ASTNode>&"); \
     DLOG_ASSERT((node) != nullptr) << "Failed to visit node because of "   \
                                       "nullptr";                           \
-    DVLOG(CODE_GEN_LEVEL) << "Use expr: " << #node << "visit ASTNode "     \
+    DVLOG(CODE_GEN_LEVEL) << "Use expr: [" << #node << "] visit ASTNode "     \
                           << (node)->GetNodeName()                         \
                           << "(line: " << (node)->GetLine() << ")";        \
     HZCC_ExceptOK_WITH_RETURN((node)->visit(*this));

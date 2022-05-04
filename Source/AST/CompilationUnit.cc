@@ -149,7 +149,7 @@ std::shared_ptr<StructType> CompilationUnit::addStructType(
 }
 
 bool CompilationUnit::hasFunction(const std::string &name) {
-    if (_function_impl_table.find(name) != _function_impl_table.end()) {
+    if (_function_def_table.find(name) != _function_def_table.end()) {
         return true;
     } else {
         return false;
@@ -157,8 +157,7 @@ bool CompilationUnit::hasFunction(const std::string &name) {
 }
 
 bool CompilationUnit::hasFunctionBody(const std::string &name) {
-    if (_function_impl_table.find(name + "_decl") !=
-        _function_impl_table.end()) {
+    if (_function_def_table.find(name + "_decl") != _function_def_table.end()) {
         return true;
     } else {
         return false;
@@ -172,12 +171,12 @@ bool CompilationUnit::addFunction(
         DLOG(FATAL) << "Output type is nullptr for function " << name;
     }
 
-    if (_function_impl_table.find(name) != _function_impl_table.end()) {
+    if (_function_def_table.find(name) != _function_def_table.end()) {
         DLOG(ERROR) << "Function " << name << " already exists";
         return false;
     } else {
         DVLOG(AST_LOG_LEVEL) << "Add new Function [" << name << "]";
-        _function_impl_table.insert(std::make_pair(
+        _function_def_table.insert(std::make_pair(
             name, std::make_tuple(output, argument_list, line_no)));
         return true;
     }
@@ -187,7 +186,7 @@ std::tuple<std::shared_ptr<Type>, std::list<std::shared_ptr<Type>>, int>
 CompilationUnit::getFuncRetAndArgType(const std::basic_string<char> &name) {
     if (hasFunction(name)) {
         return {
-            _function_impl_table[name],
+            _function_def_table[name],
         };
     } else {
         DVLOG(SYNTAX_LOG_LEVEL) << "Function " << name << " does not exist";
