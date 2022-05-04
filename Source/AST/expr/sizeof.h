@@ -7,13 +7,13 @@
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_SIZEOF_H_
 #define MYCC_SOURCE_AST_OPERATOR_SIZEOF_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class SizeofExpr : public ASTNode {
   public:
     SizeofExpr(std::unique_ptr<ASTNode> expr, std::pair<int, int> location)
         : ASTNode(location), _expr(std::move(expr)) {}
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
@@ -23,5 +23,5 @@ class SizeofExpr : public ASTNode {
   private:
     std::unique_ptr<ASTNode> _expr;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_OPERATOR_SIZEOF_H_

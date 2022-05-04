@@ -8,7 +8,7 @@
 #include "utils/message_utils.h"
 #ifndef MYCC_SYNTAX_HANDLER_BASE_HANDLER_H
 #define MYCC_SYNTAX_HANDLER_BASE_HANDLER_H
-namespace Mycc {
+namespace Hzcc {
 namespace AST {
 class ASTNode;
 class CompilationUnit;
@@ -96,5 +96,5 @@ class ParserBase {
 };
 
 }  // namespace Syntax::Parser
-}  // namespace Mycc
+}  // namespace Hzcc
 #endif  // MYCC_SYNTAX_HANDLER_BASE_HANDLER_H

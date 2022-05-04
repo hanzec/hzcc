@@ -3,7 +3,7 @@
 #ifndef MYCC_LEXICAL_TOEKN_TYPE_H
 #define MYCC_LEXICAL_TOEKN_TYPE_H
 
-namespace Mycc::Lexical {
+namespace Hzcc::Lexical {
 /**
  * @brief The TokenType enum
  * @details The token type enum of the following tokens:
@@ -132,5 +132,5 @@ enum PACKED TokenType {
     kUnknown = 999
 };
 
-}  // namespace Mycc::Lexical
+}  // namespace Hzcc::Lexical
 #endif  // MYCC_LEXICAL_TOEKN_TYPE_H

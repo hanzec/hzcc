@@ -8,7 +8,7 @@
 
 #ifndef MYCC_SOURCE_SYNTAX_PARSER_FUNCTION_PARSER_H_
 #define MYCC_SOURCE_SYNTAX_PARSER_FUNCTION_PARSER_H_
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 class Function : public ParserBase {
   public:
     Function() noexcept;
@@ -16,5 +16,5 @@ class Function : public ParserBase {
                                              TokenList& tokens,
                                              TokenList& attributes) override;
 };
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser
 #endif  // MYCC_SOURCE_SYNTAX_PARSER_FUNCTION_PARSER_H_

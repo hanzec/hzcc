@@ -5,9 +5,9 @@
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_CONTINUE_H_
 #define MYCC_SOURCE_AST_STATEMENT_CONTINUE_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class ContinueStatement : public ASTNode {
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
   public:
     ContinueStatement(std::pair<int, int> pair_1);
@@ -15,5 +15,5 @@ class ContinueStatement : public ASTNode {
   protected:
     [[nodiscard]] std::string GetNodeName() const override;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_CONTINUE_H_

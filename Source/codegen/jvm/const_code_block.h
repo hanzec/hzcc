@@ -5,7 +5,7 @@
 #ifndef MYCC_SOURCE_CODEGEN_JVM_CONST_CODE_BLOCK_H_
 #define MYCC_SOURCE_CODEGEN_JVM_CONST_CODE_BLOCK_H_
 #include <string_view>
-namespace Mycc::Codegen {
+namespace Hzcc::Codegen {
 constexpr std::string_view kConstSpecialMethod = R"(
 ; Special methods
 

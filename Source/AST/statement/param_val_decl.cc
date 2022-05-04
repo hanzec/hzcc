@@ -3,10 +3,7 @@
 //
 
 #include "param_val_decl.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 std::string ParamVarDecl::GetNodeName() const { return "ParamVarDecl"; }
-void ParamVarDecl::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
-}  // namespace Mycc::AST
+Status ParamVarDecl::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+}  // namespace Hzcc::AST

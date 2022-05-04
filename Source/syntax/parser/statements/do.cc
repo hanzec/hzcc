@@ -13,7 +13,7 @@
 #include "syntax/utils/common_utils.h"
 #include "utils/message_utils.h"
 
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 DoStatement::DoStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::DoStatement>(),
                  TypeNameUtil::name_pretty<AST::DoStatement>()) {}
@@ -39,4 +39,4 @@ std::unique_ptr<AST::ASTNode> DoStatement::parse_impl(AST::CompilationUnit& cont
                                               std::move(condition), do_loc);
 }
 
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser

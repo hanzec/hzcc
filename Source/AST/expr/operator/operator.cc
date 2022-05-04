@@ -5,7 +5,7 @@
 
 #include "AST/type/Type.h"
 #include "options.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 std::string OperatorBase::GetNodeName() const { return "OperatorBase"; }
 const std::unique_ptr<ASTNode>& OperatorBase::GetLHS() const { return _lhs; }
@@ -30,4 +30,4 @@ OperatorBase::OperatorBase(std::pair<int, int> loc,
                 !_rhs->GetType()->IsArray())
         << " OperatorBase: rhs is array";
 }
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

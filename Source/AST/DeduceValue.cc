@@ -6,7 +6,7 @@
 
 #include <cstring>
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 DeduceValue::DeduceValue(uint64_t value) : _type(kInt) {
     int64_t val = value;
@@ -107,4 +107,4 @@ DeduceValue operator%(DeduceValue i, const DeduceValue& n) {
     return DeduceValue((uint64_t)(i.AsInt() / n.AsInt()));
 }
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

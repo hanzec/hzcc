@@ -5,11 +5,11 @@
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_EMPTY_H_
 #define MYCC_SOURCE_AST_STATEMENT_EMPTY_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class EmptyStatement : public ASTNode {
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
   public:
     EmptyStatement(std::pair<int, int> pair_1);
@@ -18,5 +18,5 @@ class EmptyStatement : public ASTNode {
     [[nodiscard]] std::string GetNodeName() const override;
 };
 
-};      // namespace Mycc::AST
+};      // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_EMPTY_H_

@@ -7,7 +7,7 @@
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_FOR_H_
 #define MYCC_SOURCE_AST_STATEMENT_FOR_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class ForStatement : public ASTNode {
   public:
     ForStatement(std::unique_ptr<ASTNode> init, std::unique_ptr<ASTNode> cond,
@@ -19,7 +19,7 @@ class ForStatement : public ASTNode {
           _step(std::move(step)),
           _body(std::move(body)) {}
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool HasBody() const override { return true; }
 
@@ -37,5 +37,5 @@ class ForStatement : public ASTNode {
     std::unique_ptr<ASTNode> _body;
 };
 
-};      // namespace Mycc::AST
+};      // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_FOR_H_

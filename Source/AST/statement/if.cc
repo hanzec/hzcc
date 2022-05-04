@@ -3,13 +3,10 @@
 // Created by chen_ on 2022/3/29.
 //
 #include "if.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 std::string IfStatement::GetNodeName() const { return "IfStatement"; }
 
-void IfStatement::visit(ASTVisitor &visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
+Status IfStatement::visit(ASTVisitor &visitor) { return visitor.visit(this); }
 
 #ifdef NDEBUG
 std::string IfStatement::Dump(std::string_view ident) const {
@@ -31,4 +28,4 @@ std::string IfStatement::Dump(std::string_view ident) const {
 }
 #endif
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

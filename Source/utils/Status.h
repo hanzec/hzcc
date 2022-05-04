@@ -8,7 +8,7 @@
 #include "macro.h"
 #ifndef MYCC_STATUS_H
 #define MYCC_STATUS_H
-namespace Mycc {
+namespace Hzcc {
 /**
  * @brief Status class which is used to represent the status of a method or
  * parameter combination, it is used to indicate the status of a method since
@@ -124,12 +124,6 @@ class Status {
     std::string _status_message = "No Message Provided";
     std::string _source_code_file = "No file provided";
 };
-
-#define MYCC_ExpectOK(status)                                          \
-    if (!(status).Ok()) {                                              \
-        LOG(ERROR) << "Assert Failed! (" << (status).Message() << ")"; \
-        return status;                                                 \
-    }
-}  // namespace Mycc
+}  // namespace Hzcc
 
 #endif  // MYCC_STATUS_H

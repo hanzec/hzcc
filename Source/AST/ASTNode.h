@@ -13,7 +13,7 @@
 #include "ASTVisitor.h"
 #include "utils/logging.h"
 
-namespace Mycc {
+namespace Hzcc {
 
 namespace Lexical {
 class Token;
@@ -55,7 +55,7 @@ class ASTNode {
 
     [[nodiscard]] virtual std::shared_ptr<Type> GetType() const;
 
-    virtual void visit(ASTVisitor& visitor) = 0;
+    virtual Status visit(ASTVisitor& visitor) = 0;
 
     [[nodiscard]] int GetLineNumber() const;
 
@@ -64,19 +64,19 @@ class ASTNode {
   protected:
     [[nodiscard]] uint64_t GetNodeId() const;
 
-    [[nodiscard]] std::pair<int,int> GetLocation() const;
+    [[nodiscard]] std::pair<int, int> GetLocation() const;
 
     [[nodiscard]] virtual std::string PrintAdditionalInfo(
         std::string_view ident) const;
 
   private:
-    uint64_t _id;
-    std::pair<int, int> _node_location;
+    const uint64_t _id;
     inline static uint64_t _counter_ = 0;
+    std::pair<int, int> _node_location{-1, -1};
 };
 
 }  // namespace AST
 
-}  // namespace Mycc
+}  // namespace Hzcc
 
 #endif  // MYCC_EXPR_NODE_H

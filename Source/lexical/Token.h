@@ -6,7 +6,7 @@
 #ifndef MYCC_LEXICAL_LEXICAL_TOKEN_H
 #define MYCC_LEXICAL_LEXICAL_TOKEN_H
 
-namespace Mycc::Lexical {
+namespace Hzcc::Lexical {
 class Token {
   public:
     /**
@@ -132,6 +132,6 @@ inline bool operator==(const Token& lhs, const Token& rhs) {
     return lhs.Type() == rhs.Type() && lhs.Location() == rhs.Location();
 }
 
-}  // namespace Mycc::Lexical
+}  // namespace Hzcc::Lexical
 
 #endif  // LEXICAL_TOKEN_H

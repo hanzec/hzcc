@@ -3,24 +3,24 @@
 //
 #include "AST/statement/function_decl.h"
 
+#include "codegen/jvm/FuncAnalyzer.h"
 #include "codegen/jvm/JVMGenerator.h"
 #include "codegen/jvm/utils/TypeUtils.h"
+namespace Hzcc::Codegen {
+Status JVMGenerator::visit(AST::FunctionDeclNode* p_expr) {
+    static const FuncAnalyzer funcAnalyzer;
 
-namespace Mycc::Codegen {
-Status JVMGenerator::visit(std::unique_ptr<Mycc::AST::FunctionDeclNode>&p_expr) {
-    auto &file_handler = GetOstream();
-
-    // we first generate the function body in order to get the stack depth and
-    // variable count
+    // we first generate the function body in order to get the stack depth
+    // and variable count
     std::stringstream ss;
     RedirectOutputStream(ss);
-//    p_expr->GetBody()->visit(*this);
+    //    p_expr->GetBody()->visit(*this);
 
     // write function header
-    file_handler << ".method public static " << p_expr->GetName() << " : (";
+    file_handler << ".method p-ublic static " << p_expr->GetName() << " : (";
 
     // write function parameters
-    for (auto &param : p_expr->getArguments()) {
+    for (auto& param : p_expr->getArguments()) {
         file_handler << TypeUtils::GetJVMTypename(
             std::get<1>(param)->GetName());
     }
@@ -31,4 +31,4 @@ Status JVMGenerator::visit(std::unique_ptr<Mycc::AST::FunctionDeclNode>&p_expr) 
                  << "\n";
 }
 
-}  // namespace Mycc::Codegen
+}  // namespace Hzcc::Codegen

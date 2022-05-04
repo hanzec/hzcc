@@ -5,7 +5,7 @@
 
 #include "codegen/jvm/JVMGenerator.h"
 #include "codegen/jvm/utils/TypeUtils.h"
-namespace Mycc::Codegen {
-Status JVMGenerator::visit(std::unique_ptr<Mycc::AST::VarDecl> &p_expr) {}
+namespace Hzcc::Codegen {
+Status JVMGenerator::visit(std::unique_ptr<Hzcc::AST::VarDecl> &p_expr) {}
 
-}  // namespace Mycc::Codegen
+}  // namespace Hzcc::Codegen

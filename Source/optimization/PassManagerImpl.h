@@ -11,7 +11,7 @@
 
 #include "PassManager.h"
 #include "utils/Status.h"
-namespace Mycc::Pass {
+namespace Hzcc::Pass {
 class PassManagerImpl : public PassManager {
   public:
     /**
@@ -77,5 +77,5 @@ class RegisterPass : private PassManagerImpl::RegisterHelper {
     const std::string PASS_NAME;
     const std::string PASS_DESC;
 };
-}  // namespace Mycc::Pass
+}  // namespace Hzcc::Pass
 #endif  // MYCC_SOURCE_OPTMIZATION_PASSMANAGERIMPL_H_

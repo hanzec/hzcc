@@ -5,7 +5,7 @@
 
 #include "lexical/utils/symbol_utils.h"
 
-namespace Mycc::Lexical {
+namespace Hzcc::Lexical {
 TEST(LEXICAL_UTILS_TOKEN_ID, single_char) {  // NOLINT
     ASSERT_EQ(SymbolUtils::GetSymbolType('+'), kAdd);
     ASSERT_EQ(SymbolUtils::GetSymbolType('-'), kSub);
@@ -63,4 +63,4 @@ TEST(LEXICAL_UTILS_TOKEN_ID, special_keywords) {  // NOLINT
     ASSERT_EQ(SymbolUtils::GetStringKeywordType("default"), kDefault);
     ASSERT_EQ(SymbolUtils::GetStringKeywordType("do"), kDo);
 }
-}  // namespace Mycc::Lexical
+}  // namespace Hzcc::Lexical

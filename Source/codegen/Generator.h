@@ -9,7 +9,7 @@
 #include <utility>
 
 #include "utils/Status.h"
-namespace Mycc {
+namespace Hzcc {
 namespace AST {
 class CompilationUnit;
 }
@@ -29,5 +29,5 @@ class Generator {
         const std::unique_ptr<AST::CompilationUnit>& unit) = 0;  // NOLINT
 };
 }  // namespace Codegen
-}  // namespace Mycc
+}  // namespace Hzcc
 #endif  // MYCC_SOURCE_CODEGEN_GENERATOR_H_

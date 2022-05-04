@@ -12,7 +12,7 @@
 #include "macro.h"
 #ifndef MYCC_SOURCE_SYNTAX_UTILS_DEBUG_UTILS_H_
 #define MYCC_SOURCE_SYNTAX_UTILS_DEBUG_UTILS_H_
-namespace Mycc::Syntax::Debug {
+namespace Hzcc::Syntax::Debug {
 ALWAYS_INLINE std::string PrintAttributeList(
     const std::list<Lexical::Token>& attributes) {
     std::string result = "[";
@@ -22,6 +22,6 @@ ALWAYS_INLINE std::string PrintAttributeList(
     return attributes.empty() ? result += "]"
                               : result.replace(result.size() - 1, 1, "]");
 }
-}  // namespace Mycc::Syntax::Debug
+}  // namespace Hzcc::Syntax::Debug
 #endif  // MYCC_SOURCE_SYNTAX_UTILS_DEBUG_UTILS_H_
 #endif

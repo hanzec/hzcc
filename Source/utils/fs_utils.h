@@ -8,7 +8,7 @@
 #include <filesystem>
 
 #include "macro.h"
-namespace Mycc::FsUtils {
+namespace Hzcc::FsUtils {
 
 bool ALWAYS_INLINE is_readable(const std::filesystem::path& path) {
     std::error_code ec;  // For noexcept overload usage.
@@ -20,5 +20,5 @@ bool ALWAYS_INLINE is_readable(const std::filesystem::path& path) {
             (perms & std::filesystem::perms::others_read) !=
                 std::filesystem::perms::none);
 }
-}  // namespace Mycc::FsUtils
+}  // namespace Hzcc::FsUtils
 #endif  // MYCC_FS_UTILS_H

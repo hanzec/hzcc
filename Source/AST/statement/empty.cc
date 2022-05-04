@@ -5,7 +5,7 @@
 
 #include "AST/type/Type.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 std::string AST::EmptyStatement::GetNodeName() const {
     return "EmptyStatement";
@@ -13,9 +13,8 @@ std::string AST::EmptyStatement::GetNodeName() const {
 std::shared_ptr<Type> EmptyStatement::GetType() const {
     return Type::GetBasicType("void", {Lexical::TokenType::kConst});
 }
-void EmptyStatement::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
+Status EmptyStatement::visit(ASTVisitor& visitor) {
+    return visitor.visit(this);
 }
 EmptyStatement::EmptyStatement(std::pair<int, int> pair_1) : ASTNode(pair_1) {}
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

@@ -6,13 +6,13 @@
 #include "AST/expr/operator/operator.h"
 #ifndef MYCC_SOURCE_AST_OPERATOR_LOGICAL_H_
 #define MYCC_SOURCE_AST_OPERATOR_LOGICAL_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class LogicalExpr : public OperatorBase {
   public:
     LogicalExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
                 std::unique_ptr<ASTNode> rhs);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
   protected:
     enum LogicalType {
@@ -30,5 +30,5 @@ class LogicalExpr : public OperatorBase {
   private:
     LogicalType _type;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_OPERATOR_LOGICAL_H_

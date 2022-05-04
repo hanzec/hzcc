@@ -10,7 +10,7 @@
 #include "utils/message_utils.h"
 #include "utils/symbol_utils.h"
 
-namespace Mycc::Lexical {
+namespace Hzcc::Lexical {
 
 static std::regex kHex_number_regex("^0[xX][0-9a-fA-F]+$");
 static std::regex kOct_number_regex("^0[0-7]+$");
@@ -431,4 +431,4 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
 
     return Status::OkStatus();
 }
-}  // namespace Mycc::Lexical
+}  // namespace Hzcc::Lexical

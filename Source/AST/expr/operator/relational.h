@@ -7,13 +7,13 @@
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_RELATIONAL_H_
 #define MYCC_SOURCE_AST_OPERATOR_RELATIONAL_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class RelationalExpr : public OperatorBase {
   public:
     RelationalExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
                    std::unique_ptr<ASTNode> rhs);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
@@ -28,5 +28,5 @@ class RelationalExpr : public OperatorBase {
   private:
     RelationalType _type;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_OPERATOR_RELATIONAL_H_

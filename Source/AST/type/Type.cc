@@ -10,7 +10,7 @@
 #include "lexical/utils/token_utils.h"
 #include "utils/logging.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 std::string Type::ToString(const std::list<std::shared_ptr<Type>>& types) {
     std::string ret = "(";
     for (const auto& type : types) {
@@ -119,4 +119,4 @@ std::list<Lexical::TokenType> Type::GetAttributes() const {
         return {};
     }
 }
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

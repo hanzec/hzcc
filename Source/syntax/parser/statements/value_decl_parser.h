@@ -7,7 +7,7 @@
 
 #ifndef MYCC_SOURCE_SYNTAX_PARSER_STATEMENTS_VALUE_DECL_PARSER_H_
 #define MYCC_SOURCE_SYNTAX_PARSER_STATEMENTS_VALUE_DECL_PARSER_H_
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 class ValueDeclare : public Statement {
   public:
     ValueDeclare() noexcept;
@@ -17,5 +17,5 @@ class ValueDeclare : public Statement {
 
   private:
 };
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser
 #endif  // MYCC_SOURCE_SYNTAX_PARSER_STATEMENTS_VALUE_DECL_PARSER_H_

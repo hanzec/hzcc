@@ -6,7 +6,7 @@
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 std::string ReturnNode::GetNodeName() const { return "ReturnNode"; }
 ReturnNode::ReturnNode(const Lexical::Token& token,
                        std::unique_ptr<ASTNode> return_val)
@@ -21,9 +21,6 @@ std::string ReturnNode::PrintAdditionalInfo(std::string_view ident) const {
     }
     return info;
 }
-void ReturnNode::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-};
+Status ReturnNode::visit(ASTVisitor& visitor) { return visitor.visit(this); };
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

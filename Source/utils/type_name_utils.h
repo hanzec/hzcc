@@ -6,7 +6,7 @@
 #include "fnv1a_hash.h"
 #ifndef MYCC_SOURCE_UTILS_TYPE_NAME_UTILS_H_
 #define MYCC_SOURCE_UTILS_TYPE_NAME_UTILS_H_
-namespace Mycc {
+namespace Hzcc {
 struct TypeNameUtil {
     size_t name_hash{0};
     size_t matcher_hash{0};
@@ -58,5 +58,5 @@ struct TypeNameUtil {
         return hash_64_fnv1a_const(name_detail<T>());
     }
 };
-}  // namespace Mycc
+}  // namespace Hzcc
 #endif  // MYCC_SOURCE_UTILS_TYPE_NAME_UTILS_H_

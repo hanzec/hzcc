@@ -6,9 +6,9 @@
 #define MYCC_SOURCE_OPTMIZATION_PASS_IMMUTABLEPASS_H_
 #include "PassBase.h"
 
-namespace Mycc::Pass {
+namespace Hzcc::Pass {
 class ImmutablePass {};
 
-}  // namespace Mycc::Pass
+}  // namespace Hzcc::Pass
 
 #endif  // MYCC_SOURCE_OPTMIZATION_PASS_IMMUTABLEPASS_H_

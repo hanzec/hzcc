@@ -33,13 +33,18 @@ set(DOC_MAIN_TEX "${CMAKE_CURRENT_SOURCE_DIR}/developers.tex")
 add_custom_target(doc_doxygen)
 
 ## if no doxygen found, we install the doxygen from pre-compiled binaries
-if(NOT DOXYGEN_FOUND)
-    MESSAGE(STATUS "Doxygen NOT found. trying to download...")
-    if(UNIX AND NOT MACOSX)
-        ## download doxygen and extract it
-        file(DOWNLOAD https://www.doxygen.nl/files/doxygen-1.9.3.linux.bin.tar.gz ${PROJECT_BINARY_DIR}/doxygen.tar.gz)
-        file(SHA256 ${PROJECT_BINARY_DIR}/doxygen.tar.gz "44df7b2d139eebb1017c7d6ec8c97082527d84a957c570c94c1301ee8eb4e1ec")
-        file(ARCHIVE_EXTRACT INPUT ${PROJECT_BINARY_DIR}/doxygen.tar.gz DESTINATION ${PROJECT_BINARY_DIR}/tools/doxygen)
+if (NOT DOXYGEN_FOUND)
+    if (UNIX AND NOT MACOSX)
+        if (NOT EXISTS ${PROJECT_BINARY_DIR}/tools/doxygen/doxygen-1.9.3/bin)
+            MESSAGE(STATUS "Doxygen NOT found. trying to download...")
+
+            ## download doxygen and extract it
+            file(DOWNLOAD https://www.doxygen.nl/files/doxygen-1.9.3.linux.bin.tar.gz ${PROJECT_BINARY_DIR}/doxygen.tar.gz)
+            file(SHA256 ${PROJECT_BINARY_DIR}/doxygen.tar.gz "44df7b2d139eebb1017c7d6ec8c97082527d84a957c570c94c1301ee8eb4e1ec")
+            file(ARCHIVE_EXTRACT INPUT ${PROJECT_BINARY_DIR}/doxygen.tar.gz DESTINATION ${PROJECT_BINARY_DIR}/tools/doxygen)
+        else ()
+            MESSAGE(STATUS "Found downloaded Doxygen at: ${PROJECT_BINARY_DIR}/tools/doxygen/doxygen-1.9.3/bin")
+        endif ()
 
         ## set true to use the downloaded doxygen
         set(DOXYGEN_FOUND true)
@@ -47,10 +52,10 @@ if(NOT DOXYGEN_FOUND)
         ## add doxygen to the path
         set(DOXYGEN_PATH ${PROJECT_BINARY_DIR}/tools/doxygen/doxygen-1.9.3/bin)
         set(DOXYGEN_EXECUTABLE ${DOXYGEN_PATH}/doxygen)
-    else()
+    else ()
         message(FATAL_ERROR "Doxygen not found")
-    endif()
-endif()
+    endif ()
+endif ()
 
 # set input and output files
 set(DOXYGEN_IN ${PROJECT_SOURCE_DIR}/Doxyfile)
@@ -138,9 +143,9 @@ if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND AND DOXYGEN_FOUND)
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     add_dependencies(documentation latex-prebuild latex-makeindex)
 ELSE ()
-    if(NOT LATEX_FOUND)
+    if (NOT LATEX_FOUND)
         message(FATAL_ERROR "Latex is required to build the documentation.")
-    else()
+    else ()
         message(FATAL_ERROR "doxygen is required to build the documentation.")
-    endif()
+    endif ()
 endif ()

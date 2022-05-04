@@ -5,7 +5,7 @@
 
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 AssignExpr::AssignExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
                        std::unique_ptr<ASTNode> rhs)
@@ -100,10 +100,7 @@ std::string AssignExpr::PrintAdditionalInfo(std::string_view ident) const {
     string += GetRHS()->Dump(std::string(ident) + " `");
     return string;
 }
-void AssignExpr::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
+Status AssignExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 AssignExpr::AssignType AssignExpr::GetAssignType() const { return _type; }
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

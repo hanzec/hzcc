@@ -4,9 +4,9 @@
 #include "AST/statement/compound.h"
 
 #include "codegen/jvm/JVMGenerator.h"
-namespace Mycc::Codegen {
+namespace Hzcc::Codegen {
 
-Status JVMGenerator::visit(std::unique_ptr<Mycc::AST::CompoundStmt>&p_expr) {
+Status JVMGenerator::visit(std::unique_ptr<Hzcc::AST::CompoundStmt>&p_expr) {
     IncLindeIndent();
 
     // generate the body
@@ -23,4 +23,4 @@ Status JVMGenerator::visit(std::unique_ptr<Mycc::AST::CompoundStmt>&p_expr) {
 
     DecLindeIndent();
 }
-}  // namespace Mycc::Codegen
+}  // namespace Hzcc::Codegen

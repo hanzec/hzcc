@@ -7,7 +7,7 @@
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_WHILE_H_
 #define MYCC_SOURCE_AST_STATEMENT_WHILE_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 class WhileStatement : public ASTNode {
   public:
@@ -15,7 +15,7 @@ class WhileStatement : public ASTNode {
                    std::pair<int, int> location)
         : ASTNode(location), cond_(std::move(cond)), body_(std::move(cond)) {}
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool HasBody() const override { return true; }
 
@@ -31,5 +31,5 @@ class WhileStatement : public ASTNode {
     std::unique_ptr<ASTNode> body_;
 };
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_WHILE_H_

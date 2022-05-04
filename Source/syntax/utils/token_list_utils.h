@@ -16,7 +16,7 @@
 #endif
 #ifndef MYCC_SOURCE_SYNTAX_UTILS_TOKEN_LIST_UTILS_H_
 #define MYCC_SOURCE_SYNTAX_UTILS_TOKEN_LIST_UTILS_H_
-namespace Mycc::Syntax {
+namespace Hzcc::Syntax {
 using TokenList = std::list<Lexical::Token>;
 
 namespace TokenListUtils {
@@ -113,5 +113,5 @@ class PopFuncReporter {
 #endif
 
 }  // namespace TokenListUtils
-}  // namespace Mycc::Syntax
+}  // namespace Hzcc::Syntax
 #endif  // MYCC_SOURCE_SYNTAX_UTILS_TOKEN_LIST_UTILS_H_

@@ -6,7 +6,7 @@
 #include "optimization/PassManagerImpl.h"
 #include "optimization/pass/FunctionPass.h"
 #include "utils/logging.h"
-namespace Mycc::Pass {
+namespace Hzcc::Pass {
 class DeadCodeElimination : public FunctionPass {
   public:
     bool runOnFunction(std::unique_ptr<AST::FunctionDeclNode>& F) override {
@@ -32,4 +32,4 @@ class DeadCodeElimination : public FunctionPass {
 // Register pass
 static RegisterPass<DeadCodeElimination> DCE("DeadCodeElimination",
                                              "DeadCodeElimination");
-}  // namespace Mycc::Pass
+}  // namespace Hzcc::Pass

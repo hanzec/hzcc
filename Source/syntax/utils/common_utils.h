@@ -10,7 +10,7 @@
 #include "lexical/utils/symbol_utils.h"
 #include "token_list_utils.h"
 
-namespace Mycc {
+namespace Hzcc {
 namespace AST {
 class Type;
 class ASTNode;
@@ -65,6 +65,6 @@ ParseVariable(                           // NOLINT
     MYCC_CheckElse_MSG_ReturnNull(except, tokens, message)
 
 }  // namespace Syntax::Parser
-}  // namespace Mycc
+}  // namespace Hzcc
 
 #endif  // MYCC_SOURCE_SYNTAX_PARSER_COMMON_UTILS_H_

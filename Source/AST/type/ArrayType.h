@@ -4,7 +4,7 @@
 #include "Type.h"
 #ifndef MYCC_SOURCE_AST_TYPE_ARRAY_TYPE_H_
 #define MYCC_SOURCE_AST_TYPE_ARRAY_TYPE_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class ArrayType : public Type {
   public:
     [[nodiscard]] bool IsArray() const override { return true; }
@@ -38,5 +38,5 @@ class ArrayType : public Type {
     const std::unique_ptr<AST::ASTNode> _size_node{nullptr};
 };
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_TYPE_ARRAY_TYPE_H_

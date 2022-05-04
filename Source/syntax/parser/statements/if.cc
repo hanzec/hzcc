@@ -14,7 +14,7 @@
 #include "syntax/utils/common_utils.h"
 #include "utils/message_utils.h"
 
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 using namespace TokenListUtils;
 IfStatement::IfStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::IfStatement>(),
@@ -102,4 +102,4 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(AST::CompilationUnit& cont
     return ifNode;
 }
 
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser

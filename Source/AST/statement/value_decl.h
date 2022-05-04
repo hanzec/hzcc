@@ -11,14 +11,14 @@
 #ifndef MYCC_SOURCE_AST_STATEMENT_VALUE_DECL_H_
 #define MYCC_SOURCE_AST_STATEMENT_VALUE_DECL_H_
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class VarDecl : public DeclNode {
   public:
     explicit VarDecl(std::shared_ptr<Type> type,
                      std::list<Lexical::Token>& attrs,
                      const Lexical::Token& decl_name);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
@@ -32,5 +32,5 @@ class VarDecl : public DeclNode {
     std::shared_ptr<Type> _type;
 };
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_VALUE_DECL_H_

@@ -11,7 +11,7 @@
 #include "syntax/utils/common_utils.h"
 #include "syntax/utils/token_list_utils.h"
 #include "utils/type_name_utils.h"
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 using namespace TokenListUtils;
 
 StructDeclare::StructDeclare() noexcept
@@ -152,4 +152,4 @@ std::unique_ptr<AST::ASTNode> StructDeclare::parse_impl(
     return std::make_unique<AST::StructDeclareNode>(struct_node->GetName(), ref,
                                                     struct_node);
 }
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser

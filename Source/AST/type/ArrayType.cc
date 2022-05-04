@@ -9,7 +9,7 @@
 
 #include "AST/ASTNode.h"
 #include "AST/DeduceValue.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 std::shared_ptr<Type> ArrayType::GetArrayOfBasicType(
     const std::shared_ptr<Type>& type, std::unique_ptr<ASTNode> size,
     const std::list<Lexical::TokenType>& attrs) {
@@ -74,4 +74,4 @@ bool ArrayType::IsSame(const std::shared_ptr<Type>& type) const {
     }
 }
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

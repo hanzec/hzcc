@@ -1,7 +1,7 @@
 #ifndef MYCC_UTILS_LOGGING_H_
 #define MYCC_UTILS_LOGGING_H_
 #include <glog/logging.h>
-namespace Mycc {
+namespace Hzcc {
 void initLogging(char argv[]);
 
 #define LEXICAL_LOG(level) \
@@ -27,5 +27,5 @@ void initLogging(char argv[]);
                       << "," << std::setw(3) << (token).Location().second     \
                       << ">" << std::setw(-1) << ":@" << std::setw(10)        \
                       << (token).Value(true) << "@\033[0m" << std::setw(-1)
-}  // namespace Mycc
+}  // namespace Hzcc
 #endif  // MYCC_UTILS_LOGGING_H_

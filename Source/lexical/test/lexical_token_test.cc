@@ -9,7 +9,7 @@
 #undef private
 #undef protected
 
-namespace Mycc::Lexical {
+namespace Hzcc::Lexical {
 TEST(LEXICAL_TOKEN, construct_one_with_string_test) {  // NOLINT
     EXPECT_EQ(Token::_const_value_storage.size(),
               0);  // const vale pool should be empty
@@ -160,4 +160,4 @@ TEST(LEXICAL_TOKEN, construct_three_string_test) {  // NOLINT
     EXPECT_EQ(Token::_const_value_storage.size(), 0);
 }
 
-}  // namespace Mycc::Lexical
+}  // namespace Hzcc::Lexical

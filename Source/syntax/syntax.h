@@ -4,8 +4,8 @@
 #include "utils/Status.h"
 #ifndef MYCC_SYNTX_H
 #define MYCC_SYNTX_H
-namespace Mycc::Syntax {
+namespace Hzcc::Syntax {
 Status GenerateAST(AST::CompilationUnit& context, std::list<Lexical::Token>& tokens);
-}  // namespace Mycc::Syntax
+}  // namespace Hzcc::Syntax
 
 #endif  // MYCC_SYNTX_H

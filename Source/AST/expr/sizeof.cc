@@ -5,15 +5,12 @@
 
 #include "AST/type/Type.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 std::string AST::SizeofExpr::GetNodeName() const { return "SizeofExpr"; }
 
 std::shared_ptr<Type> SizeofExpr::GetType() const {
     return Type::GetBasicType("int", {Lexical::TokenType::kConst});
 }
-void SizeofExpr::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
-}  // namespace Mycc::AST
+Status SizeofExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+}  // namespace Hzcc::AST

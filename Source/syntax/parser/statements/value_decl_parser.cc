@@ -9,14 +9,14 @@
 #include "lexical/Token.h"
 #include "syntax/utils/common_utils.h"
 #include "utils/type_name_utils.h"
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 ValueDeclare::ValueDeclare() noexcept
     : Statement(TypeNameUtil::hash<AST::VarDecl>(),
                 TypeNameUtil::name_pretty<AST::VarDecl>()) {}
 
 std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
-    Mycc::AST::CompilationUnit& context, Mycc::Syntax::TokenList& tokens,
-    Mycc::Syntax::TokenList& attributes) {
+    Hzcc::AST::CompilationUnit& context, Hzcc::Syntax::TokenList& tokens,
+    Hzcc::Syntax::TokenList& attributes) {
     // push attrs back to token stream
     tokens.insert(tokens.begin(), attributes.begin(), attributes.end());
 
@@ -138,4 +138,4 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
     return std::make_unique<AST::VarDecl>(type, attrs, name);
 }
 
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser

@@ -9,7 +9,9 @@
 
 #include "AST/ASTVisitor.h"
 #include "codegen/Generator.h"
-namespace Mycc::Codegen {
+#include "codegen/jvm/utils/macro.h"
+
+namespace Hzcc::Codegen {
 class JVMGenerator : public AST::ASTVisitor, public Generator {
   public:
     /**
@@ -36,14 +38,14 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
     /**######################################################
      * ## AST Visitor                                      ##
      **#######################################################**/
-    Status VisitAllAST(const std::unique_ptr<Mycc::AST::CompilationUnit> &p_expr);
+    Status VisitAllAST(const std::unique_ptr<Hzcc::AST::CompilationUnit> &p_expr);
 
-    Status visit(std::unique_ptr<Mycc::AST::VarDecl> &p_expr) override;
-    Status visit(std::unique_ptr<Mycc::AST::DeclNode> &p_expr) override;
-    Status visit(std::unique_ptr<Mycc::AST::AssignExpr> &p_expr) override;
-    Status visit(std::unique_ptr<Mycc::AST::CompoundStmt> &p_expr) override;
-    Status visit(std::unique_ptr<Mycc::AST::ArithmeticExpr> &p_expr) override;
-    Status visit(std::unique_ptr<Mycc::AST::FunctionDeclNode> &p_expr) override;
+    Status visit(Hzcc::AST::VarDecl* p_expr) override;
+    Status visit(Hzcc::AST::DeclNode* p_expr) override;
+    Status visit(Hzcc::AST::AssignExpr* p_expr) override;
+    Status visit(Hzcc::AST::CompoundStmt* p_expr) override;
+    Status visit(Hzcc::AST::ArithmeticExpr* p_expr) override;
+    Status visit(Hzcc::AST::FunctionDeclNode* p_expr) override;
 
     /**######################################################
      * ## Stack Management                                  ##
@@ -62,7 +64,7 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
 
     void DecLindeIndent();
 
-    void AddToCache(const std::istream &output);
+    void AddToCache(const std::string &output);
     void EnterScope();
     void ExitScope();
 
@@ -76,6 +78,6 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
     constexpr static const char *_indent_str = "    ";
 };
 
-}  // namespace Mycc::Codegen
+}  // namespace Hzcc::Codegen
 
 #endif  // MYCC_SOURCE_CODEGEN_JVM_JVMGENERATOR_H_

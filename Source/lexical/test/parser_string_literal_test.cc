@@ -10,7 +10,7 @@
 #include "lexical/Token.h"
 #include "lexical/lexical.h"
 
-namespace Mycc::Lexical {
+namespace Hzcc::Lexical {
 TEST(LEXICAL_PARSER, string_iteral_1) {
     std::stringstream os;
     os << "\"Hello, World!\"";
@@ -76,4 +76,4 @@ TEST(LEXICAL_PARSER, string_iteral_5) {
     EXPECT_EQ(token_stream.front().Value(), "This is evil \\\\");
 }
 
-}  // namespace Mycc::Lexical
+}  // namespace Hzcc::Lexical

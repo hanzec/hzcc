@@ -5,7 +5,7 @@
 
 #include "AST/statement/function_decl.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 std::string ToString(
     const std::list<
         std::pair<std::string, std::unique_ptr<AST::FunctionDeclNode>>>&
@@ -18,4 +18,4 @@ std::string ToString(
     }
     return ret;
 }
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

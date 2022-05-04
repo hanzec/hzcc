@@ -7,7 +7,7 @@
 
 #ifndef MYCC_SOURCE_AST_VALUE_VALUE_H_
 #define MYCC_SOURCE_AST_VALUE_VALUE_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class LiteralExpr : public ASTNode {
   public:
     enum ValueType { kChar, kInteger, kReal_number, kString };
@@ -16,7 +16,7 @@ class LiteralExpr : public ASTNode {
 
     LiteralExpr(ValueType type, const Lexical::Token& value);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool IsAssignable() const override;
 
@@ -36,5 +36,5 @@ class LiteralExpr : public ASTNode {
     std::string _value;
 };
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_VALUE_VALUE_H_

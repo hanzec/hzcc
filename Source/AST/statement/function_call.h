@@ -10,14 +10,14 @@
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_FUNCTION_CALL_H_
 #define MYCC_SOURCE_AST_STATEMENT_FUNCTION_CALL_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class FunctionCall : public ASTNode {
   public:
     FunctionCall(const Lexical::Token& name,
                  const std::shared_ptr<Type>& return_type,
                  std::list<std::unique_ptr<ASTNode>> args);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
@@ -32,5 +32,5 @@ class FunctionCall : public ASTNode {
     std::shared_ptr<Type> _return_type;
     std::list<std::unique_ptr<ASTNode>> _args;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_FUNCTION_CALL_H_

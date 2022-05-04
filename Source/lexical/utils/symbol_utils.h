@@ -10,7 +10,7 @@
 #include "lexical/keywords.h"
 #include "lexical/token_type.h"
 
-namespace Mycc::Lexical::SymbolUtils {
+namespace Hzcc::Lexical::SymbolUtils {
 /**
  * @Brief: internal constexpr wrap for searching an std::array with constexpr,
  * which is a constexpr version of std::find_if
@@ -211,5 +211,5 @@ ALWAYS_INLINE std::string TokenTypeToString(TokenType tokenType) {
         return "Unknown";
     }
 }
-}  // namespace Mycc::Lexical::SymbolUtils
+}  // namespace Hzcc::Lexical::SymbolUtils
 #endif  // MYCC_SYMBOL_UTILS_H

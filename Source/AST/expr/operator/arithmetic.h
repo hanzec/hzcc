@@ -6,23 +6,26 @@
 #include "AST/expr/operator/operator.h"
 #ifndef MYCC_SOURCE_AST_OPERATOR_ARITHMETIC_H_
 #define MYCC_SOURCE_AST_OPERATOR_ARITHMETIC_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
+enum PACKED ArithmeticType {
+    kArithmeticType_Add = 0,
+    kArithmeticType_Sub = 1,
+    kArithmeticType_Mul = 2,
+    kArithmeticType_Div = 3,
+    kArithmeticType_Mod = 4,
+    kArithmeticType_Max = 5  // Should always be the last one
+};
+
 class ArithmeticExpr : public OperatorBase {
   public:
     ArithmeticExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
                    std::unique_ptr<ASTNode> rhs);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
+
+    ArithmeticType GetOpType() const;
 
   protected:
-    enum ArithmeticType {
-        kAdd,
-        kSub,
-        kMul,
-        kDiv,
-        kMod,
-    };
-
   protected:
     [[nodiscard]] std::string GetNodeName() const override;
 
@@ -31,5 +34,5 @@ class ArithmeticExpr : public OperatorBase {
   private:
     ArithmeticType _type;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_OPERATOR_ARITHMETIC_H_

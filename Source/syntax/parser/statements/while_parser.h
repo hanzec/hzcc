@@ -5,7 +5,7 @@
 
 #ifndef MYCC_SOURCE_SYNTAX_PARSER_STATEMENTS_WHILE_PARSER_H_
 #define MYCC_SOURCE_SYNTAX_PARSER_STATEMENTS_WHILE_PARSER_H_
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 class WhileStatement : public ParserBase {
   public:
     WhileStatement() noexcept;
@@ -13,5 +13,5 @@ class WhileStatement : public ParserBase {
                                              TokenList& tokens) override;
 };
 
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser
 #endif  // MYCC_SOURCE_SYNTAX_PARSER_STATEMENTS_WHILE_PARSER_H_

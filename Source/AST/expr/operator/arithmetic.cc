@@ -8,7 +8,7 @@
 #include "AST/DeduceValue.h"
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 std::string ArithmeticExpr::GetNodeName() const { return "ArithmeticExpr"; }
 
 std::optional<DeduceValue> ArithmeticExpr::GetDeducedValue() const {
@@ -17,19 +17,19 @@ std::optional<DeduceValue> ArithmeticExpr::GetDeducedValue() const {
     }
 
     switch (this->_type) {
-        case ArithmeticType::kAdd:
+        case ArithmeticType::kArithmeticType_Add:
             return GetLHS()->GetDeducedValue().value() +
                    GetRHS()->GetDeducedValue().value();
-        case ArithmeticType::kSub:
+        case ArithmeticType::kArithmeticType_Sub:
             return GetLHS()->GetDeducedValue().value() -
                    GetRHS()->GetDeducedValue().value();
-        case ArithmeticType::kMul:
+        case ArithmeticType::kArithmeticType_Mul:
             return GetLHS()->GetDeducedValue().value() *
                    GetRHS()->GetDeducedValue().value();
         case ArithmeticType::kDiv:
             return GetLHS()->GetDeducedValue().value() /
                    GetRHS()->GetDeducedValue().value();
-        case ArithmeticType::kMod:
+        case ArithmeticType::kArithmeticType_Mod:
             return GetLHS()->GetDeducedValue().value() %
                    GetRHS()->GetDeducedValue().value();
         default:
@@ -42,27 +42,27 @@ ArithmeticExpr::ArithmeticExpr(const Lexical::Token& type,
     : OperatorBase(type.Location(), std::move(lhs), std::move(rhs)) {
     switch (type.Value()[0]) {
         case '+':
-            this->_type = ArithmeticType::kAdd;
+            this->_type = ArithmeticType::kArithmeticType_Add;
             break;
         case '-':
-            this->_type = ArithmeticType::kSub;
+            this->_type = ArithmeticType::kArithmeticType_Sub;
             break;
         case '*':
-            this->_type = ArithmeticType::kMul;
+            this->_type = ArithmeticType::kArithmeticType_Mul;
             break;
         case '/':
             this->_type = ArithmeticType::kDiv;
             break;
         case '%':
-            this->_type = ArithmeticType::kMod;
+            this->_type = ArithmeticType::kArithmeticType_Mod;
             break;
         default:
             DLOG(FATAL) << "Unknown arithmetic operator: " << type.Value();
     }
 }
-void ArithmeticExpr::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-};
+Status ArithmeticExpr::visit(ASTVisitor& visitor) {
+    return visitor.visit(this);
+}
+ArithmeticType ArithmeticExpr::GetOpType() const { return _type; };
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

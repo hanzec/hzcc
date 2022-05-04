@@ -7,7 +7,7 @@
 
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 std::string UnaryExpr::GetNodeName() const { return "UnaryExpr"; }
 UnaryExpr::UnaryExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> expr)
     : ASTNode(type.Location()), _expr(std::move(expr)) {
@@ -44,8 +44,5 @@ std::shared_ptr<Type> UnaryExpr::GetType() const {
     else
         return _expr->GetType();
 }
-void UnaryExpr::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
-}  // namespace Mycc::AST
+Status UnaryExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+}  // namespace Hzcc::AST

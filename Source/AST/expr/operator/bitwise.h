@@ -5,13 +5,13 @@
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_BITWISE_H_
 #define MYCC_SOURCE_AST_OPERATOR_BITWISE_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class BitwiseExpr : public OperatorBase {
   public:
     BitwiseExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
                 std::unique_ptr<ASTNode> rhs);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
   protected:
     enum BitwiseType {
@@ -28,5 +28,5 @@ class BitwiseExpr : public OperatorBase {
   private:
     BitwiseType _type;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_OPERATOR_BITWISE_H_

@@ -11,7 +11,7 @@
 //#include "utils/Status.h"
 //#include "utils/logging.h"
 //#include "utils/message_utils.h"
-//namespace Mycc::Lexical {
+//namespace Hzcc::Lexical {
 //
 //Status PreprocessSourceInternal(
 //    std::istream& input, std::ostream& output,
@@ -211,4 +211,4 @@
 //    return PreprocessSourceInternal(current_file, output, included_files,
 //                                    table);
 //}
-//}  // namespace Mycc::Lexical
+//}  // namespace Hzcc::Lexical

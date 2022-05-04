@@ -7,7 +7,7 @@
 #include "AST/CompilationUnit.h"
 #include "optimization/PassManager.h"
 #include "utils/logging.h"
-namespace Mycc {
+namespace Hzcc {
 template <
     typename PassMgr,
     typename std::enable_if<std::is_base_of<Pass::PassManager, PassMgr>::value>>
@@ -59,4 +59,4 @@ Status CompileContext::Compile(const std::string &output_file) {
     }
 }
 
-}  // namespace Mycc
+}  // namespace Hzcc

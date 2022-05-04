@@ -12,7 +12,7 @@
 #include "AST/utils/debug_utils.h"
 #include "lexical/utils/symbol_utils.h"
 #include "options.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 ALWAYS_INLINE static std::string &ltrim(std::string &str) {
     auto it2 = std::find_if(str.begin(), str.end(), [](char ch) {
@@ -429,4 +429,4 @@ std::list<std::pair<std::string, std::unique_ptr<AST::DeclNode>>>
     return _global_decl;
 }
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

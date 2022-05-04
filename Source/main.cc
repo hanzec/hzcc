@@ -20,7 +20,7 @@
 #include "syntax/syntax.h"
 #include "utils/message_utils.h"
 int main(int argc, char* argv[]) {
-    Mycc::initLogging(argv[0]);
+    Hzcc::initLogging(argv[0]);
 
     // if no argument will print version information
     if (argc == 1) {
@@ -37,9 +37,9 @@ int main(int argc, char* argv[]) {
      * #################################################################### */
     bool show_version = false;
     app.add_flag("-v,--version", show_version, "version information");
-    app.add_flag("--fno_color", Mycc::Options::Global_disable_color,
+    app.add_flag("--fno_color", Hzcc::Options::Global_disable_color,
                  "Disable print color");
-    app.add_flag("--fnice_error", Mycc::Options::Global_enable_nicer_print,
+    app.add_flag("--fnice_error", Hzcc::Options::Global_enable_nicer_print,
                  "Enable nicer error print");
 
     /** #####################################################################
@@ -93,8 +93,8 @@ int main(int argc, char* argv[]) {
 
     // func name check and type check will not available until part4
     if (flag4) {
-        Mycc::Options::Global_enable_type_checking = true;
-        Mycc::Options::Global_enable_naming_checking = true;
+        Hzcc::Options::Global_enable_type_checking = true;
+        Hzcc::Options::Global_enable_naming_checking = true;
     }
 
     // if -0 is selected, will only print version information
@@ -114,17 +114,17 @@ int main(int argc, char* argv[]) {
     }
 
     // compilation process
-    Mycc::CompileContext context;
+    Hzcc::CompileContext context;
     for (int i = 0; i < input_files.size(); i++) {
-        Mycc::Message::set_current_file(input_files[0]);
+        Hzcc::Message::set_current_file(input_files[0]);
 
         /** ##################################################################
          * lexical analysis                                                 #
          * ##################################################################*/
-        Mycc::Message::set_current_part("Lexer");
-        std::list<Mycc::Lexical::Token> tokens;
+        Hzcc::Message::set_current_part("Lexer");
+        std::list<Hzcc::Lexical::Token> tokens;
         std::ifstream infile(input_files[i]);
-        auto lexical_result = Mycc::Lexical::ParseToToken(infile, tokens);
+        auto lexical_result = Hzcc::Lexical::ParseToToken(infile, tokens);
 
         // print part1 results
         if (flag1) {
@@ -153,10 +153,10 @@ int main(int argc, char* argv[]) {
         /** ##################################################################
          * Syntax Analysis                                                   #
          * ##################################################################*/
-        Mycc::Message::set_current_part("Parser");
-        Mycc::AST::CompilationUnit compilation_unit(input_files[i]);
+        Hzcc::Message::set_current_part("Parser");
+        Hzcc::AST::CompilationUnit compilation_unit(input_files[i]);
         auto syntax_result =
-            Mycc::Syntax::GenerateAST(compilation_unit, tokens);
+            Hzcc::Syntax::GenerateAST(compilation_unit, tokens);
 
         if (flag3 && syntax_result.Ok()) {
             std::cout << "File " << input_files[i]
@@ -182,10 +182,10 @@ int main(int argc, char* argv[]) {
     /** ##################################################################
      * Code Generation                                                  #
      * ##################################################################*/
-    Mycc::Message::set_current_part("Code Generator");
+    Hzcc::Message::set_current_part("Code Generator");
 
     if (context
-            .Compile<Mycc::Codegen::JVMGenerator, Mycc::Pass::PassManagerImpl>(
+            .Compile<Hzcc::Codegen::JVMGenerator, Hzcc::Pass::PassManagerImpl>(
                 output_file[0])
             .Ok()) {
         return -1;

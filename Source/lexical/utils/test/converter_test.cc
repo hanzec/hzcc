@@ -5,7 +5,7 @@
 
 #include "lexical/utils/symbol_utils.h"
 
-namespace Mycc::Lexical::SymbolUtils {
+namespace Hzcc::Lexical::SymbolUtils {
 TEST(LEXICAL_UTILS_CONVERTER, ascii_control_code) {  // NOLINT
     ASSERT_EQ('\0', ToASCIIControlCode('0'));
     ASSERT_EQ('\a', ToASCIIControlCode('a'));
@@ -82,4 +82,4 @@ TEST(LEXICAL_UTILS_CONVERTER, token_code_to_string) {  // NOLINT
         ASSERT_EQ(arrayKeyword[i], TokenTypeToString((TokenType)(i + 401)));
     }
 }
-}  // namespace Mycc::Lexical::SymbolUtils
+}  // namespace Hzcc::Lexical::SymbolUtils

@@ -10,7 +10,7 @@
 #include "options.h"
 #include "utils/logging.h"
 
-namespace Mycc::Message {
+namespace Hzcc::Message {
 enum Level {
     kError,
     kFatalError,
@@ -23,7 +23,6 @@ void set_current_part(const std::string_view& part);
 std::string get_current_file();
 
 void set_current_file(const std::filesystem::path& filename);
-
 
 void print_message_internal(Level error_level, const std::string& message,
                             std::pair<int, int> line_info);
@@ -59,27 +58,32 @@ void ALWAYS_INLINE print_message(Level error_level, const std::string& message,
 class PrintMessageReporter {
   public:
     PrintMessageReporter(std::string Caller, std::string File, int Line)
-        : caller_(std::move(Caller)), _input_file(std::move(File)), line_(Line) {}
+        : caller_(std::move(Caller)),
+          _input_file(std::move(File)),
+          line_(Line) {}
 
     void operator()(Level error_level, const std::string& message,
                     std::pair<int, int> line_info) {
-        DVLOG(MESSAGE_ERROR_TRACING) << "Error raised by [" << caller_ << "] "
-                                     << _input_file << ":" << line_ << std::endl;
+        DVLOG(MESSAGE_ERROR_TRACING)
+            << "Error raised by [" << caller_ << "] " << _input_file << ":"
+            << line_ << std::endl;
         return print_message(error_level, message, line_info);
     }
 
     void operator()(Level error_level, const std::string& message,
                     const std::string& line, std::pair<int, int> line_info) {
-        DVLOG(MESSAGE_ERROR_TRACING) << "Error raised by [" << caller_ << "] "
-                                     << _input_file << ":" << line_ << std::endl;
+        DVLOG(MESSAGE_ERROR_TRACING)
+            << "Error raised by [" << caller_ << "] " << _input_file << ":"
+            << line_ << std::endl;
         return print_message(error_level, message, line, line_info);
     }
 
     void operator()(Level error_level, const std::string& message,
                     const std::string& line, std::pair<int, int> line_info,
                     const std::string& error_string) {
-        DVLOG(MESSAGE_ERROR_TRACING) << "Error raised by [" << caller_ << "] "
-                                     << _input_file << ":" << line_ << std::endl;
+        DVLOG(MESSAGE_ERROR_TRACING)
+            << "Error raised by [" << caller_ << "] " << _input_file << ":"
+            << line_ << std::endl;
         return print_message(error_level, message, line, line_info,
                              error_string);
     }
@@ -99,19 +103,19 @@ class PrintMessageReporter {
                            (token).Location(), (token).Value());
 
 #define MYCC_PrintFirstTokenError(tokens, message) \
-    auto error_token = (tokens).front();           \
+    const auto& error_token = (tokens).front();    \
     MYCC_PrintTokenError(error_token, message)
 
 #define MYCC_PrintTokenError_ReturnNull(token, message) \
     MYCC_PrintTokenError(token, message) return nullptr;
 
 #define MYCC_PrintFirstTokenError_ReturnNull(tokens, message)      \
-    auto error_token =                                             \
+    const auto& error_token =                                      \
         (tokens).empty()                                           \
             ? Lexical::Token(Lexical::TokenType::kUnknown, -1, -1) \
             : (tokens).front();                                    \
     MYCC_PrintTokenError_ReturnNull(error_token, message)
 
-}  // namespace Mycc::Message
+}  // namespace Hzcc::Message
 
 #endif  // MYCC_PRINT_ERROR_MESSAGE_H

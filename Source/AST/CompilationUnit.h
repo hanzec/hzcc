@@ -14,7 +14,7 @@
 #include "lexical/Token.h"
 #include "utils/Status.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class StructType;
 class CompilationUnit {
   public:
@@ -137,6 +137,6 @@ class CompilationUnit {
         _function_impl_table;
 };
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 
 #endif  // MYCC_AST_AST_H

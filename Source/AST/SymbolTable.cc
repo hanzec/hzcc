@@ -9,7 +9,7 @@
 #include "AST/type/Type.h"
 #include "utils/logging.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 SymbolTable::SymbolTable(std::shared_ptr<Type> return_type,
                          std::shared_ptr<SymbolTable> parent)
     : _upper_scope_table(std::move(parent)),
@@ -114,4 +114,4 @@ int SymbolTable::getVariableDeclLine(const std::string& name) {
 }
 std::shared_ptr<Type> SymbolTable::GetReturnType() { return _return_type; }
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

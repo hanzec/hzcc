@@ -3,7 +3,7 @@
 #ifndef MYCC_LEXICAL_KEYWORDS_H
 #define MYCC_LEXICAL_KEYWORDS_H
 
-namespace Mycc::Lexical::Keywords {
+namespace Hzcc::Lexical::Keywords {
 /**
  * Number of special symbols in C language.
  */
@@ -71,5 +71,5 @@ constexpr static std::array<const char *, kKeywordTableSize> kKeyword{
 constexpr static std::array<const char *, KPermittedTypeTableSize>
     kPrimitiveType{"int",  "char",  "float", "double",   "void",
                    "long", "short", "_Bool", "_Complex", "_Imaginary"};
-}  // namespace Mycc::Lexical::Keywords
+}  // namespace Hzcc::Lexical::Keywords
 #endif  // MYCC_LEXICAL_KEYWORDS_H

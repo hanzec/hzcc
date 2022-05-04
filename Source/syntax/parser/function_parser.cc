@@ -13,7 +13,7 @@
 #include "syntax/parser/base_parser.h"
 #include "syntax/utils/common_utils.h"
 
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 using namespace TokenListUtils;
 Function::Function() noexcept
     : ParserBase(TypeNameUtil::hash<AST::FunctionDeclNode>(),
@@ -213,4 +213,4 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context
 
     return std::move(func_node);
 }
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser

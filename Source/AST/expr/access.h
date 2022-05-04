@@ -9,13 +9,13 @@
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_ACCESS_H_
 #define MYCC_SOURCE_AST_OPERATOR_ACCESS_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class AccessExpr : public ASTNode {
   public:
     AccessExpr(bool isPtr, const Lexical::Token& field,
                std::unique_ptr<ASTNode> expr);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool IsAssignable() const override;
 
@@ -29,5 +29,5 @@ class AccessExpr : public ASTNode {
     bool _ptr_access = false;
     std::unique_ptr<ASTNode> _varaible;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_OPERATOR_ACCESS_H_

@@ -13,7 +13,7 @@
 #include "syntax/utils/common_utils.h"
 #include "utils/message_utils.h"
 
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 BlockStatement::BlockStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::CompoundStmt>(),
                  TypeNameUtil::name_pretty<AST::CompoundStmt>()){};
@@ -54,4 +54,4 @@ std::unique_ptr<AST::ASTNode> BlockStatement::parse_impl(
     return block_node;
 }
 
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser

@@ -9,7 +9,7 @@
 #include "lexical/Token.h"
 #include "utils/logging.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 FunctionDeclNode::FunctionDeclNode(const Lexical::Token& function_name,
                                    std::shared_ptr<Type> return_type,
@@ -91,9 +91,8 @@ std::shared_ptr<Type> FunctionDeclNode::GetType() const { return _return_type; }
 
 bool FunctionDeclNode::HasBody() const { return _function_body != nullptr; }
 
-void FunctionDeclNode::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
+Status FunctionDeclNode::visit(ASTVisitor& visitor) {
+    return visitor.visit(this);
 }
 
 std::unique_ptr<AST::CompoundStmt>& FunctionDeclNode::GetBody() {
@@ -135,4 +134,4 @@ std::string FunctionDeclNode::Dump(std::string_view ident) const {
 }
 #endif
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

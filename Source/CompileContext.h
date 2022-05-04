@@ -9,7 +9,7 @@
 #include "codegen/Generator.h"
 #include "optimization/PassManager.h"
 #include "utils/Status.h"
-namespace Mycc {
+namespace Hzcc {
 namespace AST {
 class CompilationUnit;
 }
@@ -41,6 +41,6 @@ class CompileContext {
     bool _enable_optimization = true;
     std::list<AST::CompilationUnit> _units;
 };
-}  // namespace Mycc
+}  // namespace Hzcc
 
 #endif  // MYCC_SOURCE_COMPILECONTEXT_H_

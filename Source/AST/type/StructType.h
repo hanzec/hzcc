@@ -7,7 +7,7 @@
 
 #ifndef MYCC_SOURCE_AST_TYPE_STRUCT_TYPE_H_
 #define MYCC_SOURCE_AST_TYPE_STRUCT_TYPE_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class StructType : public Type {
   public:
     [[nodiscard]] bool IsStruct() const override { return true; }
@@ -53,5 +53,5 @@ class StructType : public Type {
         _localTypeList;
 };
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_TYPE_STRUCT_TYPE_H_

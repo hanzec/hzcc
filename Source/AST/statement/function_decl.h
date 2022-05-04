@@ -12,7 +12,7 @@
 #include "decl.h"
 #include "param_val_decl.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 using ArgumentList =
     std::list<std::tuple<std::string, std::shared_ptr<AST::Type>, int>>;
 
@@ -31,7 +31,7 @@ class FunctionDeclNode : public DeclNode {
 
     ~FunctionDeclNode() override = default;
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     bool set_body(std::unique_ptr<AST::CompoundStmt> declaration);
 
@@ -61,5 +61,5 @@ class FunctionDeclNode : public DeclNode {
     std::unique_ptr<CompoundStmt> _function_body;
     std::list<std::unique_ptr<ParamVarDecl>> _function_param;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_FUNCTION_NODE_H

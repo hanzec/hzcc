@@ -3,11 +3,8 @@
 //
 #include "do.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 std::string AST::DoStatement::GetNodeName() const { return "DoStatement"; }
-void DoStatement::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
-}  // namespace Mycc::AST
+Status DoStatement::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+}  // namespace Hzcc::AST

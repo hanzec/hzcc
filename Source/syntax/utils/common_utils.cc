@@ -11,7 +11,7 @@
 #include "syntax/Parser.h"
 #include "token_list_utils.h"
 #include "utils/message_utils.h"
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 ALWAYS_INLINE static bool checkAndPrint(
     Lexical::TokenType type, const std::list<Lexical::Token>& tokens) {
     if (tokens.front().Type() != type) {
@@ -24,7 +24,7 @@ ALWAYS_INLINE static bool checkAndPrint(
                      ? "[Symbol"
                      : "[" + Lexical::SymbolUtils::TokenTypeToString(
                                  error_token.Type())) +
-                "]:@" + error_token.Value() + "@");
+                "]:@" + error_token.Value() + "@")
         return false;
     } else {
         return true;
@@ -89,11 +89,11 @@ std::list<Lexical::Token> ParseTypeName(AST::CompilationUnit& context,
             final_type_name.push_back(pop_list(tokens));
             if (peek(tokens).Type() == Lexical::TokenType::kDereference) {
                 MYCC_PrintFirstTokenError(
-                    tokens, "Dereference more than twice is not allowed");
+                    tokens, "Dereference more than twice is not allowed")
                 return {};
             } else if (peek(tokens).Type() == Lexical::TokenType::kReference) {
                 MYCC_PrintFirstTokenError(
-                    tokens, "Reference and dereference can not be mixed");
+                    tokens, "Reference and dereference can not be mixed")
                 return {};
             }
         }
@@ -119,7 +119,7 @@ std::list<Lexical::Token> ParseTypeName(AST::CompilationUnit& context,
 std::unique_ptr<AST::ASTNode> ParseCondition(
     AST::CompilationUnit& context, std::list<Lexical::Token>& tokens) {
     // next token is (
-    MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLParentheses, tokens);
+    MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLParentheses, tokens)
 
     // parse condition
     auto condition = ParserFactory::ParseAST<AST::ASTNode>(context, tokens);
@@ -128,8 +128,8 @@ std::unique_ptr<AST::ASTNode> ParseCondition(
         return nullptr;
     }
 
-    // next token is )
-    MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRParentheses, tokens);
+    // next token is ')'
+    MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRParentheses, tokens)
 
     return condition;
 }
@@ -170,7 +170,7 @@ std::unique_ptr<AST::ASTNode> ParseBodyStatement(
         if (!body_statement->HasBody()) {
             // consume ';'
             MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon,
-                                            tokens);
+                                            tokens)
         }
 
         return body_statement;
@@ -178,7 +178,7 @@ std::unique_ptr<AST::ASTNode> ParseBodyStatement(
 }
 
 std::tuple<Lexical::Token, std::list<std::unique_ptr<AST::ASTNode>>>
-ParseVariable(                 // NOLINT
+ParseVariable(                      // NOLINT
     AST::CompilationUnit& context,  // NOLINT
     std::list<Lexical::Token>& tokens) {
     auto variable_name = pop_list(tokens);
@@ -222,7 +222,7 @@ ParseVariable(                 // NOLINT
                     array_shape.push_back(std::move(array_size));
                 }
             } else {
-                MYCC_PrintFirstTokenError(tokens, "have incomplete type");
+                MYCC_PrintFirstTokenError(tokens, "have incomplete type")
                 return std::make_tuple(
                     Lexical::Token(Lexical::TokenType::kUnknown, -1, -1),
                     std::move(array_shape));
@@ -239,7 +239,7 @@ ParseVariable(                 // NOLINT
 std::tuple<std::shared_ptr<AST::Type>, TokenList, Lexical::Token>
 ParseTypeDecl(                            // NOLINT
     std::string type_name,                // NOLINT
-    AST::CompilationUnit& context,             // NOLINT
+    AST::CompilationUnit& context,        // NOLINT
     std::list<Lexical::Token>& tokens) {  // NOLINT
     auto attrs = GetAttribute(tokens);
 
@@ -265,8 +265,8 @@ ParseTypeDecl(                            // NOLINT
         if (!array_shape.empty()) {
             auto context_type = context.getNamedType(type_name, {});
             return std::make_tuple(
-                context.getArrayType(context_type, array_shape),
-                                   attrs, variable_name);
+                context.getArrayType(context_type, array_shape), attrs,
+                variable_name);
         } else {
             return std::make_tuple(context.getNamedType(type_name, attrs_list),
                                    attrs, variable_name);
@@ -377,4 +377,4 @@ ParseTypeDecl(                            // NOLINT
         }
     }
 }
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser

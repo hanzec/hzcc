@@ -9,7 +9,7 @@
 #include "lexical/Token.h"
 #include "options.h"
 #include "utils/logging.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 std::string AST::AccessExpr::GetNodeName() const { return "AccessExpr"; }
 AccessExpr::AccessExpr(bool isPtr, const Lexical::Token& token,
@@ -30,8 +30,5 @@ std::shared_ptr<Type> AccessExpr::GetType() const {
     return dynamic_cast<StructType*>(_varaible->GetType().get())
         ->GetChild(_field);
 }
-void AccessExpr::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
-}  // namespace Mycc::AST
+Status AccessExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+}  // namespace Hzcc::AST

@@ -5,7 +5,7 @@
 
 #include <gtest/gtest.h>
 
-namespace Mycc {
+namespace Hzcc {
 TEST(UTILS_STATUS_TEST, status_code_test) {
     Status status(Status::OK, "ok");
 
@@ -33,4 +33,4 @@ TEST(UTILS_STATUS_TEST, status_code_test) {
     EXPECT_EQ(status.Code(), Status::OK);
     EXPECT_EQ(status.Message(), "Return Ok without error!");
 }
-}  // namespace Mycc
+}  // namespace Hzcc

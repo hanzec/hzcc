@@ -5,13 +5,13 @@
 
 #ifndef MYCC_SOURCE_AST_VARIABLES_H
 #define MYCC_SOURCE_AST_VARIABLES_H
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class DeclRefExpr : public ASTNode {
   public:
     explicit DeclRefExpr(const Lexical::Token& name,
                          std::shared_ptr<Type> type);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
@@ -27,5 +27,5 @@ class DeclRefExpr : public ASTNode {
     std::string _name{};
     std::shared_ptr<Type> _type{};
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_VARIABLES_H

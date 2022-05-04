@@ -12,7 +12,7 @@
 #include "utils/Status.h"
 #include "utils/message_utils.h"
 #include "utils/token_list_utils.h"
-namespace Mycc::Syntax {
+namespace Hzcc::Syntax {
 using namespace TokenListUtils;
 
 Status GenerateAST(AST::CompilationUnit& context, TokenList& tokens) {
@@ -168,4 +168,4 @@ Status GenerateAST(AST::CompilationUnit& context, TokenList& tokens) {
     return Status::OkStatus();
 }
 
-}  // namespace Mycc::Syntax
+}  // namespace Hzcc::Syntax

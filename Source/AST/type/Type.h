@@ -9,7 +9,7 @@
 #include "lexical/token_type.h"
 #include "utils/logging.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class ASTNode;
 
 /**
@@ -117,6 +117,6 @@ class Type : public std::enable_shared_from_this<Type> {
     std::string _name;
     inline static uint64_t _counter_ = 0;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 
 #endif  // MYCC_AST_TYPE_H

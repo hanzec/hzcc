@@ -5,7 +5,7 @@
 #ifndef MYCC_SOURCE_SYNTAX_OPERATOR_TYPE_H_
 #define MYCC_SOURCE_SYNTAX_OPERATOR_TYPE_H_
 #include <unordered_map>
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 enum OperatorType {
     kDot,
     kArraySubscripting,
@@ -52,5 +52,5 @@ enum OperatorType {
     kBitwiseOrAssign,
     kComma
 };
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser
 #endif  // MYCC_SOURCE_SYNTAX_OPERATOR_TYPE_H_

@@ -8,7 +8,7 @@
 #include "AST/type/Type.h"
 #ifndef MYCC_SOURCE_AST_OPERATOR_CAST_H_
 #define MYCC_SOURCE_AST_OPERATOR_CAST_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class CastExpr : public ASTNode {
   public:
     CastExpr(std::shared_ptr<Type> type, std::unique_ptr<ASTNode> expr,
@@ -17,7 +17,7 @@ class CastExpr : public ASTNode {
           _cast_type(std::move(type)),
           _cast_expr(std::move(expr)) {}
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool IsAssignable() const override;
 
@@ -37,5 +37,5 @@ class CastExpr : public ASTNode {
     std::shared_ptr<Type> _cast_type;
     std::unique_ptr<ASTNode> _cast_expr;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_OPERATOR_CAST_H_

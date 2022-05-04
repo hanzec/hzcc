@@ -10,7 +10,7 @@
 #include "lexical/lexical.h"
 #include "lexical/utils/symbol_utils.h"
 
-namespace Mycc::Lexical {
+namespace Hzcc::Lexical {
 inline __attribute__((always_inline)) void test_line_1(
     int line_num, int row_offset, std::list<Token> &result) {
     ASSERT_EQ(5, result.size());
@@ -50,7 +50,7 @@ TEST(LEXICAL_PARSER, c_style_comment_1) {  // NOLINT
     std::stringstream os;
     os << "// This is a comment\n";
     std::list<Token> token_stream;
-    auto result = Mycc::Lexical::ParseToToken(os, token_stream);
+    auto result = Hzcc::Lexical::ParseToToken(os, token_stream);
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(0, token_stream.size());
 }
@@ -60,7 +60,7 @@ TEST(LEXICAL_PARSER, c_style_comment_2) {  // NOLINT
     os << "// This is a comment";
     os << "int a = 1;\n";
     std::list<Token> token_stream;
-    auto result = Mycc::Lexical::ParseToToken(os, token_stream);
+    auto result = Hzcc::Lexical::ParseToToken(os, token_stream);
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(0, token_stream.size());
 }
@@ -70,7 +70,7 @@ TEST(LEXICAL_PARSER, c_style_comment_3) {  // NOLINT
     os << "// This is a comment\n";
     os << "int a = 1;\n";
     std::list<Token> token_stream;
-    auto result = Mycc::Lexical::ParseToToken(os, token_stream);
+    auto result = Hzcc::Lexical::ParseToToken(os, token_stream);
 
     ASSERT_TRUE(result.Ok());
     test_line_1(1, 0, token_stream);
@@ -82,7 +82,7 @@ TEST(LEXICAL_PARSER, c_style_comment_4) {  // NOLINT
     os << "// This is a comment\n";
 
     std::list<Token> token_stream;
-    auto result = Mycc::Lexical::ParseToToken(os, token_stream);
+    auto result = Hzcc::Lexical::ParseToToken(os, token_stream);
 
     ASSERT_TRUE(result.Ok());
     test_line_1(0, 0, token_stream);
@@ -95,7 +95,7 @@ TEST(LEXICAL_PARSER, c_style_comment_5) {  // NOLINT
     os << "// This is a comment\n";
 
     std::list<Token> token_stream;
-    auto result = Mycc::Lexical::ParseToToken(os, token_stream);
+    auto result = Hzcc::Lexical::ParseToToken(os, token_stream);
 
     ASSERT_TRUE(result.Ok());
     test_line_1(1, 0, token_stream);
@@ -108,7 +108,7 @@ TEST(LEXICAL_PARSER, c_style_comment_6) {  // NOLINT
     os << "int a = 1;\n";
 
     std::list<Token> token_stream;
-    auto result = Mycc::Lexical::ParseToToken(os, token_stream);
+    auto result = Hzcc::Lexical::ParseToToken(os, token_stream);
 
     ASSERT_TRUE(result.Ok());
     test_line_1(2, 0, token_stream);
@@ -120,7 +120,7 @@ TEST(LEXICAL_PARSER, cpp_style_comment_1) {  // NOLINT
     os << "/* This is a comment */\n";
 
     std::list<Token> token_stream;
-    auto result = Mycc::Lexical::ParseToToken(os, token_stream);
+    auto result = Hzcc::Lexical::ParseToToken(os, token_stream);
 
     ASSERT_TRUE(result.Ok());
     test_line_1(0, 0, token_stream);
@@ -132,7 +132,7 @@ TEST(LEXICAL_PARSER, cpp_style_comment_2) {  // NOLINT
     os << "int a = 1;\n";
 
     std::list<Token> token_stream;
-    auto result = Mycc::Lexical::ParseToToken(os, token_stream);
+    auto result = Hzcc::Lexical::ParseToToken(os, token_stream);
 
     ASSERT_TRUE(result.Ok());
     test_line_1(1, 0, token_stream);
@@ -144,7 +144,7 @@ TEST(LEXICAL_PARSER, cpp_style_comment_3) {  // NOLINT
     os << "int a = 1;\n";
 
     std::list<Token> token_stream;
-    auto result = Mycc::Lexical::ParseToToken(os, token_stream);
+    auto result = Hzcc::Lexical::ParseToToken(os, token_stream);
 
     ASSERT_TRUE(result.Ok());
     test_line_1(2, 0, token_stream);
@@ -156,7 +156,7 @@ TEST(LEXICAL_PARSER, cpp_style_comment_4) {  // NOLINT
     os << "int a = 1;\n";
 
     std::list<Token> token_stream;
-    auto result = Mycc::Lexical::ParseToToken(os, token_stream);
+    auto result = Hzcc::Lexical::ParseToToken(os, token_stream);
 
     ASSERT_TRUE(result.Ok());
     test_line_1(1, 3, token_stream);
@@ -168,9 +168,9 @@ TEST(LEXICAL_PARSER, cpp_style_comment_5) {  // NOLINT
     os << "/* \nThis is a comment\n */";
 
     std::list<Token> token_stream;
-    auto result = Mycc::Lexical::ParseToToken(os, token_stream);
+    auto result = Hzcc::Lexical::ParseToToken(os, token_stream);
 
     ASSERT_TRUE(result.Ok());
     test_line_1(0, 0, token_stream);
 }
-}  // namespace Mycc::Lexical
+}  // namespace Hzcc::Lexical

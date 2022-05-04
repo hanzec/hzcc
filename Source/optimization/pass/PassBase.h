@@ -4,7 +4,7 @@
 
 #ifndef MYCC_SOURCE_OPTIMIZATION_PASS_PASSBASE_H_
 #define MYCC_SOURCE_OPTIMIZATION_PASS_PASSBASE_H_
-namespace Mycc::Pass {
+namespace Hzcc::Pass {
 class PassBase {
   public:
     virtual ~PassBase() = default;
@@ -12,5 +12,5 @@ class PassBase {
     virtual bool IsFunctionPass() { return false; }
     virtual bool IsImmutablePass() { return false; }
 };
-}  // namespace Mycc::Pass
+}  // namespace Hzcc::Pass
 #endif  // MYCC_SOURCE_OPTIMIZATION_PASS_PASSBASE_H_

@@ -13,7 +13,7 @@
 #include "lexical/utils/symbol_utils.h"
 #include "utils/logging.h"
 
-namespace Mycc::Lexical {
+namespace Hzcc::Lexical {
 Token::Token(const Token& old)
     : _token_type(old._token_type),
       _token_val_ref(old._token_val_ref),
@@ -175,4 +175,4 @@ std::string Token::SourceLine() const noexcept {
                                            : std::string(*_source_line_val_ref);
 }
 
-}  // namespace Mycc::Lexical
+}  // namespace Hzcc::Lexical

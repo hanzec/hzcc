@@ -9,7 +9,7 @@
 
 #ifndef MYCC_SOURCE_SYNTAX_PARSER_STATEMENT_PARSER_H_
 #define MYCC_SOURCE_SYNTAX_PARSER_STATEMENT_PARSER_H_
-namespace Mycc {
+namespace Hzcc {
 
 namespace Lexical {
 class Token;
@@ -78,5 +78,5 @@ class Statement : public ParserBase {
                                                    TokenList& tokens);
 };
 }  // namespace Syntax::Parser
-}  // namespace Mycc
+}  // namespace Hzcc
 #endif  // MYCC_SOURCE_SYNTAX_PARSER_STATEMENT_PARSER_H_

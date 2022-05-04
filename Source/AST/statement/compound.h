@@ -8,12 +8,12 @@
 #include <vector>
 
 #include "AST/ASTNode.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class CompoundStmt : public ASTNode {
   public:
     explicit CompoundStmt(std::pair<int, int> loc);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     bool AddStatement(std::unique_ptr<ASTNode> statement);
 
@@ -33,5 +33,5 @@ class CompoundStmt : public ASTNode {
   private:
     std::list<std::unique_ptr<ASTNode>> statements_{};
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_BLOCK_H_

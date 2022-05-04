@@ -7,7 +7,7 @@
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_OPERATOR_H_
 #define MYCC_SOURCE_AST_OPERATOR_OPERATOR_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class OperatorBase : public ASTNode {
   public:
     OperatorBase(std::pair<int, int> loc, std::unique_ptr<ASTNode> lhs,
@@ -25,5 +25,5 @@ class OperatorBase : public ASTNode {
     std::unique_ptr<ASTNode> _lhs;
     std::unique_ptr<ASTNode> _rhs;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_OPERATOR_OPERATOR_H_

@@ -10,7 +10,7 @@
 #include "decl.h"
 #ifndef MYCC_SOURCE_AST_STATEMENT_STRUCT_DECL_H_
 #define MYCC_SOURCE_AST_STATEMENT_STRUCT_DECL_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class StructDeclareNode : public DeclNode {
   public:
     explicit StructDeclareNode(const std::string& name,
@@ -18,7 +18,7 @@ class StructDeclareNode : public DeclNode {
 
                                std::shared_ptr<StructType> type);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool IsStructDecl() const override { return true; }
 
@@ -29,5 +29,5 @@ class StructDeclareNode : public DeclNode {
     const std::shared_ptr<Type> _type;
 };
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_STRUCT_DECL_H_

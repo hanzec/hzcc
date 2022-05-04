@@ -4,7 +4,7 @@
 #include "struct.h"
 
 #include "lexical/Token.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 std::string StructDeclareNode::GetNodeName() const {
     return "StructDeclareNode";
 }
@@ -12,8 +12,7 @@ StructDeclareNode::StructDeclareNode(const std::string& name,
                                      const Lexical::Token& token,
                                      std::shared_ptr<StructType> type)
     : DeclNode(token, name), _type(std::move(type)) {}
-void StructDeclareNode::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
+Status StructDeclareNode::visit(ASTVisitor& visitor) {
+    return visitor.visit(this);
 }
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

@@ -7,7 +7,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class Type;
 class StructType;
 class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
@@ -120,5 +120,5 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
     std::unordered_map<std::string, std::shared_ptr<Type>> _named_types;
     std::list<std::shared_ptr<SymbolTable>> _scoped_contexts;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_SYMBOLTABLE_H_

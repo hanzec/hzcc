@@ -9,7 +9,7 @@
 #include "AST/expr/cast.h"
 #include "AST/type/ArrayType.h"
 #include "utils/message_utils.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 ASTNode::ASTNode(std::pair<int, int> loc)
     : _id(_counter_ += 1), _node_location(std::move(loc)) {}
 
@@ -161,4 +161,4 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
     return std::move(rhs);
 }
 int ASTNode::GetLineNumber() const { return _node_location.first; }
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

@@ -13,6 +13,15 @@ target_sources(mycc PRIVATE ${MYCC_CODE_GEN_HDRS} ${MYCC_CODE_GEN_SRCS})
 add_subdirectory(jvm)
 
 ###############################################################################
+## Project Sources ############################################################
+###############################################################################
+file(GLOB MYCC_CODE_GEN_UTILS_HDRS ${CMAKE_CURRENT_LIST_DIR}/utils/*.h)
+file(GLOB MYCC_CODE_GEN_UTILS_SRCS ${CMAKE_CURRENT_LIST_DIR}/utils/*.cc)
+
+# project sources
+target_sources(mycc PRIVATE ${MYCC_CODE_GEN_UTILS_HDRS} ${MYCC_CODE_GEN_UTILS_SRCS})
+
+###############################################################################
 ## Testing Source #############################################################
 ###############################################################################
 if (ENABLE_TESTING MATCHES "ON")

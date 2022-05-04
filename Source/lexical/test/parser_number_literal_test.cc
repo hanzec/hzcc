@@ -6,7 +6,7 @@
 #include "lexical/Token.h"
 #include "lexical/lexical.h"
 
-namespace Mycc::Lexical {
+namespace Hzcc::Lexical {
 TEST(LEXICAL_PARSER, binary_number_0) {  // NOLINT
     std::stringstream os;
     os << "0b111";
@@ -318,4 +318,4 @@ TEST(LEXICAL_PARSER, mixed_number) {  // NOLINT
     ASSERT_EQ(token_stream.front().Value(), "0b11111");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
-}  // namespace Mycc::Lexical
+}  // namespace Hzcc::Lexical

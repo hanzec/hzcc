@@ -7,7 +7,7 @@
 #include <utility>
 
 #include "lexical/Token.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 VarDecl::VarDecl(std::shared_ptr<Type> type, std::list<Lexical::Token>& attrs,
                  const Lexical::Token& decl_name)
@@ -20,8 +20,5 @@ std::string VarDecl::PrintAdditionalInfo(std::string_view ident) const {
     return GetName();
 }
 std::shared_ptr<Type> VarDecl::GetType() const { return _type; }
-void VarDecl::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
-}  // namespace Mycc::AST
+Status VarDecl::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+}  // namespace Hzcc::AST

@@ -36,7 +36,7 @@
 #include "syntax/parser/base_parser.h"
 #include "syntax/utils/common_utils.h"
 
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 using namespace TokenListUtils;
 Statement::Statement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::ASTNode>(),
@@ -1435,4 +1435,4 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
     }
 }
 
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser

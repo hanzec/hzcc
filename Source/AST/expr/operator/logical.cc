@@ -5,7 +5,7 @@
 
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 std::string AST::LogicalExpr::GetNodeName() const { return "LogicalExpr"; }
 LogicalExpr::LogicalExpr(const Lexical::Token& type,
@@ -33,9 +33,6 @@ LogicalExpr::LogicalExpr(const Lexical::Token& type,
 std::shared_ptr<Type> LogicalExpr::GetType() const {
     return Type::GetBasicType("char", {});
 }
-void LogicalExpr::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-};
+Status LogicalExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); };
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

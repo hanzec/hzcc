@@ -8,7 +8,7 @@
 #include <cassert>
 
 #include "lexical/Token.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 std::string AST::BitwiseExpr::GetNodeName() const { return "BitwiseExpr"; }
 BitwiseExpr::BitwiseExpr(const Lexical::Token& type,
@@ -35,8 +35,5 @@ BitwiseExpr::BitwiseExpr(const Lexical::Token& type,
             DLOG(FATAL) << "Unknown bitwise operator";
     }
 }
-void BitwiseExpr::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
-}  // namespace Mycc::AST
+Status BitwiseExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+}  // namespace Hzcc::AST

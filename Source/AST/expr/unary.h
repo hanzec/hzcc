@@ -7,7 +7,7 @@
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_UNARY_H_
 #define MYCC_SOURCE_AST_OPERATOR_UNARY_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class UnaryExpr : public ASTNode {
   public:
     enum UnaryType {
@@ -22,7 +22,7 @@ class UnaryExpr : public ASTNode {
         kBitwiseNot,
     };
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     UnaryExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> expr);
 
@@ -35,5 +35,5 @@ class UnaryExpr : public ASTNode {
     UnaryType _type;
     std::unique_ptr<ASTNode> _expr;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_OPERATOR_UNARY_H_

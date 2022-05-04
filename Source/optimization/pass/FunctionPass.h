@@ -6,7 +6,7 @@
 #define MYCC_SOURCE_OPTMIZATION_PASS_FUNCTIONPASS_H_
 #include "AST/statement/function_decl.h"
 #include "PassBase.h"
-namespace Mycc {
+namespace Hzcc {
 namespace AST {
 class FunctionDeclNode;
 }
@@ -16,5 +16,5 @@ class FunctionPass : public PassBase {
     virtual bool runOnFunction(std::unique_ptr<AST::FunctionDeclNode>& F) = 0;
 };
 }  // namespace Pass
-}  // namespace Mycc
+}  // namespace Hzcc
 #endif  // MYCC_SOURCE_OPTMIZATION_PASS_FUNCTIONPASS_H_

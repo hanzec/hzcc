@@ -31,7 +31,7 @@
 #include "syntax/parser/statements/while_parser.h"
 #include "utils/debug_utils.h"
 #include "utils/type_name_utils.h"
-namespace Mycc::Syntax {
+namespace Hzcc::Syntax {
 class ParserFactory {
   public:
     template <class name>
@@ -143,6 +143,6 @@ class ParserFactoryReporter {
 #define ParseAST GetReporter(__FUNCTION__, __FILE__, __LINE__)->ParseAST
 #endif
 
-}  // namespace Mycc::Syntax
+}  // namespace Hzcc::Syntax
 
 #endif  // MYCC_PARSER_H

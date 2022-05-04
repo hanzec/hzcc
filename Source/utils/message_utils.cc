@@ -15,7 +15,7 @@
 #include "macro.h"
 #include "options.h"
 
-namespace Mycc::Message {
+namespace Hzcc::Message {
 
 static std::string_view current_part = "NO_INFO";
 
@@ -145,4 +145,4 @@ void print_message_internal(Level error_level, const std::string& message,
     }
 }
 
-}  // namespace Mycc::Message
+}  // namespace Hzcc::Message

@@ -6,7 +6,7 @@
 #include "AST/type/Type.h"
 #include "codegen/jvm/JVMGenerator.h"
 #include "codegen/jvm/utils/TypeUtils.h"
-namespace Mycc::Codegen {
+namespace Hzcc::Codegen {
 Status JVMGenerator::visit(std::unique_ptr<AST::AssignExpr>& p_expr) {
     // first we acquire RHS
     p_expr->GetRHS()->visit(*this);
@@ -82,4 +82,4 @@ Status JVMGenerator::visit(std::unique_ptr<AST::AssignExpr>& p_expr) {
            << "store_" << ConsumeReturnStack() << std::endl;
 }
 
-}  // namespace Mycc::Codegen
+}  // namespace Hzcc::Codegen

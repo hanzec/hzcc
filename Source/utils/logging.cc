@@ -3,11 +3,11 @@
 //
 
 #include "logging.h"
-namespace Mycc {
+namespace Hzcc {
 int MYCC_LOG_LEVEL = 0;
 
 void initLogging(char argv[]) {
     google::InitGoogleLogging(argv);
     google::SetStderrLogging(google::GLOG_INFO);
 }
-}  // namespace Mycc
+}  // namespace Hzcc

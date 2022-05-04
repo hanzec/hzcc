@@ -8,7 +8,7 @@
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_IF_H_
 #define MYCC_SOURCE_AST_STATEMENT_IF_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class IfStatement : public ASTNode {
   public:
     IfStatement(std::unique_ptr<ASTNode> cond, std::unique_ptr<ASTNode> body,
@@ -17,7 +17,7 @@ class IfStatement : public ASTNode {
           _condition(std::move(cond)),
           _if_body_statement(std::move(body)){};
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool hasElse() const { return _else_statement_ != nullptr; }
 
@@ -54,5 +54,5 @@ class IfStatement : public ASTNode {
     std::vector<std::pair<std::unique_ptr<ASTNode>, std::unique_ptr<ASTNode>>>
         _elseIfs;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_IF_H_

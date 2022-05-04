@@ -5,6 +5,9 @@
 #ifndef MYCC_MACRO_H
 #define MYCC_MACRO_H
 
+/** #########################################################################
+ *  #### COMPILER FEATURES ##################################################
+ *  ######################################################################### */
 #ifndef __has_feature       // Optional of course.
 #define __has_feature(x) 0  // Compatibility with non-clang compilers.
 #endif

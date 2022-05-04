@@ -9,7 +9,7 @@
 #include "AST/type/ArrayType.h"
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 std::string LiteralExpr::GetNodeName() const {
     switch (_type) {
@@ -79,9 +79,6 @@ std::shared_ptr<Type> LiteralExpr::GetType() const {
 }
 
 bool LiteralExpr::IsAssignable() const { return false; }
-void LiteralExpr::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
+Status LiteralExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

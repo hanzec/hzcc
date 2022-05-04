@@ -8,13 +8,13 @@
 
 #ifndef MYCC_SOURCE_AST_STATEMENT_RETURN_H_
 #define MYCC_SOURCE_AST_STATEMENT_RETURN_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class ReturnNode : public ASTNode {
   public:
     explicit ReturnNode(const Lexical::Token& token,
                         std::unique_ptr<ASTNode> return_val);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
 #ifdef NDEBUG
     [[nodiscard]] std::string Dump(std::string_view ident) const override {
@@ -33,5 +33,5 @@ class ReturnNode : public ASTNode {
   private:
     std::unique_ptr<ASTNode> _return_val;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_RETURN_H_

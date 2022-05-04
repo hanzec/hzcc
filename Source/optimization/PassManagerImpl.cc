@@ -3,7 +3,7 @@
 //
 
 #include "PassManagerImpl.h"
-namespace Mycc::Pass {
+namespace Hzcc::Pass {
 bool PassManagerImpl::reg_pass_internal(std::unique_ptr<PassBase>,
                                         const std::string_view& command,
                                         const std::string_view& description) {
@@ -13,4 +13,4 @@ Status PassManagerImpl::RunFunctionPass(
     std::unique_ptr<AST::FunctionDeclNode>& F) {
     return Status(Status::NOT_FOUND);
 }
-}  // namespace Mycc::Pass
+}  // namespace Hzcc::Pass

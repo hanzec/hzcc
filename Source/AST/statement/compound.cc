@@ -3,7 +3,7 @@
 //
 #include "compound.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 CompoundStmt::CompoundStmt(std::pair<int, int> loc) : ASTNode(loc) {}
 
@@ -24,10 +24,7 @@ std::list<std::unique_ptr<ASTNode>>& CompoundStmt::GetBodyStatements() {
     return statements_;
 }
 
-void CompoundStmt::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
+Status CompoundStmt::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 std::string CompoundStmt::PrintAdditionalInfo(std::string_view ident) const {
     std::string ret = "\n";
     for (const auto& statement : statements_) {
@@ -52,4 +49,4 @@ std::string CompoundStmt::Dump(std::string_view ident) const {
 }
 #endif
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

@@ -7,7 +7,7 @@
 
 #include "lexical/Token.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 std::string FunctionCall::GetNodeName() const { return "FunctionCall"; }
 FunctionCall::FunctionCall(const Lexical::Token& name,
                            const std::shared_ptr<Type>& return_type,
@@ -32,9 +32,6 @@ std::string FunctionCall::PrintAdditionalInfo(std::string_view ident) const {
     }
     return info;
 }
-void FunctionCall::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-};
+Status FunctionCall::visit(ASTVisitor& visitor) { return visitor.visit(this); };
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

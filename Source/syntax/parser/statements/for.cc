@@ -17,7 +17,7 @@
 #include "syntax/utils/common_utils.h"
 #include "utils/message_utils.h"
 
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 using namespace TokenListUtils;
 ForStatement::ForStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::ForStatement>(),
@@ -100,4 +100,4 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::CompilationUnit& con
         std::move(body), for_loc);
 }
 
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser

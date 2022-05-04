@@ -5,12 +5,12 @@
 
 #ifndef MYCC_SOURCE_SYNTAX_PARSER_STATEMENTS_DO_PARSER_H_
 #define MYCC_SOURCE_SYNTAX_PARSER_STATEMENTS_DO_PARSER_H_
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 class DoStatement : public ParserBase {
   public:
     DoStatement() noexcept;
     std::unique_ptr<AST::ASTNode> parse_impl(AST::CompilationUnit& context,
                                              TokenList& tokens) override;
 };
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser
 #endif  // MYCC_SOURCE_SYNTAX_PARSER_STATEMENTS_DO_PARSER_H_

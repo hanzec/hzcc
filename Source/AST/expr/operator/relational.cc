@@ -6,7 +6,7 @@
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 std::string AST::RelationalExpr::GetNodeName() const {
     return "RelationalExpr";
@@ -74,8 +74,7 @@ std::string RelationalExpr::PrintAdditionalInfo(std::string_view ident) const {
 std::shared_ptr<Type> RelationalExpr::GetType() const {
     return Type::GetBasicType("char", {});
 }
-void RelationalExpr::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
+Status RelationalExpr::visit(ASTVisitor& visitor) {
+    return visitor.visit(this);
 }
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

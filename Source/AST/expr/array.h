@@ -8,14 +8,14 @@
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_ARRAY_H_
 #define MYCC_SOURCE_AST_OPERATOR_ARRAY_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class ArraySubscriptExpr : public ASTNode {
   public:
     ArraySubscriptExpr(const Lexical::Token& token,
                        std::unique_ptr<AST::ASTNode> name,
                        std::unique_ptr<AST::ASTNode> index);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool IsAssignable() const override;
 
@@ -30,5 +30,5 @@ class ArraySubscriptExpr : public ASTNode {
     std::unique_ptr<AST::ASTNode> _name;
     std::unique_ptr<AST::ASTNode> _index_expr;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_OPERATOR_ARRAY_H_

@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 
 std::string AST::CastExpr::GetNodeName() const { return "CastExpr"; }
 bool CastExpr::IsAssignable() const { return _cast_expr->IsAssignable(); }
@@ -17,9 +17,6 @@ std::string CastExpr::PrintAdditionalInfo(std::string_view ident) const {
     return "\n" + _cast_expr->Dump(new_ident + " `");
 }
 
-void CastExpr::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
+Status CastExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

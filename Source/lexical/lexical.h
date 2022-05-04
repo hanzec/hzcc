@@ -8,7 +8,7 @@
 #include <list>
 
 #include "utils/Status.h"
-namespace Mycc::Lexical {
+namespace Hzcc::Lexical {
 // forward declare of Token
 class Token;
 
@@ -32,5 +32,5 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokenStream);
  */
 Status PreprocessSource(const std::filesystem::path& input,
                         std::ostream& output);
-}  // namespace Mycc::Lexical
+}  // namespace Hzcc::Lexical
 #endif  // MYCC_LEXICAL_H

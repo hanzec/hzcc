@@ -1,5 +1,5 @@
 ###############################################################################
-## Mycc E2E Testing ###########################################################
+## Hzcc E2E Testing ###########################################################
 ###############################################################################
 # a fake target which allow e2e test target require binary target
 add_custom_target(mycc_e2e_test COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS mycc)
@@ -94,11 +94,11 @@ if (${E2E_DEPENDS_MET})
     message(STATUS "E2E testing is enabled.")
 
     # add part0 test set
-    add_lit_test_set(part0 "${CMAKE_CURRENT_SOURCE_DIR}/part0")
+    add_lit_test_set(lexical/part0 "${CMAKE_CURRENT_LIST_DIR}/lexical/part0")
 
     # add part1 test set
-    add_lit_test_set(part1 "${CMAKE_CURRENT_SOURCE_DIR}/part1")
+    add_lit_test_set(lexical/part1 "${CMAKE_CURRENT_LIST_DIR}/lexical/part1")
 
     # add part3 test set
-    add_lit_test_set(part3 "${CMAKE_CURRENT_SOURCE_DIR}/part3")
+    add_lit_test_set(lexical/part3 "${CMAKE_CURRENT_LIST_DIR}/lexical/part3")
 endif ()

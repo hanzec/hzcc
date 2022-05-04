@@ -7,10 +7,10 @@
 #include "codegen/jvm/JVMGenerator.h"
 #include "codegen/jvm/utils/TypeUtils.h"
 
-namespace Mycc::Codegen {
-Status JVMGenerator::visit(std::unique_ptr<Mycc::AST::DeclNode>&p_expr) {
+namespace Hzcc::Codegen {
+Status JVMGenerator::visit(std::unique_ptr<Hzcc::AST::DeclNode>&p_expr) {
     auto var_name = p_expr->GetName();
     BindStack(var_name, TypeUtils::GetJVMTypename(p_expr->GetType()->GetName()),
               true);
 }
-}  // namespace Mycc::Codegen
+}  // namespace Hzcc::Codegen

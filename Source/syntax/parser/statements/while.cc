@@ -18,7 +18,7 @@
 #include "utils/type_name_utils.h"
 #include "while_parser.h"
 
-namespace Mycc::Syntax::Parser {
+namespace Hzcc::Syntax::Parser {
 WhileStatement::WhileStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::WhileStatement>(),
                  TypeNameUtil::name_pretty<AST::WhileStatement>()) {}
@@ -43,4 +43,4 @@ std::unique_ptr<AST::ASTNode> WhileStatement::parse_impl(
         std::move(body), std::move(condition), while_loc);
 }
 
-}  // namespace Mycc::Syntax::Parser
+}  // namespace Hzcc::Syntax::Parser

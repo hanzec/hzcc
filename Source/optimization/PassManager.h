@@ -9,7 +9,7 @@
 #include "pass/ModulePass.h"
 #include "pass/PassBase.h"
 #include "utils/Status.h"
-namespace Mycc::Pass {
+namespace Hzcc::Pass {
 class PassManager {
   public:
     /**
@@ -21,6 +21,6 @@ class PassManager {
         std::unique_ptr<AST::FunctionDeclNode>& F) = 0;
 };
 
-}  // namespace Mycc::Pass
+}  // namespace Hzcc::Pass
 
 #endif  // MYCC_SOURCE_OPTMIZATION_PASSMANAGER_H_

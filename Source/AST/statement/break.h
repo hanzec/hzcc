@@ -4,9 +4,9 @@
 #include "AST/ASTNode.h"
 #ifndef MYCC_SOURCE_AST_STATEMENT_BREAK_H_
 #define MYCC_SOURCE_AST_STATEMENT_BREAK_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class BreakStatement : public ASTNode {
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
   public:
     BreakStatement(std::pair<int, int> pair_1);
@@ -14,5 +14,5 @@ class BreakStatement : public ASTNode {
   protected:
     [[nodiscard]] std::string GetNodeName() const override;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_BREAK_H_

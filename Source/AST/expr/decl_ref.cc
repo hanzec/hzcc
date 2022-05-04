@@ -6,7 +6,7 @@
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 std::string DeclRefExpr::GetNodeName() const { return "DeclRefExpr"; }
 DeclRefExpr::DeclRefExpr(const Lexical::Token& name, std::shared_ptr<Type> type)
     : ASTNode(name.Location()), _name(name.Value()), _type(std::move(type)) {}
@@ -17,9 +17,6 @@ std::string DeclRefExpr::PrintAdditionalInfo(std::string_view ident) const {
     return _name;
 }
 bool DeclRefExpr::IsAssignable() const { return true; }
-void DeclRefExpr::visit(ASTVisitor& visitor) {
-    DVLOG(CODE_GEN_LEVEL) << "OP " << GetNodeName() << "Not implemented";
-    visitor.visit(this);
-}
+Status DeclRefExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST

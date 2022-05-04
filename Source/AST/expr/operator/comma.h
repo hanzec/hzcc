@@ -8,16 +8,16 @@
 
 #ifndef MYCC_SOURCE_AST_OPERATOR_COMMA_H_
 #define MYCC_SOURCE_AST_OPERATOR_COMMA_H_
-namespace Mycc::AST {
+namespace Hzcc::AST {
 class CommaExpr : public OperatorBase {
   public:
     CommaExpr(const Lexical::Token& token, std::unique_ptr<ASTNode> lhs,
               std::unique_ptr<ASTNode> rhs);
 
-    void visit(ASTVisitor& visitor) override;
+    Status visit(ASTVisitor& visitor) override;
 
   protected:
     [[nodiscard]] std::string GetNodeName() const override;
 };
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_OPERATOR_COMMA_H_

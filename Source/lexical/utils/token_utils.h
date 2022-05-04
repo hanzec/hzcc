@@ -5,7 +5,7 @@
 #ifndef MYCC_LEXICAL_UTILS_TOKEN_UTILS_H
 #define MYCC_LEXICAL_UTILS_TOKEN_UTILS_H
 
-namespace Mycc::Lexical::TokenUtils {
+namespace Hzcc::Lexical::TokenUtils {
 #define kVariableAttrTableSize 23
 
 constexpr static std::array<Lexical::TokenType, kVariableAttrTableSize>
@@ -34,5 +34,5 @@ constexpr ALWAYS_INLINE bool IsAttribute(Lexical::TokenType type) {
 #pragma GCC pop_options
 #endif
 
-}  // namespace Mycc::Lexical::TokenUtils
+}  // namespace Hzcc::Lexical::TokenUtils
 #endif  // MYCC_LEXICAL_UTILS_TOKEN_UTILS_H

@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <string>
 
-namespace Mycc::AST {
+namespace Hzcc::AST {
 /**
  * @brief The base class of all deducible value. The deducible value is the
  * value we can calculate during the compile.
@@ -129,6 +129,6 @@ DeduceValue operator/(DeduceValue lhs, const DeduceValue& rhs);
  * @param rhs right hand side of the operator
  */
 DeduceValue operator%(DeduceValue lhs, const DeduceValue& rhs);
-}  // namespace Mycc::AST
+}  // namespace Hzcc::AST
 
 #endif  // MYCC_SOURCE_AST_DEDUCEVALUE_H_
