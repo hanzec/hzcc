@@ -45,7 +45,7 @@ class IfStatement : public ASTNode {
 #endif
 
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
 
   private:
     std::unique_ptr<ASTNode> _condition;

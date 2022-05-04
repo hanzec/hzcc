@@ -23,7 +23,7 @@ class BitwiseExpr : public OperatorBase {
     };
 
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
 
   private:
     BitwiseType _type;

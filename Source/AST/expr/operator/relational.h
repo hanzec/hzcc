@@ -20,7 +20,7 @@ class RelationalExpr : public OperatorBase {
   protected:
     enum RelationalType { LT, GT, LE, GE, EQ, NE };
 
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
 
     [[nodiscard]] std::string PrintAdditionalInfo(
         std::string_view ident) const override;

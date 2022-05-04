@@ -7,7 +7,7 @@
 #include "lexical/Token.h"
 
 namespace Hzcc::AST {
-std::string DeclRefExpr::GetNodeName() const { return "DeclRefExpr"; }
+const char* DeclRefExpr::GetNodeName() const { return "DeclRefExpr"; }
 DeclRefExpr::DeclRefExpr(const Lexical::Token& name, std::shared_ptr<Type> type)
     : ASTNode(name.Location()), _name(name.Value()), _type(std::move(type)) {}
 

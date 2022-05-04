@@ -6,21 +6,23 @@
 #include "codegen/jvm/JVMGenerator.h"
 namespace Hzcc::Codegen {
 
-Status JVMGenerator::visit(std::unique_ptr<Hzcc::AST::CompoundStmt>&p_expr) {
+Status JVMGenerator::visit(Hzcc::AST::CompoundStmt *p_expr) {
     IncLindeIndent();
 
     // generate the body
-    auto &file_handler = GetOstream();
     for (const auto &stmt : p_expr->GetBodyStatements()) {
         // first we need to print annotations
-        file_handler << GetLineIndent() << ";; "
-                     << (stmt->IsReturn() ? "return " : "expression ")
-                     << GetInputFile() << " " << stmt->GetLine() << "\n";
+        std::stringstream ss;
+        ss << GetLineIndent() << ";; "
+           << (stmt->IsReturn() ? "return " : "expression ")
+           << GetInputFileName() << " " << stmt->GetLine() << "\n";
 
         // then we generate the statement
-        stmt->visit(*this);
+        HZCC_JVM_Visit_Node(stmt);
     }
 
     DecLindeIndent();
+    return Status::OkStatus();
 }
+
 }  // namespace Hzcc::Codegen

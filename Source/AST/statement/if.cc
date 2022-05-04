@@ -4,7 +4,7 @@
 //
 #include "if.h"
 namespace Hzcc::AST {
-std::string IfStatement::GetNodeName() const { return "IfStatement"; }
+const char *IfStatement::GetNodeName() const { return "IfStatement"; }
 
 Status IfStatement::visit(ASTVisitor &visitor) { return visitor.visit(this); }
 

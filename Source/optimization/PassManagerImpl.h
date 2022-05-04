@@ -9,6 +9,7 @@
 #include <memory>
 #include <utility>
 
+#include "AST/CompilationUnit.h"
 #include "PassManager.h"
 #include "utils/Status.h"
 namespace Hzcc::Pass {
@@ -18,8 +19,8 @@ class PassManagerImpl : public PassManager {
      * Delete the default constructor and copy constructor to prevent the class
      * to be copied.
      */
-    PassManagerImpl() = delete;
-    ~PassManagerImpl() = delete;
+    PassManagerImpl() = default;
+    ~PassManagerImpl() = default;
     PassManagerImpl(PassManagerImpl&) = delete;
     PassManagerImpl(PassManagerImpl&&) = delete;
     PassManagerImpl& operator=(PassManagerImpl&) = delete;
@@ -31,7 +32,7 @@ class PassManagerImpl : public PassManager {
      * @param command_name the name of the command
      * @param command_ptr the pointer to the command
      */
-    Status RunFunctionPass(std::unique_ptr<AST::FunctionDeclNode>& F) override;
+    Status RunPass(AST::CompilationUnit& F) override;
 
     /**
      * @brief Helper class for expose the private method outside
@@ -48,6 +49,9 @@ class PassManagerImpl : public PassManager {
             return reg_pass_internal(std::move(pass), cmd, desc);
         };
     };
+
+  protected:
+    static Status RunFunctionPass(std::unique_ptr<AST::FunctionDeclNode>& F);
 
   private:
     inline static std::list<

@@ -1,7 +1,7 @@
 //
 // Created by chen_ on 2022/5/3.
 //
-#include <unordered_map>
+#include <list>
 
 #include "AST/ASTVisitor.h"
 #ifndef MYCC_SOURCE_CODEGEN_JVM_FUNCANALYZER_H_
@@ -46,9 +46,55 @@ class FuncAnalyzer : public AST::ASTVisitor {
     /**######################################################
      * ## Information Collected                            ##
      **#######################################################**/
+    const std::list<std::tuple<const std::string_view, char, uint32_t>>&
+    GetLocalVariable();
+
+    [[nodiscard]] uint32_t GetMaxStackSize() const;
+
+  protected:
+    /**
+     * @brief Add given size to current function's stack size, and update the
+     * max stack size if necessary
+     * @param p_size The increased size of the stack
+     */
+    void IncreaseCurrentStack(uint8_t p_size);
+
+    /**
+     * @brief Remove  given size current function's stack size
+     * @param p_size The increased size of the stack
+     */
+    void DecreaseCurrentStack(uint8_t p_size);
+
+    /**
+     * @brief Enable generating load instructions for all expressions after call
+     * this function
+     */
+    void EnableGenerateLoad();
+
+    /**
+     * @brief Disable generating load instructions for all expressions after
+     * call this function
+     */
+    void DisableGenerateLoad();
+
+    /**
+     * @brief Get the if current function is generating load instructions
+     * or not
+     * @return true if current function is generating load instructions, false
+     * otherwise
+     */
+    [[nodiscard]] bool GetGenerateLoadStatus() const;
+
   private:
+    bool _generate_load = false;
     uint32_t _max_stack_size = 0;
-    std::unordered_map<std::string, std::pair<uint32_t, const std::string_view>>
+    uint32_t _current_stack_size = 0;
+
+    /**
+     * _local_var_map will have a formate like:
+     * [variable_name, line_number]
+     */
+    std::list<std::tuple<const std::string_view, char, uint32_t>>
         _local_var_map;
 };
 }  // namespace Hzcc::Codegen

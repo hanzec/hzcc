@@ -13,7 +13,7 @@ class FunctionDeclNode;
 namespace Pass {
 class FunctionPass : public PassBase {
   public:
-    virtual bool runOnFunction(std::unique_ptr<AST::FunctionDeclNode>& F) = 0;
+    virtual bool RunOnFunction(std::unique_ptr<AST::FunctionDeclNode>& F) = 0;
 };
 }  // namespace Pass
 }  // namespace Hzcc

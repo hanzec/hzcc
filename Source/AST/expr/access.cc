@@ -11,7 +11,7 @@
 #include "utils/logging.h"
 namespace Hzcc::AST {
 
-std::string AST::AccessExpr::GetNodeName() const { return "AccessExpr"; }
+const char* AST::AccessExpr::GetNodeName() const { return "AccessExpr"; }
 AccessExpr::AccessExpr(bool isPtr, const Lexical::Token& token,
                        std::unique_ptr<ASTNode> expr)
     : ASTNode(token.Location()),

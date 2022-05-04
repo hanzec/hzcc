@@ -68,7 +68,7 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
     }
 
     // add new variable
-    std::unique_ptr<AST::VarDecl> var_decl{nullptr};
+    std::unique_ptr<AST::ASTNode> var_value{nullptr};
     if (tokens.front().Type() == Lexical::TokenType::kAssign) {
         // consume assign
         pop_list(tokens);
@@ -101,7 +101,7 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
                 }
             }
         }
-
+        var_value = std::move(value);
         Message::set_current_part("Parser");
     }
 
@@ -135,7 +135,8 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
     }
     attributes.clear();
 
-    return std::make_unique<AST::VarDecl>(type, attrs, name);
+    return std::make_unique<AST::VarDecl>(type, attrs, name,
+                                          std::move(var_value));
 }
 
 }  // namespace Hzcc::Syntax::Parser

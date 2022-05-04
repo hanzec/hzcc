@@ -25,7 +25,7 @@ class ReturnNode : public ASTNode {
     [[nodiscard]] bool IsReturn() const override { return true; }
 
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
 
     [[nodiscard]] std::string PrintAdditionalInfo(
         std::string_view ident) const override;

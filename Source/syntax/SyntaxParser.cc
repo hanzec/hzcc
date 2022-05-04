@@ -101,17 +101,9 @@ Status GenerateAST(AST::CompilationUnit& context, TokenList& tokens) {
                         peek2(tokens).Type() == Lexical::kLBracket)) {
                 tokens.insert(tokens.begin(), type_name.begin(),
                               type_name.end());
+                auto new_node = ParserFactory::ParseAST<AST::VarDecl>(
+                    context, tokens, attrs);
 
-                auto type = Parser::ParseTypeName(context, tokens);
-                if (context.hasType(Parser::TokenListToString(type))) {
-                    tokens.insert(tokens.begin(), type.begin(), type.end());
-                    node = ParserFactory::ParseAST<AST::VarDecl>(context, tokens,
-                                                                 attributes);
-                    break;
-                } else {
-                    tokens.insert(tokens.begin(), type.begin(), type.end());
-                }
-                
                 if (new_node != nullptr) {
                     context.addDecl(std::move(new_node));
                 } else {

@@ -37,6 +37,8 @@ class FunctionDeclNode : public DeclNode {
 
     std::unique_ptr<AST::CompoundStmt>& GetBody();
 
+    std::list<std::unique_ptr<ParamVarDecl>>& GetParams();
+
     ArgumentList getArguments();
 
     [[nodiscard]] bool HasBody() const override;
@@ -52,7 +54,7 @@ class FunctionDeclNode : public DeclNode {
     bool AddFunctionArgument(std::unique_ptr<ParamVarDecl> type);
 
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
     [[nodiscard]] std::string PrintAdditionalInfo(
         std::string_view ident) const override;
 

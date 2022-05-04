@@ -5,7 +5,7 @@
 
 #include "lexical/Token.h"
 namespace Hzcc::AST {
-std::string StructDeclareNode::GetNodeName() const {
+const char* StructDeclareNode::GetNodeName() const {
     return "StructDeclareNode";
 }
 StructDeclareNode::StructDeclareNode(const std::string& name,

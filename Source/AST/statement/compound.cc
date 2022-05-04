@@ -14,7 +14,7 @@ bool CompoundStmt::AddStatement(std::unique_ptr<ASTNode> statement) {
     statements_.push_back(std::move(statement));
     return true;
 }
-std::string CompoundStmt::GetNodeName() const { return "CompoundStmt"; }
+const char* CompoundStmt::GetNodeName() const { return "CompoundStmt"; }
 
 const std::unique_ptr<ASTNode>& CompoundStmt::GetLastStatement() const {
     return statements_.back();

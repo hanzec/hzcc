@@ -12,7 +12,7 @@
 #include "options.h"
 namespace Hzcc::AST {
 
-std::string AST::ArraySubscriptExpr::GetNodeName() const {
+const char* AST::ArraySubscriptExpr::GetNodeName() const {
     return "ArraySubscriptExpr";
 }
 std::shared_ptr<Type> ArraySubscriptExpr::GetType() const {
@@ -38,9 +38,9 @@ ArraySubscriptExpr::ArraySubscriptExpr(const Lexical::Token& token,
       _index_expr(std::move(index)),
       _name(std::move(name)) {
     if (Options::Global_enable_type_checking) {
-        DLOG_ASSERT(!_name->GetType()->IsArray())
-            << "ArraySubscriptExpr: " + _name->Dump("") +
-                   " should have array type";
+        DLOG_ASSERT(_name->GetType()->IsArray())
+            << " ArraySubscriptExpr: " + _name->Dump("") +
+                   " should have array type but got " + _name->GetType()->GetName();
     }
 }
 

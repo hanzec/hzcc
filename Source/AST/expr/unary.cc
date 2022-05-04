@@ -8,7 +8,7 @@
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
 namespace Hzcc::AST {
-std::string UnaryExpr::GetNodeName() const { return "UnaryExpr"; }
+const char* UnaryExpr::GetNodeName() const { return "UnaryExpr"; }
 UnaryExpr::UnaryExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> expr)
     : ASTNode(type.Location()), _expr(std::move(expr)) {
     switch (type.Type()) {

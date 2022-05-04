@@ -10,15 +10,23 @@
 namespace Hzcc::AST {
 
 VarDecl::VarDecl(std::shared_ptr<Type> type, std::list<Lexical::Token>& attrs,
-                 const Lexical::Token& decl_name)
-    : DeclNode(decl_name), _type(std::move(type)) {
+                 const Lexical::Token& decl_name,
+                 std::unique_ptr<AST::ASTNode> init)
+    : DeclNode(decl_name), _type(std::move(type)), _init_expr(std::move(init)) {
     attrs.clear();
-    // TODO need to check attrs
 }
-std::string VarDecl::GetNodeName() const { return "VarDecl"; }
+const char* VarDecl::GetNodeName() const { return "VarDecl"; }
 std::string VarDecl::PrintAdditionalInfo(std::string_view ident) const {
     return GetName();
 }
 std::shared_ptr<Type> VarDecl::GetType() const { return _type; }
+
 Status VarDecl::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+
+bool VarDecl::HasInitExpr() const { return _init_expr != nullptr; }
+
+std::unique_ptr<AST::ASTNode>& VarDecl::GetInitExpr() {
+    DLOG_ASSERT(_init_expr != nullptr) << "init expr is nullptr";
+    return _init_expr;
+}
 }  // namespace Hzcc::AST

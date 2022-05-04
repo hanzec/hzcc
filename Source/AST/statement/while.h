@@ -24,7 +24,7 @@ class WhileStatement : public ASTNode {
 #endif
 
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
 
   protected:
     std::unique_ptr<ASTNode> cond_;

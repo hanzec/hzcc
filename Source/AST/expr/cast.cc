@@ -7,7 +7,7 @@
 
 namespace Hzcc::AST {
 
-std::string AST::CastExpr::GetNodeName() const { return "CastExpr"; }
+const char* AST::CastExpr::GetNodeName() const { return "CastExpr"; }
 bool CastExpr::IsAssignable() const { return _cast_expr->IsAssignable(); }
 std::shared_ptr<Type> CastExpr::GetType() const { return _cast_type; }
 
@@ -18,5 +18,6 @@ std::string CastExpr::PrintAdditionalInfo(std::string_view ident) const {
 }
 
 Status CastExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+std::unique_ptr<ASTNode>& CastExpr::GetCastExpr() { return _cast_expr; }
 
 }  // namespace Hzcc::AST

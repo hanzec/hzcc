@@ -5,7 +5,7 @@
 
 namespace Hzcc::AST {
 
-std::string AST::BreakStatement::GetNodeName() const {
+const char* AST::BreakStatement::GetNodeName() const {
     return "BreakStatement";
 }
 Status BreakStatement::visit(ASTVisitor& visitor) {

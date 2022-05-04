@@ -8,7 +8,7 @@
 
 namespace Hzcc::AST {
 
-std::string AST::RelationalExpr::GetNodeName() const {
+const char* AST::RelationalExpr::GetNodeName() const {
     return "RelationalExpr";
 }
 RelationalExpr::RelationalExpr(const Lexical::Token& type,

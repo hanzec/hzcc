@@ -3,7 +3,7 @@
 //
 #include "for.h"
 namespace Hzcc::AST {
-std::string ForStatement::GetNodeName() const { return "ForStatement"; }
+const char* ForStatement::GetNodeName() const { return "ForStatement"; }
 
 Status ForStatement::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 

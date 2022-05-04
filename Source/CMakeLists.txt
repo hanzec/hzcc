@@ -136,7 +136,7 @@ endif ()
 ###############################################################################
 target_sources(mycc
         PRIVATE
-        "const_msg.h" "macro.h" "main.cc" "options.cc" "CompileContext.cc" "CompileContext.h")
+        "const_msg.h" "macro.h" "main.cc" "options.cc")
 
 ###############################################################################
 ## Code Generation ############################################################

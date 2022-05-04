@@ -11,69 +11,76 @@
 #include "lexical/Token.h"
 namespace Hzcc::AST {
 
-std::string LiteralExpr::GetNodeName() const {
+const char* LiteralExpr::GetNodeName() const {
     switch (_type) {
-        case ValueType::kChar:
+        case LiteralType::kLiteralType_Char:
             return "CharLiteral";
-        case ValueType::kReal_number:
+        case LiteralType::kLiteralType_Real_number:
             return "RealNumberLiteral";
-        case ValueType::kString:
+        case LiteralType::kLiteralType_String:
             return "StringLiteral";
-        case ValueType::kInteger:
+        case LiteralType::kLiteralType_Integer:
             return "IntegerLiteral";
+        default:
+            DLOG_ASSERT(false) << "unexpected literal type";
     }
     return "";
 }
 
 std::optional<DeduceValue> LiteralExpr::GetDeducedValue() const {
     switch (_type) {
-        case ValueType::kChar:
+        case LiteralType::kLiteralType_Char:
             return DeduceValue((uint64_t) static_cast<int>(_value[0]));
-        case ValueType::kReal_number:
+        case LiteralType::kLiteralType_Real_number:
             return DeduceValue(std::stod(_value));
-        case ValueType::kString:
+        case LiteralType::kLiteralType_String:
             return std::nullopt;
-        case ValueType::kInteger:
+        case LiteralType::kLiteralType_Integer:
             return DeduceValue((uint64_t)std::stoi(_value));
+        default:
+            DLOG_ASSERT(false) << "unexpected literal type";
     }
     return std::nullopt;
 }
 
 std::string LiteralExpr::PrintAdditionalInfo(std::string_view ident) const {
     switch (_type) {
-        case ValueType::kChar:
+        case LiteralType::kLiteralType_Char:
             return "char \"" + _value + "\"";
-        case ValueType::kReal_number:
+        case LiteralType::kLiteralType_Real_number:
             return "real_number " + _value;
-        case ValueType::kString:
+        case LiteralType::kLiteralType_String:
             return "string \"" + _value + "\"";
-        case ValueType::kInteger:
+        case LiteralType::kLiteralType_Integer:
             return "int " + _value;
     }
     return "";
 }
 LiteralExpr::LiteralExpr(int64_t value)
-    : ASTNode({-1, -1}), _type(kInteger), _value(std::to_string(value)) {}
+    : ASTNode({-1, -1}),
+      _type(kLiteralType_Integer),
+      _value(std::to_string(value)) {}
 
-LiteralExpr::LiteralExpr(LiteralExpr::ValueType type,
-                         const Lexical::Token& value)
+LiteralExpr::LiteralExpr(LiteralType type, const Lexical::Token& value)
     : ASTNode(value.Location()), _type(type), _value(value.Value()) {}
 
 std::shared_ptr<Type> LiteralExpr::GetType() const {
     static std::list<std::string> const_type_list = {"const"};
 
     switch (_type) {
-        case ValueType::kChar:
+        case LiteralType::kLiteralType_Char:
             return Type::GetBasicType("char", {Lexical::TokenType::kConst});
-        case ValueType::kReal_number:
+        case LiteralType::kLiteralType_Real_number:
             return Type::GetBasicType("double", {Lexical::TokenType::kConst});
-        case ValueType::kString:
+        case LiteralType::kLiteralType_String:
             return ArrayType::GetArrayOfBasicType(
                 Type::GetBasicType("char", {}),
                 std::make_unique<LiteralExpr>(_value.size() + 1),
                 {Lexical::TokenType::kConst});
-        case ValueType::kInteger:
+        case LiteralType::kLiteralType_Integer:
             return Type::GetBasicType("int", {Lexical::TokenType::kConst});
+        default:
+            DLOG_ASSERT(false) << "unexpected literal type";
     }
     return nullptr;
 }

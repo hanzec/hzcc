@@ -75,7 +75,7 @@ bool FunctionDeclNode::AddFunctionArgument(
     _function_param.push_back(std::move(param_var_decl));
     return true;
 }
-std::string FunctionDeclNode::GetNodeName() const { return "FunctionDecl"; }
+const char* FunctionDeclNode::GetNodeName() const { return "FunctionDecl"; }
 ArgumentList FunctionDeclNode::getArguments() {
     ArgumentList result;
     for (const auto& arg : _function_param) {
@@ -97,6 +97,9 @@ Status FunctionDeclNode::visit(ASTVisitor& visitor) {
 
 std::unique_ptr<AST::CompoundStmt>& FunctionDeclNode::GetBody() {
     return _function_body;
+}
+std::list<std::unique_ptr<ParamVarDecl>>& FunctionDeclNode::GetParams() {
+    return _function_param;
 }
 
 #ifdef NDEBUG

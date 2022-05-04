@@ -7,7 +7,7 @@
 #include "lexical/Token.h"
 namespace Hzcc::AST {
 
-std::string AST::LogicalExpr::GetNodeName() const { return "LogicalExpr"; }
+const char* AST::LogicalExpr::GetNodeName() const { return "LogicalExpr"; }
 LogicalExpr::LogicalExpr(const Lexical::Token& type,
                          std::unique_ptr<ASTNode> lhs,
                          std::unique_ptr<ASTNode> rhs)

@@ -12,44 +12,44 @@ AssignExpr::AssignExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
     : OperatorBase(type.Location(), std::move(lhs), std::move(rhs)) {
     switch (type.Value()[0]) {
         case '=':
-            this->_type = AssignType::kAssign;
+            this->_type = AssignType::kAssignType_Assign;
             break;
         case '+':
-            this->_type = AssignType::kAddAssign;
+            this->_type = AssignType::kAssignType_AddAssign;
             break;
         case '-':
-            this->_type = AssignType::kSubAssign;
+            this->_type = AssignType::kAssignType_SubAssign;
             break;
         case '*':
-            this->_type = AssignType::kMulAssign;
+            this->_type = AssignType::kAssignType_MulAssign;
             break;
         case '/':
-            this->_type = AssignType::kDivAssign;
+            this->_type = AssignType::kAssignType_DivAssign;
             break;
         case '%':
-            this->_type = AssignType::kModAssign;
+            this->_type = AssignType::kAssignType_ModAssign;
             break;
         case '<':
-            this->_type = AssignType::kLShiftAssign;
+            this->_type = AssignType::kAssignType_LShiftAssign;
             break;
         case '>':
-            this->_type = AssignType::kRShiftAssign;
+            this->_type = AssignType::kAssignType_RShiftAssign;
             break;
         case '&':
-            this->_type = AssignType::kAndAssign;
+            this->_type = AssignType::kAssignType_AndAssign;
             break;
         case '|':
-            this->_type = AssignType::kOrAssign;
+            this->_type = AssignType::kAssignType_OrAssign;
             break;
         case '^':
-            this->_type = AssignType::kXorAssign;
+            this->_type = AssignType::kAssignType_XorAssign;
             break;
         default:
             DLOG(FATAL) << "Unknown assign operator: " << type.Value();
     }
 };
 
-std::string AST::AssignExpr::GetNodeName() const { return "AssignExpr"; }
+const char* AST::AssignExpr::GetNodeName() const { return "AssignExpr"; }
 
 std::string AssignExpr::PrintAdditionalInfo(std::string_view ident) const {
     std::string string;
@@ -59,37 +59,37 @@ std::string AssignExpr::PrintAdditionalInfo(std::string_view ident) const {
 
     // print symbol
     switch (_type) {
-        case kAssign:
+        case kAssignType_Assign:
             string += " = ";
             break;
-        case kAddAssign:
+        case kAssignType_AddAssign:
             string += " += ";
             break;
-        case kSubAssign:
+        case kAssignType_SubAssign:
             string += " -= ";
             break;
-        case kMulAssign:
+        case kAssignType_MulAssign:
             string += " *= ";
             break;
-        case kDivAssign:
+        case kAssignType_DivAssign:
             string += " /= ";
             break;
-        case kModAssign:
+        case kAssignType_ModAssign:
             string += " %= ";
             break;
-        case kLShiftAssign:
+        case kAssignType_LShiftAssign:
             string += " <<= ";
             break;
-        case kRShiftAssign:
+        case kAssignType_RShiftAssign:
             string += " >>= ";
             break;
-        case kAndAssign:
+        case kAssignType_AndAssign:
             string += " &= ";
             break;
-        case kOrAssign:
+        case kAssignType_OrAssign:
             string += " |= ";
             break;
-        case kXorAssign:
+        case kAssignType_XorAssign:
             string += " ^= ";
             break;
     }
@@ -101,6 +101,6 @@ std::string AssignExpr::PrintAdditionalInfo(std::string_view ident) const {
     return string;
 }
 Status AssignExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
-AssignExpr::AssignType AssignExpr::GetAssignType() const { return _type; }
+AssignType AssignExpr::GetAssignType() const { return _type; }
 
 }  // namespace Hzcc::AST

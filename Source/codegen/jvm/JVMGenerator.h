@@ -31,17 +31,12 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
         const std::string &output,                                    // NOLINT
         const std::unique_ptr<AST::CompilationUnit> &unit) override;  // NOLINT
 
-    bool InitSource();
-
-    bool FinalizedSource();
-
     /**######################################################
      * ## AST Visitor                                      ##
      **#######################################################**/
     Status VisitAllAST(const std::unique_ptr<Hzcc::AST::CompilationUnit> &p_expr);
 
     Status visit(Hzcc::AST::VarDecl* p_expr) override;
-    Status visit(Hzcc::AST::DeclNode* p_expr) override;
     Status visit(Hzcc::AST::AssignExpr* p_expr) override;
     Status visit(Hzcc::AST::CompoundStmt* p_expr) override;
     Status visit(Hzcc::AST::ArithmeticExpr* p_expr) override;
@@ -61,20 +56,21 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
 
   protected:
     void IncLindeIndent();
-
     void DecLindeIndent();
 
     void AddToCache(const std::string &output);
-    void EnterScope();
-    void ExitScope();
-
-    std::string GetAllCachedLines();
+    void EnableGenerateLoad();
+    void DisableGenerateLoad();
+    bool GetGenerateLoadStatus() const;
+    const std::string& GetInputFileName();
 
     [[nodiscard]] const std::string &GetLineIndent() const;
 
   private:
     std::string _indent;
     std::stringstream _output;
+    std::string _intput_file_name = "";
+    bool _generate_load = false;
     constexpr static const char *_indent_str = "    ";
 };
 

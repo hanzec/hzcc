@@ -7,7 +7,7 @@
 #include "lexical/Token.h"
 
 namespace Hzcc::AST {
-std::string ReturnNode::GetNodeName() const { return "ReturnNode"; }
+const char* ReturnNode::GetNodeName() const { return "ReturnNode"; }
 ReturnNode::ReturnNode(const Lexical::Token& token,
                        std::unique_ptr<ASTNode> return_val)
     : ASTNode(token.Location()), _return_val(std::move(return_val)) {}

@@ -26,7 +26,7 @@ class CompoundStmt : public ASTNode {
     [[nodiscard]] std::list<std::unique_ptr<ASTNode>>& GetBodyStatements();
 
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
     [[nodiscard]] std::string PrintAdditionalInfo(
         std::string_view ident) const override;
 

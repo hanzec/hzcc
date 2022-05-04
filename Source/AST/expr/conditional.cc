@@ -5,7 +5,7 @@
 
 namespace Hzcc::AST {
 
-std::string AST::ConditionalExpr::GetNodeName() const {
+const char* AST::ConditionalExpr::GetNodeName() const {
     return "ConditionalExpr";
 }
 std::shared_ptr<Type> ConditionalExpr::GetType() const {

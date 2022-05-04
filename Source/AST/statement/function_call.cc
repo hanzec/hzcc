@@ -8,7 +8,7 @@
 #include "lexical/Token.h"
 
 namespace Hzcc::AST {
-std::string FunctionCall::GetNodeName() const { return "FunctionCall"; }
+const char* FunctionCall::GetNodeName() const { return "FunctionCall"; }
 FunctionCall::FunctionCall(const Lexical::Token& name,
                            const std::shared_ptr<Type>& return_type,
                            std::list<std::unique_ptr<ASTNode>> args)

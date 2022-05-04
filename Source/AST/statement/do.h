@@ -17,7 +17,7 @@ class DoStatement : public WhileStatement {
     [[nodiscard]] bool HasBody() const override { return true; }
 
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
 };
 }  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_DO_H_

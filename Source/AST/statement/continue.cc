@@ -5,7 +5,7 @@
 
 namespace Hzcc::AST {
 
-std::string AST::ContinueStatement::GetNodeName() const {
+const char* AST::ContinueStatement::GetNodeName() const {
     return "ContinueStatement";
 }
 Status ContinueStatement::visit(ASTVisitor& visitor) {

@@ -22,7 +22,7 @@ class ArraySubscriptExpr : public ASTNode {
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
     [[nodiscard]] std::string PrintAdditionalInfo(
         std::string_view ident) const override;
 

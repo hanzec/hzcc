@@ -245,7 +245,7 @@ void CompilationUnit::enterScope() {
 }
 
 void CompilationUnit::enterScope(const std::string &name,
-                            const std::shared_ptr<Type> &return_type) {
+                                 const std::shared_ptr<Type> &return_type) {
     if (_current_context.lock() != nullptr) {
         DLOG(FATAL) << "Only root context can enter a named scope";
     } else {
@@ -313,7 +313,8 @@ bool CompilationUnit::hasVariable(const std::string &name, bool current_scope) {
     }
 }
 
-std::shared_ptr<Type> CompilationUnit::getVariableType(const std::string &name) {
+std::shared_ptr<Type> CompilationUnit::getVariableType(
+    const std::string &name) {
     if (hasVariable(name, false)) {
         if (_current_context.lock()->hasVariable(name, false)) {
             return _current_context.lock()->getVariableType(name);
@@ -354,7 +355,7 @@ std::pair<bool, int> CompilationUnit::getVariableInfo(
 }
 
 void CompilationUnit::addVariable(int line_no, const std::string &name,
-                             std::shared_ptr<Type> &variable_type) {
+                                  std::shared_ptr<Type> &variable_type) {
     DLOG_ASSERT(_current_context.lock() != nullptr)
         << " should never call addVariable when in root context";
     DLOG_ASSERT(!_current_context.lock()->hasVariable(name, true))
@@ -369,7 +370,7 @@ std::string CompilationUnit::Dump() const {
 
     // Dump the function declarations
     indent = "|";
-    ret << "Parsed AST: \n";
+    ret << "Compilation Unit: " << _file_name << std::endl;
     for (auto &func : _global_decl) {
         ret << func.second->Dump(indent) +
                    (func == _global_decl.back() ? "" : "\n");

@@ -29,7 +29,7 @@ class UnaryExpr : public ASTNode {
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
 
   private:
     UnaryType _type;

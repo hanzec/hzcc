@@ -4,7 +4,7 @@
 
 #ifndef MYCC_SOURCE_CODEGEN_GENERATOR_H_
 #define MYCC_SOURCE_CODEGEN_GENERATOR_H_
-#include <fstream>
+#include <memory>
 #include <string>
 #include <utility>
 

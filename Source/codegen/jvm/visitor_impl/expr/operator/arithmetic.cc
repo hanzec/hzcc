@@ -24,9 +24,12 @@ Status JVMGenerator::visit(Hzcc::AST::ArithmeticExpr* p_expr) {
                 p_expr->GetLHS()->GetDeducedValue() != std::nullopt)
         << "Current expr could deduce value, but use code gen";
 
+
     // visit LHS and RHS
+    EnableGenerateLoad();
     HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetLHS());
     HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetLHS());
+    DisableGenerateLoad();
 
     // write operation
     AddToCache(Utils::GetJVMTypename(p_expr->GetType()->GetName()) +

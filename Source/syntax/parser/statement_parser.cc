@@ -42,9 +42,8 @@ Statement::Statement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::ASTNode>(),
                  TypeNameUtil::name_pretty<AST::ASTNode>()) {}
 
-std::unique_ptr<AST::ASTNode> Statement::parse_impl(AST::CompilationUnit& context,
-                                                    TokenList& tokens,
-                                                    TokenList& attributes) {
+std::unique_ptr<AST::ASTNode> Statement::parse_impl(
+    AST::CompilationUnit& context, TokenList& tokens, TokenList& attributes) {
     ConcatAttribute(attributes, tokens);
     std::unique_ptr<AST::ASTNode> node{nullptr};
     switch (peek(tokens).Type()) {
@@ -1394,14 +1393,13 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
         switch (pop_list(tokens).Type()) {
             case Lexical::TokenType::kChar:
                 return std::make_unique<AST::LiteralExpr>(
-                    AST::LiteralExpr::kChar, value);
+                    AST::kLiteralType_Char, value);
             case Lexical::TokenType::kInteger:
                 return std::make_unique<AST::LiteralExpr>(
-                    AST::LiteralExpr::kInteger, value);
-                ;
+                    AST::kLiteralType_Integer, value);
             case Lexical::TokenType::kReal_number:
                 return std::make_unique<AST::LiteralExpr>(
-                    AST::LiteralExpr::kReal_number, value);
+                    AST::kLiteralType_Real_number, value);
             default:
                 LOG(FATAL) << "Unreachable code: \n"
                            << "\t Current AST:\n";
@@ -1419,7 +1417,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
         }
 
         return std::make_unique<AST::LiteralExpr>(
-            AST::LiteralExpr::kString,
+            AST::kLiteralType_String,
             Lexical::Token(value_str, value.Type(), value.Location().first,
                            value.Location().second));
     }

@@ -33,5 +33,4 @@
 #if defined(__cpp_lib_filesystem) && __has_include(<filesystem>)
 #define HAS_STD_FILESYSTEM
 #endif
-
 #endif  // MYCC_MACRO_H

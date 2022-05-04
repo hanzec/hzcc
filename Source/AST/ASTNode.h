@@ -59,7 +59,7 @@ class ASTNode {
 
     [[nodiscard]] int GetLineNumber() const;
 
-    [[nodiscard]] virtual std::string GetNodeName() const = 0;
+    [[nodiscard]] virtual const char* GetNodeName() const = 0;
 
   protected:
     [[nodiscard]] uint64_t GetNodeId() const;

@@ -10,7 +10,7 @@
 #include "lexical/Token.h"
 namespace Hzcc::AST {
 
-std::string AST::BitwiseExpr::GetNodeName() const { return "BitwiseExpr"; }
+const char* AST::BitwiseExpr::GetNodeName() const { return "BitwiseExpr"; }
 BitwiseExpr::BitwiseExpr(const Lexical::Token& type,
                          std::unique_ptr<ASTNode> lhs,
                          std::unique_ptr<ASTNode> rhs)

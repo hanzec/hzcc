@@ -15,7 +15,7 @@ class EmptyStatement : public ASTNode {
     EmptyStatement(std::pair<int, int> pair_1);
 
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
 };
 
 };      // namespace Hzcc::AST

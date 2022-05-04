@@ -9,7 +9,7 @@
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
 namespace Hzcc::AST {
-std::string ArithmeticExpr::GetNodeName() const { return "ArithmeticExpr"; }
+const char* ArithmeticExpr::GetNodeName() const { return "ArithmeticExpr"; }
 
 std::optional<DeduceValue> ArithmeticExpr::GetDeducedValue() const {
     if (!GetType()->IsConst()) {
@@ -26,7 +26,7 @@ std::optional<DeduceValue> ArithmeticExpr::GetDeducedValue() const {
         case ArithmeticType::kArithmeticType_Mul:
             return GetLHS()->GetDeducedValue().value() *
                    GetRHS()->GetDeducedValue().value();
-        case ArithmeticType::kDiv:
+        case ArithmeticType::kArithmeticType_Div:
             return GetLHS()->GetDeducedValue().value() /
                    GetRHS()->GetDeducedValue().value();
         case ArithmeticType::kArithmeticType_Mod:
@@ -51,7 +51,7 @@ ArithmeticExpr::ArithmeticExpr(const Lexical::Token& type,
             this->_type = ArithmeticType::kArithmeticType_Mul;
             break;
         case '/':
-            this->_type = ArithmeticType::kDiv;
+            this->_type = ArithmeticType::kArithmeticType_Div;
             break;
         case '%':
             this->_type = ArithmeticType::kArithmeticType_Mod;

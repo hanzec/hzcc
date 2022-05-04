@@ -27,7 +27,7 @@ class ArithmeticExpr : public OperatorBase {
 
   protected:
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
 
     [[nodiscard]] std::optional<DeduceValue> GetDeducedValue() const override;
 

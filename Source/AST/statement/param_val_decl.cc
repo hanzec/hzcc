@@ -4,6 +4,6 @@
 
 #include "param_val_decl.h"
 namespace Hzcc::AST {
-std::string ParamVarDecl::GetNodeName() const { return "ParamVarDecl"; }
+const char* ParamVarDecl::GetNodeName() const { return "ParamVarDecl"; }
 Status ParamVarDecl::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 }  // namespace Hzcc::AST

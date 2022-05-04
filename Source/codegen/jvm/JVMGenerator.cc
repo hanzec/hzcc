@@ -72,4 +72,17 @@ int JVMGenerator::BindStack(std::string name, char type, bool is_local) {
     return 0;
 }
 
+
+void JVMGenerator::AddToCache(const std::string& output) {
+    _output << _indent << output << std::endl;
+}
+void JVMGenerator::EnableGenerateLoad() { _generate_load = true; }
+void JVMGenerator::DisableGenerateLoad() { _generate_load = false; }
+bool JVMGenerator::GetGenerateLoadStatus() const { return _generate_load; }
+const std::string& JVMGenerator::GetInputFileName() {
+    DLOG_ASSERT(!_intput_file_name.empty())
+        << "Call GetInputFileName without setting up the input file name!";
+    return _intput_file_name;
+}
+
 }  // namespace Hzcc::Codegen

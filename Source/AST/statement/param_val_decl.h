@@ -12,12 +12,12 @@ class ParamVarDecl : public VarDecl {
   public:
     ParamVarDecl(const Lexical::Token& name, const std::shared_ptr<Type>& type,
                  std::list<Lexical::Token>& list)
-        : VarDecl(type, list, name){};
+        : VarDecl(type, list, name, nullptr){};
 
     Status visit(ASTVisitor& visitor) override;
 
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
 };
 }  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_PARAM_VAL_DECL_H_

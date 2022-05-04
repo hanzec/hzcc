@@ -8,13 +8,10 @@
 #include <iostream>
 
 #include "AST/CompilationUnit.h"
-#include "CompileContext.h"
-#include "codegen/Generator.h"
 #include "codegen/jvm/JVMGenerator.h"
 #include "const_msg.h"
 #include "lexical//Token.h"
 #include "lexical/lexical.h"
-#include "optimization/PassManager.h"
 #include "optimization/PassManagerImpl.h"
 #include "options.h"
 #include "syntax/syntax.h"
@@ -114,7 +111,7 @@ int main(int argc, char* argv[]) {
     }
 
     // compilation process
-    Hzcc::CompileContext context;
+    std::list<Hzcc::AST::CompilationUnit> compilation_units;
     for (int i = 0; i < input_files.size(); i++) {
         Hzcc::Message::set_current_file(input_files[0]);
 
@@ -176,21 +173,18 @@ int main(int argc, char* argv[]) {
             }
             break;
         }
-        context.AddCompileUnit(compilation_unit);
+        compilation_units.push_back(std::move(compilation_unit));
     }
 
     /** ##################################################################
      * Code Generation                                                  #
      * ##################################################################*/
     Hzcc::Message::set_current_part("Code Generator");
+    Hzcc::Pass::PassManagerImpl pass_manager;
 
-    if (context
-            .Compile<Hzcc::Codegen::JVMGenerator, Hzcc::Pass::PassManagerImpl>(
-                output_file[0])
-            .Ok()) {
-        return -1;
-    } else {
-        return 0;
+    // run pass
+    for (auto& unit : compilation_units) {
+        pass_manager.RunPass(unit);
     }
 
     return 0;

@@ -3,7 +3,7 @@
 //
 #include "while.h"
 namespace Hzcc::AST {
-std::string Hzcc::AST::WhileStatement::GetNodeName() const {
+const char* Hzcc::AST::WhileStatement::GetNodeName() const {
     return "WhileStatement";
 }
 

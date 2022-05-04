@@ -27,8 +27,10 @@ class CastExpr : public ASTNode {
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
+    [[nodiscard]] std::unique_ptr<ASTNode>& GetCastExpr();
+
   protected:
-    [[nodiscard]] std::string GetNodeName() const override;
+    [[nodiscard]] const char* GetNodeName() const override;
 
     [[nodiscard]] std::string PrintAdditionalInfo(
         std::string_view ident) const override;
