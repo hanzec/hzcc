@@ -10,7 +10,7 @@
 #include "utils/logging.h"
 namespace Hzcc::Codegen::Utils {
 constexpr static std::array<const char *, 7> kConstIntASM = {
-    "iconst_m1", "iconst_0", "iconst_1", "iconst_2",
+    "iconst_M1", "iconst_0", "iconst_1", "iconst_2",
     "iconst_3",  "iconst_4", "iconst_5"};
 constexpr static std::array<const char *, 3> kConstFloatASM = {
     "fconst_0", "fconst_1", "fconst_2"};
@@ -18,6 +18,7 @@ constexpr static std::array<const char *, 3> kConstDoubleASM = {"dconst_0",
                                                                 "dconst_1"};
 constexpr static std::array<const char *, 2> kConstLongASM = {"lconst_0",
                                                               "lconst_1"};
+
 std::string PushConstVal(long val) {
     // for value 1 or 0 , we can use lconst_0 or lconst_1
     if (val == 0 || val == 1) {
@@ -90,7 +91,7 @@ std::string PushConstVal(std::string const &type, const AST::DeduceValue &val) {
     auto final_type = type;
 
     // remove keyword from type name
-    for (const auto &keyword : Lexical::Keywords::kKeyword) {
+    for (const auto &keyword : Lexical::Keywords::kAttribute) {
         if (final_type.find(keyword) != std::string::npos) {
             final_type.erase(final_type.find(keyword), std::strlen(keyword));
         }
@@ -111,7 +112,7 @@ std::string PushConstVal(std::string const &type, const AST::DeduceValue &val) {
         final_type.erase(final_type.find(' '), std::strlen(" "));
     }
 
-    if (final_type == "int") {
+    if (final_type == "int" || final_type == "char" || final_type == "short") {
         return PushConstVal(static_cast<int>(val.AsInt()));
     } else if (final_type == "long") {
         return PushConstVal(static_cast<long>(val.AsInt()));
@@ -120,7 +121,8 @@ std::string PushConstVal(std::string const &type, const AST::DeduceValue &val) {
     } else if (final_type == "double") {
         return PushConstVal(static_cast<double>(val.AsReal()));
     } else {
-        LOG(FATAL) << "Unsupported type: " << final_type;
+        LOG(FATAL) << "Unsupported type: " << final_type
+                   << " with original type: " << type;
     }
 }
 }  // namespace Hzcc::Codegen::Utils

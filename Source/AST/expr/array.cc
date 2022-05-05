@@ -40,13 +40,22 @@ ArraySubscriptExpr::ArraySubscriptExpr(const Lexical::Token& token,
     if (Options::Global_enable_type_checking) {
         DLOG_ASSERT(_name->GetType()->IsArray())
             << " ArraySubscriptExpr: " + _name->Dump("") +
-                   " should have array type but got " + _name->GetType()->GetName();
+                   " should have array type but got " +
+                   _name->GetType()->GetName();
     }
 }
 
 bool ArraySubscriptExpr::IsAssignable() const { return true; }
+
 Status ArraySubscriptExpr::visit(ASTVisitor& visitor) {
     return visitor.visit(this);
-};
+}
 
+bool ArraySubscriptExpr::IsDereference() const { return true; }
+std::unique_ptr<AST::ASTNode>& ArraySubscriptExpr::GetArrayBase() {
+    return _name;
+}
+std::unique_ptr<AST::ASTNode>& ArraySubscriptExpr::GetSubscript() {
+    return _index_expr;
+}
 }  // namespace Hzcc::AST

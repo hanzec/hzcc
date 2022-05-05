@@ -46,7 +46,7 @@ class FuncAnalyzer : public AST::ASTVisitor {
     /**######################################################
      * ## Information Collected                            ##
      **#######################################################**/
-    const std::list<std::tuple<const std::string_view, char, uint32_t>>&
+    const std::list<std::tuple<const std::string, const std::string, uint32_t>>&
     GetLocalVariable();
 
     [[nodiscard]] uint32_t GetMaxStackSize() const;
@@ -85,6 +85,9 @@ class FuncAnalyzer : public AST::ASTVisitor {
      */
     [[nodiscard]] bool GetGenerateLoadStatus() const;
 
+    void AddNewLocalVariable(const std::string_view& p_name, uint32_t line_no,
+                             std::string_view type);
+
   private:
     bool _generate_load = false;
     uint32_t _max_stack_size = 0;
@@ -94,7 +97,7 @@ class FuncAnalyzer : public AST::ASTVisitor {
      * _local_var_map will have a formate like:
      * [variable_name, line_number]
      */
-    std::list<std::tuple<const std::string_view, char, uint32_t>>
+    std::list<std::tuple<const std::string, const std::string, uint32_t>>
         _local_var_map;
 };
 }  // namespace Hzcc::Codegen

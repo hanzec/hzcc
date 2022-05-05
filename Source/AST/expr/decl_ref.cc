@@ -14,9 +14,10 @@ DeclRefExpr::DeclRefExpr(const Lexical::Token& name, std::shared_ptr<Type> type)
 std::shared_ptr<Type> DeclRefExpr::GetType() const { return _type; }
 
 std::string DeclRefExpr::PrintAdditionalInfo(std::string_view ident) const {
-    return _name;
+    return _name + " " + _type->GetName();
 }
 bool DeclRefExpr::IsAssignable() const { return true; }
 Status DeclRefExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+const std::string& DeclRefExpr::VarName() const { return _name; }
 
 }  // namespace Hzcc::AST

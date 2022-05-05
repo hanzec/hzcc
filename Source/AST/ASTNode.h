@@ -42,6 +42,13 @@ class ASTNode {
 
     [[nodiscard]] virtual bool IsStructDecl() const { return false; }
 
+    /**
+     * @brief Determine whether the node is used to access element in array or
+     * not.
+     * @return
+     */
+    [[nodiscard]] virtual bool IsDereference() const { return false; }
+
     [[nodiscard]] virtual bool IsLiteral() const { return false; }
 
     [[nodiscard]] virtual bool IsReturn() const { return false; }
@@ -57,14 +64,12 @@ class ASTNode {
 
     virtual Status visit(ASTVisitor& visitor) = 0;
 
-    [[nodiscard]] int GetLineNumber() const;
+    [[nodiscard]] std::pair<int, int> Location() const;
 
     [[nodiscard]] virtual const char* GetNodeName() const = 0;
 
   protected:
     [[nodiscard]] uint64_t GetNodeId() const;
-
-    [[nodiscard]] std::pair<int, int> GetLocation() const;
 
     [[nodiscard]] virtual std::string PrintAdditionalInfo(
         std::string_view ident) const;

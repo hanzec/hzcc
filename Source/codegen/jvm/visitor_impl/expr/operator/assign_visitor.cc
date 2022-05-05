@@ -2,7 +2,6 @@
 // Created by chen_ on 2022/4/10.
 //
 #include "AST/expr/operator/assign.h"
-
 #include "AST/type/Type.h"
 #include "codegen/jvm/JVMGenerator.h"
 #include "codegen/jvm/utils/TypeUtils.h"
@@ -12,7 +11,9 @@ constexpr std::array<const char*, AST::kAssignType_Max> kAssignOPASM = {
     "or",  "xor", "shl", "shr", "ushr"};
 
 Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
-    // STATIC ASSERT
+    /** #####################################################################
+     *  ### Runtime Assertion                                             ###
+     *  ##################################################################### */
     DLOG_ASSERT(p_expr != nullptr) << "expression is nullptr";
     DLOG_ASSERT(p_expr->GetLHS() != nullptr)
         << "lhs of expr " << p_expr->GetLHS()->GetNodeName()
@@ -21,9 +22,9 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
         << "rhs of expr " << p_expr->GetRHS()->GetNodeName()
         << "(line:" << p_expr->GetRHS()->GetLine() << ") is nullptr";
 
-    // we first evaluate the LHS get stack location
-    HZCC_JVM_Visit_Node(p_expr->GetLHS());
-
+    /** #####################################################################
+     *  ### Code Generation                                               ###
+     *  ##################################################################### */
     /**
      * if the LHS's type is int and rhs could be deduced we can use iinc
      * instruction. More detail, Expression has to meed to following conditions:
@@ -43,49 +44,47 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
         // Rule2
         p_expr->GetLHS()->GetDeducedValue().has_value()) {
         // then we insert the "IINC" instruction
+        auto var_name = ConsumeReturnStack();
         AddToCache(
-            "IINC " + std::to_string(ConsumeReturnStack()) + " " +
+            "iinc " + std::to_string(GetStackID(var_name)) + " " +
             std::to_string(
                 (p_expr->GetAssignType() == AST::kAssignType_AddAssign
                      ? p_expr->GetLHS()->GetDeducedValue().value().AsInt()
                      : -p_expr->GetLHS()->GetDeducedValue().value().AsInt())));
     } else {
-        // for expression need to access its original value like "-=", "+=" etc.
-        auto var_stack_id = ConsumeReturnStack();
-        auto var_lhs_type = p_expr->GetLHS()->GetType();
+        // we first evaluate the LHS get stack location
+        HZCC_JVM_NOT_GENERATE_LOAD_INSTR(HZCC_JVM_Visit_Node(p_expr->GetLHS()));
 
-        // then we evaluate the RHS
-        if (var_lhs_type->IsArray()) {
-            AddToCache("DUP2");
-            AddToCache("IALOAD");
-        } else {
-            AddToCache(HZCC_JVM_GET_EXPR_TYPE(p_expr->GetLHS()) + "LOAD " +
-                       std::to_string(var_stack_id));
+        auto var_name = ConsumeReturnStack();
+
+        // then we evaluate the RHS, for expression need to access its original
+        // value like "-=", "+=" etc we have to load the original value first
+        if (p_expr->GetAssignType() != AST::kAssignType_Assign) {
+            // for reference type like array, we will duplicate the value and
+            // refer for gain the value and push back to stack
+            if (p_expr->GetLHS()->IsDereference()) {
+                AddToCache("dup2");
+            }
+
+            // for primitive type we can directly use the value
+            else {
+                AddToCache(LoadFromVariable(var_name));
+            }
         }
 
         // we evaluate the RHS
-        EnableGenerateLoad();
-        HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetRHS());
-        DisableGenerateLoad();
+        HZCC_JVM_GENERATE_LOAD_INSTR(
+            HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetRHS()));
 
-        // here we get the original value of the LHS if needed
+        // here we push instructions to generate the assignment
         if (p_expr->GetAssignType() != AST::kAssignType_Assign) {
             // we then do the operation
-            AddToCache(HZCC_JVM_GET_EXPR_TYPE(p_expr->GetLHS()) +
+            AddToCache(Utils::GetTypeName(p_expr->GetLHS()->GetType(), true) +
                        kAssignOPASM[p_expr->GetAssignType()]);
         }
 
         // we push the value back to the stack
-        if (var_lhs_type->IsArray()) {
-            /**
-             * Here we have a stack layout like:
-             *  [... , array_ptr, index, added_value]
-             */
-            AddToCache(HZCC_JVM_GET_EXPR_TYPE(p_expr->GetLHS()) + "ASTORE");
-        } else {
-            AddToCache(HZCC_JVM_GET_EXPR_TYPE(p_expr->GetLHS()) + "STORE " +
-                       std::to_string(var_stack_id));
-        }
+        AddToCache(SaveToVariable(var_name));
     }
 
     return Status::OkStatus();

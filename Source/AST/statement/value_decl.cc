@@ -16,8 +16,16 @@ VarDecl::VarDecl(std::shared_ptr<Type> type, std::list<Lexical::Token>& attrs,
     attrs.clear();
 }
 const char* VarDecl::GetNodeName() const { return "VarDecl"; }
+
 std::string VarDecl::PrintAdditionalInfo(std::string_view ident) const {
-    return GetName();
+    std::stringstream ss;
+    // base information
+    ss << GetName() << " " << _type->GetName();
+
+    if (HasInitExpr())
+        ss << std::endl << _init_expr->Dump(std::string(ident) + " `");
+
+    return ss.str();
 }
 std::shared_ptr<Type> VarDecl::GetType() const { return _type; }
 

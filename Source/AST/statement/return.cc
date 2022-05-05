@@ -21,6 +21,7 @@ std::string ReturnNode::PrintAdditionalInfo(std::string_view ident) const {
     }
     return info;
 }
-Status ReturnNode::visit(ASTVisitor& visitor) { return visitor.visit(this); };
+Status ReturnNode::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+std::unique_ptr<ASTNode>& ReturnNode::GetReturnVal() { return _return_val; };
 
 }  // namespace Hzcc::AST

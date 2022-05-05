@@ -5,10 +5,15 @@
 
 #include <glog/logging.h>
 
+#include <algorithm>
+
 #include "AST/DeduceValue.h"
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
 namespace Hzcc::AST {
+constexpr static std::array<const char*, ArithmeticType::kArithmeticType_ENUM_SIZE>
+    kArithmeticStr = {"add", "sub", "mul", "div", "mod"};
+
 const char* ArithmeticExpr::GetNodeName() const { return "ArithmeticExpr"; }
 
 std::optional<DeduceValue> ArithmeticExpr::GetDeducedValue() const {
@@ -63,6 +68,21 @@ ArithmeticExpr::ArithmeticExpr(const Lexical::Token& type,
 Status ArithmeticExpr::visit(ASTVisitor& visitor) {
     return visitor.visit(this);
 }
-ArithmeticType ArithmeticExpr::GetOpType() const { return _type; };
+ArithmeticType ArithmeticExpr::GetOpType() const { return _type; }
+
+std::string ArithmeticExpr::PrintAdditionalInfo(std::string_view ident) const {
+    std::stringstream ss;
+
+    // print node info
+    ss << kArithmeticStr[_type] << ' ' << GetLHS()->GetType()->GetName();
+
+    // print LHS and RHS info
+    std::string new_ident(ident);
+    std::replace(new_ident.begin(), new_ident.end(), '`', ' ');
+    ss << std::endl << GetLHS()->Dump(new_ident + '|');
+    ss << std::endl << GetRHS()->Dump(new_ident + '`');
+
+    return ss.str();
+};
 
 }  // namespace Hzcc::AST

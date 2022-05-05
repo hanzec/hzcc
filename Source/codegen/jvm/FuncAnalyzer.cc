@@ -7,9 +7,15 @@
 #include "AST/expr/cast.h"
 #include "AST/expr/operator/arithmetic.h"
 #include "AST/expr/operator/assign.h"
+#include "AST/expr/operator/bitwise.h"
+#include "AST/expr/operator/comma.h"
+#include "AST/expr/operator/logical.h"
+#include "AST/expr/operator/relational.h"
+#include "AST/expr/sizeof.h"
 #include "AST/statement/compound.h"
+#include "AST/statement/param_val_decl.h"
+#include "AST/statement/value_decl.h"
 #include "codegen/jvm/utils/macro.h"
-
 namespace Hzcc::Codegen {
 
 Status FuncAnalyzer::visit(Hzcc::AST::CastExpr *p_expr) {
@@ -105,20 +111,77 @@ Status FuncAnalyzer::visit(Hzcc::AST::AssignExpr *p_expr) {
 }
 
 Status FuncAnalyzer::visit(Hzcc::AST::BitwiseExpr *p_expr) {
+    /**
+     * BitwiseExpr Expression will consume two stack slots and produce one stack
+     * slot. Which means decrease the current stack by 1.
+     * TODO not verified yet
+     */
+
+    // First we evaluate the left expression.
+    HZCC_JVM_Visit_Node(p_expr->GetLHS());
+
+    // Then we evaluate the right expression.
+    HZCC_JVM_Visit_Node(p_expr->GetRHS());
+
+    // Then we consume the two stack slots and produce one stack slot.
+    DecreaseCurrentStack(1);
+
     return Status::OkStatus();
 }
 
 Status FuncAnalyzer::visit(Hzcc::AST::LogicalExpr *p_expr) {
+    /**
+     * LogicalExpr Expression will consume two stack slots and produce one stack
+     * slot. Which means decrease the current stack by 1.
+     * TODO not verified yet
+     */
+
+    // First we evaluate the left expression.
+    HZCC_JVM_Visit_Node(p_expr->GetLHS());
+
+    // Then we evaluate the right expression.
+    HZCC_JVM_Visit_Node(p_expr->GetRHS());
+
+    // Then we consume the two stack slots and produce one stack slot.
+    DecreaseCurrentStack(1);
+
     return Status::OkStatus();
 }
 
 Status FuncAnalyzer::visit(Hzcc::AST::CommaExpr *p_expr) {
+    /**
+     * CommaExpr Expression will not consume or pop any stack.
+     * TODO not verified yet
+     */
+
+    // First we evaluate the left expression.
+    HZCC_JVM_Visit_Node(p_expr->GetLHS());
+
+    // Then we evaluate the right expression.
+    HZCC_JVM_Visit_Node(p_expr->GetRHS());
+
     return Status::OkStatus();
 }
 
 Status FuncAnalyzer::visit(Hzcc::AST::RelationalExpr *p_expr) {
+    /**
+     * RelationalExpr Expression will consume two stack slots and produce one
+     * stack slot. Which means decrease the current stack by 1.
+     * TODO not verified yet
+     */
+
+    // First we evaluate the left expression.
+    HZCC_JVM_Visit_Node(p_expr->GetLHS());
+
+    // Then we evaluate the right expression.
+    HZCC_JVM_Visit_Node(p_expr->GetRHS());
+
+    // Then we consume the two stack slots and produce one stack slot.
+    DecreaseCurrentStack(1);
+
     return Status::OkStatus();
 }
+
 Status FuncAnalyzer::visit(Hzcc::AST::AccessExpr *p_expr) {
     return Status::OkStatus();
 }
@@ -132,11 +195,20 @@ Status FuncAnalyzer::visit(Hzcc::AST::DeclRefExpr *p_expr) {
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::SizeofExpr *p_expr) {
+    /**
+     * SizeofExpr Expression will push one stack slot.
+     * TODO not verified yet
+     */
+
+    // Then we consume the two stack slots and produce one stack slot.
+    IncreaseCurrentStack(1);
+
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::UnaryExpr *p_expr) {
     return Status::OkStatus();
 }
+
 Status FuncAnalyzer::visit(Hzcc::AST::CompoundStmt *p_expr) {
     /**
      * CompoundStmt is a list of statements. We will visit each statement
@@ -177,6 +249,8 @@ Status FuncAnalyzer::visit(Hzcc::AST::IfStatement *p_expr) {
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::ParamVarDecl *p_expr) {
+    AddNewLocalVariable(p_expr->GetName(), p_expr->GetLine(),
+                        Utils::GetTypeName(p_expr->GetType()));
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::ReturnNode *p_expr) {
@@ -189,6 +263,8 @@ Status FuncAnalyzer::visit(Hzcc::AST::LiteralExpr *p_expr) {
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::VarDecl *p_expr) {
+    AddNewLocalVariable(p_expr->GetName(), p_expr->GetLine(),
+                        Utils::GetTypeName(p_expr->GetType()));
     return Status::OkStatus();
 }
 
@@ -205,8 +281,14 @@ void FuncAnalyzer::EnableGenerateLoad() { _generate_load = true; }
 void FuncAnalyzer::DisableGenerateLoad() { _generate_load = false; }
 bool FuncAnalyzer::GetGenerateLoadStatus() const { return _generate_load; }
 uint32_t FuncAnalyzer::GetMaxStackSize() const { return _max_stack_size; }
-const std::list<std::tuple<const std::string_view, char, uint32_t>>
+const std::list<std::tuple<const std::string, const std::string, uint32_t>>
     &FuncAnalyzer::GetLocalVariable() {
     return _local_var_map;
+}
+
+void FuncAnalyzer::AddNewLocalVariable(const std::string_view &p_name,
+                                       uint32_t line_no,
+                                       const std::string_view type) {
+    _local_var_map.emplace_back(p_name, type, line_no);
 }
 }  // namespace Hzcc::Codegen

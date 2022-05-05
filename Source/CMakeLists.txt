@@ -6,6 +6,7 @@ configure_file(
         version.h.in
         ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 target_include_directories(mycc PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(mycc_test PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 ###############################################################################
 ## Shared Dependency ##########################################################

@@ -53,7 +53,7 @@ std::string ASTNode::Dump(const std::string_view ident) const {
 #endif
 }
 
-std::pair<int, int> ASTNode::GetLocation() const { return _node_location; }
+std::pair<int, int> ASTNode::Location() const { return _node_location; }
 
 uint64_t ASTNode::GetNodeId() const { return _id; }
 
@@ -77,7 +77,7 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
             !lhs_type->IsArray() && !rhs->GetType()->IsArray()) {
             if (lhs_type->GetName().find("float") != std::string::npos) {
                 modified = true;
-                auto loc = rhs->GetLocation();
+                auto loc = rhs->Location();
                 rhs = std::make_unique<AST::CastExpr>(
                     Type::GetBasicType("float",
                                        rhs->GetType()->GetAttributes()),
@@ -99,7 +99,7 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
                     return nullptr;
                 }
                 modified = true;
-                auto loc = rhs->GetLocation();
+                auto loc = rhs->Location();
                 rhs = std::make_unique<AST::CastExpr>(
                     Type::GetBasicType("float",
                                        rhs->GetType()->GetAttributes()),
@@ -114,7 +114,7 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
                  !lhs_type->IsArray() && !rhs->GetType()->IsArray()) {
             if (lhs_type->GetName().find("double") != std::string::npos) {
                 modified = true;
-                auto loc = rhs->GetLocation();
+                auto loc = rhs->Location();
                 rhs = std::make_unique<AST::CastExpr>(
                     Type::GetBasicType("double",
                                        rhs->GetType()->GetAttributes()),
@@ -129,14 +129,14 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
                  !lhs_type->IsArray() && !rhs->GetType()->IsArray()) {
             if (lhs_type->GetName().find("int") != std::string::npos) {
                 modified = true;
-                auto loc = rhs->GetLocation();
+                auto loc = rhs->Location();
                 rhs = std::make_unique<AST::CastExpr>(
                     Type::GetBasicType("int", rhs->GetType()->GetAttributes()),
                     std::move(rhs), loc);
                 DVLOG(SYNTAX_LOG_LEVEL) << "Using CastExpr:" << rhs->Dump("");
             } else if (lhs_type->GetName().find("float") != std::string::npos) {
                 modified = true;
-                auto loc = rhs->GetLocation();
+                auto loc = rhs->Location();
                 auto rhs_attr = rhs->GetType()->GetAttributes();
                 rhs = std::make_unique<AST::CastExpr>(
                     Type::GetBasicType("int", rhs_attr),
@@ -160,5 +160,4 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
 
     return std::move(rhs);
 }
-int ASTNode::GetLineNumber() const { return _node_location.first; }
 }  // namespace Hzcc::AST

@@ -13,9 +13,11 @@ class ArrayType : public Type {
         return _base_type;
     }
 
-    [[nodiscard]] bool HasSize();
+    [[nodiscard]] bool HasDeduceSize();
 
     [[nodiscard]] uint64_t GetSize() const;
+
+    [[nodiscard]] std::unique_ptr<AST::ASTNode>& GetArraySizeNode();
 
     [[nodiscard]] bool IsSame(const std::shared_ptr<Type>& type) const override;
 
@@ -35,7 +37,7 @@ class ArrayType : public Type {
 
   private:
     std::shared_ptr<AST::Type> _base_type;
-    const std::unique_ptr<AST::ASTNode> _size_node{nullptr};
+    std::unique_ptr<AST::ASTNode> _size_node{nullptr};
 };
 
 }  // namespace Hzcc::AST

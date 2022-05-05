@@ -9,6 +9,8 @@
 #define MYCC_SOURCE_CODEGEN_JVM_UTILS_CONSTVALUTILS_H_
 namespace Hzcc::Codegen::Utils {
 
+std::string PushConstVal(char val);
+
 std::string PushConstVal(long val);
 
 std::string PushConstVal(float val);

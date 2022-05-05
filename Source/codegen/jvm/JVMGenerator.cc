@@ -31,16 +31,24 @@ Status JVMGenerator::Generate(const std::string& output,
                 << ";; Source Path: " << unit.GetFileName() << "\n";
 
     // write class file body
-    output_file << ".class public " << input_path.replace_extension().filename()
-                << "\n"
+    _current_class_name = input_path.replace_extension().filename();
+    output_file << ".class public " << _current_class_name << "\n"
                 << ".super java/lang/Object\n";
 
+    // generate function body
+    IncLindeIndent();
     // generate class body
     for (auto& ast_node : unit.GetDecls()) {
-        if(ast_node.second->IsFuncDecl()){
+        if (ast_node.second->IsFuncDecl()) {
             ast_node.second->visit(*this);
+            AddToCache("");  // add empty line
+        } else {
+            _global_vars.emplace(
+                ast_node.first, Utils::GetTypeName(ast_node.second->GetType()));
         }
     }
+    output_file << GetAllCachedLine();
+    DecLindeIndent();
 
     // write class file tail
     output_file << kConstSpecialMethod;
@@ -49,36 +57,90 @@ Status JVMGenerator::Generate(const std::string& output,
     return Status::OkStatus();
 }
 
+std::string JVMGenerator::SaveToVariable(const std::string& name) {
+    if (_local_vars.find(name) != _local_vars.end()) {
+        auto [stack_id, var_type] = _local_vars[name];
+        if (var_type.find('[') != std::string::npos) {
+            var_type.erase(var_type.find('['), 1);
+            return var_type + "astore " + std::to_string(stack_id);
+        } else {
+            // convert char to int if necessary
+            if (var_type == "c") {
+                var_type = "i";
+            }
+            return var_type + "store " + std::to_string(stack_id);
+        }
+    } else if (_global_vars.find(name) != _global_vars.end()) {
+        auto& var_type = _global_vars[name];
+        return "putstatic Field " + GetCurrentClassName() + " " + var_type +
+               " " + name;
+    } else {
+        LOG(FATAL) << "Variable " << name << " not found";
+    }
+}
+
+std::string JVMGenerator::LoadFromVariable(const std::string& name) {
+    if (_local_vars.find(name) != _local_vars.end()) {
+        auto& [stack_id, var_type] = _local_vars[name];
+        if (var_type.find('[') != std::string::npos) {
+            var_type.erase(var_type.find('['), 1);
+            return var_type + "aload " + std::to_string(stack_id);
+        } else {
+            // convert char to int if necessary
+            if (var_type == "c") {
+                var_type = "i";
+            }
+            return var_type + "load " + std::to_string(stack_id);
+        }
+    } else if (_global_vars.find(name) != _global_vars.end()) {
+        auto& var_type = _global_vars[name];
+        return "getstatic Field " + GetCurrentClassName() + " " + var_type +
+               " " + name;
+    } else {
+        LOG(FATAL) << "Variable " << name << " not found";
+    }
+}
+
 void JVMGenerator::IncLindeIndent() { _indent += _indent_str; }
 
 void JVMGenerator::DecLindeIndent() {
     _indent = _indent.substr(0, _indent.size() - 4);
 }
 
-const std::string& JVMGenerator::GetLineIndent() const { return _indent; }
-
-int JVMGenerator::PushReturnStack() { return 0; }
-
-int JVMGenerator::ConsumeReturnStack() { return 0; }
-
-std::pair<int, char> JVMGenerator::GetStack(std::string name) {
-    return std::pair<int, char>(0, 0);
+uint32_t JVMGenerator::GetStackID(std::string& name) {
+    if (_local_vars.find(name) != _local_vars.end()) {
+        return _local_vars[name].first;
+    } else {
+        LOG(FATAL) << "Variable " << name << " not found";
+    }
 }
 
-int JVMGenerator::BindStack(std::string name, char type, bool is_local) {
-    return 0;
+void JVMGenerator::PushReturnStack(const std::string& stackID) {
+    _return_stack.push_back(stackID);
+}
+
+std::string JVMGenerator::ConsumeReturnStack() {
+    auto poped_stack = _return_stack.back();
+    _return_stack.pop_back();
+    return poped_stack;
 }
 
 void JVMGenerator::AddToCache(const std::string& output) {
     _output << _indent << output << std::endl;
 }
-void JVMGenerator::EnableGenerateLoad() { _generate_load = true; }
-void JVMGenerator::DisableGenerateLoad() { _generate_load = false; }
-bool JVMGenerator::GetGenerateLoadStatus() const { return _generate_load; }
+
 const std::string& JVMGenerator::GetInputFileName() {
     DLOG_ASSERT(!_intput_file_name.empty())
         << "Call GetInputFileName without setting up the input file name!";
     return _intput_file_name;
 }
+
+const std::string& JVMGenerator::GetCurrentClassName() {
+    DLOG_ASSERT(!_current_class_name.empty())
+        << "Call GetInputFileName without setting up the input file name!";
+    return _current_class_name;
+}
+
+std::string JVMGenerator::GetAllCachedLine() { return _output.str(); }
 
 }  // namespace Hzcc::Codegen

@@ -16,6 +16,7 @@ class ReturnNode : public ASTNode {
 
     Status visit(ASTVisitor& visitor) override;
 
+    std::unique_ptr<ASTNode>& GetReturnVal();
 #ifdef NDEBUG
     [[nodiscard]] std::string Dump(std::string_view ident) const override {
         return "";

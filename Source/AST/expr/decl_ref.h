@@ -17,6 +17,8 @@ class DeclRefExpr : public ASTNode {
 
     [[nodiscard]] bool IsAssignable() const override;
 
+    [[nodiscard]] const std::string& VarName() const;
+
   protected:
     [[nodiscard]] const char* GetNodeName() const override;
 

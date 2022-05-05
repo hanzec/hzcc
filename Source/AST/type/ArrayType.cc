@@ -38,7 +38,7 @@ ArrayType::ArrayType(const std::shared_ptr<Type>& base_type,
     : Type(base_type->GetName() +
                (array_size == nullptr
                     ? "[]"
-                    : (array_size->GetType()->IsConst()
+                    : (array_size->GetDeducedValue().has_value()
                            ? "[" +
                                  std::to_string(array_size->GetDeducedValue()
                                                     .value()
@@ -50,11 +50,14 @@ ArrayType::ArrayType(const std::shared_ptr<Type>& base_type,
       _base_type(base_type) {}
 
 uint64_t ArrayType::GetSize() const {
-    return _size_node->GetType()->IsConst()
-               ? 0
-               : _size_node->GetDeducedValue()->AsInt();
+    return _size_node->GetDeducedValue().has_value()
+               ? _size_node->GetDeducedValue()->AsInt()
+               : 0;
 }
-bool ArrayType::HasSize() { return _size_node != nullptr; }
+
+bool ArrayType::HasDeduceSize() {
+    return _size_node->GetDeducedValue().has_value();
+}
 
 bool ArrayType::IsSame(const std::shared_ptr<Type>& type) const {
     // check current type
@@ -72,6 +75,9 @@ bool ArrayType::IsSame(const std::shared_ptr<Type>& type) const {
     } else {
         return false;
     }
+}
+std::unique_ptr<AST::ASTNode>& ArrayType::GetArraySizeNode() {
+    return _size_node;
 }
 
 }  // namespace Hzcc::AST

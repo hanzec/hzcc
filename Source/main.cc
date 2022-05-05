@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
     /** #####################################################################
      * Input and Output Flags                                               #
      * #################################################################### */
-    std::vector<std::string> output_file;
+    std::string output_file;
     std::vector<std::string> input_files;
     std::vector<std::string> included_files;
     app.add_option("-o,--output", output_file, "output file");
@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
         } else {
             // by project document, will print version information to output
             // file
-            std::ofstream outfile(output_file[0], std::ofstream::out);
+            std::ofstream outfile(output_file, std::ofstream::out);
             outfile << kMsg_Author << std::endl;
             outfile.close();
         }
@@ -134,7 +134,7 @@ int main(int argc, char* argv[]) {
                               << token.Value(true) << std::endl;
                 }
             } else {
-                std::fstream outfile(output_file[i], std::fstream::out);
+                std::fstream outfile(output_file, std::fstream::out);
                 for (auto& token : tokens) {
                     outfile << "File " << input_files[i] << " Line "
                             << std::setw(5) << token.Location().first + 1
@@ -160,14 +160,14 @@ int main(int argc, char* argv[]) {
                       << " is syntactically correct." << std::endl;
         }
 
-        DVLOG(AST_LOG_LEVEL) << "AST Dump\n" << compilation_unit.Dump();
+        DVLOG(0) << "AST Dump\n" << compilation_unit.Dump();
 
         if (flag4 && syntax_result.Ok()) {
             if (output_file.empty()) {
                 std::cout << compilation_unit.Dump() << std::endl;
 
             } else {
-                std::fstream outfile(output_file[i], std::fstream::out);
+                std::fstream outfile(output_file, std::fstream::out);
                 outfile << compilation_unit.Dump() << std::endl;
                 outfile.close();
             }
@@ -184,10 +184,10 @@ int main(int argc, char* argv[]) {
     Hzcc::Codegen::JVMGenerator jvm_generator;
     Hzcc::Pass::PassManagerImpl pass_manager;
 
-    // Compile to JVM bytecode
+    // Compile to JVM instr
     for (auto& unit : compilation_units) {
         pass_manager.RunPass(unit);
-        jvm_generator.Generate(output_file[0], unit);
+        jvm_generator.Generate(output_file, unit);
     }
 
     return 0;

@@ -92,6 +92,8 @@ std::string AssignExpr::PrintAdditionalInfo(std::string_view ident) const {
         case kAssignType_XorAssign:
             string += " ^= ";
             break;
+        default:
+            DLOG(FATAL) << "Unknown assign operator: " << _type;
     }
 
     // print LHS and RHS

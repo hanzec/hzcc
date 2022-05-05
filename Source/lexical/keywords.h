@@ -13,6 +13,8 @@ namespace Hzcc::Lexical::Keywords {
  * The table of string Keywords in C language.
  */
 #define kKeywordTableSize 26
+#define KAttributeTableSize 10
+
 #define KLiteralsTypeTableSize 6
 #define KPermittedTypeTableSize 10
 
@@ -67,6 +69,10 @@ constexpr static std::array<const char *, kKeywordTableSize> kKeyword{
     "unsigned",
     "inline",
     "restrict"};
+
+constexpr static std::array<const char *, KAttributeTableSize> kAttribute{
+    "const",    "extern", "static",   "auto",   "register",
+    "volatile", "signed", "unsigned", "inline", "restrict"};
 
 constexpr static std::array<const char *, KPermittedTypeTableSize>
     kPrimitiveType{"int",  "char",  "float", "double",   "void",

@@ -1,5 +1,3 @@
-#ifndef MYCC_AST_TYPE_H
-#define MYCC_AST_TYPE_H
 #include <list>
 #include <memory>
 #include <string>
@@ -9,9 +7,10 @@
 #include "lexical/token_type.h"
 #include "utils/logging.h"
 
+#ifndef MYCC_AST_TYPE_H
+#define MYCC_AST_TYPE_H
 namespace Hzcc::AST {
 class ASTNode;
-
 /**
  * @class Type
  * @brief Type of a variable or a function.

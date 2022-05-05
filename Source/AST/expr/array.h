@@ -19,7 +19,13 @@ class ArraySubscriptExpr : public ASTNode {
 
     [[nodiscard]] bool IsAssignable() const override;
 
+    [[nodiscard]] bool IsDereference() const override;
+
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
+
+    [[nodiscard]] std::unique_ptr<AST::ASTNode>& GetArrayBase();
+
+    [[nodiscard]] std::unique_ptr<AST::ASTNode>& GetSubscript();
 
   protected:
     [[nodiscard]] const char* GetNodeName() const override;

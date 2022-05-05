@@ -30,13 +30,13 @@ const char* LiteralExpr::GetNodeName() const {
 std::optional<DeduceValue> LiteralExpr::GetDeducedValue() const {
     switch (_type) {
         case LiteralType::kLiteralType_Char:
-            return DeduceValue((uint64_t) static_cast<int>(_value[0]));
+            return DeduceValue(_value[0]);
         case LiteralType::kLiteralType_Real_number:
             return DeduceValue(std::stod(_value));
         case LiteralType::kLiteralType_String:
             return std::nullopt;
         case LiteralType::kLiteralType_Integer:
-            return DeduceValue((uint64_t)std::stoi(_value));
+            return DeduceValue(static_cast<int64_t>(std::stoi(_value)));
         default:
             DLOG_ASSERT(false) << "unexpected literal type";
     }
@@ -46,13 +46,15 @@ std::optional<DeduceValue> LiteralExpr::GetDeducedValue() const {
 std::string LiteralExpr::PrintAdditionalInfo(std::string_view ident) const {
     switch (_type) {
         case LiteralType::kLiteralType_Char:
-            return "char \"" + _value + "\"";
+            return "char \'" + _value + "\'";
         case LiteralType::kLiteralType_Real_number:
             return "real_number " + _value;
         case LiteralType::kLiteralType_String:
             return "string \"" + _value + "\"";
         case LiteralType::kLiteralType_Integer:
             return "int " + _value;
+        case kLiteralType_Max:
+            DLOG_ASSERT(false) << "unexpected literal type [kLiteralType_Max]";
     }
     return "";
 }

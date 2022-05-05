@@ -24,8 +24,7 @@ ALWAYS_INLINE static bool checkAndPrint(
                      ? "[Symbol"
                      : "[" + Lexical::SymbolUtils::TokenTypeToString(
                                  error_token.Type())) +
-                "]:@" + error_token.Value() + "@")
-        return false;
+                "]:@" + error_token.Value() + "@") return false;
     } else {
         return true;
     }
@@ -89,12 +88,12 @@ std::list<Lexical::Token> ParseTypeName(AST::CompilationUnit& context,
             final_type_name.push_back(pop_list(tokens));
             if (peek(tokens).Type() == Lexical::TokenType::kDereference) {
                 MYCC_PrintFirstTokenError(
-                    tokens, "Dereference more than twice is not allowed")
-                return {};
+                    tokens,
+                    "Dereference more than twice is not allowed") return {};
             } else if (peek(tokens).Type() == Lexical::TokenType::kReference) {
                 MYCC_PrintFirstTokenError(
-                    tokens, "Reference and dereference can not be mixed")
-                return {};
+                    tokens,
+                    "Reference and dereference can not be mixed") return {};
             }
         }
 
@@ -121,8 +120,8 @@ std::unique_ptr<AST::ASTNode> ParseCondition(
     // next token is (
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLParentheses, tokens)
 
-    // parse condition
-    auto condition = ParserFactory::ParseAST<AST::ASTNode>(context, tokens);
+        // parse condition
+        auto condition = ParserFactory::ParseAST<AST::ASTNode>(context, tokens);
     if (!condition) {
         DLOG(ERROR) << "Parse condition failed";
         return nullptr;
@@ -131,7 +130,7 @@ std::unique_ptr<AST::ASTNode> ParseCondition(
     // next token is ')'
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRParentheses, tokens)
 
-    return condition;
+        return condition;
 }
 
 std::unique_ptr<AST::ASTNode> ParseBodyStatement(
@@ -222,10 +221,11 @@ ParseVariable(                      // NOLINT
                     array_shape.push_back(std::move(array_size));
                 }
             } else {
-                MYCC_PrintFirstTokenError(tokens, "have incomplete type")
-                return std::make_tuple(
-                    Lexical::Token(Lexical::TokenType::kUnknown, -1, -1),
-                    std::move(array_shape));
+                MYCC_PrintFirstTokenError(tokens,
+                                          "have incomplete type") return std::
+                    make_tuple(
+                        Lexical::Token(Lexical::TokenType::kUnknown, -1, -1),
+                        std::move(array_shape));
             }
         }
 

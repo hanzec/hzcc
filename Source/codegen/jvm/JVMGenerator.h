@@ -32,45 +32,57 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
     /**######################################################
      * ## AST Visitor                                      ##
      **#######################################################**/
-    Status VisitAllAST(
-        const std::unique_ptr<Hzcc::AST::CompilationUnit>& p_expr);
-
     Status visit(Hzcc::AST::VarDecl* p_expr) override;
+    Status visit(Hzcc::AST::UnaryExpr* p_expr) override;
+    Status visit(Hzcc::AST::ReturnNode* p_expr) override;
     Status visit(Hzcc::AST::AssignExpr* p_expr) override;
+    Status visit(Hzcc::AST::DeclRefExpr* p_expr) override;
+    Status visit(Hzcc::AST::LiteralExpr* p_expr) override;
     Status visit(Hzcc::AST::CompoundStmt* p_expr) override;
+    Status visit(Hzcc::AST::EmptyStatement* p_expr) override;
     Status visit(Hzcc::AST::ArithmeticExpr* p_expr) override;
     Status visit(Hzcc::AST::FunctionDeclNode* p_expr) override;
+    Status visit(Hzcc::AST::ArraySubscriptExpr* p_expr) override;
 
     /**######################################################
      * ## Stack Management                                  ##
      **#######################################################**/
 
-    int PushReturnStack();
+    void PushReturnStack(const std::string& stackID);
 
-    int ConsumeReturnStack();
-
-    std::pair<int, char> GetStack(std::string name);
-
-    int BindStack(std::string name, char type, bool is_local);
+    std::string ConsumeReturnStack();
 
   protected:
     void IncLindeIndent();
     void DecLindeIndent();
 
     void AddToCache(const std::string& output);
-    void EnableGenerateLoad();
-    void DisableGenerateLoad();
-    bool GetGenerateLoadStatus() const;
+    std::string GetAllCachedLine();
     const std::string& GetInputFileName();
+    const std::string& GetCurrentClassName();
 
-    [[nodiscard]] const std::string& GetLineIndent() const;
+    [[nodiscard]] uint32_t GetStackID(std::string& name);
+
+    [[nodiscard]] std::string SaveToVariable(const std::string& name);
+
+    [[nodiscard]] std::string LoadFromVariable(const std::string& name);
 
   private:
     std::string _indent;
     std::stringstream _output;
-    std::string _intput_file_name = "";
+    std::string _intput_file_name;
+    std::string _current_class_name;
+
     bool _generate_load = false;
     constexpr static const char* _indent_str = "    ";
+
+    std::list<std::string> _return_stack;
+
+    /**
+     * Varname ： [stackID, Type]
+     */
+    std::unordered_map<std::string, std::string> _global_vars;
+    std::unordered_map<std::string, std::pair<int, std::string>> _local_vars;
 };
 
 }  // namespace Hzcc::Codegen

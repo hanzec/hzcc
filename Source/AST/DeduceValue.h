@@ -3,10 +3,22 @@
 //
 #ifndef MYCC_SOURCE_AST_DEDUCEVALUE_H_
 #define MYCC_SOURCE_AST_DEDUCEVALUE_H_
+#include <array>
 #include <cstdint>
 #include <string>
 
 namespace Hzcc::AST {
+/**
+ * @brief The type of the value, currently only integer, real number and
+ * character literal are supported.
+ */
+enum DeduceValueType {
+    kDeduceValueType_Int = 0,
+    kDeduceValueType_Char = 1,
+    kDeduceValueType_Real_Number = 2,
+    kDeduceValueType_ENUM_SIZE = 3  // keep last
+};
+
 /**
  * @brief The base class of all deducible value. The deducible value is the
  * value we can calculate during the compile.
@@ -14,13 +26,10 @@ namespace Hzcc::AST {
 class DeduceValue {
   public:
     /**
-     * @brief The type of the value, currently only integer and real number are
-     * supported.
+     * @brief Construct a new Deduce Value object.
+     * @param value value of the deduce value as character.
      */
-    enum Type {
-        kInt,
-        kReal_Number,
-    };
+    explicit DeduceValue(char value);
 
     /**
      * @brief Construct a new Deduce Value object.
@@ -32,14 +41,22 @@ class DeduceValue {
      * @brief Construct a new Deduce Value object.
      * @param value value of the deduce value in integer
      */
-    explicit DeduceValue(uint64_t value);
+    explicit DeduceValue(int64_t value);
 
     /**
      * @brief Construct a new Deduce Value object.
      * @param type type of the deduce value
      * @param value value of the deduce value in string format
      */
-    DeduceValue(Type type, std::string str_value);
+    DeduceValue(DeduceValueType type, std::string str_value);
+
+    /**
+     * @brief Get the value of the deduce value as integer number.
+     * @details If the type is not kDeduceValueType_Char, will trigger an assert
+     * error if compile as DEBUG. Undefined behavior if compile as NDEBUG.
+     * @return the integer value of the deduce value
+     */
+    [[nodiscard]] char AsChar() const;
 
     /**
      * @brief Get the value of the deduce value as integer number.
@@ -63,20 +80,23 @@ class DeduceValue {
      * @brief Get the type of the deduce value.
      * @return the type of the deduce value
      */
-    [[nodiscard]] Type GetType() const;
+    [[nodiscard]] DeduceValueType GetType() const;
 
   private:
-    Type _type;
-    int64_t _raw_value = 0;
+    DeduceValueType _type;
+    std::array<std::byte, 8> _raw_value = {
+        std::byte(0x0), std::byte(0x0), std::byte(0x0), std::byte(0x0),
+        std::byte(0x0), std::byte(0x0), std::byte(0x0), std::byte(0x0)};
 };
 
 /**
  * @brief Overload the operator + for deduce value.
  * @details The transformation rules are as follows:
- *          |             | Integer     | Real Number |
- *          | :---------: | :---------: | :---------: |
- *          | Integer     | Integer     | Real Number |
- *          | Real Number | Real Number | Real Number |
+ *          |             | Integer     | Real Number |  Character  |
+ *          | :---------: | :---------: | :---------: | :---------: |
+ *          | Integer     | Integer     | Real Number |   Integer   |
+ *          | Real Number | Real Number | Real Number | Real Number |
+ *          | Character   | Integer     | Real Number |   Integer   |
  * @param lhs left hand side of the operator
  * @param rhs right hand side of the operator
  */
@@ -85,10 +105,11 @@ DeduceValue operator+(DeduceValue lhs, const DeduceValue& rhs);
 /**
  * @brief Overload the operator - for deduce value.
  * @details The transformation rules are as follows:
- *          |             | Integer     | Real Number |
- *          | :---------: | :---------: | :---------: |
- *          | Integer     | Integer     | Real Number |
- *          | Real Number | Real Number | Real Number |
+ *          |             | Integer     | Real Number |  Character  |
+ *          | :---------: | :---------: | :---------: | :---------: |
+ *          | Integer     | Integer     | Real Number |   Integer   |
+ *          | Real Number | Real Number | Real Number | Real Number |
+ *          | Character   | Integer     | Real Number |   Integer   |
  * @param lhs left hand side of the operator
  * @param rhs right hand side of the operator
  */
@@ -97,10 +118,11 @@ DeduceValue operator-(DeduceValue lhs, const DeduceValue& rhs);
 /**
  * @brief Overload the operator * for deduce value.
  * @details The transformation rules are as follows:
- *          |             | Integer     | Real Number |
- *          | :---------: | :---------: | :---------: |
- *          | Integer     | Integer     | Real Number |
- *          | Real Number | Real Number | Real Number |
+ *          |             | Integer     | Real Number |  Character  |
+ *          | :---------: | :---------: | :---------: | :---------: |
+ *          | Integer     | Integer     | Real Number |   Integer   |
+ *          | Real Number | Real Number | Real Number | Real Number |
+ *          | Character   | Integer     | Real Number |   Integer   |
  * @param lhs left hand side of the operator
  * @param rhs right hand side of the operator
  */
@@ -109,10 +131,11 @@ DeduceValue operator*(DeduceValue lhs, const DeduceValue& rhs);
 /**
  * @brief Overload the operator / for deduce value.
  * @details The transformation rules are as follows:
- *          |             | Integer     | Real Number |
- *          | :---------: | :---------: | :---------: |
- *          | Integer     | Integer     | Real Number |
- *          | Real Number | Real Number | Real Number |
+ *          |             | Integer     | Real Number |  Character  |
+ *          | :---------: | :---------: | :---------: | :---------: |
+ *          | Integer     | Integer     | Real Number |   Integer   |
+ *          | Real Number | Real Number | Real Number | Real Number |
+ *          | Character   | Integer     | Real Number |   Integer   |
  * @param lhs left hand side of the operator
  * @param rhs right hand side of the operator
  */
@@ -121,10 +144,11 @@ DeduceValue operator/(DeduceValue lhs, const DeduceValue& rhs);
 /**
  * @brief Overload the operator % for deduce value.
  * @details The transformation rules are as follows:
- *          |             | Integer     | Real Number |
- *          | :---------: | :---------: | :---------: |
- *          | Integer     | Integer     | Real Number |
- *          | Real Number | Real Number | Real Number |
+ *          |             | Integer     | Real Number |  Character  |
+ *          | :---------: | :---------: | :---------: | :---------: |
+ *          | Integer     | Integer     | Integer     | Integer     |
+ *          | Real Number | Integer     | Integer     | Integer     |
+ *          | Character   | Integer     | Integer     | Integer     |
  * @param lhs left hand side of the operator
  * @param rhs right hand side of the operator
  */

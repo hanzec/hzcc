@@ -6,47 +6,69 @@
 
 #include <cstring>
 
+#include "utils/logging.h"
 namespace Hzcc::AST {
 
-DeduceValue::DeduceValue(uint64_t value) : _type(kInt) {
-    int64_t val = value;
-    memcpy(&_raw_value, &val, sizeof(int64_t));
+DeduceValue::DeduceValue(char value) : _type(kDeduceValueType_Char) {
+    std::memcpy(&_raw_value.front(), &value, sizeof(char));
 }
 
-DeduceValue::DeduceValue(double value) : _type(kReal_Number) {
-    memccpy(&_raw_value, &value, sizeof(double), sizeof(double));
+DeduceValue::DeduceValue(int64_t value) : _type(kDeduceValueType_Int) {
+    std::memcpy(&_raw_value.front(), &value, sizeof(int64_t));
 }
 
-DeduceValue::DeduceValue(DeduceValue::Type type, std::string str_value)
+DeduceValue::DeduceValue(double value) : _type(kDeduceValueType_Real_Number) {
+    std::memcpy(_raw_value.data(), &value, sizeof(double));
+}
+
+DeduceValue::DeduceValue(DeduceValueType type, std::string str_value)
     : _type(type) {
-    if (type == DeduceValue::Type::kInt) {
-        // if hex, convert to int
-        if (str_value.size() > 2 && str_value[0] == '0' &&
-            str_value[1] == 'x') {
-            int64_t int_val = std::stoi(str_value, nullptr, 16);
-            std::memcpy(&_raw_value, &int_val, sizeof(int_val));
-        }
+    switch (type) {
+        case kDeduceValueType_Int:
+            // if hex, convert to int
+            if (str_value.size() > 2 && str_value[0] == '0' &&
+                str_value[1] == 'x') {
+                int64_t int_val = std::stoi(str_value, nullptr, 16);
+                std::memcpy(_raw_value.data(), &int_val, sizeof(int_val));
+            }
 
-        // if oct, convert to int
-        else if (str_value.size() > 1 && str_value[0] == '0') {
-            int64_t int_val = std::stoi(str_value, nullptr, 8);
-            std::memcpy(&_raw_value, &int_val, sizeof(int_val));
-        }
+            // if oct, convert to int
+            else if (str_value.size() > 1 && str_value[0] == '0') {
+                int64_t int_val = std::stoi(str_value, nullptr, 8);
+                std::memcpy(_raw_value.data(), &int_val, sizeof(int_val));
+            }
 
-        // if decimal, convert to int
-        else {
-            int64_t int_val = std::stoi(str_value);
-            std::memcpy(&_raw_value, &int_val, sizeof(int_val));
-        }
-    } else {
-        // convert as double
-        double double_val = std::stod(str_value);
-        std::memcpy(&_raw_value, &double_val, sizeof(double_val));
+            // if decimal, convert to int
+            else {
+                int64_t int_val = std::stoi(str_value);
+                std::memcpy(_raw_value.data(), &int_val, sizeof(int_val));
+            }
+            break;
+        case kDeduceValueType_Char: {
+            std::memcpy(&_raw_value[3], &str_value[0], sizeof(char));
+        } break;
+        case kDeduceValueType_Real_Number: {  // convert as double
+            double double_val = std::stod(str_value);
+            std::memcpy(_raw_value.data(), &double_val, sizeof(double_val));
+        } break;
+        default:
+            DLOG_ASSERT(false) << "unknown type";
     }
 }
+
+char DeduceValue::AsChar() const {
+    DLOG_ASSERT(_type == kDeduceValueType_Char) << "type is not char";
+    char ret;
+    std::memcpy(&ret, &_raw_value.front(), sizeof(char));
+    return ret;
+}
+
 int64_t DeduceValue::AsInt() const {
-    if (_type == DeduceValue::Type::kInt) {
-        return _raw_value;
+    if (_type == DeduceValueType::kDeduceValueType_Int ||
+        _type == DeduceValueType::kDeduceValueType_Char) {
+        int64_t ret;
+        std::memcpy(&ret, _raw_value.data(), sizeof(int64_t));
+        return ret;
     } else {
         double double_val = 0;
         std::memcpy(&double_val, &_raw_value, sizeof(double_val));
@@ -55,7 +77,7 @@ int64_t DeduceValue::AsInt() const {
 }
 
 double DeduceValue::AsReal() const {
-    if (_type == DeduceValue::Type::kReal_Number) {
+    if (_type == DeduceValueType::kDeduceValueType_Real_Number) {
         double double_val = 0;
         std::memcpy(&double_val, &_raw_value, sizeof(double_val));
         return double_val;
@@ -65,46 +87,55 @@ double DeduceValue::AsReal() const {
         return static_cast<double>(int_val);
     }
 }
-DeduceValue::Type DeduceValue::GetType() const { return _type; }
+
+DeduceValueType DeduceValue::GetType() const { return _type; }
 
 DeduceValue operator+(DeduceValue i, const DeduceValue& n) {
-    if (i.GetType() == DeduceValue::Type::kInt &&
-        n.GetType() == DeduceValue::Type::kInt) {
-        return DeduceValue((uint64_t)(i.AsInt() + n.AsInt()));
+    if ((i.GetType() == DeduceValueType::kDeduceValueType_Int &&
+         n.GetType() == DeduceValueType::kDeduceValueType_Int) ||
+        (i.GetType() == DeduceValueType::kDeduceValueType_Char &&
+         n.GetType() == DeduceValueType::kDeduceValueType_Char)) {
+        return DeduceValue(i.AsInt() + n.AsInt());
     } else {
         return DeduceValue(i.AsReal() + n.AsReal());
     }
 }
 
 DeduceValue operator-(DeduceValue i, const DeduceValue& n) {
-    if (i.GetType() == DeduceValue::Type::kInt &&
-        n.GetType() == DeduceValue::Type::kInt) {
-        return DeduceValue((uint64_t)(i.AsInt() - n.AsInt()));
+    if ((i.GetType() == DeduceValueType::kDeduceValueType_Int &&
+         n.GetType() == DeduceValueType::kDeduceValueType_Int) ||
+        (i.GetType() == DeduceValueType::kDeduceValueType_Char &&
+         n.GetType() == DeduceValueType::kDeduceValueType_Char)) {
+        return DeduceValue(i.AsInt() - n.AsInt());
     } else {
         return DeduceValue(i.AsReal() - n.AsReal());
     }
 }
 
 DeduceValue operator*(DeduceValue i, const DeduceValue& n) {
-    if (i.GetType() == DeduceValue::Type::kInt &&
-        n.GetType() == DeduceValue::Type::kInt) {
-        return DeduceValue((uint64_t)(i.AsInt() * n.AsInt()));
+    if ((i.GetType() == DeduceValueType::kDeduceValueType_Int &&
+         n.GetType() == DeduceValueType::kDeduceValueType_Int) ||
+        (i.GetType() == DeduceValueType::kDeduceValueType_Char &&
+         n.GetType() == DeduceValueType::kDeduceValueType_Char)) {
+        return DeduceValue(i.AsInt() * n.AsInt());
     } else {
         return DeduceValue(i.AsReal() * n.AsReal());
     }
 }
 
 DeduceValue operator/(DeduceValue i, const DeduceValue& n) {
-    if (i.GetType() == DeduceValue::Type::kInt &&
-        n.GetType() == DeduceValue::Type::kInt) {
-        return DeduceValue((uint64_t)(i.AsInt() / n.AsInt()));
+    if ((i.GetType() == DeduceValueType::kDeduceValueType_Int &&
+         n.GetType() == DeduceValueType::kDeduceValueType_Int) ||
+        (i.GetType() == DeduceValueType::kDeduceValueType_Char &&
+         n.GetType() == DeduceValueType::kDeduceValueType_Char)) {
+        return DeduceValue(i.AsInt() / n.AsInt());
     } else {
         return DeduceValue(i.AsReal() / n.AsReal());
     }
 }
 
 DeduceValue operator%(DeduceValue i, const DeduceValue& n) {
-    return DeduceValue((uint64_t)(i.AsInt() / n.AsInt()));
+    return DeduceValue(i.AsInt() / n.AsInt());
 }
 
 }  // namespace Hzcc::AST
