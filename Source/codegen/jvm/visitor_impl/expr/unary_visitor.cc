@@ -3,6 +3,7 @@
 //
 #include "AST/expr/unary.h"
 #include "codegen/jvm/JVMGenerator.h"
+#include "codegen/jvm/utils/ConstValUtils.h"
 namespace Hzcc::Codegen {
 Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
     /** #####################################################################
@@ -16,18 +17,67 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
     /** #####################################################################
      *  ### Code Generation                                               ###
      *  ##################################################################### */
+    // Generate code for the expression
+    HZCC_JVM_NOT_GENERATE_LOAD_INSTR(HZCC_JVM_Visit_Node(p_expr->GetExpr()));
 
     // TODO need to support all unary operator
+    auto var_name = ConsumeReturnStack();
     switch (p_expr->GetUnaryType()) {
         case AST::kUnaryType_PreInc:
+            if (Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+                AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
+                           " 1");
+                AddToCache(LoadFromVariable(var_name));
+            } else {
+                AddToCache(LoadFromVariable(var_name));
+                AddToCache(Utils::PushConstVal(1));
+                AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "add");
+                AddToCache("dup");
+                AddToCache(SaveToVariable(var_name));
+            }
             break;
         case AST::kUnaryType_PreDec:
+            if (Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+                AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
+                           " -1");
+                AddToCache(LoadFromVariable(var_name));
+            } else {
+                AddToCache(LoadFromVariable(var_name));
+                AddToCache(Utils::PushConstVal(1));
+                AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "sub");
+                AddToCache("dup");
+                AddToCache(SaveToVariable(var_name));
+            }
             break;
         case AST::kUnaryType_PostInc:
+            if (Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+                AddToCache(LoadFromVariable(var_name));
+                AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
+                           " 1");
+            } else {
+                AddToCache(LoadFromVariable(var_name));
+                AddToCache("dup");
+                AddToCache(Utils::PushConstVal(1));
+                AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "add");
+                AddToCache(SaveToVariable(var_name));
+            }
             break;
         case AST::kUnaryType_PostDec:
+            if (Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+                AddToCache(LoadFromVariable(var_name));
+                AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
+                           " -1");
+            } else {
+                AddToCache(LoadFromVariable(var_name));
+                AddToCache("dup");
+                AddToCache(Utils::PushConstVal(1));
+                AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "sub");
+                AddToCache(SaveToVariable(var_name));
+            }
             break;
         case AST::kUnaryType_UnaryMinus:
+            AddToCache(LoadFromVariable(var_name));
+            AddToCache("ineg");
             break;
         case AST::kUnaryType_Reference:
         case AST::kUnaryType_Dereference:

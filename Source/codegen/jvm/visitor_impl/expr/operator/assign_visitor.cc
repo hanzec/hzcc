@@ -39,8 +39,7 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
         // Rule1
         (!p_expr->GetLHS()->GetType()->IsArray() &&
          !p_expr->GetLHS()->GetType()->IsFuncPtr() &&
-         p_expr->GetLHS()->GetType()->GetName().find("int") !=
-             std::string::npos) &&
+         Utils::GetTypeName(p_expr->GetLHS()->GetType()) == "i") &&
         // Rule2
         p_expr->GetLHS()->GetDeducedValue().has_value()) {
         // then we insert the "IINC" instruction
