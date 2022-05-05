@@ -82,6 +82,15 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
                        kAssignOPASM[p_expr->GetAssignType()]);
         }
 
+        // if requested, we will duplicate the value and leave result on stack
+        if (_request_leave) {
+            if (p_expr->GetLHS()->IsDereference()) {
+                AddToCache("dup_x2");
+            } else {
+                AddToCache("dup");
+            }
+        }
+
         // we push the value back to the stack
         AddToCache(SaveToVariable(var_name));
     }

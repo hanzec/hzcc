@@ -26,6 +26,22 @@
         if (prev_status) _generate_load = true;  \
     }
 
+#define HZCC_JVM_REQUEST_LEAVE_VAL(expr)             \
+    {                                                \
+        const auto prev_status = _request_leave;     \
+        if (!_request_leave) _request_leave = true;  \
+        {expr};                                      \
+        if (!_request_leave) _request_leave = false; \
+    }
+
+#define HZCC_JVM_NOT_REQUEST_LEAVE_VAL(expr)        \
+    {                                               \
+        auto prev_status = _request_leave;          \
+        if (_request_leave) _request_leave = false; \
+        {expr};                                     \
+        if (_request_leave) _request_leave = true;  \
+    }
+
 #define HZCC_JVM_Visit_Node(node)                                          \
     static_assert(                                                         \
         std::is_convertible<decltype((node.get())),                        \

@@ -63,6 +63,10 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
 
     [[nodiscard]] uint32_t GetStackID(std::string& name);
 
+    [[nodiscard]] bool IsGlobalVar(const std::string& name);
+
+    [[nodiscard]] std::string GetVarType(const std::string& name);
+
     [[nodiscard]] std::string SaveToVariable(const std::string& name);
 
     [[nodiscard]] std::string LoadFromVariable(const std::string& name);
@@ -74,6 +78,7 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
     std::string _current_class_name;
 
     bool _generate_load = false;
+    bool _request_leave = false;
     constexpr static const char* _indent_str = "    ";
 
     std::list<std::string> _return_stack;

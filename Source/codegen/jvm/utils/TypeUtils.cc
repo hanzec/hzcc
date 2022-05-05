@@ -87,9 +87,10 @@ std::string GetTypeName(const std::shared_ptr<AST::Type> &type,
     // if type is a array type, return the array type name
     if (type->IsArray()) {
         auto array_type = std::dynamic_pointer_cast<AST::ArrayType>(type);
-        return "[" + std::string(
-                         1, GetJVMTypename(array_type->GetBaseType()->GetName(),
-                                           replace_char));
+        return "[" +
+               std::string(1,
+                           GetJVMTypename(array_type->GetBaseType()->GetName(),
+                                          replace_char));
     } else {
         return std::string(1, GetJVMTypename(type->GetName(), replace_char));
     }

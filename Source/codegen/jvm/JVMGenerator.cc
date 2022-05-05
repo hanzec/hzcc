@@ -57,12 +57,22 @@ Status JVMGenerator::Generate(const std::string& output,
     return Status::OkStatus();
 }
 
+std::string JVMGenerator::GetVarType(const std::string& name) {
+    if (_local_vars.find(name) != _local_vars.end()) {
+        return _local_vars[name].second;
+    } else if (_global_vars.find(name) != _global_vars.end()) {
+        return _global_vars[name];
+    } else {
+        LOG(FATAL) << "Variable " << name << " not found";
+    }
+}
+
 std::string JVMGenerator::SaveToVariable(const std::string& name) {
     if (_local_vars.find(name) != _local_vars.end()) {
         auto [stack_id, var_type] = _local_vars[name];
         if (var_type.find('[') != std::string::npos) {
             var_type.erase(var_type.find('['), 1);
-            return var_type + "astore " + std::to_string(stack_id);
+            return var_type + "astore";
         } else {
             // convert char to int if necessary
             if (var_type == "c") {
@@ -71,9 +81,22 @@ std::string JVMGenerator::SaveToVariable(const std::string& name) {
             return var_type + "store " + std::to_string(stack_id);
         }
     } else if (_global_vars.find(name) != _global_vars.end()) {
-        auto& var_type = _global_vars[name];
-        return "putstatic Field " + GetCurrentClassName() + " " + var_type +
-               " " + name;
+        auto var_type = _global_vars[name];
+        if (var_type.find('[') != std::string::npos) {
+            var_type.erase(var_type.find('['), 1);
+            return var_type + "astore";
+        } else {
+            // convert char to int if necessary
+            if (var_type == "c") {
+                var_type = "i";
+            }
+
+            // to upper case
+            std::transform(var_type.begin(), var_type.end(), var_type.begin(),
+                           ::toupper);
+            return "putstatic Field " + GetCurrentClassName() + " " + name +
+                   " " + var_type;
+        }
     } else {
         LOG(FATAL) << "Variable " << name << " not found";
     }
@@ -81,7 +104,7 @@ std::string JVMGenerator::SaveToVariable(const std::string& name) {
 
 std::string JVMGenerator::LoadFromVariable(const std::string& name) {
     if (_local_vars.find(name) != _local_vars.end()) {
-        auto& [stack_id, var_type] = _local_vars[name];
+        auto [stack_id, var_type] = _local_vars[name];
         if (var_type.find('[') != std::string::npos) {
             var_type.erase(var_type.find('['), 1);
             return var_type + "aload " + std::to_string(stack_id);
@@ -93,9 +116,11 @@ std::string JVMGenerator::LoadFromVariable(const std::string& name) {
             return var_type + "load " + std::to_string(stack_id);
         }
     } else if (_global_vars.find(name) != _global_vars.end()) {
-        auto& var_type = _global_vars[name];
-        return "getstatic Field " + GetCurrentClassName() + " " + var_type +
-               " " + name;
+        auto var_type = _global_vars[name];
+        std::transform(var_type.begin(), var_type.end(), var_type.begin(),
+                       ::toupper);
+        return "getstatic Field " + GetCurrentClassName() + " " + name + " " +
+               var_type;
     } else {
         LOG(FATAL) << "Variable " << name << " not found";
     }
@@ -113,6 +138,10 @@ uint32_t JVMGenerator::GetStackID(std::string& name) {
     } else {
         LOG(FATAL) << "Variable " << name << " not found";
     }
+}
+
+bool JVMGenerator::IsGlobalVar(const std::string& name) {
+    return _global_vars.find(name) != _global_vars.end();
 }
 
 void JVMGenerator::PushReturnStack(const std::string& stackID) {

@@ -22,8 +22,15 @@
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/utils/TypeUtils.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/utils/TypeUtils.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/utils/macro.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/utils/macro.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/decl_ref_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/decl_ref_visitor.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/operator/assign_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/operator/assign_visitor.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/unary_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/unary_visitor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/return_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/return_visitor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/value_decl_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/value_decl_visitor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/codegen/part5/mycc" beforeDir="false" afterPath="$PROJECT_DIR$/Test/codegen/part5/mycc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -199,7 +206,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-5 /home/hanzech/hzcc/Test/codegen/part5/A_assign1.c -o /home/hanzech/output.class" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
+    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-5 /home/hanzech/hzcc/Test/codegen/part5/A_assign2.c -o /home/hanzech/output.class" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
       <envs>
         <env name="GLOG_v" value="1" />
       </envs>
@@ -276,7 +283,7 @@
       <workItem from="1651620174777" duration="48082000" />
       <workItem from="1651711441887" duration="12797000" />
       <workItem from="1651724523415" duration="10856000" />
-      <workItem from="1651735898097" duration="2582000" />
+      <workItem from="1651735898097" duration="4971000" />
     </task>
     <servers />
   </component>
@@ -299,23 +306,18 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.cc</url>
-          <line>82</line>
+          <line>105</line>
           <option name="timeStamp" value="531" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/array_visitor.cc</url>
-          <line>10</line>
-          <option name="timeStamp" value="536" />
+          <url>file://$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/operator/assign_visitor.cc</url>
+          <line>94</line>
+          <option name="timeStamp" value="539" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/decl_ref_visitor.cc</url>
-          <line>16</line>
-          <option name="timeStamp" value="538" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/operator/assign_visitor.cc</url>
-          <line>85</line>
-          <option name="timeStamp" value="539" />
+          <line>23</line>
+          <option name="timeStamp" value="541" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
