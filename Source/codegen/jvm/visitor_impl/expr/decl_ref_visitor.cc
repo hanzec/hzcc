@@ -20,14 +20,21 @@ Status JVMGenerator::visit(Hzcc::AST::DeclRefExpr *p_expr) {
         if (p_expr->GetType()->IsArray()) {
             auto var_name = p_expr->VarName();
             PushReturnStack(var_name);
-            if (IsGlobalVar(var_name)) {
-                auto var_type = GetVarType(var_name);
-                std::transform(var_type.begin(), var_type.end(),
-                               var_type.begin(), ::toupper);
-                AddToCache("getstatic Field " + GetCurrentClassName() + " " +
-                           var_name + " " + var_type);
-            } else {
+            // Local variable have higher priority than global variable
+            if (IsLocalVar(var_name)) {
                 AddToCache("aload " + std::to_string(GetStackID(var_name)));
+            } else {
+                if (IsGlobalVar(var_name)) {
+                    auto var_type = GetVarType(var_name);
+                    std::transform(var_type.begin(), var_type.end(),
+                                   var_type.begin(), ::toupper);
+                    AddToCache("getstatic Field " + GetCurrentClassName() +
+                               " " + var_name + " " + var_type);
+                } else {
+                    DLOG(FATAL) << "Unknown variable name: " << var_name;
+                    return {Status::Code::NOT_FOUND,
+                            "Unknown variable name " + var_name};
+                }
             }
         } else {
             AddToCache(LoadFromVariable(p_expr->VarName()));

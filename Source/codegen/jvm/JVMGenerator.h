@@ -67,6 +67,8 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
 
     [[nodiscard]] bool IsGlobalVar(const std::string& name);
 
+    [[nodiscard]] bool IsLocalVar(const std::string& name);
+
     [[nodiscard]] std::string GetVarType(const std::string& name);
 
     [[nodiscard]] std::string SaveToVariable(const std::string& name);

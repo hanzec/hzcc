@@ -241,4 +241,8 @@ const std::string& JVMGenerator::GetCurrentClassName() {
 
 std::string JVMGenerator::GetAllCachedLine() { return _output.str(); }
 
+bool JVMGenerator::IsLocalVar(const std::string& name) {
+    return _local_vars.find(name) != _local_vars.end();
+}
+
 }  // namespace Hzcc::Codegen
