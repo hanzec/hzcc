@@ -224,6 +224,7 @@ Status FuncAnalyzer::visit(Hzcc::AST::DeclRefExpr *p_expr) {
     if (_generate_load) {
         if (p_expr->GetType()->IsArray()) {
             ModifyStackSize(1);
+            PushReturnStack(p_expr->VarName());
         } else {
             ModifyStackSize(LoadFromVariable(p_expr->VarName()));
         }
@@ -438,6 +439,7 @@ void FuncAnalyzer::PushReturnStack(const std::string &stackID) {
 }
 
 std::string FuncAnalyzer::ConsumeReturnStack() {
+    DLOG_ASSERT(_return_stack.size() > 0) << " Return stack is empty";
     auto poped_stack = _return_stack.back();
     _return_stack.pop_back();
     return poped_stack;
