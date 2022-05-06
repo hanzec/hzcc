@@ -1,6 +1,8 @@
 
 int F;
 
+int putchar(int c);
+
 void print(int i, int f)
 {
     putchar(i+(int)'0');

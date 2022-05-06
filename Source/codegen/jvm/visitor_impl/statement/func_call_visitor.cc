@@ -15,7 +15,8 @@ Status JVMGenerator::visit(Hzcc::AST::FunctionCall* p_expr) {
      *  ##################################################################### */
     // generate ars push
     for (auto& arg : p_expr->GetArgsNode()) {
-        HZCC_JVM_GENERATE_LOAD_INSTR(HZCC_JVM_Use_Deduced_IF_POSSIBLE(arg));
+        HZCC_JVM_REQUEST_LEAVE_VAL(HZCC_JVM_GENERATE_LOAD_INSTR(
+            HZCC_JVM_Use_Deduced_IF_POSSIBLE(arg)));
     }
 
     // generate function call
@@ -24,6 +25,11 @@ Status JVMGenerator::visit(Hzcc::AST::FunctionCall* p_expr) {
             _function_table[p_expr->FuncName()];
         AddToCache("invokestatic Method " + class_name + " " +
                    p_expr->FuncName() + " " + function_signature);
+
+        // pop if does not need return value
+        if (!_request_leave && p_expr->GetType()->GetName() != "void") {
+            AddToCache("pop");
+        }
     } else {
         DLOG(WARNING) << "Function " << p_expr->FuncName()
                       << " is not defined, skip generation";

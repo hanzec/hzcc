@@ -6,6 +6,8 @@
 
 int row[9];
 
+int putchar(int c);
+
 void show(int x)
 {
     putchar(x/10 + 48);

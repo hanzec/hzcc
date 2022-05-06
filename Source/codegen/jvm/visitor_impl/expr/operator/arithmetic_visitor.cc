@@ -28,10 +28,10 @@ Status JVMGenerator::visit(Hzcc::AST::ArithmeticExpr* p_expr) {
     /** #####################################################################
      *  ### Code Generation                                               ###
      *  ##################################################################### */
-    HZCC_JVM_GENERATE_LOAD_INSTR({
+    HZCC_JVM_REQUEST_LEAVE_VAL(HZCC_JVM_GENERATE_LOAD_INSTR({
         HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetLHS());
         HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetRHS());
-    })
+    }))
 
     // write operation
     AddToCache(Utils::GetTypeName(p_expr->GetType(), true) +

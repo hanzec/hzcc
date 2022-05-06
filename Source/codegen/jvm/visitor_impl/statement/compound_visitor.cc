@@ -22,7 +22,7 @@ Status JVMGenerator::visit(Hzcc::AST::CompoundStmt *p_expr) {
         AddToCache(ss.str());
 
         // then we generate the statement
-        HZCC_JVM_Visit_Node(stmt);
+        HZCC_JVM_NOT_REQUEST_LEAVE_VAL(HZCC_JVM_Visit_Node(stmt));
 
         // generate return statement if last statement is not return
         if (stmt == p_expr->GetBodyStatements().back() && !stmt->IsReturn()) {

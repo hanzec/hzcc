@@ -104,7 +104,9 @@ Status FuncAnalyzer::visit(Hzcc::AST::AssignExpr *p_expr) {
         }
 
         // we evaluate the RHS
-        HZCC_JVM_GENERATE_LOAD_INSTR(HZCC_JVM_Visit_Node(p_expr->GetRHS()));
+        HZCC_JVM_REQUEST_LEAVE_VAL(                       // NOLINT
+            HZCC_JVM_GENERATE_LOAD_INSTR(                 // NOLINT
+                HZCC_JVM_Visit_Node(p_expr->GetRHS())));  // NOLINT
 
         // here we push instructions to generate the assignment
         if (p_expr->GetAssignType() != AST::kAssignType_Assign) {
@@ -299,8 +301,19 @@ Status FuncAnalyzer::visit(Hzcc::AST::FunctionCall *p_expr) {
         HZCC_JVM_GENERATE_LOAD_INSTR(HZCC_JVM_Visit_Node(arg));
     }
 
-    // generate function call
-    ModifyStackSize(-p_expr->GetArgsNode().size() + 1);
+    // consume args
+    ModifyStackSize(-1 * (int)p_expr->GetArgsNode().size());
+
+    // push return value if needed
+    if (p_expr->GetType()->GetName() != "void") {
+        ModifyStackSize(1);
+    }
+
+    // pop if does not need return value
+    if (!_generate_load && p_expr->GetType()->GetName() != "void") {
+        ModifyStackSize(-1);
+    }
+
     return Status::OkStatus();
 }
 

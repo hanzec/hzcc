@@ -56,6 +56,14 @@ On Debian and Ubuntu derivatives:
 sudo apt-get install -y texlive-base texlive-latex-recommended texlive-latex-extra
 ```
 
+### Install FLEX (only need when using JVM Bytecode Testing)
+
+On Debian and Ubuntu derivatives:
+
+```bash
+sudo apt-get install flex
+```
+
 ### External Dependency Managed by VCPKG (Will automatically compile and linking by CMake)
 
 - **Glog**: for logging(FileCheck Tools only)

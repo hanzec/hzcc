@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-JPATH="../../Jexpr"
+JPATH="../../utils/Jexpr"
 
 
 SCRIPT=$0

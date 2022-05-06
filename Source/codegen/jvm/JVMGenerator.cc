@@ -59,8 +59,11 @@ Status JVMGenerator::Generate(const std::string& output,
                 IncLindeIndent();
                 AddToCache(".code stack 2 locals 0");
                 IncLindeIndent();
-                HZCC_JVM_NOT_GENERATE_LOAD_INSTR(
-                    HZCC_ExceptOK_WITH_RETURN(ast_node.second->visit(*this)));
+                HZCC_JVM_NOT_REQUEST_LEAVE_VAL(                // NOLINT
+                    HZCC_JVM_NOT_GENERATE_LOAD_INSTR(          // NOLINT
+                        HZCC_ExceptOK_WITH_RETURN(             // NOLINT
+                            ast_node.second->visit(*this))));  // NOLINT
+                AddToCache("return");
                 DecLindeIndent();
                 AddToCache(".end code");
                 DecLindeIndent();

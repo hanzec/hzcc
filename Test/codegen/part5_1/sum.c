@@ -1,4 +1,9 @@
 
+int getchar();
+
+int putchar(int c);
+
+
 int main()
 {
   /*

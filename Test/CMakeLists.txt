@@ -11,9 +11,9 @@ add_custom_target(mycc_e2e_test COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS mycc)
 set(TEST_OUTPUT_FOLDER "${CMAKE_CURRENT_BINARY_DIR}/test_output")
 
 # create xunit output folder if not exist
-if(NOT EXISTS "${TEST_OUTPUT_FOLDER}")
+if (NOT EXISTS "${TEST_OUTPUT_FOLDER}")
     file(MAKE_DIRECTORY "${TEST_OUTPUT_FOLDER}")
-endif()
+endif ()
 
 # llvm-lit executable
 set(LLVM_LIT_EXECUTABLE "${CMAKE_CURRENT_SOURCE_DIR}/utils/llvm_lit.py")
@@ -25,29 +25,29 @@ function(add_lit_test_set name directory)
     message(STATUS "Add lit test set [${name}]")
 
     # check existence of test directory
-    if(NOT EXISTS ${directory})
+    if (NOT EXISTS ${directory})
         message(FATAL_ERROR "Directory ${directory} does not exist.")
-    endif()
+    endif ()
 
     # test root
     set(CURRENT_TEST_ROOT "${CMAKE_CURRENT_BINARY_DIR}/${name}")
 
     # copy all test files to test directory
-    if(NOT EXISTS ${CURRENT_TEST_ROOT})
+    if (NOT EXISTS ${CURRENT_TEST_ROOT})
         file(MAKE_DIRECTORY ${CURRENT_TEST_ROOT})
-    endif()
+    endif ()
 
     # copy all test files to test directory
     file(GLOB CURRENT_TEST_FILES "${directory}/*")
-    foreach(file ${CURRENT_TEST_FILES})
+    foreach (file ${CURRENT_TEST_FILES})
         get_filename_component(FILE_EXTENSION ${file} LAST_EXT)
-        if(FILE_EXTENSION STREQUAL ".disabled")
+        if (FILE_EXTENSION STREQUAL ".disabled")
             message(STATUS "Ignore test case [${name}]:${file} in  since it is mark as disabled.")
-        else()
+        else ()
             message(STATUS "Discover test [${name}]:${file}")
             configure_file(${file} "${CURRENT_TEST_ROOT}/" COPYONLY)
-        endif()
-    endforeach()
+        endif ()
+    endforeach ()
 
     # generate the environment variable
     configure_file(lit.site.cfg.py.in "${CURRENT_TEST_ROOT}/lit.site.cfg.py")
@@ -55,8 +55,8 @@ function(add_lit_test_set name directory)
     # add test targets
     set(TEST_TARGET_OUTPUT_FILE "${TEST_OUTPUT_FOLDER}/${name}.xunit.xml")
     add_test(NAME ${name}
-             WORKING_DIRECTORY ${CURRENT_TEST_ROOT}
-             COMMAND ${Python3_EXECUTABLE} ${LLVM_LIT_EXECUTABLE} --xunit-xml-output "${TEST_TARGET_OUTPUT_FILE}" ${CURRENT_TEST_ROOT})
+            WORKING_DIRECTORY ${CURRENT_TEST_ROOT}
+            COMMAND ${Python3_EXECUTABLE} ${LLVM_LIT_EXECUTABLE} --xunit-xml-output "${TEST_TARGET_OUTPUT_FILE}" ${CURRENT_TEST_ROOT})
 endfunction()
 
 ###############################################################################
@@ -66,6 +66,15 @@ add_subdirectory(utils/FileCheck)
 
 # testing target required this target
 add_dependencies(mycc_e2e_test FileCheck)
+
+###############################################################################
+## FileCheckTool ##############################################################
+###############################################################################
+add_subdirectory(utils/Jexpr)
+
+# testing target required this target
+add_dependencies(mycc_e2e_test jexpr)
+
 
 ###############################################################################
 ## Testing Dependence #########################################################

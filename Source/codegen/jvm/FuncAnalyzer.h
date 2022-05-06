@@ -90,8 +90,8 @@ class FuncAnalyzer : public AST::ASTVisitor {
     bool _has_return = false;
     bool _generate_load = false;
     bool _request_leave = false;
-    uint32_t _max_stack_size = 0;
-    uint32_t _current_stack_size = 0;
+    int32_t _max_stack_size = 0;
+    int32_t _current_stack_size = 0;
 
     std::list<std::string> _return_stack;
 

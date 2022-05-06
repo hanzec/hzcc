@@ -73,8 +73,9 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
         }
 
         // we evaluate the RHS
-        HZCC_JVM_GENERATE_LOAD_INSTR(
-            HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetRHS()));
+        HZCC_JVM_REQUEST_LEAVE_VAL(                                    // NOLINT
+            HZCC_JVM_GENERATE_LOAD_INSTR(                              // NOLINT
+                HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetRHS())));  // NOLINT
 
         // here we push instructions to generate the assignment
         if (p_expr->GetAssignType() != AST::kAssignType_Assign) {
