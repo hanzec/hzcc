@@ -39,7 +39,7 @@ class VarDecl : public DeclNode {
      * @brief Inquire if current VarDecl contains init value or not
      * @return true if contains init value, false otherwise
      */
-    [[nodiscard]] bool HasInitExpr() const;
+    [[nodiscard]] bool HasInitExpr() const override;
 
     /**
      * @brief Get the type of current VarDecl

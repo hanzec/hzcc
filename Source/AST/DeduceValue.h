@@ -15,8 +15,8 @@ namespace Hzcc::AST {
 enum DeduceValueType {
     kDeduceValueType_Int = 0,
     kDeduceValueType_Char = 1,
-    kDeduceValueType_Real_Number = 2,
-    kDeduceValueType_ENUM_SIZE = 3  // keep last
+    kDeduceValueType_Real_Number = 3,
+    kDeduceValueType_ENUM_SIZE = 4  // keep last
 };
 
 /**

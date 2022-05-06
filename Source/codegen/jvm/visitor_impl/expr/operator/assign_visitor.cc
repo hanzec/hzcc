@@ -7,8 +7,7 @@
 #include "codegen/jvm/utils/TypeUtils.h"
 namespace Hzcc::Codegen {
 constexpr std::array<const char*, AST::kAssignType_Max> kAssignOPASM = {
-    "add", "sub", "mul", "div", "rem", "and",
-    "or",  "xor", "shl", "shr", "ushr"};
+    "add", "sub", "mul", "div", "shl", "shr", "and", "or", "xor"};
 
 Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
     /** #####################################################################
@@ -63,6 +62,8 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
             // refer for gain the value and push back to stack
             if (p_expr->GetLHS()->IsDereference()) {
                 AddToCache("dup2");
+                AddToCache(Utils::GetTypeName(p_expr->GetLHS()->GetType()) +
+                           "aload");
             }
 
             // for primitive type we can directly use the value
@@ -79,7 +80,7 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
         if (p_expr->GetAssignType() != AST::kAssignType_Assign) {
             // we then do the operation
             AddToCache(Utils::GetTypeName(p_expr->GetLHS()->GetType(), true) +
-                       kAssignOPASM[p_expr->GetAssignType()]);
+                       kAssignOPASM[p_expr->GetAssignType() - 1]);
         }
 
         // if requested, we will duplicate the value and leave result on stack

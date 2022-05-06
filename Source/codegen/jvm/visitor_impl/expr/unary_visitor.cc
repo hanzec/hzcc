@@ -17,40 +17,67 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
     /** #####################################################################
      *  ### Code Generation                                               ###
      *  ##################################################################### */
-    // Generate code for the expression
-    HZCC_JVM_NOT_GENERATE_LOAD_INSTR(HZCC_JVM_Visit_Node(p_expr->GetExpr()));
-
     // TODO need to support all unary operator
-    auto var_name = ConsumeReturnStack();
     switch (p_expr->GetUnaryType()) {
-        case AST::kUnaryType_PreInc:
-            if (Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+        case AST::kUnaryType_PreInc: {
+            // visit node
+            HZCC_JVM_NOT_GENERATE_LOAD_INSTR(
+                HZCC_JVM_Visit_Node(p_expr->GetExpr()));
+
+            auto var_name = ConsumeReturnStack();
+            if (!IsGlobalVar(var_name) &&
+                Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
                 AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
                            " 1");
                 AddToCache(LoadFromVariable(var_name));
             } else {
                 AddToCache(LoadFromVariable(var_name));
                 AddToCache(Utils::PushConstVal(1));
+
+                // Generate type convert instruction if necessary
+                if (Utils::GetTypeName(p_expr->GetType(), true) != "i")
+                    AddToCache("i2" +
+                               Utils::GetTypeName(p_expr->GetType(), true));
+
+                // increase and save
                 AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "add");
                 AddToCache("dup");
                 AddToCache(SaveToVariable(var_name));
             }
-            break;
-        case AST::kUnaryType_PreDec:
-            if (Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+        } break;
+        case AST::kUnaryType_PreDec: {
+            // visit node
+            HZCC_JVM_NOT_GENERATE_LOAD_INSTR(
+                HZCC_JVM_Visit_Node(p_expr->GetExpr()));
+
+            auto var_name = ConsumeReturnStack();
+            if (!IsGlobalVar(var_name) &&
+                Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
                 AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
                            " -1");
                 AddToCache(LoadFromVariable(var_name));
             } else {
                 AddToCache(LoadFromVariable(var_name));
                 AddToCache(Utils::PushConstVal(1));
+
+                // Generate type convert instruction if necessary
+                if (Utils::GetTypeName(p_expr->GetType(), true) != "i")
+                    AddToCache("i2" +
+                               Utils::GetTypeName(p_expr->GetType(), true));
+
+                // increase and save
                 AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "sub");
                 AddToCache("dup");
                 AddToCache(SaveToVariable(var_name));
             }
-            break;
-        case AST::kUnaryType_PostInc:
-            if (Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+        } break;
+        case AST::kUnaryType_PostInc: {
+            // visit node
+            HZCC_JVM_NOT_GENERATE_LOAD_INSTR(
+                HZCC_JVM_Visit_Node(p_expr->GetExpr()));
+            auto var_name = ConsumeReturnStack();
+            if (!IsGlobalVar(var_name) &&
+                Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
                 AddToCache(LoadFromVariable(var_name));
                 AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
                            " 1");
@@ -58,12 +85,26 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                 AddToCache(LoadFromVariable(var_name));
                 AddToCache("dup");
                 AddToCache(Utils::PushConstVal(1));
+
+                // Generate type convert instruction if necessary
+                if (Utils::GetTypeName(p_expr->GetType(), true) != "i")
+                    AddToCache("i2" +
+                               Utils::GetTypeName(p_expr->GetType(), true));
+
+                // increase and save
+
                 AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "add");
                 AddToCache(SaveToVariable(var_name));
             }
-            break;
-        case AST::kUnaryType_PostDec:
-            if (Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+        } break;
+        case AST::kUnaryType_PostDec: {
+            // visit node
+            HZCC_JVM_NOT_GENERATE_LOAD_INSTR(
+                HZCC_JVM_Visit_Node(p_expr->GetExpr()));
+
+            auto var_name = ConsumeReturnStack();
+            if (!IsGlobalVar(var_name) &&
+                Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
                 AddToCache(LoadFromVariable(var_name));
                 AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
                            " -1");
@@ -71,13 +112,21 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                 AddToCache(LoadFromVariable(var_name));
                 AddToCache("dup");
                 AddToCache(Utils::PushConstVal(1));
+
+                // Generate type convert instruction if necessary
+                if (Utils::GetTypeName(p_expr->GetType(), true) != "i")
+                    AddToCache("i2" +
+                               Utils::GetTypeName(p_expr->GetType(), true));
+
+                // increase and save
                 AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "sub");
                 AddToCache(SaveToVariable(var_name));
             }
-            break;
+        } break;
         case AST::kUnaryType_UnaryMinus:
-            AddToCache(LoadFromVariable(var_name));
-            AddToCache("ineg");
+            HZCC_JVM_GENERATE_LOAD_INSTR(
+                HZCC_JVM_Visit_Node(p_expr->GetExpr()));
+            AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "neg");
             break;
         case AST::kUnaryType_Reference:
         case AST::kUnaryType_Dereference:

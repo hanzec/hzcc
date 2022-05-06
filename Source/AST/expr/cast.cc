@@ -14,7 +14,8 @@ std::shared_ptr<Type> CastExpr::GetType() const { return _cast_type; }
 std::string CastExpr::PrintAdditionalInfo(std::string_view ident) const {
     auto new_ident = std::string(ident);
     std::replace(new_ident.begin(), new_ident.end(), '`', ' ');
-    return "\n" + _cast_expr->Dump(new_ident + " `");
+    return "[" + _cast_expr->GetType()->GetName() + "]->[" +
+           _cast_type->GetName() + "]\n" + _cast_expr->Dump(new_ident + " `");
 }
 
 Status CastExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }

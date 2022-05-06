@@ -7,12 +7,14 @@
 #define MYCC_SOURCE_AST_STATEMENT_EMPTY_H_
 namespace Hzcc::AST {
 class EmptyStatement : public ASTNode {
+  public:
+    explicit EmptyStatement(std::pair<int, int> pair_1);
+
+    bool IsEmptyStmt() const override;
+
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
     Status visit(ASTVisitor& visitor) override;
-
-  public:
-    EmptyStatement(std::pair<int, int> pair_1);
 
   protected:
     [[nodiscard]] const char* GetNodeName() const override;

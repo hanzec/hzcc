@@ -64,11 +64,17 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(
                                 "scope");
                         } else if (!ret_expr->GetType()->IsSame(
                                        context.GetReturnType())) {
-                            MYCC_PrintTokenError_ReturnNull(
-                                token, "Return type mismatch: was " +
-                                           ret_expr->GetType()->GetName() +
-                                           ", expected " +
-                                           context.GetReturnType()->GetName());
+                            auto rhs_type = ret_expr->GetType();
+                            ret_expr = AST::ASTNode::CastTo(
+                                context.GetReturnType(), std::move(ret_expr));
+                            if (ret_expr == nullptr) {
+                                MYCC_PrintTokenError_ReturnNull(
+                                    token,
+                                    "return statement type is not match, "
+                                    "require: " +
+                                        context.GetReturnType()->GetName() +
+                                        ", got: " + rhs_type->GetName());
+                            }
                         }
                     }
 

@@ -1,6 +1,8 @@
 //
 // Created by chen_ on 2022/4/10.
 //
+#include <algorithm>
+
 #include "AST/statement/value_decl.h"
 #include "AST/type/ArrayType.h"
 #include "codegen/jvm/JVMGenerator.h"
@@ -16,6 +18,7 @@ Status JVMGenerator::visit(Hzcc::AST::VarDecl *p_expr) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
+    DLOG_ASSERT(p_expr != nullptr) << "p_expr is nullptr";
 
     /** #####################################################################
      *  ### Code Generation                                               ###
@@ -42,7 +45,16 @@ Status JVMGenerator::visit(Hzcc::AST::VarDecl *p_expr) {
 
         // push array to stack
         auto var_name = p_expr->GetName();
-        AddToCache("astore " + std::to_string(GetStackID(var_name)));
+
+        if (IsGlobalVar(var_name)) {
+            auto final_type = Utils::GetTypeName(p_expr->GetType());
+            std::transform(final_type.begin(), final_type.end(),
+                           final_type.begin(), ::toupper);
+            AddToCache("putstatic Field " + GetCurrentClassName() + " " +
+                       var_name + " " + final_type);
+        } else {
+            AddToCache("astore " + std::to_string(GetStackID(var_name)));
+        }
     }
 
     // if the expression contains a initializer, we need to push it
@@ -56,6 +68,5 @@ Status JVMGenerator::visit(Hzcc::AST::VarDecl *p_expr) {
 
     return Status::OkStatus();
 }
-
 
 }  // namespace Hzcc::Codegen

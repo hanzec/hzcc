@@ -32,6 +32,10 @@ std::string FunctionCall::PrintAdditionalInfo(std::string_view ident) const {
     }
     return info;
 }
-Status FunctionCall::visit(ASTVisitor& visitor) { return visitor.visit(this); };
+Status FunctionCall::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+std::list<std::unique_ptr<ASTNode>>& FunctionCall::GetArgsNode() {
+    return _args;
+}
+const std::string& FunctionCall::FuncName() const { return _name; };
 
 }  // namespace Hzcc::AST

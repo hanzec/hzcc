@@ -43,13 +43,14 @@ int main(int argc, char* argv[]) {
      * Homework Part Selection                                              #
      * #################################################################### */
     bool flag0 = false, flag1 = false, flag2 = false, flag3 = false,
-         flag4 = false, flag5 = false;
+         flag4 = false, flag5 = false, flag6 = false;
     app.add_flag("-0,--part0", flag0, "run at part0");
     app.add_flag("-1,--part1", flag1, "run at part1");
     app.add_flag("-2,--part2", flag2, "run at part2");
     app.add_flag("-3,--part3", flag3, "run at part3");
     app.add_flag("-4,--part4", flag4, "run at part4");
     app.add_flag("-5,--part5", flag5, "run at part5");
+    app.add_flag("-6,--part6", flag6, "run at part6");
 
     /** #####################################################################
      * Input and Output Flags                                               #
@@ -89,7 +90,7 @@ int main(int argc, char* argv[]) {
     }
 
     // func name check and type check will not available until part4
-    if (flag4) {
+    if (flag4 || flag5 || flag6) {
         Hzcc::Options::Global_enable_type_checking = true;
         Hzcc::Options::Global_enable_naming_checking = true;
     }
@@ -121,7 +122,11 @@ int main(int argc, char* argv[]) {
         Hzcc::Message::set_current_part("Lexer");
         std::list<Hzcc::Lexical::Token> tokens;
         std::ifstream infile(input_files[i]);
-        auto lexical_result = Hzcc::Lexical::ParseToToken(infile, tokens);
+
+        // run lexical analysis
+        if (!Hzcc::Lexical::ParseToToken(infile, tokens).Ok()) {
+            return -1;
+        }
 
         // print part1 results
         if (flag1) {
@@ -152,17 +157,18 @@ int main(int argc, char* argv[]) {
          * ##################################################################*/
         Hzcc::Message::set_current_part("Parser");
         Hzcc::AST::CompilationUnit compilation_unit(input_files[i]);
-        auto syntax_result =
-            Hzcc::Syntax::GenerateAST(compilation_unit, tokens);
 
-        if (flag3 && syntax_result.Ok()) {
+        // run Syntax analysis
+        if (!Hzcc::Syntax::GenerateAST(compilation_unit, tokens).Ok()) {
+            return -1;
+        }
+
+        if (flag3) {
             std::cout << "File " << input_files[i]
                       << " is syntactically correct." << std::endl;
         }
 
-        DVLOG(0) << "AST Dump\n" << compilation_unit.Dump();
-
-        if (flag4 && syntax_result.Ok()) {
+        if (flag4) {
             if (output_file.empty()) {
                 std::cout << compilation_unit.Dump() << std::endl;
 
@@ -179,6 +185,7 @@ int main(int argc, char* argv[]) {
     /** ##################################################################
      * Code Generation                                                  #
      * ##################################################################*/
+    Hzcc::Message::set_current_part("Code generation ");
 
     Hzcc::Message::set_current_part("Code Generator");
     Hzcc::Codegen::JVMGenerator jvm_generator;
@@ -186,6 +193,8 @@ int main(int argc, char* argv[]) {
 
     // Compile to JVM instr
     for (auto& unit : compilation_units) {
+        DVLOG(0) << "AST Dump\n" << unit.Dump();
+
         pass_manager.RunPass(unit);
         jvm_generator.Generate(output_file, unit);
     }

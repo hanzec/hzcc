@@ -17,4 +17,6 @@ Status EmptyStatement::visit(ASTVisitor& visitor) {
     return visitor.visit(this);
 }
 EmptyStatement::EmptyStatement(std::pair<int, int> pair_1) : ASTNode(pair_1) {}
+
+bool EmptyStatement::IsEmptyStmt() const { return true; }
 }  // namespace Hzcc::AST

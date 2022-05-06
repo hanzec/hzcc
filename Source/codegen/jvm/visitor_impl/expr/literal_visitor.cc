@@ -6,16 +6,24 @@ Status JVMGenerator::visit(Hzcc::AST::LiteralExpr *p_expr) {
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     DLOG_ASSERT(p_expr != nullptr) << "p_expr is nullptr";
-    DLOG_ASSERT(p_expr->GetDeducedValue().has_value())
-        << "LiteralExpr(line: " << p_expr->GetLine()
-        << ") has no deduced value";
 
     /** #####################################################################
      *  ### Code Generation                                               ###
      *  ##################################################################### */
 
-    AddToCache(Utils::PushConstVal(p_expr->GetType()->GetName(),
-                                   p_expr->GetDeducedValue().value()));
+    // for string literal we push value use LDC then call java method to get
+    // char array
+    if (p_expr->LiteralType() == AST::LiteralType::kLiteralType_String) {
+        AddToCache("ldc '" + p_expr->GetValue() + "'");
+        AddToCache("invokevirtual Method java/lang/String toCharArray ()[C");
+    }
+
+    // otherwise we're using push function
+    else {
+        AddToCache(Utils::PushConstVal(p_expr->GetType()->GetName(),
+                                       p_expr->GetDeducedValue().value()));
+    }
+
     return Status::OkStatus();
 }
 }  // namespace Hzcc::Codegen

@@ -72,9 +72,26 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
         modified = false;
         DVLOG(SYNTAX_LOG_LEVEL) << "Tying Cast: " << rhs->GetType()->GetName()
                                 << " to " << lhs_type->Dump();
+
+        // special rules for deduce value
+        if (rhs->GetDeducedValue().has_value()) {
+            // we allowed double to float cast since value type since all
+            // deduced value are calculate as double
+            if (rhs->GetDeducedValue().value().GetType() ==
+                    DeduceValueType::kDeduceValueType_Real_Number &&
+                lhs_type->GetName().find("float") != std::string::npos) {
+                modified = true;
+                auto loc = rhs->Location();
+                rhs = std::make_unique<AST::CastExpr>(lhs_type, std::move(rhs),
+                                                      loc);
+                DVLOG(SYNTAX_LOG_LEVEL)
+                    << "Cast DeducedValue:" << rhs->Dump("");
+            }
+        }
+
         // variable wider cast
-        if (rhs->GetType()->GetName().find("int") != std::string::npos &&
-            !lhs_type->IsArray() && !rhs->GetType()->IsArray()) {
+        else if (rhs->GetType()->GetName().find("int") != std::string::npos &&
+                 !lhs_type->IsArray() && !rhs->GetType()->IsArray()) {
             if (lhs_type->GetName().find("float") != std::string::npos) {
                 modified = true;
                 auto loc = rhs->Location();

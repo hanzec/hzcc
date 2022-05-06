@@ -18,15 +18,29 @@ enum PACKED LiteralType {
 
 class LiteralExpr : public ASTNode {
   public:
+    /**
+     * @brief Construct a new Literal Expr object from integer value
+     * @note The LiteralTpe from this constructor is kLiteralType_Integer
+     * @param value The integer value
+     */
     explicit LiteralExpr(int64_t);
 
+    /**
+     * @brief Construct a new Literal Expr object from Token
+     * @param token The Token contains the literal value
+     * @param type The literal type
+     */
     LiteralExpr(LiteralType type, const Lexical::Token& value);
 
     Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool IsAssignable() const override;
 
-    [[nodiscard]] bool IsLiteral() const override { return true; }
+    [[nodiscard]] bool IsLiteral() const override;
+
+    [[nodiscard]] LiteralType LiteralType() const;
+
+    [[nodiscard]] const std::string& GetValue() const;
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
@@ -38,8 +52,8 @@ class LiteralExpr : public ASTNode {
         std::string_view ident) const override;
 
   private:
-    LiteralType _type;
     std::string _value;
+    enum LiteralType _type;
 };
 
 }  // namespace Hzcc::AST

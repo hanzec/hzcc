@@ -7,11 +7,13 @@
 #include <functional>
 #include <list>
 #include <memory>
+#include <unordered_set>
 #include <utility>
 
 #include "AST/CompilationUnit.h"
 #include "PassManager.h"
 #include "utils/Status.h"
+#include "utils/logging.h"
 namespace Hzcc::Pass {
 class PassManagerImpl : public PassManager {
   public:
@@ -43,8 +45,7 @@ class PassManagerImpl : public PassManager {
      */
     class RegisterHelper {
       protected:
-        static bool reg_pass(const std::string_view& cmd,
-                             const std::string_view& desc,
+        static bool reg_pass(const std::string& cmd, const std::string& desc,
                              std::unique_ptr<PassBase> pass) noexcept {
             return reg_pass_internal(std::move(pass), cmd, desc);
         };
@@ -54,13 +55,14 @@ class PassManagerImpl : public PassManager {
     static Status RunFunctionPass(std::unique_ptr<AST::FunctionDeclNode>& F);
 
   private:
+    inline static std::unordered_set<std::string> _registered_passes;
     inline static std::list<
         std::pair<std::string_view, std::shared_ptr<PassBase>>>
         _pass_map{};
 
     static bool reg_pass_internal(std::unique_ptr<PassBase>,
-                                  const std::string_view& command,
-                                  const std::string_view& description);
+                                  const std::string& command,
+                                  const std::string& description);
 };
 
 /**
@@ -74,7 +76,8 @@ class RegisterPass : private PassManagerImpl::RegisterHelper {
   public:
     RegisterPass(std::string name, std::string desc)
         : PASS_NAME(std::move(name)), PASS_DESC(std::move(desc)) {
-        reg_pass(PASS_NAME, PASS_DESC, std::make_unique<T>());
+        DLOG_ASSERT(reg_pass(PASS_NAME, PASS_DESC, std::make_unique<T>()))
+            << "Register pass [" << PASS_NAME << "] failed";
     };
 
   private:

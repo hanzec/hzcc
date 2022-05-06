@@ -14,12 +14,14 @@ Status JVMGenerator::visit(Hzcc::AST::ReturnNode *p_expr) {
     /** #####################################################################
      *  ### Code Generation                                               ###
      *  ##################################################################### */
-    HZCC_JVM_REQUEST_LEAVE_VAL(
-        HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetReturnVal()));
+    HZCC_JVM_GENERATE_LOAD_INSTR(HZCC_JVM_REQUEST_LEAVE_VAL(
+        HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetReturnVal())));
 
-    if (typeid(p_expr->GetReturnVal()) != typeid(AST::EmptyStatement)) {
+    if (!p_expr->GetReturnVal()->IsEmptyStmt()) {
         AddToCache(Utils::GetTypeName(p_expr->GetReturnVal()->GetType(), true) +
                    "return");
+    } else {
+        AddToCache("return");
     }
 
     return Status::OkStatus();

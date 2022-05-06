@@ -129,7 +129,8 @@ class CompilationUnit {
         _scoped_symbol_table;
 
     /**
-     * Function table
+     * Function table:
+     *  [name, [output_type, [argument_type, ...], line_no]]
      */
     std::unordered_map<std::string,
                        std::tuple<std::shared_ptr<Type>,

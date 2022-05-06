@@ -49,6 +49,9 @@ class ASTNode {
      */
     [[nodiscard]] virtual bool IsDereference() const { return false; }
 
+    [[nodiscard]] virtual bool IsEmptyStmt() const { return false; }
+
+
     [[nodiscard]] virtual bool IsLiteral() const { return false; }
 
     [[nodiscard]] virtual bool IsReturn() const { return false; }

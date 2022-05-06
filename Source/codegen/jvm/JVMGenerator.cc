@@ -35,23 +35,97 @@ Status JVMGenerator::Generate(const std::string& output,
     output_file << ".class public " << _current_class_name << "\n"
                 << ".super java/lang/Object\n";
 
-    // generate function body
+    /** #####################################################################
+     *  ### Global Variables                                              ###
+     *  ##################################################################### */
     IncLindeIndent();
-    // generate class body
     for (auto& ast_node : unit.GetDecls()) {
-        if (ast_node.second->IsFuncDecl()) {
-            ast_node.second->visit(*this);
-            AddToCache("");  // add empty line
-        } else {
+        if (!ast_node.second->IsFuncDecl()) {
+            // push to cinit section
             _global_vars.emplace(
                 ast_node.first, Utils::GetTypeName(ast_node.second->GetType()));
+
+            // Only generate global variables initialization needed
+            if (ast_node.second->GetType()->IsArray() ||
+                ast_node.second->HasInitExpr()) {
+                AddToCache(".method static <clinit> : ()V");
+                IncLindeIndent();
+                AddToCache(".code stack 2 locals 0");
+                IncLindeIndent();
+                HZCC_JVM_NOT_GENERATE_LOAD_INSTR(
+                    HZCC_ExceptOK_WITH_RETURN(ast_node.second->visit(*this)));
+                DecLindeIndent();
+                AddToCache(".end code");
+                DecLindeIndent();
+                AddToCache(".end method\n");
+            }
+        }
+    }
+    DecLindeIndent();
+
+    /** #####################################################################
+     *  ### Functions                                                      ###
+     *  ##################################################################### */
+    IncLindeIndent();
+    for (auto& ast_node : unit.GetDecls()) {
+        if (ast_node.second->IsFuncDecl()) {
+            auto* func_ptr =
+                dynamic_cast<AST::FunctionDeclNode*>(ast_node.second.get());
+            if (func_ptr->HasBody()) {
+                auto [func_ret, func_args, _] =
+                    unit.getFuncRetAndArgType(func_ptr->GetName());
+
+                // generate function header
+                std::stringstream func_signature;
+                func_signature << '(';
+                for (auto& arg : func_args)
+                    func_signature << Utils::GetTypeName(arg);
+                func_signature << ')' << Utils::GetTypeName(func_ret);
+
+                // add to function table
+                auto final_func_signature = func_signature.str();
+                std::transform(final_func_signature.begin(),
+                               final_func_signature.end(),
+                               final_func_signature.begin(), ::toupper);
+                _function_table[func_ptr->GetName()] = {GetCurrentClassName(),
+                                                        final_func_signature};
+            }
+
+            // visit function
+            HZCC_ExceptOK_WITH_RETURN(func_ptr->visit(*this));
+            AddToCache("");  // add empty line
         }
     }
     output_file << GetAllCachedLine();
     DecLindeIndent();
 
     // write class file tail
-    output_file << kConstSpecialMethod;
+    output_file << R"(
+; Special methods
+
+.method <init> : ()V
+    .code stack 1 locals 1
+        aload_0
+        invokespecial Method java/lang/Object <init> ()V
+        return
+    .end code
+.end method
+
+.method public static main : ([Ljava/lang/String;)V
+    .code stack 2 locals 2
+        invokestatic Method )"
+                << GetCurrentClassName() << R"( main ()I
+        istore_1
+        getstatic Field java/lang/System out Ljava/io/PrintStream;
+        ldc 'Return code: '
+        invokevirtual Method java/io/PrintStream print (Ljava/lang/String;)V
+        getstatic Field java/lang/System out Ljava/io/PrintStream;
+        iload_1
+        invokevirtual Method java/io/PrintStream println (I)V
+        return
+    .end code
+.end method
+)";
     output_file.close();
 
     return Status::OkStatus();
@@ -86,11 +160,6 @@ std::string JVMGenerator::SaveToVariable(const std::string& name) {
             var_type.erase(var_type.find('['), 1);
             return var_type + "astore";
         } else {
-            // convert char to int if necessary
-            if (var_type == "c") {
-                var_type = "i";
-            }
-
             // to upper case
             std::transform(var_type.begin(), var_type.end(), var_type.begin(),
                            ::toupper);

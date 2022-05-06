@@ -2,6 +2,7 @@
 // Created by chen_ on 2022/5/3.
 //
 #include <list>
+#include <unordered_map>
 
 #include "AST/ASTVisitor.h"
 #ifndef MYCC_SOURCE_CODEGEN_JVM_FUNCANALYZER_H_
@@ -10,6 +11,9 @@ namespace Hzcc::Codegen {
 
 class FuncAnalyzer : public AST::ASTVisitor {
   public:
+    FuncAnalyzer(
+        const std::unordered_map<std::string, std::string>& global_vars);
+
     /**######################################################
      * ## AST Visitor                                      ##
      **#######################################################**/
@@ -51,13 +55,19 @@ class FuncAnalyzer : public AST::ASTVisitor {
 
     [[nodiscard]] uint32_t GetMaxStackSize() const;
 
+    /**
+     * @brief  Rerturn if current function has return statement or not
+     * @return true if has return statement, false otherwise
+     */
+    bool HasValidReturn();
+
   protected:
     /**
      * @brief Add given size to current function's stack size, and update the
      * max stack size if necessary
      * @param p_size The increased size of the stack
      */
-    void IncreaseCurrentStack(uint8_t p_size);
+    void ModifyStackSize(int p_size);
 
     /**
      * @brief Remove  given size current function's stack size
@@ -65,37 +75,36 @@ class FuncAnalyzer : public AST::ASTVisitor {
      */
     void DecreaseCurrentStack(uint8_t p_size);
 
-    /**
-     * @brief Enable generating load instructions for all expressions after call
-     * this function
-     */
-    void EnableGenerateLoad();
-
-    /**
-     * @brief Disable generating load instructions for all expressions after
-     * call this function
-     */
-    void DisableGenerateLoad();
-
-    /**
-     * @brief Get the if current function is generating load instructions
-     * or not
-     * @return true if current function is generating load instructions, false
-     * otherwise
-     */
-    [[nodiscard]] bool GetGenerateLoadStatus() const;
-
     void AddNewLocalVariable(const std::string_view& p_name, uint32_t line_no,
                              std::string_view type);
 
+    [[nodiscard]] int SaveToVariable(const std::string& name);
+
+    [[nodiscard]] int LoadFromVariable(const std::string& name);
+
+    void PushReturnStack(const std::string& stackID);
+
+    std::string ConsumeReturnStack();
+
   private:
+    bool _has_return = false;
     bool _generate_load = false;
+    bool _request_leave = false;
     uint32_t _max_stack_size = 0;
     uint32_t _current_stack_size = 0;
 
+    std::list<std::string> _return_stack;
+
+
+    /**
+     * Reference of the Global Variable Table
+     * [variable_name,type]
+     */
+    const std::unordered_map<std::string, std::string>& _global_vars;
+
     /**
      * _local_var_map will have a formate like:
-     * [variable_name, line_number]
+     * [variable_name,type, line_number]
      */
     std::list<std::tuple<const std::string, const std::string, uint32_t>>
         _local_var_map;

@@ -33,11 +33,13 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
      * ## AST Visitor                                      ##
      **#######################################################**/
     Status visit(Hzcc::AST::VarDecl* p_expr) override;
+    Status visit(Hzcc::AST::CastExpr* p_expr) override;
     Status visit(Hzcc::AST::UnaryExpr* p_expr) override;
     Status visit(Hzcc::AST::ReturnNode* p_expr) override;
     Status visit(Hzcc::AST::AssignExpr* p_expr) override;
     Status visit(Hzcc::AST::DeclRefExpr* p_expr) override;
     Status visit(Hzcc::AST::LiteralExpr* p_expr) override;
+    Status visit(Hzcc::AST::FunctionCall* p_expr) override;
     Status visit(Hzcc::AST::CompoundStmt* p_expr) override;
     Status visit(Hzcc::AST::EmptyStatement* p_expr) override;
     Status visit(Hzcc::AST::ArithmeticExpr* p_expr) override;
@@ -82,6 +84,16 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
     constexpr static const char* _indent_str = "    ";
 
     std::list<std::string> _return_stack;
+
+    /**
+     * [name, [class_name,function_signature]]
+     * We have following predefined functions:
+     *      -  public static int getchar() from class [libc]
+     *      -  public static int putchar(int c) from class [libc]
+     */
+    std::unordered_map<std::string, std::pair<std::string, std::string>>
+        _function_table{{"putchar", {"libc", "(I)I"}},
+                        {"getchar", {"libc", "()I"}}};
 
     /**
      * Varname ： [stackID, Type]

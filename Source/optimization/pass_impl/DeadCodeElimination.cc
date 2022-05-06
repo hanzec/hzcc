@@ -12,23 +12,28 @@
 namespace Hzcc::Pass {
 class DeadCodeElimination : public FunctionPass {
   public:
-    bool RunOnFunction(std::unique_ptr<AST::FunctionDeclNode>& F) override {
+    std::pair<bool, bool> RunOnFunction(
+        std::unique_ptr<AST::FunctionDeclNode>& F) override {
+        if (!F->HasBody()) {
+            VLOG(OPT_LOG_LEVEL)
+                << "Function " << F->GetName() << " has no body";
+            return {true, false};
+        }
+
+        bool modified = false;
         /**
          * Case: delete all code after return statement
          */
-        DVLOG(OPT_LOG_LEVEL) << "[DeadCodeElimination] cast 1: Before: \n"
-                             << F->Dump("").c_str();
         auto& body = F->GetBody();
         auto& stmts = body->GetBodyStatements();
-        for (auto it = stmts.begin(); it != stmts.begin(); ++it) {
-            if (typeid((*it)->GetNodeName()) == typeid(AST::ReturnNode)) {
-                stmts.erase(it, stmts.end());
+        for (auto it = stmts.begin(); it != stmts.end(); ++it) {
+            if ((*it)->IsReturn()) {
+                modified = true;
+                stmts.erase(++it, stmts.end());
                 break;
             }
         }
-        DVLOG(OPT_LOG_LEVEL) << "[DeadCodeElimination] cast 1: After: \n"
-                             << F->Dump("").c_str();
-        return true;
+        return {true, modified};
     }
 };
 

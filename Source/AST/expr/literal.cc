@@ -63,7 +63,7 @@ LiteralExpr::LiteralExpr(int64_t value)
       _type(kLiteralType_Integer),
       _value(std::to_string(value)) {}
 
-LiteralExpr::LiteralExpr(LiteralType type, const Lexical::Token& value)
+LiteralExpr::LiteralExpr(enum LiteralType type, const Lexical::Token& value)
     : ASTNode(value.Location()), _type(type), _value(value.Value()) {}
 
 std::shared_ptr<Type> LiteralExpr::GetType() const {
@@ -73,7 +73,7 @@ std::shared_ptr<Type> LiteralExpr::GetType() const {
         case LiteralType::kLiteralType_Char:
             return Type::GetBasicType("char", {Lexical::TokenType::kConst});
         case LiteralType::kLiteralType_Real_number:
-            return Type::GetBasicType("double", {Lexical::TokenType::kConst});
+            return Type::GetBasicType("float", {Lexical::TokenType::kConst});
         case LiteralType::kLiteralType_String:
             return ArrayType::GetArrayOfBasicType(
                 Type::GetBasicType("char", {}),
@@ -89,5 +89,8 @@ std::shared_ptr<Type> LiteralExpr::GetType() const {
 
 bool LiteralExpr::IsAssignable() const { return false; }
 Status LiteralExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+LiteralType LiteralExpr::LiteralType() const { return _type; }
+bool LiteralExpr::IsLiteral() const { return true; }
+const std::string& LiteralExpr::GetValue() const { return _value; }
 
 }  // namespace Hzcc::AST

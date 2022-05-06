@@ -19,7 +19,11 @@ class FunctionCall : public ASTNode {
 
     Status visit(ASTVisitor& visitor) override;
 
+    [[nodiscard]] const std::string& FuncName() const;
+
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
+
+    [[nodiscard]] std::list<std::unique_ptr<ASTNode>>& GetArgsNode();
 
   protected:
     [[nodiscard]] const char* GetNodeName() const override;

@@ -3,6 +3,7 @@
 //
 #include "operator.h"
 
+#include "AST/DeduceValue.h"
 #include "AST/type/Type.h"
 #include "options.h"
 namespace Hzcc::AST {
@@ -10,11 +11,14 @@ namespace Hzcc::AST {
 const char* OperatorBase::GetNodeName() const { return "OperatorBase"; }
 const std::unique_ptr<ASTNode>& OperatorBase::GetLHS() const { return _lhs; }
 const std::unique_ptr<ASTNode>& OperatorBase::GetRHS() const { return _rhs; }
+
 std::shared_ptr<Type> OperatorBase::GetType() const {
-    if (_lhs->GetType()->IsConst() && _rhs->GetType()->IsConst()) {
+    if (!_lhs->GetDeducedValue().has_value() &&
+        !_rhs->GetDeducedValue().has_value()) {
         return _lhs->GetType();
     } else {
-        return _lhs->GetType()->IsConst() ? _rhs->GetType() : _lhs->GetType();
+        return _lhs->GetDeducedValue().has_value() ? _rhs->GetType()
+                                                   : _lhs->GetType();
     }
 }
 OperatorBase::OperatorBase(std::pair<int, int> loc,

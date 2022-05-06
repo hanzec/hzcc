@@ -18,6 +18,8 @@ class DeclNode : public ASTNode {
 
     DeclNode(const Lexical::Token& decl_loc, std::string decl_name);
 
+    [[nodiscard]] virtual bool HasInitExpr() const { return false; }
+
     [[nodiscard]] bool IsDeclNode() const override { return true; }
 
     [[nodiscard]] std::string GetName() const { return _decl_name; }

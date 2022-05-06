@@ -8,10 +8,16 @@
 #include "AST/statement/compound.h"
 #include "AST/statement/function_decl.h"
 namespace Hzcc::Pass {
-bool PassManagerImpl::reg_pass_internal(std::unique_ptr<PassBase>,
-                                        const std::string_view& command,
-                                        const std::string_view& description) {
-    return false;
+bool PassManagerImpl::reg_pass_internal(std::unique_ptr<PassBase> pass,
+                                        const std::string& command,
+                                        const std::string& description) {
+    if (_registered_passes.find(command) != _registered_passes.end()) {
+        return false;
+    } else {
+        _registered_passes.emplace(command);
+        _pass_map.emplace_back(command, std::move(pass));
+        return true;
+    }
 }
 
 Status PassManagerImpl::RunPass(AST::CompilationUnit& compile_unit) {
@@ -25,6 +31,7 @@ Status PassManagerImpl::RunPass(AST::CompilationUnit& compile_unit) {
              */
             auto func_decl = std::unique_ptr<AST::FunctionDeclNode>(
                 dynamic_cast<AST::FunctionDeclNode*>(decl.second.release()));
+            DLOG_ASSERT(func_decl != nullptr) << "FuncDecl cast failed";
             HZCC_ExceptOK_WITH_RETURN(RunFunctionPass(func_decl));
             decl.second = std::move(func_decl);
         }
@@ -39,15 +46,23 @@ Status PassManagerImpl::RunFunctionPass(
 
     for (auto& pass : _pass_map) {
         if (pass.second->IsFunctionPass()) {
-            DVLOG(OPT_LOG_LEVEL) << "Running pass: " << pass.first;
-            if (std::dynamic_pointer_cast<FunctionPass>(pass.second)
-                    ->RunOnFunction(F)) {
+            auto [status, modified] =
+                std::dynamic_pointer_cast<FunctionPass>(pass.second)
+                    ->RunOnFunction(F);
+
+            // check PASS result
+            if (status) {
                 DVLOG(OPT_LOG_LEVEL) << "Pass: " << pass.first << " finished";
             } else {
                 DVLOG(OPT_LOG_LEVEL) << "Pass: " << pass.first << " failed";
                 return {Status::Code::UNAVAILABLE,
                         "Pass: " + std::string(pass.first) + " failed"};
             }
+
+            // print the AST if the pass is modified AST
+            DVLOG_IF(OPT_LOG_LEVEL, modified)
+                << "[" << pass.first << "]: After: \n"
+                << F->Dump("").c_str();
         }
     }
     return Status::OkStatus();
