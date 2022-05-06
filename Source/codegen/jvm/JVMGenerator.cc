@@ -41,11 +41,18 @@ Status JVMGenerator::Generate(const std::string& output,
     IncLindeIndent();
     for (auto& ast_node : unit.GetDecls()) {
         if (!ast_node.second->IsFuncDecl()) {
-            // push to cinit section
-            _global_vars.emplace(
-                ast_node.first, Utils::GetTypeName(ast_node.second->GetType()));
+            auto type_name = Utils::GetTypeName(ast_node.second->GetType());
 
-            // Only generate global variables initialization needed
+            // push to cinit section
+            _global_vars.emplace(ast_node.first, type_name);
+
+            // generate global variable
+            std::transform(type_name.begin(), type_name.end(),
+                           type_name.begin(), ::toupper);
+            AddToCache(".field public static " + ast_node.first + " " +
+                       type_name);
+
+            // Only generate global variables' initialization needed
             if (ast_node.second->GetType()->IsArray() ||
                 ast_node.second->HasInitExpr()) {
                 AddToCache(".method static <clinit> : ()V");

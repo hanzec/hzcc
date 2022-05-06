@@ -95,8 +95,7 @@ Status FuncAnalyzer::visit(Hzcc::AST::AssignExpr *p_expr) {
             // for reference type like array, we will duplicate the value and
             // refer for gain the value and push back to stack
             if (p_expr->GetLHS()->IsDereference()) {
-                ModifyStackSize(2);       // for dup2
-                DecreaseCurrentStack(2);  // for aload
+                ModifyStackSize(1);  // for aload
             }
             // for primitive type we can directly use the value
             else {
