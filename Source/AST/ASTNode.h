@@ -71,9 +71,9 @@ class ASTNode {
 
     [[nodiscard]] virtual const char* GetNodeName() const = 0;
 
-  protected:
     [[nodiscard]] uint64_t GetNodeId() const;
 
+  protected:
     [[nodiscard]] virtual std::string PrintAdditionalInfo(
         std::string_view ident) const;
 

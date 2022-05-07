@@ -13,7 +13,6 @@
       <config projectName="mycc" targetName="documentation" />
       <config projectName="mycc" targetName="mycc_test" />
       <config projectName="mycc" targetName="mycc" />
-      <config projectName="mycc" targetName="jexpr" />
       <config projectName="mycc" targetName="mycc_e2e_test" />
     </generated>
   </component>
@@ -22,64 +21,44 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="Changes">
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/codegen/Generator.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/codegen/IndentWriter.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/codegen/IndentWriter.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/codegen/LabelManager.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/codegen/LabelManager.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/StackManager.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/StackManager.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/for_visitor.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/ASTNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/array.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/array.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/arithmetic.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/arithmetic.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/assign.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/assign.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/logical.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/logical.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/operator/logical.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/operator/logical.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/statement/function_call.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/function_call.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/statement/return.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/return.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/statement/value_decl.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/statement/value_decl.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/Type.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/Type.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/Type.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/Type.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/Generator.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/Generator.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/FuncAnalyzer.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/FuncAnalyzer.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/FuncAnalyzer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/FuncAnalyzer.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/utils/macro.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/utils/macro.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/array_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/array_visitor.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/operator/arithmetic_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/operator/arithmetic_visitor.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/operator/assign_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/operator/assign_visitor.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/compound_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/compound_visitor.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/func_call_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/func_call_visitor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/unary_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/unary_visitor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/function_decl_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/function_decl_visitor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/value_decl_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/value_decl_visitor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/utils/macro.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/main.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/main.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/if.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/if.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Test/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part5/CheckR_5.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Test/codegen/part5/CheckR_5.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part5/fcall3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/codegen/part5/fcall3.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test/codegen/part5/mycc" beforeDir="false" afterPath="$PROJECT_DIR$/Test/codegen/part5/mycc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part5_1/CheckJ_5.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Test/codegen/part5_1/CheckJ_5.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part5_1/CheckR_5.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Test/codegen/part5_1/CheckR_5.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part5_1/fact.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/codegen/part5_1/fact.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part5_1/pascal.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/codegen/part5_1/pascal.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part5_1/sum.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/codegen/part5_1/sum.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part5_1/toy6.student.j" beforeDir="false" afterPath="$PROJECT_DIR$/Test/codegen/part5_1/toy6.student.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/.gitignore:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/CheckR_6.sh:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/badif.c:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/badif.error:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/break1.c:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/break1.j.instr:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/break1.output:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/break2.c:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/break2.error:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/fact.c:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/fact.j.instr:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/fact.output:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/fib.c:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/fib.j.instr:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/fib.output:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/fullpage.sty:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/hello.c:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/hello.j.instr:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/hello.output:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/libc.java:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/post.tex:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/short.c:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/short.j.instr:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/short.output:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/.gitignore:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Test/utils/Jexpr/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/Makefile:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/exprs.cc:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/exprs.h:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/instr.cc:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/instr.h:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/jexpr.cc:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/lexer.cc:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/lexer.h:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/parser.cc:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/parser.h:Zone.Identifier" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/Jexpr/tokens.l:Zone.Identifier" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/badif.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/codegen/part6/badif.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/codegen/part6/break1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/codegen/part6/break1.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +68,7 @@
   <component name="ClangdSettings">
     <option name="parameterInfoViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -151,11 +130,11 @@
       <recent name="\\wsl$\Ubuntu\home\hanzech\mycc\Source\optmization" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source\codegen" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Test\codegen\part5_1" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source\codegen\jvm\instr\utils" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source\codegen\jvm\visitor_impl\expr" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source\codegen\jvm\visitor\bytecode" />
-      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Test\utils" />
     </key>
   </component>
   <component name="RunManager" selected="CMake 应用程序.mycc">
@@ -230,22 +209,12 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="doc_doxygen" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="doc_doxygen" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="documentation" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="documentation" CONFIG_NAME="Debug">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="jexpr" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="jexpr" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="jexpr">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -265,7 +234,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-5 /home/hanzech/hzcc/Test/codegen/part5/fcall3.c -o /home/hanzech/output.class" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
+    <configuration name="mycc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-5 /home/hanzech/hzcc/Test/codegen/part5/A_read1.c -o /home/hanzech/output.class" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc">
       <envs>
         <env name="GLOG_v" value="4" />
       </envs>
@@ -287,7 +256,6 @@
       <item itemvalue="CMake 应用程序.libc-java" />
       <item itemvalue="CMake 应用程序.mycc_e2e_test" />
       <item itemvalue="CMake 应用程序.FileCheck" />
-      <item itemvalue="CMake 应用程序.jexpr" />
       <item itemvalue="Google Test.mycc_test" />
       <item itemvalue="Google Test.AST_NODE_DeduceValue.int_literal_0" />
       <item itemvalue="Google Test.AST_NODE_DeduceValue.char_literal_0" />
@@ -348,7 +316,8 @@
       <workItem from="1651782065907" duration="898000" />
       <workItem from="1651782987132" duration="5656000" />
       <workItem from="1651788732372" duration="19475000" />
-      <workItem from="1651856278982" duration="4386000" />
+      <workItem from="1651856278982" duration="28190000" />
+      <workItem from="1651892175929" duration="2239000" />
     </task>
     <servers />
   </component>
@@ -375,9 +344,19 @@
           <option name="timeStamp" value="559" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.cc</url>
-          <line>214</line>
-          <option name="timeStamp" value="560" />
+          <url>file://$PROJECT_DIR$/Source/syntax/parser/statements/if.cc</url>
+          <line>3</line>
+          <option name="timeStamp" value="561" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/statement/compound_visitor.cc</url>
+          <line>3</line>
+          <option name="timeStamp" value="563" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/codegen/jvm/FuncAnalyzer.cc</url>
+          <line>479</line>
+          <option name="timeStamp" value="566" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

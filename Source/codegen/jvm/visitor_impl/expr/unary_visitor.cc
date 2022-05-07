@@ -41,7 +41,7 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
 
                 // increase and save
                 AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "add");
-                AddToCache("dup");
+                if (_request_leave) AddToCache("dup");
                 AddToCache(SaveToVariable(var_name));
             }
         } break;
@@ -67,7 +67,7 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
 
                 // increase and save
                 AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "sub");
-                AddToCache("dup");
+                if (_request_leave) AddToCache("dup");
                 AddToCache(SaveToVariable(var_name));
             }
         } break;
@@ -83,7 +83,7 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                            " 1");
             } else {
                 AddToCache(LoadFromVariable(var_name));
-                AddToCache("dup");
+                if (_request_leave) AddToCache("dup");
                 AddToCache(Utils::PushConstVal(1));
 
                 // Generate type convert instruction if necessary
@@ -92,7 +92,6 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                                Utils::GetTypeName(p_expr->GetType(), true));
 
                 // increase and save
-
                 AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "add");
                 AddToCache(SaveToVariable(var_name));
             }
@@ -110,7 +109,7 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                            " -1");
             } else {
                 AddToCache(LoadFromVariable(var_name));
-                AddToCache("dup");
+                if (_request_leave) AddToCache("dup");
                 AddToCache(Utils::PushConstVal(1));
 
                 // Generate type convert instruction if necessary

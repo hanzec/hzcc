@@ -60,11 +60,18 @@
                                                                                \
         const auto& deduced_lhs = (expr)->GetDeducedValue();                   \
         if (deduced_lhs.has_value()) {                                         \
-            AddToCache(Utils::PushConstVal((expr)->GetType()->GetName(),       \
-                                           deduced_lhs.value()));              \
-            DVLOG(MESSAGE_ERROR_TRACING)                                       \
-                << "use deduced value of " << (expr)->GetNodeName()            \
-                << "(line: " << (expr)->GetLine() << ")";                      \
+            if (_request_leave) {                                              \
+                AddToCache(Utils::PushConstVal((expr)->GetType()->GetName(),   \
+                                               deduced_lhs.value()));          \
+                DVLOG(MESSAGE_ERROR_TRACING)                                   \
+                    << "use deduced value of " << (expr)->GetNodeName()        \
+                    << "(line: " << (expr)->GetLine() << ")";                  \
+            } else {                                                           \
+                DVLOG(MESSAGE_ERROR_TRACING)                                   \
+                    << "skip code gen for node " << p_expr->GetNodeName()      \
+                    << "(line:" << p_expr->GetLine()                           \
+                    << " id: " << p_expr->GetNodeId() << ")";                  \
+            }                                                                  \
         } else {                                                               \
             HZCC_JVM_Visit_Node(expr);                                         \
         }                                                                      \

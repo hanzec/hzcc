@@ -50,13 +50,13 @@ class AssignExpr : public OperatorBase {
      */
     [[nodiscard]] AssignType GetAssignType() const;
 
-  protected:
     /**
      * @brief Get Name of the node
      * @return will always return "AssignExpr"
      */
     [[nodiscard]] const char* GetNodeName() const override;
 
+  protected:
     /**
      * @brief An override function using print extra information when call
      * ASTNode->Dump()

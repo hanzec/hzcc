@@ -25,9 +25,9 @@ class FunctionCall : public ASTNode {
 
     [[nodiscard]] std::list<std::unique_ptr<ASTNode>>& GetArgsNode();
 
-  protected:
     [[nodiscard]] const char* GetNodeName() const override;
 
+  protected:
     [[nodiscard]] std::string PrintAdditionalInfo(
         std::string_view ident) const override;
 

@@ -119,4 +119,6 @@ std::list<Lexical::TokenType> Type::GetAttributes() const {
         return {};
     }
 }
+bool Type::IsVoid() const { return _name == "void"; }
+
 }  // namespace Hzcc::AST

@@ -7,6 +7,7 @@
 
 #include "AST/CompilationUnit.h"
 #include "AST/statement/compound.h"
+#include "AST/type/Type.h"
 #include "if_parser.h"
 #include "lexical/Token.h"
 #include "syntax/Parser.h"
@@ -19,8 +20,8 @@ using namespace TokenListUtils;
 IfStatement::IfStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::IfStatement>(),
                  TypeNameUtil::name_pretty<AST::IfStatement>()) {}
-std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(AST::CompilationUnit& context,
-                                                      TokenList& tokens) {
+std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(
+    AST::CompilationUnit& context, TokenList& tokens) {
     auto ref = tokens.front();
 
     // check first if
@@ -28,9 +29,18 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(AST::CompilationUnit& cont
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kIf, tokens);
 
     // parsing condition
+    auto cond_token = tokens.front();
     auto cond = ParseCondition(context, tokens);
     if (!cond) {
         return nullptr;
+    }
+
+    // if condition could be converted to int
+    if (Options::Global_enable_type_checking && cond->GetType()->IsVoid()) {
+        Message::set_current_part("Type checking");
+        MYCC_PrintTokenError_ReturnNull(
+            cond_token, "if condition has non-numeric type void");
+        Message::set_current_part("Parser");
     }
 
     // parsing body
@@ -73,6 +83,7 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(AST::CompilationUnit& cont
 
             MYCC_CheckElse_ReturnNull(Lexical::TokenType::kLParentheses,
                                       tokens) {
+                auto else_if_token = tokens.front();
                 auto else_if_condition = ParseCondition(context, tokens);
 
                 // make sure else-if condition is valid
@@ -81,6 +92,17 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(AST::CompilationUnit& cont
                     return nullptr;
                 }
 
+                // check if else-if condition is valid
+                if (Options::Global_enable_type_checking &&
+                    else_if_condition->GetType()->IsVoid()) {
+                    Message::set_current_part("Type checking");
+                    MYCC_PrintTokenError_ReturnNull(
+                        else_if_token,
+                        "if condition has non-numeric type void");
+                    Message::set_current_part("Parser");
+                }
+
+                // add else-if statement
                 if (!ifNode->addElseIf(
                         std::move(else_if_condition),
                         ParseBodyStatement(context, tokens, false))) {

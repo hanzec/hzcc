@@ -51,6 +51,12 @@ class Type : public std::enable_shared_from_this<Type> {
     [[nodiscard]] bool IsConst() const;
 
     /**
+     * @brief Check if the type is a constant value.
+     * @return
+     */
+    [[nodiscard]] bool IsVoid() const;
+
+    /**
      * @brief Check if the type is the same as another type.
      * @return True if the type is the same as another type, false otherwise.
      */

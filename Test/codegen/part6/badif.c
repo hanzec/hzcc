@@ -1,4 +1,6 @@
 
+int putchar(int c);
+
 void foo(int x)
 {
     putchar(x);

@@ -12,21 +12,12 @@ LogicalExpr::LogicalExpr(const Lexical::Token& type,
                          std::unique_ptr<ASTNode> lhs,
                          std::unique_ptr<ASTNode> rhs)
     : OperatorBase(type.Location(), std::move(lhs), std::move(rhs)) {
-    switch (type.Value()[0]) {
-        case '&':
-            this->_type = LogicalType::kAnd;
-            break;
-        case '|':
-            this->_type = LogicalType::kOr;
-            break;
-        case '=':
-            this->_type = LogicalType::kEqual;
-            break;
-        case '!':
-            this->_type = LogicalType::kNotEqual;
-            break;
-        default:
-            DLOG(FATAL) << "Invalid logical operator: " << type.Value();
+    if (type.Value() == "&&") {
+        this->_type = kLogicalType_And;
+    } else if (type.Value() == "||") {
+        this->_type = kLogicalType_Or;
+    } else {
+        DLOG(FATAL) << "Invalid logical operator: " << type.Value();
     }
 }
 

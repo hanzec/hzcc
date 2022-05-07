@@ -26,12 +26,11 @@ class ArithmeticExpr : public OperatorBase {
 
     [[nodiscard]] ArithmeticType GetOpType() const;
 
-  protected:
-  protected:
     [[nodiscard]] const char* GetNodeName() const override;
 
     [[nodiscard]] std::optional<DeduceValue> GetDeducedValue() const override;
 
+  protected:
     [[nodiscard]] std::string PrintAdditionalInfo(
         std::string_view ident) const override;
 

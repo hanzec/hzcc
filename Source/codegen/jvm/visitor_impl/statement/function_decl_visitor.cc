@@ -23,7 +23,7 @@ Status JVMGenerator::visit(AST::FunctionDeclNode* p_expr) {
     /**
      * We need to analyze the function to get the max stack size and max locals
      */
-    FuncAnalyzer funcAnalyzer(_global_vars);
+    JVM::FuncAnalyzer funcAnalyzer(GetGlobalVars());
 
     if (p_expr->HasBody()) {
         /** #################################################################
@@ -70,19 +70,36 @@ Status JVMGenerator::visit(AST::FunctionDeclNode* p_expr) {
 
         // write comment for local variables declaration
         IncLindeIndent();
+        ResetLocalVars();  // reset the stack table
         int index = 0;
-        _local_vars.clear();  // reset the stack table
         for (auto& local : locals) {
-            auto [variable_name, variable_type, line_number] = local;
-            AddToCache(";; local " + std::to_string(index) + " " +
-                       std::string(variable_name) + " " + GetInputFileName() +
-                       " " + std::to_string(line_number));
+            // if variable is function argument or local variable
+            if (local.size() == 1) {
+                auto [name, type, line_no] = local.front();
+                // insert to local variable declaration
+                AddLocalVar(index, name, type);
 
-            // insert to local variable declaration
-            _local_vars.insert(
-                {variable_name,
-                 std::make_pair(_local_vars.size(), variable_type)});
-            index++;
+                // write debug comment
+                AddToCache(";; local " + std::to_string(GetStackID(name)) +
+                           " " + std::string(name) + " " + GetInputFileName() +
+                           " " + std::to_string(line_no));
+            }
+            // if variable is local temporary variable
+            else {
+                for (auto& temp : local) {
+                    auto [name, type, line_no] = temp;
+                    auto new_name = name + "_" + std::to_string(line_no);
+                    // insert to local tmp variable declaration
+                    AddLocalTmpVar(index, new_name, type);
+
+                    // write debug comment
+                    AddToCache(";; local(tmp) " +
+                               std::to_string(GetStackID(new_name)) + " " +
+                               std::string(name) + " " + GetInputFileName() +
+                               " " + std::to_string(line_no));
+                }
+            }
+            index += 1;
         }
         DecLindeIndent();
 

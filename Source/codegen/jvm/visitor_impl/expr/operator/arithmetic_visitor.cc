@@ -28,14 +28,21 @@ Status JVMGenerator::visit(Hzcc::AST::ArithmeticExpr* p_expr) {
     /** #####################################################################
      *  ### Code Generation                                               ###
      *  ##################################################################### */
-    HZCC_JVM_REQUEST_LEAVE_VAL(HZCC_JVM_GENERATE_LOAD_INSTR({
-        HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetLHS());
-        HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetRHS());
-    }))
+    if (_request_leave) {
+        HZCC_JVM_REQUEST_LEAVE_VAL(HZCC_JVM_GENERATE_LOAD_INSTR({
+            HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetLHS());
+            HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetRHS());
+        }))
 
-    // write operation
-    AddToCache(Utils::GetTypeName(p_expr->GetType(), true) +
-               ArithmeticASM[p_expr->GetOpType()]);
+        // write operation
+        AddToCache(Utils::GetTypeName(p_expr->GetType(), true) +
+                   ArithmeticASM[p_expr->GetOpType()]);
+    } else {
+        DVLOG(MESSAGE_ERROR_TRACING)
+            << "skip code gen for node " << p_expr->GetNodeName()
+            << "(line:" << p_expr->GetLine() << " id: " << p_expr->GetNodeId()
+            << ")";
+    }
 
     return Status::OkStatus();
 }

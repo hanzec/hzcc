@@ -25,7 +25,7 @@
 #include "AST/statement/value_decl.h"
 #include "AST/type/ArrayType.h"
 #include "codegen/jvm/utils/macro.h"
-namespace Hzcc::Codegen {
+namespace Hzcc::Codegen::JVM {
 
 Status FuncAnalyzer::visit(Hzcc::AST::CastExpr *p_expr) {
     // firs we get the type of the expr
@@ -82,7 +82,7 @@ Status FuncAnalyzer::visit(Hzcc::AST::AssignExpr *p_expr) {
          Utils::GetTypeName(p_expr->GetLHS()->GetType()) == "i") &&
         // Rule2
         p_expr->GetLHS()->GetDeducedValue().has_value()) {
-        // "IINC" will not chaneg the stack size.
+        // "IINC" will not change the stack size.
     } else {
         // we first evaluate the LHS get stack location
         HZCC_JVM_NOT_GENERATE_LOAD_INSTR(HZCC_JVM_Visit_Node(p_expr->GetLHS()));
@@ -327,8 +327,8 @@ Status FuncAnalyzer::visit(Hzcc::AST::IfStatement *p_expr) {
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::ParamVarDecl *p_expr) {
-    AddNewLocalVariable(p_expr->GetName(), p_expr->GetLine(),
-                        Utils::GetTypeName(p_expr->GetType()));
+    AddLocalVariable(p_expr->GetName(), Utils::GetTypeName(p_expr->GetType()),
+                     p_expr->GetLine());
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::ReturnNode *p_expr) {
@@ -345,8 +345,8 @@ Status FuncAnalyzer::visit(Hzcc::AST::LiteralExpr *p_expr) {
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::VarDecl *p_expr) {
-    AddNewLocalVariable(p_expr->GetName(), p_expr->GetLine(),
-                        Utils::GetTypeName(p_expr->GetType()));
+    AddLocalVariable(p_expr->GetName(), Utils::GetTypeName(p_expr->GetType()),
+                     p_expr->GetLine());
 
     // current variable type is array, we need to initialize it
     if (p_expr->GetType()->IsArray()) {
@@ -388,25 +388,12 @@ void FuncAnalyzer::DecreaseCurrentStack(uint8_t p_size) {
     _current_stack_size -= p_size;
 }
 uint32_t FuncAnalyzer::GetMaxStackSize() const { return _max_stack_size; }
-const std::list<std::tuple<const std::string, const std::string, uint32_t>>
-    &FuncAnalyzer::GetLocalVariable() {
-    return _local_var_map;
-}
 
-void FuncAnalyzer::AddNewLocalVariable(const std::string_view &p_name,
-                                       uint32_t line_no,
-                                       const std::string_view type) {
-    _local_var_map.emplace_back(p_name, type, line_no);
-}
-bool FuncAnalyzer::HasValidReturn() { return _has_return; }
+bool FuncAnalyzer::HasValidReturn() const { return _has_return; }
 
 int FuncAnalyzer::SaveToVariable(const std::string &name) {
-    // if variable is in the _local_var_map
-    auto var = std::find_if(_local_var_map.begin(), _local_var_map.end(),
-                            [&](auto &t) { return std::get<0>(t) == name; });
-
-    if (var != _local_var_map.end()) {
-        auto [_, var_type, __] = *var;
+    if (IsLocal(name)) {
+        auto var_type = GetLocalVarType(name);
         if (var_type.find('[') != std::string::npos) {
             return -3;
         } else {
@@ -425,12 +412,8 @@ int FuncAnalyzer::SaveToVariable(const std::string &name) {
 }
 
 int FuncAnalyzer::LoadFromVariable(const std::string &name) {
-    // if variable is in the _local_var_map
-    auto var = std::find_if(_local_var_map.begin(), _local_var_map.end(),
-                            [&](auto &t) { return std::get<0>(t) == name; });
-
-    if (var != _local_var_map.end()) {
-        auto [_, var_type, __] = *var;
+    if (IsLocal(name)) {
+        auto var_type = GetLocalVarType(name);
         if (var_type.find('[') != std::string::npos) {
             return -1;
         } else {
@@ -444,17 +427,132 @@ int FuncAnalyzer::LoadFromVariable(const std::string &name) {
 }
 FuncAnalyzer::FuncAnalyzer(
     const std::unordered_map<std::string, std::string> &global_vars)
-    : _global_vars(global_vars) {}
+    : _global_vars(global_vars) {
+    EnterScope();
+}
 
 void FuncAnalyzer::PushReturnStack(const std::string &stackID) {
     _return_stack.push_back(stackID);
 }
 
 std::string FuncAnalyzer::ConsumeReturnStack() {
-    DLOG_ASSERT(_return_stack.size() > 0) << " Return stack is empty";
+    DLOG_ASSERT(!_return_stack.empty()) << " Return stack is empty";
     auto poped_stack = _return_stack.back();
     _return_stack.pop_back();
     return poped_stack;
 }
 
-}  // namespace Hzcc::Codegen
+/** #####################################################################
+ *  ### Symbol Table Functions                                         ###
+ *  ##################################################################### */
+bool FuncAnalyzer::IsLocal(const std::string &p_name) {
+    // iterate from the top of the stack to the bottom
+    for (auto iter = _symbol_table_stack.rbegin();
+         iter != _symbol_table_stack.rend(); ++iter) {
+        if ((*iter)->HasSymbol(p_name)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool FuncAnalyzer::IsGlobal(const std::string &p_name) {
+    return _global_vars.find(p_name) != _global_vars.end();
+}
+
+std::string FuncAnalyzer::GetLocalVarType(const std::string &p_name) {
+    DLOG_ASSERT(IsLocal(p_name)) << " Variable " << p_name << " not found";
+
+    // iterate from the top of the stack to the bottom
+    for (auto iter = _symbol_table_stack.rbegin();
+         iter != _symbol_table_stack.rend(); ++iter) {
+        if ((*iter)->HasSymbol(p_name)) {
+            return (*iter)->GetSymbolType(p_name);
+        }
+    }
+
+    return "";
+}
+
+void FuncAnalyzer::AddLocalVariable(const std::string &name,
+                                    const std::string &type, uint32_t line_no) {
+    _symbol_table_stack.back()->AddSymbol(name, type, line_no);
+}
+
+void FuncAnalyzer::EnterScope() {
+    auto new_scope = std::make_shared<ScopedSymbolTable>();
+    _symbol_table_stack.emplace_back(new_scope);
+    _saved_symbol_table.emplace_back(_symbol_table_stack.back());
+}
+
+void FuncAnalyzer::LeaveScope() { _symbol_table_stack.pop_back(); }
+
+FuncAnalyzer::SymbolTable FuncAnalyzer::GetLocalVariable() {
+    FuncAnalyzer::SymbolTable ret;
+
+    // since the first element of SymbolTable is the local variable table, we
+    // add all the local variables to the return table
+    int local_var_count = 0;
+    for (const auto &stack : _saved_symbol_table) {
+        // for local variable
+        if (stack == _symbol_table_stack.front()) {
+            for (const auto &pair : stack->GetSymbols()) {
+                std::list<std::tuple<std::basic_string<char>,
+                                     std::basic_string<char>, unsigned long>>
+                    tmp;
+
+                tmp.emplace_back(pair);
+                ret.push_back(tmp);
+                local_var_count++;
+            }
+        }
+
+        // for local temp variable
+        else {
+            int stack_id = 0;
+            for (const auto &pair : stack->GetSymbols()) {
+                if (ret.at(stack_id + local_var_count).empty()) {
+                    std::list<
+                        std::tuple<std::basic_string<char>,
+                                   std::basic_string<char>, unsigned long>>
+                        tmp;
+                    tmp.emplace_back(pair);
+                } else {
+                    ret.at(stack_id + local_var_count).emplace_back(pair);
+                }
+                stack_id++;
+            }
+        }
+    }
+
+    return ret;
+}
+
+/** #####################################################################
+ *  ### Scoped Symbol Table                                           ###
+ *  ##################################################################### */
+
+void FuncAnalyzer::ScopedSymbolTable::AddSymbol(const std::string &name,
+                                                const std::string &type,
+                                                uint32_t line_no) {
+    _symbol_table.emplace_back(name, type, line_no);
+}
+
+bool FuncAnalyzer::ScopedSymbolTable::HasSymbol(const std::string &name) {
+    return std::find_if(_symbol_table.begin(), _symbol_table.end(),
+                        [&](auto &t) { return std::get<0>(t) == name; }) !=
+           _symbol_table.end();
+}
+std::string FuncAnalyzer::ScopedSymbolTable::GetSymbolType(
+    const std::string &name) {
+    DLOG_ASSERT(HasSymbol(name)) << " Variable " << name << " not found";
+    return std::get<1>(
+        *std::find_if(_symbol_table.begin(), _symbol_table.end(),
+                      [&](auto &t) { return std::get<0>(t) == name; }));
+}
+std::list<FuncAnalyzer::LocalSymbol>
+FuncAnalyzer::ScopedSymbolTable::GetSymbols() {
+    return _symbol_table;
+}
+}  // namespace Hzcc::Codegen::JVM

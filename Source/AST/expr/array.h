@@ -27,8 +27,9 @@ class ArraySubscriptExpr : public ASTNode {
 
     [[nodiscard]] std::unique_ptr<AST::ASTNode>& GetSubscript();
 
-  protected:
     [[nodiscard]] const char* GetNodeName() const override;
+
+  protected:
     [[nodiscard]] std::string PrintAdditionalInfo(
         std::string_view ident) const override;
 

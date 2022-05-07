@@ -70,11 +70,11 @@ add_dependencies(mycc_e2e_test FileCheck)
 ###############################################################################
 ## FileCheckTool ##############################################################
 ###############################################################################
-add_subdirectory(utils/Jexpr)
-
-# testing target required this target
-add_dependencies(mycc_e2e_test jexpr)
-
+#add_subdirectory(utils/Jexpr)
+#
+## testing target required this target
+#add_dependencies(mycc_e2e_test jexpr)
+#
 
 ###############################################################################
 ## Testing Dependence #########################################################

@@ -35,7 +35,8 @@ Status JVMGenerator::visit(Hzcc::AST::VarDecl *p_expr) {
         if (type->HasDeduceSize()) {
             AddToCache(Utils::PushConstVal(static_cast<int>(type->GetSize())));
         } else {
-            HZCC_JVM_Visit_Node(type->GetArraySizeNode());
+            HZCC_JVM_REQUEST_LEAVE_VAL(
+                HZCC_JVM_Visit_Node(type->GetArraySizeNode()));
         }
 
         // generate push command
@@ -60,7 +61,8 @@ Status JVMGenerator::visit(Hzcc::AST::VarDecl *p_expr) {
     // if the expression contains a initializer, we need to push it
     if (p_expr->HasInitExpr()) {
         // visit the initializer expression
-        HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetInitExpr());
+        HZCC_JVM_REQUEST_LEAVE_VAL(
+            HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetInitExpr()));
 
         // push the initializer value
         AddToCache(SaveToVariable(p_expr->GetName()));
@@ -68,5 +70,6 @@ Status JVMGenerator::visit(Hzcc::AST::VarDecl *p_expr) {
 
     return Status::OkStatus();
 }
+const std::string &JVMGenerator::GetInputFileName() { return _input_file_name; }
 
 }  // namespace Hzcc::Codegen

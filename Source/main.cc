@@ -186,17 +186,16 @@ int main(int argc, char* argv[]) {
      * Code Generation                                                  #
      * ##################################################################*/
     Hzcc::Message::set_current_part("Code generation ");
-
     Hzcc::Message::set_current_part("Code Generator");
-    Hzcc::Codegen::JVMGenerator jvm_generator;
-    Hzcc::Pass::PassManagerImpl pass_manager;
 
     // Compile to JVM instr
     for (auto& unit : compilation_units) {
         DVLOG(0) << "AST Dump\n" << unit.Dump();
+        Hzcc::Pass::PassManagerImpl pass_manager;
+        Hzcc::Codegen::JVMGenerator jvm_generator(output_file, unit);
 
         pass_manager.RunPass(unit);
-        jvm_generator.Generate(output_file, unit);
+        jvm_generator.Generate();
     }
 
     return 0;

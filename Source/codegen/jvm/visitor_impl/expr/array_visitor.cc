@@ -9,8 +9,10 @@ Status JVMGenerator::visit(Hzcc::AST::ArraySubscriptExpr *p_expr) {
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     DLOG_ASSERT(p_expr != nullptr) << "p_expr is nullptr";
-    DLOG_ASSERT(p_expr->GetArrayBase() != nullptr) << "p_expr->GetArrayBase() is nullptr";
-    DLOG_ASSERT(p_expr->GetSubscript() != nullptr) << "p_expr->GetSubscript() is nullptr";
+    DLOG_ASSERT(p_expr->GetArrayBase() != nullptr)
+        << "p_expr->GetArrayBase() is nullptr";
+    DLOG_ASSERT(p_expr->GetSubscript() != nullptr)
+        << "p_expr->GetSubscript() is nullptr";
 
     /** #####################################################################
      *  ### Code Generation                                               ###
@@ -19,10 +21,13 @@ Status JVMGenerator::visit(Hzcc::AST::ArraySubscriptExpr *p_expr) {
     HZCC_JVM_GENERATE_LOAD_INSTR(HZCC_JVM_Visit_Node(p_expr->GetArrayBase()));
 
     // load array base
-    HZCC_JVM_GENERATE_LOAD_INSTR(HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetSubscript()));
+    HZCC_JVM_REQUEST_LEAVE_VAL(                // NOLINT
+        HZCC_JVM_GENERATE_LOAD_INSTR(          // NOLINT
+            HZCC_JVM_Use_Deduced_IF_POSSIBLE(  // NOLINT
+                p_expr->GetSubscript())));     // NOLINT
 
     // generate load instr
-    if(_generate_load){
+    if (_generate_load) {
         AddToCache(Utils::GetTypeName(p_expr->GetType()) + "aload");
     }
 

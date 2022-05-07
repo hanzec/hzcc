@@ -9,11 +9,20 @@
 
 #include "AST/ASTVisitor.h"
 #include "codegen/Generator.h"
+#include "codegen/IndentWriter.h"
+#include "codegen/LabelManager.h"
+#include "codegen/jvm/StackManager.h"
 #include "codegen/jvm/utils/macro.h"
 
 namespace Hzcc::Codegen {
-class JVMGenerator : public AST::ASTVisitor, public Generator {
+class JVMGenerator : public Generator,
+                     public AST::ASTVisitor,
+                     protected LabelManager,
+                     protected IndentWriter,
+                     protected JVM::StackManager {
   public:
+    JVMGenerator(const std::string& output, AST::CompilationUnit& unit);
+
     /**
      * @brief Generate the JVM Bytecode for the given compilation unit.
      *
@@ -26,8 +35,7 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
      * @param unit      The compilation unit to generate code for.
      * @return Status   The status of the generation.
      */
-    Status Generate(const std::string& output,
-                    AST::CompilationUnit& unit) override;  // NOLINT
+    Status Generate() override;  // NOLINT
 
     /**######################################################
      * ## AST Visitor                                      ##
@@ -40,12 +48,12 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
     Status visit(Hzcc::AST::DeclRefExpr* p_expr) override;
     Status visit(Hzcc::AST::LiteralExpr* p_expr) override;
     Status visit(Hzcc::AST::FunctionCall* p_expr) override;
+    Status visit(Hzcc::AST::ForStatement* p_expr) override;
     Status visit(Hzcc::AST::CompoundStmt* p_expr) override;
     Status visit(Hzcc::AST::EmptyStatement* p_expr) override;
     Status visit(Hzcc::AST::ArithmeticExpr* p_expr) override;
     Status visit(Hzcc::AST::FunctionDeclNode* p_expr) override;
     Status visit(Hzcc::AST::ArraySubscriptExpr* p_expr) override;
-
     /**######################################################
      * ## Stack Management                                  ##
      **#######################################################**/
@@ -55,35 +63,15 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
     std::string ConsumeReturnStack();
 
   protected:
-    void IncLindeIndent();
-    void DecLindeIndent();
-
-    void AddToCache(const std::string& output);
-    std::string GetAllCachedLine();
     const std::string& GetInputFileName();
     const std::string& GetCurrentClassName();
 
-    [[nodiscard]] uint32_t GetStackID(std::string& name);
-
-    [[nodiscard]] bool IsGlobalVar(const std::string& name);
-
-    [[nodiscard]] bool IsLocalVar(const std::string& name);
-
-    [[nodiscard]] std::string GetVarType(const std::string& name);
-
-    [[nodiscard]] std::string SaveToVariable(const std::string& name);
-
-    [[nodiscard]] std::string LoadFromVariable(const std::string& name);
-
   private:
-    std::string _indent;
-    std::stringstream _output;
-    std::string _intput_file_name;
+    std::string _input_file_name;
     std::string _current_class_name;
 
     bool _generate_load = false;
     bool _request_leave = false;
-    constexpr static const char* _indent_str = "    ";
 
     std::list<std::string> _return_stack;
 
@@ -93,15 +81,10 @@ class JVMGenerator : public AST::ASTVisitor, public Generator {
      *      -  public static int getchar() from class [libc]
      *      -  public static int putchar(int c) from class [libc]
      */
-    std::unordered_map<std::string, std::pair<std::string, std::string>>
+    inline static std::unordered_map<std::string,
+                                     std::pair<std::string, std::string>>
         _function_table{{"putchar", {"libc", "(I)I"}},
                         {"getchar", {"libc", "()I"}}};
-
-    /**
-     * Varname ： [stackID, Type]
-     */
-    std::unordered_map<std::string, std::string> _global_vars;
-    std::unordered_map<std::string, std::pair<int, std::string>> _local_vars;
 };
 
 }  // namespace Hzcc::Codegen

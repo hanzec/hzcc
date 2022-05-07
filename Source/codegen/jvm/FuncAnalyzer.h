@@ -2,21 +2,48 @@
 // Created by chen_ on 2022/5/3.
 //
 #include <list>
+#include <memory>
 #include <unordered_map>
+#include <vector>
 
 #include "AST/ASTVisitor.h"
 #ifndef MYCC_SOURCE_CODEGEN_JVM_FUNCANALYZER_H_
 #define MYCC_SOURCE_CODEGEN_JVM_FUNCANALYZER_H_
-namespace Hzcc::Codegen {
+namespace Hzcc::Codegen::JVM {
 
 class FuncAnalyzer : public AST::ASTVisitor {
   public:
-    FuncAnalyzer(
-        const std::unordered_map<std::string, std::string>& global_vars);
+    using SymbolTable =
+        std::vector<std::list<std::tuple<std::string, std::string, uint64_t>>>;
 
-    /**######################################################
-     * ## AST Visitor                                      ##
-     **#######################################################**/
+    explicit FuncAnalyzer(
+        const std::unordered_map<std::string, std::string>& global_vars);
+    /**
+     * @brief Get the symbol table of the function.
+     *
+     * Table Structure:
+     * [
+     *     ...,
+     *     [..., [name, type, line_no], ...],
+     *     ...
+     * ]
+     * The index of the first level of list is the stack ID. Then the second
+     * level is the list of variables which shared the same stack ID. Since it's
+     * not necessary to give every local temp variables a unique stack ID.
+     * Noticed that the stack ID is that only contains one variable is the
+     * function's variable.
+     *
+     *  @return The symbol table of the function.
+     */
+    [[nodiscard]] SymbolTable GetLocalVariable();
+
+    [[nodiscard]] uint32_t GetMaxStackSize() const;
+
+    /**
+     * @brief  Rerturn if current function has return statement or not
+     * @return true if has return statement, false otherwise
+     */
+    [[nodiscard]] bool HasValidReturn() const;
 
     Status visit(Hzcc::AST::CastExpr* p_expr) override;
     Status visit(Hzcc::AST::ArithmeticExpr* p_expr) override;
@@ -47,20 +74,6 @@ class FuncAnalyzer : public AST::ASTVisitor {
     Status visit(Hzcc::AST::WhileStatement* p_expr) override;
     Status visit(Hzcc::AST::LiteralExpr* p_expr) override;
 
-    /**######################################################
-     * ## Information Collected                            ##
-     **#######################################################**/
-    const std::list<std::tuple<const std::string, const std::string, uint32_t>>&
-    GetLocalVariable();
-
-    [[nodiscard]] uint32_t GetMaxStackSize() const;
-
-    /**
-     * @brief  Rerturn if current function has return statement or not
-     * @return true if has return statement, false otherwise
-     */
-    bool HasValidReturn();
-
   protected:
     /**
      * @brief Add given size to current function's stack size, and update the
@@ -75,9 +88,6 @@ class FuncAnalyzer : public AST::ASTVisitor {
      */
     void DecreaseCurrentStack(uint8_t p_size);
 
-    void AddNewLocalVariable(const std::string_view& p_name, uint32_t line_no,
-                             std::string_view type);
-
     [[nodiscard]] int SaveToVariable(const std::string& name);
 
     [[nodiscard]] int LoadFromVariable(const std::string& name);
@@ -86,7 +96,42 @@ class FuncAnalyzer : public AST::ASTVisitor {
 
     std::string ConsumeReturnStack();
 
+    void EnterScope();
+    void LeaveScope();
+
+    bool IsLocal(const std::string& p_name);
+
+    bool IsGlobal(const std::string& p_name);
+
+    std::string GetLocalVarType(const std::string& p_name);
+
+    void AddLocalVariable(const std::string& name, const std::string& type,
+                          uint32_t line_no);
+
   private:
+    /**
+     * [name, type, line_no]
+     */
+    using LocalSymbol =
+        std::tuple<const std::string, const std::string, uint32_t>;
+
+    class ScopedSymbolTable
+        : public std::enable_shared_from_this<ScopedSymbolTable> {
+      public:
+        void AddSymbol(const std::string& name, const std::string& type,
+                       uint32_t line_no);
+        bool HasSymbol(const std::string& name);
+        std::string GetSymbolType(const std::string& name);
+        std::list<LocalSymbol> GetSymbols();
+
+      private:
+        /**
+         * _local_var_map will have a formate like:
+         * [variable_name,type, line_number]
+         */
+        std::list<LocalSymbol> _symbol_table;
+    };
+
     bool _has_return = false;
     bool _generate_load = false;
     bool _request_leave = false;
@@ -95,19 +140,14 @@ class FuncAnalyzer : public AST::ASTVisitor {
 
     std::list<std::string> _return_stack;
 
+    std::list<std::shared_ptr<ScopedSymbolTable>> _symbol_table_stack;
+    std::vector<std::shared_ptr<ScopedSymbolTable>> _saved_symbol_table;
 
     /**
      * Reference of the Global Variable Table
      * [variable_name,type]
      */
     const std::unordered_map<std::string, std::string>& _global_vars;
-
-    /**
-     * _local_var_map will have a formate like:
-     * [variable_name,type, line_number]
-     */
-    std::list<std::tuple<const std::string, const std::string, uint32_t>>
-        _local_var_map;
 };
-}  // namespace Hzcc::Codegen
+}  // namespace Hzcc::Codegen::JVM
 #endif  // MYCC_SOURCE_CODEGEN_JVM_FUNCANALYZER_H_

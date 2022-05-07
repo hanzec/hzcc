@@ -55,13 +55,13 @@ class VarDecl : public DeclNode {
      */
     [[nodiscard]] std::unique_ptr<AST::ASTNode>& GetInitExpr();
 
-  protected:
     /**
      * @brief Get the name of current Node
      * @return "VarDecl"
      */
     [[nodiscard]] const char* GetNodeName() const override;
 
+  protected:
     [[nodiscard]] std::string PrintAdditionalInfo(
         std::string_view ident) const override;
 

@@ -7,6 +7,12 @@
 #ifndef MYCC_SOURCE_AST_OPERATOR_LOGICAL_H_
 #define MYCC_SOURCE_AST_OPERATOR_LOGICAL_H_
 namespace Hzcc::AST {
+enum PACKED LogicalType {
+    kLogicalType_And = 0,
+    kLogicalType_Or = 1,
+    kLogicalType_ENUM_SIZE = 2,
+};
+
 class LogicalExpr : public OperatorBase {
   public:
     LogicalExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
@@ -15,17 +21,13 @@ class LogicalExpr : public OperatorBase {
     Status visit(ASTVisitor& visitor) override;
 
   protected:
-    enum LogicalType {
-        kAnd,
-        kOr,
-        kEqual,
-        kNotEqual,
-    };
+    /**
+     * @brief Get node name
+     * @return node name
+     */
+    [[nodiscard]] const char* GetNodeName() const override;
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
-
-  protected:
-    [[nodiscard]] const char* GetNodeName() const override;
 
   private:
     LogicalType _type;
