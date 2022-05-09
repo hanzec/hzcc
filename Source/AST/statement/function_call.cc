@@ -4,11 +4,12 @@
 #include "function_call.h"
 
 #include <cassert>
+#include <regex>
 
 #include "lexical/Token.h"
 
 namespace Hzcc::AST {
-const char* FunctionCall::GetNodeName() const { return "FunctionCall"; }
+const char* FunctionCall::NodeName() const { return "FunctionCall"; }
 FunctionCall::FunctionCall(const Lexical::Token& name,
                            const std::shared_ptr<Type>& return_type,
                            std::list<std::unique_ptr<ASTNode>> args)
@@ -21,16 +22,17 @@ FunctionCall::FunctionCall(const Lexical::Token& name,
 
 std::shared_ptr<Type> FunctionCall::GetType() const { return _return_type; }
 
-std::string FunctionCall::PrintAdditionalInfo(std::string_view ident) const {
-    std::string info{_name};
+std::string FunctionCall::PrintAdditionalInfo(const std::string& ident) const {
+    std::stringstream info;
+    info << _name;
 
     if (!_args.empty()) {
         for (auto& arg : _args) {
-            info += "\n" + arg->Dump(std::string(ident) +
-                                     (arg == _args.back() ? " `" : " |"));
+            info << "\n" +
+                        arg->Dump(ident + (arg == _args.back() ? " `" : " |"));
         }
     }
-    return info;
+    return info.str();
 }
 Status FunctionCall::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 std::list<std::unique_ptr<ASTNode>>& FunctionCall::GetArgsNode() {

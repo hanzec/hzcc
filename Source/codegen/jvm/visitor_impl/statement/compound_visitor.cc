@@ -13,7 +13,6 @@ Status JVMGenerator::visit(Hzcc::AST::CompoundStmt *p_expr) {
     /** #####################################################################
      *  ### Code Generation                                               ###
      *  ##################################################################### */
-    IncLindeIndent();
     for (const auto &stmt : p_expr->GetBodyStatements()) {
         // first we need to print annotations
         std::stringstream ss;
@@ -21,15 +20,17 @@ Status JVMGenerator::visit(Hzcc::AST::CompoundStmt *p_expr) {
            << GetInputFileName() << " " << stmt->GetLine();
         AddToCache(ss.str());
 
-        // then we generate the statement
-        HZCC_JVM_NOT_REQUEST_LEAVE_VAL(HZCC_JVM_Visit_Node(stmt));
+        // also line number
+        DecLindeIndent();
+        auto label = GenerateLineLabel();
+        AddToCache(label + ":");
+        SetLineNumberTag(label, stmt->GetLine());
+        IncLindeIndent();
 
-        // generate return statement if last statement is not return
-        if (stmt == p_expr->GetBodyStatements().back() && !stmt->IsReturn()) {
-            AddToCache("return");
-        }
+        // then we generate the statement
+        HZCC_NOT_LEAVE_RET_ON_STACK(
+            HZCC_CONTEXT_LEAVE_COMPARE(HZCC_JVM_Visit_Node(stmt)));
     }
-    DecLindeIndent();
     return Status::OkStatus();
 }
 

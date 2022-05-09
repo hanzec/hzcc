@@ -14,7 +14,7 @@ namespace Hzcc::AST {
 constexpr static std::array<const char*, ArithmeticType::kArithmeticType_ENUM_SIZE>
     kArithmeticStr = {"add", "sub", "mul", "div", "mod"};
 
-const char* ArithmeticExpr::GetNodeName() const { return "ArithmeticExpr"; }
+const char* ArithmeticExpr::NodeName() const { return "ArithmeticExpr"; }
 
 std::optional<DeduceValue> ArithmeticExpr::GetDeducedValue() const {
     if (!GetType()->IsConst()) {
@@ -70,7 +70,8 @@ Status ArithmeticExpr::visit(ASTVisitor& visitor) {
 }
 ArithmeticType ArithmeticExpr::GetOpType() const { return _type; }
 
-std::string ArithmeticExpr::PrintAdditionalInfo(std::string_view ident) const {
+std::string ArithmeticExpr::PrintAdditionalInfo(
+    const std::string& ident) const {
     std::stringstream ss;
 
     // print node info

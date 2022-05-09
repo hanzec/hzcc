@@ -1,6 +1,6 @@
+int putchar(int c);
 
-void prints(const char s[])
-{
+void prints(const char s[]) {
     int i;
     i = 0;
     while (s[i]) {
@@ -8,8 +8,7 @@ void prints(const char s[])
     }
 }
 
-int main()
-{
+int main() {
     prints("Hello, world!\n");
     return 0;
 }

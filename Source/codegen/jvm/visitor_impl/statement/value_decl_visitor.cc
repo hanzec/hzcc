@@ -35,7 +35,7 @@ Status JVMGenerator::visit(Hzcc::AST::VarDecl *p_expr) {
         if (type->HasDeduceSize()) {
             AddToCache(Utils::PushConstVal(static_cast<int>(type->GetSize())));
         } else {
-            HZCC_JVM_REQUEST_LEAVE_VAL(
+            HZCC_LEAVE_RET_ON_STACK(
                 HZCC_JVM_Visit_Node(type->GetArraySizeNode()));
         }
 
@@ -61,7 +61,7 @@ Status JVMGenerator::visit(Hzcc::AST::VarDecl *p_expr) {
     // if the expression contains a initializer, we need to push it
     if (p_expr->HasInitExpr()) {
         // visit the initializer expression
-        HZCC_JVM_REQUEST_LEAVE_VAL(
+        HZCC_LEAVE_RET_ON_STACK(
             HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetInitExpr()));
 
         // push the initializer value

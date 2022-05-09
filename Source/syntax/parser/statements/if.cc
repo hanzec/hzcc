@@ -58,7 +58,7 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(
         auto prev_else = pop_list(tokens);  // consume else;
         // if this is single else statement
         if (peek(tokens).Type() == Lexical::TokenType::kLBrace) {
-            if (ifNode->hasElse()) {
+            if (ifNode->HasElse()) {
                 MYCC_PrintTokenError_ReturnNull(
                     prev_else,
                     "If statement cannot have multiple else statements")

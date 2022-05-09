@@ -12,7 +12,7 @@ class BreakStatement : public ASTNode {
     BreakStatement(std::pair<int, int> pair_1);
 
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 };
 }  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_BREAK_H_

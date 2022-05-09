@@ -30,39 +30,40 @@ bool FunctionDeclNode::set_body(
 }
 
 std::string FunctionDeclNode::PrintAdditionalInfo(
-    std::string_view ident) const {
-    std::string result = std::string();
-    result += _return_type->GetName() + " " + GetName();
+    const std::string& ident) const {
+    std::stringstream result;
+    result << _return_type->GetName() + " " + GetName();
 
     // print its arguments
-    result += " (";
+    result << " (";
     for (const auto& arg : _function_param) {
-        result += arg->GetType()->Dump();
-        result += ",";
+        result << arg->GetType()->Dump();
+
+        if (arg != _function_param.back()) {
+            result << ",";
+        }
     }
-    if (!_function_param.empty()) {
-        result.pop_back();
-    }
-    result += ")";
+    result << ")";
 
     // print argument node
     if (!_function_param.empty()) {
         for (const auto& arg : _function_param) {
-            result += "\n" + arg->Dump(std::string(ident.size(), ' ') + " |") +
-                      (arg == _function_param.back() ? "" : "\n");
+            result << "\n" +
+                          arg->Dump(ident + (arg == _function_param.back() &&
+                                                     _function_body == nullptr
+                                                 ? " `"
+                                                 : " |")) +
+                          (arg == _function_param.back() ? "" : "\n");
         }
     }
 
     // print its body
     if (_function_body != nullptr) {
-        result += "\n" +
-                  _function_body->Dump(std::string(ident.size(), ' ') +
-                                       (_function_param.empty() ? " |" : " `"));
+        result << "\n" + _function_body->Dump(ident + " `");
     } else {
-        result += ")";
+        result << ")";
     }
-
-    return result;
+    return result.str();
 }
 bool FunctionDeclNode::AddFunctionArgument(
     std::unique_ptr<ParamVarDecl> param_var_decl) {
@@ -75,7 +76,7 @@ bool FunctionDeclNode::AddFunctionArgument(
     _function_param.push_back(std::move(param_var_decl));
     return true;
 }
-const char* FunctionDeclNode::GetNodeName() const { return "FunctionDecl"; }
+const char* FunctionDeclNode::NodeName() const { return "FunctionDecl"; }
 ArgumentList FunctionDeclNode::getArguments() {
     ArgumentList result;
     for (const auto& arg : _function_param) {
@@ -95,7 +96,7 @@ Status FunctionDeclNode::visit(ASTVisitor& visitor) {
     return visitor.visit(this);
 }
 
-std::unique_ptr<AST::CompoundStmt>& FunctionDeclNode::GetBody() {
+std::unique_ptr<AST::CompoundStmt>& FunctionDeclNode::Body() {
     return _function_body;
 }
 std::list<std::unique_ptr<ParamVarDecl>>& FunctionDeclNode::GetParams() {
@@ -103,7 +104,7 @@ std::list<std::unique_ptr<ParamVarDecl>>& FunctionDeclNode::GetParams() {
 }
 
 #ifdef NDEBUG
-std::string FunctionDeclNode::Dump(std::string_view ident) const {
+std::string FunctionDeclNode::Dump(const std::string& ident) const {
     std::stringstream ret;
 
     // print parameter

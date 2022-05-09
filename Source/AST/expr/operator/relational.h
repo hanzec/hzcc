@@ -8,6 +8,16 @@
 #ifndef MYCC_SOURCE_AST_OPERATOR_RELATIONAL_H_
 #define MYCC_SOURCE_AST_OPERATOR_RELATIONAL_H_
 namespace Hzcc::AST {
+enum PACKED RelationalType {
+    kRelationalType_Less = 0,
+    kRelationalType_Equal = 1,
+    kRelationalType_NEqual = 2,
+    kRelationalType_Greater = 3,
+    kRelationalType_LessEqual = 4,
+    kRelationalType_GreaterEqual = 5,
+    kRelationalType_ENUM_SIZE = 6,  // keep last
+};
+
 class RelationalExpr : public OperatorBase {
   public:
     RelationalExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
@@ -17,13 +27,13 @@ class RelationalExpr : public OperatorBase {
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
+    [[nodiscard]] const char* NodeName() const override;
+
+    [[nodiscard]] RelationalType OpType() const;
+
   protected:
-    enum RelationalType { LT, GT, LE, GE, EQ, NE };
-
-    [[nodiscard]] const char* GetNodeName() const override;
-
     [[nodiscard]] std::string PrintAdditionalInfo(
-        std::string_view ident) const override;
+        const std::string& ident) const override;
 
   private:
     RelationalType _type;

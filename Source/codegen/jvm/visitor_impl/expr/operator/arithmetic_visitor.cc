@@ -16,10 +16,10 @@ Status JVMGenerator::visit(Hzcc::AST::ArithmeticExpr* p_expr) {
      *  ##################################################################### */
     DLOG_ASSERT(p_expr != nullptr) << "expression is nullptr";
     DLOG_ASSERT(p_expr->GetLHS() != nullptr)
-        << "lhs of expr " << p_expr->GetLHS()->GetNodeName()
+        << "lhs of expr " << p_expr->GetLHS()->NodeName()
         << "(line:" << p_expr->GetLHS()->GetLine() << ") is nullptr";
     DLOG_ASSERT(p_expr->GetRHS() != nullptr)
-        << "rhs of expr " << p_expr->GetRHS()->GetNodeName()
+        << "rhs of expr " << p_expr->GetRHS()->NodeName()
         << "(line:" << p_expr->GetRHS()->GetLine() << ") is nullptr";
     DLOG_ASSERT(!(p_expr->GetRHS()->GetDeducedValue() != std::nullopt &&
                   p_expr->GetLHS()->GetDeducedValue() != std::nullopt))
@@ -28,8 +28,8 @@ Status JVMGenerator::visit(Hzcc::AST::ArithmeticExpr* p_expr) {
     /** #####################################################################
      *  ### Code Generation                                               ###
      *  ##################################################################### */
-    if (_request_leave) {
-        HZCC_JVM_REQUEST_LEAVE_VAL(HZCC_JVM_GENERATE_LOAD_INSTR({
+    if (_request_leave || _under_compare) {
+        HZCC_LEAVE_RET_ON_STACK(HZCC_JVM_GENERATE_LOAD_INSTR({
             HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetLHS());
             HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetRHS());
         }))
@@ -39,7 +39,7 @@ Status JVMGenerator::visit(Hzcc::AST::ArithmeticExpr* p_expr) {
                    ArithmeticASM[p_expr->GetOpType()]);
     } else {
         DVLOG(MESSAGE_ERROR_TRACING)
-            << "skip code gen for node " << p_expr->GetNodeName()
+            << "skip code gen for node " << p_expr->NodeName()
             << "(line:" << p_expr->GetLine() << " id: " << p_expr->GetNodeId()
             << ")";
     }

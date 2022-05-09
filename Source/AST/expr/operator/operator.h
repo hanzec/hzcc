@@ -19,7 +19,7 @@ class OperatorBase : public ASTNode {
     [[nodiscard]] const std::unique_ptr<ASTNode>& GetRHS() const;
 
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 
   private:
     std::unique_ptr<ASTNode> _lhs;

@@ -18,7 +18,7 @@ class SizeofExpr : public ASTNode {
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 
   private:
     std::unique_ptr<ASTNode> _expr;

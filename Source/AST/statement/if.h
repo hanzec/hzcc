@@ -19,33 +19,41 @@ class IfStatement : public ASTNode {
 
     Status visit(ASTVisitor& visitor) override;
 
-    [[nodiscard]] bool hasElse() const { return _else_statement_ != nullptr; }
+    bool setElse(std::unique_ptr<ASTNode> Else);
 
-    bool setElse(std::unique_ptr<ASTNode> Else) {
-        if ((_else_statement_ = std::move(Else)) == nullptr)
-            return false;
-        else
-            return true;
-    }
+    [[nodiscard]] std::unique_ptr<ASTNode>& CondStmt();
+
+    [[nodiscard]] std::unique_ptr<ASTNode>& BodyStmt();
+
+    [[nodiscard]] std::unique_ptr<ASTNode>& ElseStmt();
+
+
+    /**
+     * @brief Get the list of else-if statement. The return format is a vector
+     * of pair, where the first element is the condition, and the second element
+     * is the body.
+     * @return The list of else-if statement.
+     */
+    [[nodiscard]] std::vector<
+        std::pair<std::unique_ptr<ASTNode>, std::unique_ptr<ASTNode>>>&
+    ElseIfStmt();
 
     bool addElseIf(std::unique_ptr<ASTNode> Cond,
-                   std::unique_ptr<ASTNode> Body) {
-        if (Cond == nullptr || Body == nullptr)
-            return false;
-        else {
-            _elseIfs.emplace_back(std::move(Cond), std::move(Body));
-            return true;
-        }
-    }
+                   std::unique_ptr<ASTNode> Body);
 
-    [[nodiscard]] bool HasBody() const override { return true; }
+    [[nodiscard]] bool HasElse() const;
+
+    [[nodiscard]] bool HasBody() const override;
 
 #ifdef NDEBUG
-    [[nodiscard]] std::string Dump(std::string_view ident) const override;
+    [[nodiscard]] std::string Dump(const std::string& ident) const override;
 #endif
 
+    [[nodiscard]] const char* NodeName() const override;
+
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] std::string PrintAdditionalInfo(
+        const std::string& ident) const override;
 
   private:
     std::unique_ptr<ASTNode> _condition;

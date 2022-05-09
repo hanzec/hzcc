@@ -18,18 +18,18 @@ class CompoundStmt : public ASTNode {
     bool AddStatement(std::unique_ptr<ASTNode> statement);
 
 #ifdef NDEBUG
-    [[nodiscard]] std::string Dump(std::string_view ident) const override;
+    [[nodiscard]] std::string Dump(const std::string& ident) const override;
 #endif
 
     [[nodiscard]] const std::unique_ptr<ASTNode>& GetLastStatement() const;
 
     [[nodiscard]] std::list<std::unique_ptr<ASTNode>>& GetBodyStatements();
 
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 
   protected:
     [[nodiscard]] std::string PrintAdditionalInfo(
-        std::string_view ident) const override;
+        const std::string& ident) const override;
 
   private:
     std::list<std::unique_ptr<ASTNode>> statements_{};

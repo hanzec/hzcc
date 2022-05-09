@@ -7,15 +7,13 @@
 
 namespace Hzcc::AST {
 
-const char* AST::CastExpr::GetNodeName() const { return "CastExpr"; }
+const char* AST::CastExpr::NodeName() const { return "CastExpr"; }
 bool CastExpr::IsAssignable() const { return _cast_expr->IsAssignable(); }
 std::shared_ptr<Type> CastExpr::GetType() const { return _cast_type; }
 
-std::string CastExpr::PrintAdditionalInfo(std::string_view ident) const {
-    auto new_ident = std::string(ident);
-    std::replace(new_ident.begin(), new_ident.end(), '`', ' ');
+std::string CastExpr::PrintAdditionalInfo(const std::string& ident) const {
     return "[" + _cast_expr->GetType()->GetName() + "]->[" +
-           _cast_type->GetName() + "]\n" + _cast_expr->Dump(new_ident + " `");
+           _cast_type->GetName() + "]\n" + _cast_expr->Dump(ident + " `");
 }
 
 Status CastExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }

@@ -20,10 +20,10 @@ class DeclRefExpr : public ASTNode {
     [[nodiscard]] const std::string& VarName() const;
 
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 
     [[nodiscard]] std::string PrintAdditionalInfo(
-        std::string_view ident) const override;
+        const std::string& ident) const override;
 
   private:
     std::string _name{};

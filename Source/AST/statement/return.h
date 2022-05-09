@@ -18,19 +18,19 @@ class ReturnNode : public ASTNode {
 
     std::unique_ptr<ASTNode>& GetReturnVal();
 #ifdef NDEBUG
-    [[nodiscard]] std::string Dump(std::string_view ident) const override {
+    [[nodiscard]] std::string Dump(const std::string& ident) const override {
         return "";
     }
 #endif
 
     [[nodiscard]] bool IsReturn() const override { return true; }
 
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 
   protected:
 
     [[nodiscard]] std::string PrintAdditionalInfo(
-        std::string_view ident) const override;
+        const std::string& ident) const override;
 
   private:
     std::unique_ptr<ASTNode> _return_val;

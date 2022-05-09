@@ -54,7 +54,7 @@ class AssignExpr : public OperatorBase {
      * @brief Get Name of the node
      * @return will always return "AssignExpr"
      */
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 
   protected:
     /**
@@ -65,7 +65,7 @@ class AssignExpr : public OperatorBase {
      * @return
      */
     [[nodiscard]] std::string PrintAdditionalInfo(
-        std::string_view ident) const override;
+        const std::string& ident) const override;
 
   private:
     AssignType _type;

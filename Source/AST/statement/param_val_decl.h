@@ -17,7 +17,7 @@ class ParamVarDecl : public VarDecl {
     Status visit(ASTVisitor& visitor) override;
 
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 };
 }  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_PARAM_VAL_DECL_H_

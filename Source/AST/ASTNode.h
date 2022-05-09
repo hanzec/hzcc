@@ -59,7 +59,7 @@ class ASTNode {
     [[nodiscard]] static std::unique_ptr<AST::ASTNode> CastTo(
         const std::shared_ptr<Type>& lhs_type, std::unique_ptr<ASTNode> rhs);
 
-    [[nodiscard]] virtual std::string Dump(std::string_view ident) const;
+    [[nodiscard]] virtual std::string Dump(const std::string& ident) const;
 
     [[nodiscard]] virtual std::optional<DeduceValue> GetDeducedValue() const;
 
@@ -69,13 +69,13 @@ class ASTNode {
 
     [[nodiscard]] std::pair<int, int> Location() const;
 
-    [[nodiscard]] virtual const char* GetNodeName() const = 0;
+    [[nodiscard]] virtual const char* NodeName() const = 0;
 
     [[nodiscard]] uint64_t GetNodeId() const;
 
   protected:
     [[nodiscard]] virtual std::string PrintAdditionalInfo(
-        std::string_view ident) const;
+        const std::string& ident) const;
 
   private:
     const uint64_t _id;

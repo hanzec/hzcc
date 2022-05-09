@@ -1,6 +1,7 @@
 /*
   Computes and prints the first 20 Fibonacci numbers.
 */
+int putchar(int c);
 
 void print(int x)
 {

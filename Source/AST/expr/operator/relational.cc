@@ -8,68 +8,64 @@
 
 namespace Hzcc::AST {
 
-const char* AST::RelationalExpr::GetNodeName() const {
-    return "RelationalExpr";
-}
+const char* AST::RelationalExpr::NodeName() const { return "RelationalExpr"; }
 RelationalExpr::RelationalExpr(const Lexical::Token& type,
                                std::unique_ptr<ASTNode> lhs,
                                std::unique_ptr<ASTNode> rhs)
-    : OperatorBase(type.Location(), std::move(rhs), std::move(lhs)) {
+    : OperatorBase(type.Location(), std::move(lhs), std::move(rhs)) {
     auto type_str = type.Value();
     if (type_str == "==") {
-        this->_type = RelationalType::EQ;
+        this->_type = RelationalType::kRelationalType_Equal;
     } else if (type_str == "!=") {
-        this->_type = RelationalType::NE;
+        this->_type = RelationalType::kRelationalType_NEqual;
     } else if (type_str == "<") {
-        this->_type = RelationalType::LT;
+        this->_type = RelationalType::kRelationalType_Less;
     } else if (type_str == "<=") {
-        this->_type = RelationalType::LE;
+        this->_type = RelationalType::kRelationalType_LessEqual;
     } else if (type_str == ">") {
-        this->_type = RelationalType::GT;
+        this->_type = RelationalType::kRelationalType_Greater;
     } else if (type_str == ">=") {
-        this->_type = RelationalType::GE;
+        this->_type = RelationalType::kRelationalType_GreaterEqual;
     } else {
         DLOG(FATAL) << "Unknown relational operator: " << type_str;
     }
 }
-std::string RelationalExpr::PrintAdditionalInfo(std::string_view ident) const {
-    std::string ret;
+std::string RelationalExpr::PrintAdditionalInfo(
+    const std::string& ident) const {
+    std::stringstream ret;
 
     // lhs type
-    ret += " " + GetLHS()->GetType()->GetName();
+    ret << " " + GetLHS()->GetType()->GetName();
 
     // symbol type
     switch (_type) {
-        case RelationalType::EQ:
-            ret += " == ";
+        case RelationalType::kRelationalType_Equal:
+            ret << " == ";
             break;
-        case RelationalType::NE:
-            ret += " != ";
+        case RelationalType::kRelationalType_NEqual:
+            ret << " != ";
             break;
-        case RelationalType::LT:
-            ret += " < ";
+        case RelationalType::kRelationalType_Less:
+            ret << " < ";
             break;
-        case RelationalType::LE:
-            ret += " <= ";
+        case RelationalType::kRelationalType_LessEqual:
+            ret << " <= ";
             break;
-        case RelationalType::GT:
-            ret += " > ";
+        case RelationalType::kRelationalType_Greater:
+            ret << " > ";
             break;
-        case RelationalType::GE:
-            ret += " >= ";
+        case RelationalType::kRelationalType_GreaterEqual:
+            ret << " >= ";
             break;
         default:
             DLOG(FATAL) << "Unknown relational operator: " << _type;
     }
 
-    auto new_ident = (ident.find('`') == std::string::npos)
-                         ? std::string(ident)
-                         : std::string(ident.size(), ' ');
     // dump rhs
-    ret += "\n" + GetRHS()->Dump(new_ident + " |") + "\n";
-    ret += GetLHS()->Dump(new_ident + " `");
+    ret << "\n" + GetLHS()->Dump(ident + " |") + "\n" +
+               GetRHS()->Dump(ident + " `");
 
-    return ret;
+    return ret.str();
 }
 std::shared_ptr<Type> RelationalExpr::GetType() const {
     return Type::GetBasicType("char", {});
@@ -77,4 +73,5 @@ std::shared_ptr<Type> RelationalExpr::GetType() const {
 Status RelationalExpr::visit(ASTVisitor& visitor) {
     return visitor.visit(this);
 }
+RelationalType RelationalExpr::OpType() const { return _type; }
 }  // namespace Hzcc::AST

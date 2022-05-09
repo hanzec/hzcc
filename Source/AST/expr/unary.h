@@ -33,10 +33,10 @@ class UnaryExpr : public ASTNode {
 
     [[nodiscard]] UnaryType GetUnaryType() const;
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 
     [[nodiscard]] std::string PrintAdditionalInfo(
-        std::string_view ident) const override;
+        const std::string& ident) const override;
 
   private:
     UnaryType _type;

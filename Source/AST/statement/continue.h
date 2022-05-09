@@ -10,10 +10,10 @@ class ContinueStatement : public ASTNode {
     Status visit(ASTVisitor& visitor) override;
 
   public:
-    ContinueStatement(std::pair<int, int> pair_1);
+    explicit ContinueStatement(std::pair<int, int> pair_1);
 
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 };
 }  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_STATEMENT_CONTINUE_H_

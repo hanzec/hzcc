@@ -78,13 +78,13 @@ int main(int argc, char* argv[]) {
     }
 
     // has to select one mode
-    if (!(flag0 || flag1 || flag2 || flag3 || flag4 || flag5)) {
+    if (!(flag0 || flag1 || flag2 || flag3 || flag4 || flag5 || flag6)) {
         LOG(ERROR) << "No mode selected!";
         return -1;
     }
 
     // can only select one mode
-    if (1 < (int)(flag0 + flag1 + flag2 + flag3 + flag4 + flag5)) {
+    if (1 < (int)(flag0 + flag1 + flag2 + flag3 + flag4 + flag5 + flag6)) {
         LOG(ERROR) << "More than one mode selected!";
         return -1;
     }
@@ -125,7 +125,7 @@ int main(int argc, char* argv[]) {
 
         // run lexical analysis
         if (!Hzcc::Lexical::ParseToToken(infile, tokens).Ok()) {
-            return -1;
+            return 0;
         }
 
         // print part1 results
@@ -160,24 +160,24 @@ int main(int argc, char* argv[]) {
 
         // run Syntax analysis
         if (!Hzcc::Syntax::GenerateAST(compilation_unit, tokens).Ok()) {
-            return -1;
+            return 0;
         }
 
         if (flag3) {
             std::cout << "File " << input_files[i]
                       << " is syntactically correct." << std::endl;
+            return 0;
         }
 
         if (flag4) {
             if (output_file.empty()) {
                 std::cout << compilation_unit.Dump() << std::endl;
-
             } else {
                 std::fstream outfile(output_file, std::fstream::out);
                 outfile << compilation_unit.Dump() << std::endl;
                 outfile.close();
             }
-            break;
+            return 0;
         }
         compilation_units.push_back(std::move(compilation_unit));
     }
@@ -192,7 +192,7 @@ int main(int argc, char* argv[]) {
     for (auto& unit : compilation_units) {
         DVLOG(0) << "AST Dump\n" << unit.Dump();
         Hzcc::Pass::PassManagerImpl pass_manager;
-        Hzcc::Codegen::JVMGenerator jvm_generator(output_file, unit);
+        Hzcc::Codegen::JVMGenerator jvm_generator(output_file, unit, flag6);
 
         pass_manager.RunPass(unit);
         jvm_generator.Generate();

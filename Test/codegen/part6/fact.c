@@ -1,4 +1,7 @@
 
+int putchar(int c);
+
+
 void print2(int x)
 {
     if (x>9) {

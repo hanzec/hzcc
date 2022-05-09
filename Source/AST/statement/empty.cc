@@ -7,7 +7,7 @@
 
 namespace Hzcc::AST {
 
-const char* AST::EmptyStatement::GetNodeName() const {
+const char* AST::EmptyStatement::NodeName() const {
     return "EmptyStatement";
 }
 std::shared_ptr<Type> EmptyStatement::GetType() const {

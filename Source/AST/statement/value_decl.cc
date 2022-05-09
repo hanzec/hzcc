@@ -15,15 +15,15 @@ VarDecl::VarDecl(std::shared_ptr<Type> type, std::list<Lexical::Token>& attrs,
     : DeclNode(decl_name), _type(std::move(type)), _init_expr(std::move(init)) {
     attrs.clear();
 }
-const char* VarDecl::GetNodeName() const { return "VarDecl"; }
+const char* VarDecl::NodeName() const { return "VarDecl"; }
 
-std::string VarDecl::PrintAdditionalInfo(std::string_view ident) const {
+std::string VarDecl::PrintAdditionalInfo(const std::string& ident) const {
     std::stringstream ss;
     // base information
     ss << GetName() << " " << _type->GetName();
 
     if (HasInitExpr())
-        ss << std::endl << _init_expr->Dump(std::string(ident) + " `");
+        ss << std::endl << _init_expr->Dump(ident + " `");
 
     return ss.str();
 }

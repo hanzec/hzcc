@@ -140,13 +140,6 @@ std::string Token::Value(bool escape) const noexcept {
     } else {
         if (escape) {
             std::stringstream ss;
-
-            if (_token_type == TokenType::kString) {
-                ss << "\"";
-            } else if (_token_type == TokenType::kChar) {
-                ss << "'";
-            }
-
             for (auto& c : *_token_val_ref) {
                 if (std::iscntrl(c)) {
                     ss << SymbolUtils::ASCIIControlCodeToString(c);
@@ -154,13 +147,6 @@ std::string Token::Value(bool escape) const noexcept {
                     ss << c;
                 }
             }
-
-            if (_token_type == TokenType::kString) {
-                ss << "\"";
-            } else if (_token_type == TokenType::kChar) {
-                ss << "'";
-            }
-
             return ss.str();
         } else {
             return {*_token_val_ref};

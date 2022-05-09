@@ -25,6 +25,11 @@ Status JVMGenerator::visit(AST::FunctionDeclNode* p_expr) {
      */
     JVM::FuncAnalyzer funcAnalyzer(GetGlobalVars());
 
+    /**
+     * Pre steps:
+     */
+    ResetLables();
+
     if (p_expr->HasBody()) {
         /** #################################################################
          *  ## Generate Function Info #######################################
@@ -32,7 +37,7 @@ Status JVMGenerator::visit(AST::FunctionDeclNode* p_expr) {
         for (auto& param : p_expr->GetParams()) {
             param->visit(funcAnalyzer);
         }
-        p_expr->GetBody()->visit(funcAnalyzer);
+        p_expr->Body()->visit(funcAnalyzer);
 
         /** #################################################################
          *  ## Function Checking ############################################
@@ -101,14 +106,32 @@ Status JVMGenerator::visit(AST::FunctionDeclNode* p_expr) {
             }
             index += 1;
         }
-        DecLindeIndent();
 
         // visit the function body
-        HZCC_JVM_Visit_Node(p_expr->GetBody());
-        AddToCache(".end code");
+        HZCC_JVM_Visit_Node(p_expr->Body());
+
+        // generate return statement if last statement is not return
+        auto& last_stmt = p_expr->Body()->GetLastStatement();
+        if (!last_stmt->IsReturn()) {
+            AddToCache("return");
+        }
+
+        /** #################################################################
+         *  ## Line Number Table ############################################
+         *  ################################################################# */
+        AddToCache(".linenumbertable");
+        IncLindeIndent();
+        for (auto& tag_pair : GetLineNumberTags()) {
+            AddToCache(tag_pair.first + " " + std::to_string(tag_pair.second));
+        }
         DecLindeIndent();
+        AddToCache(".end linenumbertable");
 
         // write function end
+        DecLindeIndent();
+        AddToCache(".end code");
+
+        DecLindeIndent();
         AddToCache(".end method");
     } else {
         DVLOG(CODE_GEN_LEVEL)

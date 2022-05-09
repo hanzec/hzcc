@@ -120,5 +120,9 @@ std::list<Lexical::TokenType> Type::GetAttributes() const {
     }
 }
 bool Type::IsVoid() const { return _name == "void"; }
+bool Type::IsChar() const { return _name == "char"; }
+bool Type::IsFloat() const { return _name == "float"; }
+bool Type::IsDouble() const { return _name == "double"; }
+bool Type::IsInteger() const { return _name == "int"; }
 
 }  // namespace Hzcc::AST

@@ -3,6 +3,8 @@
 //
 #include "compound.h"
 
+#include <regex>
+
 namespace Hzcc::AST {
 
 CompoundStmt::CompoundStmt(std::pair<int, int> loc) : ASTNode(loc) {}
@@ -14,7 +16,7 @@ bool CompoundStmt::AddStatement(std::unique_ptr<ASTNode> statement) {
     statements_.push_back(std::move(statement));
     return true;
 }
-const char* CompoundStmt::GetNodeName() const { return "CompoundStmt"; }
+const char* CompoundStmt::NodeName() const { return "CompoundStmt"; }
 
 const std::unique_ptr<ASTNode>& CompoundStmt::GetLastStatement() const {
     return statements_.back();
@@ -25,20 +27,21 @@ std::list<std::unique_ptr<ASTNode>>& CompoundStmt::GetBodyStatements() {
 }
 
 Status CompoundStmt::visit(ASTVisitor& visitor) { return visitor.visit(this); }
-std::string CompoundStmt::PrintAdditionalInfo(std::string_view ident) const {
-    std::string ret = "\n";
+std::string CompoundStmt::PrintAdditionalInfo(const std::string& ident) const {
+    std::stringstream ret;
+
+    ret << "\n";
     for (const auto& statement : statements_) {
-        ret +=
-            statement->Dump(std::string(ident.size(), ' ') +
-                            (statement == statements_.back() ? "  `" : "  |")) +
-            (statement == statements_.back() ? "" : "\n");
+        ret << statement->Dump(
+                   ident + (statement == statements_.back() ? "  `" : "  |")) +
+                   (statement == statements_.back() ? "" : "\n");
     }
 
-    return ret;
+    return ret.str();
 }
 
 #ifdef NDEBUG
-std::string CompoundStmt::Dump(std::string_view ident) const {
+std::string CompoundStmt::Dump(const std::string& ident) const {
     std::string ret;
 
     // print parameter

@@ -17,7 +17,7 @@ class CommaExpr : public OperatorBase {
     Status visit(ASTVisitor& visitor) override;
 
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 };
 }  // namespace Hzcc::AST
 #endif  // MYCC_SOURCE_AST_OPERATOR_COMMA_H_

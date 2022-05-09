@@ -109,14 +109,24 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(
                                                                 attributes);
             break;
         case Lexical::TokenType::kBreak:
-            node =
-                std::make_unique<AST::BreakStatement>(peek(tokens).Location());
-            pop_list(tokens);
+            if (WithinLoop()) {
+                node = std::make_unique<AST::BreakStatement>(
+                    peek(tokens).Location());
+                pop_list(tokens);
+            } else {
+                MYCC_PrintFirstTokenError_ReturnNull(
+                    tokens, "break statement not within a loop");
+            }
             break;
         case Lexical::TokenType::kContinue:
-            node = std::make_unique<AST::ContinueStatement>(
-                peek(tokens).Location());
-            pop_list(tokens);
+            if (WithinLoop()) {
+                node = std::make_unique<AST::ContinueStatement>(
+                    peek(tokens).Location());
+                pop_list(tokens);
+            } else {
+                MYCC_PrintFirstTokenError_ReturnNull(
+                    tokens, "continue statement not within a loop");
+            }
             break;
         case Lexical::TokenType::kType:
         case Lexical::TokenType::kIdentity: {

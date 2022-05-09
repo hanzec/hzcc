@@ -16,7 +16,7 @@ Status JVMGenerator::visit(Hzcc::AST::DeclRefExpr *p_expr) {
      *  ### Code Generation                                               ###
      *  ##################################################################### */
     // Generate push instruction if needed
-    if (_generate_load) {
+    if (_generate_load || _under_compare) {
         if (p_expr->GetType()->IsArray()) {
             auto var_name = p_expr->VarName();
             PushReturnStack(var_name);

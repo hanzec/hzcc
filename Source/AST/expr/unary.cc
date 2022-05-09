@@ -12,7 +12,7 @@ namespace Hzcc::AST {
 constexpr static std::array<const char*, kUnaryType_ENUM_SIZE> kUnaryOpSTR = {
     "-", "++(Pre)", "--(Pre)", "++(Post)", "--(Post)", "&", "*", "!", "~"};
 
-const char* UnaryExpr::GetNodeName() const { return "UnaryExpr"; }
+const char* UnaryExpr::NodeName() const { return "UnaryExpr"; }
 UnaryExpr::UnaryExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> expr)
     : ASTNode(type.Location()), _expr(std::move(expr)) {
     switch (type.Type()) {
@@ -60,7 +60,7 @@ std::shared_ptr<Type> UnaryExpr::GetType() const {
 }
 Status UnaryExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 
-std::string UnaryExpr::PrintAdditionalInfo(std::string_view ident) const {
+std::string UnaryExpr::PrintAdditionalInfo(const std::string& ident) const {
     std::stringstream ss;
 
     // unary op info

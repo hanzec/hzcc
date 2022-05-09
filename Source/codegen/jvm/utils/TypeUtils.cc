@@ -75,8 +75,6 @@ inline char GetJVMTypename(const std::string &typename_,
         return 's';
     } else if (final_type == "void") {
         return 'v';
-    } else if (final_type == "long") {
-        return 'l';
     } else {
         DLOG_ASSERT(false) << "unknown type: " << typename_;
     }
@@ -87,10 +85,9 @@ std::string GetTypeName(const std::shared_ptr<AST::Type> &type,
     // if type is a array type, return the array type name
     if (type->IsArray()) {
         auto array_type = std::dynamic_pointer_cast<AST::ArrayType>(type);
-        return "[" +
-               std::string(1,
-                           GetJVMTypename(array_type->GetBaseType()->GetName(),
-                                          replace_char));
+        return "[" + std::string(
+                         1, GetJVMTypename(array_type->GetBaseType()->GetName(),
+                                           replace_char));
     } else {
         return std::string(1, GetJVMTypename(type->GetName(), replace_char));
     }

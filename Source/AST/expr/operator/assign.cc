@@ -49,9 +49,9 @@ AssignExpr::AssignExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> lhs,
     }
 };
 
-const char* AST::AssignExpr::GetNodeName() const { return "AssignExpr"; }
+const char* AST::AssignExpr::NodeName() const { return "AssignExpr"; }
 
-std::string AssignExpr::PrintAdditionalInfo(std::string_view ident) const {
+std::string AssignExpr::PrintAdditionalInfo(const std::string& ident) const {
     std::string string;
 
     // print lhs type
@@ -98,8 +98,8 @@ std::string AssignExpr::PrintAdditionalInfo(std::string_view ident) const {
 
     // print LHS and RHS
     string += "\n";
-    string += GetLHS()->Dump(std::string(ident) + " |") + "\n";
-    string += GetRHS()->Dump(std::string(ident) + " `");
+    string += GetLHS()->Dump(ident + " |") + "\n";
+    string += GetRHS()->Dump(ident + " `");
     return string;
 }
 Status AssignExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }

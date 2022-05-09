@@ -57,8 +57,8 @@ class ParserBase {
     }
 
   protected:
-    virtual std::unique_ptr<AST::ASTNode> parse_impl(AST::CompilationUnit& context,
-                                                     TokenList& tokens) {
+    virtual std::unique_ptr<AST::ASTNode> parse_impl(
+        AST::CompilationUnit& context, TokenList& tokens) {
 #ifndef NDEBUG
         auto ret = parse_impl(context, tokens, kEmptyTokenList);
         DLOG_ASSERT(kEmptyTokenList.empty())
@@ -71,7 +71,7 @@ class ParserBase {
     };
 
     virtual std::unique_ptr<AST::ASTNode> parse_impl(  // NOLINT
-        AST::CompilationUnit& context,                      // NOLINT
+        AST::CompilationUnit& context,                 // NOLINT
         TokenList& token,                              // NOLINT
         TokenList& attributes) {                       // NOLINT
         MYCC_PrintFirstTokenError_ReturnNull(
@@ -89,10 +89,16 @@ class ParserBase {
         return false;
     }
 
+    static bool WithinLoop() { return _inside_loop; }
+    static bool ExitLoop() { return _inside_loop = false; }
+    static bool EnterLoop() { return _inside_loop = true; }
+
   private:
     const size_t _id = -1;
     const std::string_view _astNodeName;
     inline static TokenList kEmptyTokenList;
+
+    inline static bool _inside_loop = false;
 };
 
 }  // namespace Syntax::Parser

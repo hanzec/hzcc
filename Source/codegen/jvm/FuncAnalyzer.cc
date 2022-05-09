@@ -104,7 +104,7 @@ Status FuncAnalyzer::visit(Hzcc::AST::AssignExpr *p_expr) {
         }
 
         // we evaluate the RHS
-        HZCC_JVM_REQUEST_LEAVE_VAL(                       // NOLINT
+        HZCC_LEAVE_RET_ON_STACK(                       // NOLINT
             HZCC_JVM_GENERATE_LOAD_INSTR(                 // NOLINT
                 HZCC_JVM_Visit_Node(p_expr->GetRHS())));  // NOLINT
 
@@ -333,7 +333,8 @@ Status FuncAnalyzer::visit(Hzcc::AST::ParamVarDecl *p_expr) {
 }
 Status FuncAnalyzer::visit(Hzcc::AST::ReturnNode *p_expr) {
     _has_return = true;
-    HZCC_JVM_GENERATE_LOAD_INSTR(HZCC_JVM_REQUEST_LEAVE_VAL(
+    HZCC_JVM_GENERATE_LOAD_INSTR(
+        HZCC_LEAVE_RET_ON_STACK(
         HZCC_JVM_Visit_Node(p_expr->GetReturnVal())));
     return Status::OkStatus();
 }
@@ -387,7 +388,7 @@ void FuncAnalyzer::ModifyStackSize(int p_size) {
 void FuncAnalyzer::DecreaseCurrentStack(uint8_t p_size) {
     _current_stack_size -= p_size;
 }
-uint32_t FuncAnalyzer::GetMaxStackSize() const { return _max_stack_size; }
+uint32_t FuncAnalyzer::GetMaxStackSize() const { return _max_stack_size + 20; }
 
 bool FuncAnalyzer::HasValidReturn() const { return _has_return; }
 

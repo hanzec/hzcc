@@ -10,6 +10,7 @@
 
 #include "AST/CompilationUnit.h"
 #include "AST/statement/compound.h"
+#include "AST/statement/empty.h"
 #include "for_parser.h"
 #include "lexical/token_type.h"
 #include "syntax/Parser.h"
@@ -22,13 +23,16 @@ using namespace TokenListUtils;
 ForStatement::ForStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::ForStatement>(),
                  TypeNameUtil::name_pretty<AST::ForStatement>()) {}
-std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::CompilationUnit& context,
-                                                       TokenList& tokens) {
+std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(
+    AST::CompilationUnit& context, TokenList& tokens) {
+    EnterLoop();  // enter loop
+
     // check first token is for
     auto for_loc = tokens.front().Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kFor, tokens);
 
     // check next token is (
+    auto left_paren_loc = tokens.front().Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLParentheses, tokens);
 
     // enter new scope
@@ -46,7 +50,8 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::CompilationUnit& con
         MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon, tokens);
     } else {
         // consume ';'
-        pop_list(tokens);
+        initializer =
+            std::make_unique<AST::EmptyStatement>(pop_list(tokens).Location());
     }
 
     // parse condition
@@ -62,7 +67,8 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::CompilationUnit& con
         MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon, tokens);
     } else {
         // consume ';'
-        pop_list(tokens);
+        condition =
+            std::make_unique<AST::EmptyStatement>(pop_list(tokens).Location());
     }
 
     // parse increment
@@ -77,7 +83,9 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::CompilationUnit& con
         MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRParentheses,
                                         tokens);
     } else {
-        pop_list(tokens);
+        // consume ')'
+        increment =
+            std::make_unique<AST::EmptyStatement>(pop_list(tokens).Location());
     }
 
     // parse body and return
@@ -95,6 +103,7 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(AST::CompilationUnit& con
     // push a semicolon for easier parsing
     tokens.push_front(Lexical::Token(Lexical::TokenType::kSemiColon, -1, -1));
 
+    ExitLoop();  // exit loop
     return std::make_unique<AST::ForStatement>(
         std::move(initializer), std::move(condition), std::move(increment),
         std::move(body), for_loc);

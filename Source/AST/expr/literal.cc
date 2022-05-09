@@ -11,7 +11,7 @@
 #include "lexical/Token.h"
 namespace Hzcc::AST {
 
-const char* LiteralExpr::GetNodeName() const {
+const char* LiteralExpr::NodeName() const {
     switch (_type) {
         case LiteralType::kLiteralType_Char:
             return "CharLiteral";
@@ -43,7 +43,7 @@ std::optional<DeduceValue> LiteralExpr::GetDeducedValue() const {
     return std::nullopt;
 }
 
-std::string LiteralExpr::PrintAdditionalInfo(std::string_view ident) const {
+std::string LiteralExpr::PrintAdditionalInfo(const std::string& ident) const {
     switch (_type) {
         case LiteralType::kLiteralType_Char:
             return "char \'" + _value + "\'";
@@ -64,11 +64,13 @@ LiteralExpr::LiteralExpr(int64_t value)
       _value(std::to_string(value)) {}
 
 LiteralExpr::LiteralExpr(enum LiteralType type, const Lexical::Token& value)
-    : ASTNode(value.Location()), _type(type), _value(value.Value()) {}
+    : ASTNode(value.Location()),
+      _type(type),
+      _value(value.Value(true) +
+             (type == LiteralType::kLiteralType_String ? "\\x00" : "")) {}
 
 std::shared_ptr<Type> LiteralExpr::GetType() const {
     static std::list<std::string> const_type_list = {"const"};
-
     switch (_type) {
         case LiteralType::kLiteralType_Char:
             return Type::GetBasicType("char", {Lexical::TokenType::kConst});

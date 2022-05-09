@@ -6,7 +6,7 @@
 #include "lexical/Token.h"
 namespace Hzcc::AST {
 
-const char* AST::CommaExpr::GetNodeName() const { return "CommaExpr"; }
+const char* AST::CommaExpr::NodeName() const { return "CommaExpr"; }
 CommaExpr::CommaExpr(const Lexical::Token& token, std::unique_ptr<ASTNode> lhs,
                      std::unique_ptr<ASTNode> rhs)
     : OperatorBase(token.Location(), std::move(rhs), std::move(lhs)) {}

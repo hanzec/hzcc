@@ -36,6 +36,9 @@ Status PassManagerImpl::RunPass(AST::CompilationUnit& compile_unit) {
             decl.second = std::move(func_decl);
         }
     }
+
+    // print final AST
+    DVLOG(OPT_LOG_LEVEL) << "Final AST: " << std::endl << compile_unit.Dump();
     return Status::OkStatus();
 }
 

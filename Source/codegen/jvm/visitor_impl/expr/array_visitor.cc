@@ -21,13 +21,13 @@ Status JVMGenerator::visit(Hzcc::AST::ArraySubscriptExpr *p_expr) {
     HZCC_JVM_GENERATE_LOAD_INSTR(HZCC_JVM_Visit_Node(p_expr->GetArrayBase()));
 
     // load array base
-    HZCC_JVM_REQUEST_LEAVE_VAL(                // NOLINT
+    HZCC_LEAVE_RET_ON_STACK(                   // NOLINT
         HZCC_JVM_GENERATE_LOAD_INSTR(          // NOLINT
             HZCC_JVM_Use_Deduced_IF_POSSIBLE(  // NOLINT
                 p_expr->GetSubscript())));     // NOLINT
 
     // generate load instr
-    if (_generate_load) {
+    if (_generate_load || _under_compare) {
         AddToCache(Utils::GetTypeName(p_expr->GetType()) + "aload");
     }
 

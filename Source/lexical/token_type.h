@@ -18,8 +18,8 @@ namespace Hzcc::Lexical {
  * bracket RBRAK            |     ]                 | The token of right
  * bracket LBRACE           |     {                 | The token of left brace
  *         RBRACE           |     }                 | The token of right brace
- *         GT               |     >                 | The token of greater
- * than LT               |     <                 | The token of less than
+ *         kRelationalType_Greater               |     >                 | The token of greater
+ * than kRelationalType_Less               |     <                 | The token of less than
  *         ASSIGN           |     =                 | The token of assignment
  *         PLUS             |     +                 | The token of plus
  *         MINUS            |     -                 | The token of minus

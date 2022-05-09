@@ -24,7 +24,7 @@ class DeadCodeElimination : public FunctionPass {
         /**
          * Case: delete all code after return statement
          */
-        auto& body = F->GetBody();
+        auto& body = F->Body();
         auto& stmts = body->GetBodyStatements();
         for (auto it = stmts.begin(); it != stmts.end(); ++it) {
             if ((*it)->IsReturn()) {

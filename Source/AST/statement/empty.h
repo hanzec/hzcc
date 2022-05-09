@@ -17,7 +17,7 @@ class EmptyStatement : public ASTNode {
     Status visit(ASTVisitor& visitor) override;
 
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 };
 
 };      // namespace Hzcc::AST

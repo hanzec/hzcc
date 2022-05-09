@@ -15,10 +15,10 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
      *  ##################################################################### */
     DLOG_ASSERT(p_expr != nullptr) << "expression is nullptr";
     DLOG_ASSERT(p_expr->GetLHS() != nullptr)
-        << "lhs of expr " << p_expr->GetLHS()->GetNodeName()
+        << "lhs of expr " << p_expr->GetLHS()->NodeName()
         << "(line:" << p_expr->GetLHS()->GetLine() << ") is nullptr";
     DLOG_ASSERT(p_expr->GetRHS() != nullptr)
-        << "rhs of expr " << p_expr->GetRHS()->GetNodeName()
+        << "rhs of expr " << p_expr->GetRHS()->NodeName()
         << "(line:" << p_expr->GetRHS()->GetLine() << ") is nullptr";
 
     /** #####################################################################
@@ -73,7 +73,7 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
         }
 
         // we evaluate the RHS
-        HZCC_JVM_REQUEST_LEAVE_VAL(                                    // NOLINT
+        HZCC_LEAVE_RET_ON_STACK(                                       // NOLINT
             HZCC_JVM_GENERATE_LOAD_INSTR(                              // NOLINT
                 HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetRHS())));  // NOLINT
 
@@ -85,7 +85,7 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
         }
 
         // if requested, we will duplicate the value and leave result on stack
-        if (_request_leave) {
+        if (_request_leave || _under_compare) {
             if (p_expr->GetLHS()->IsDereference()) {
                 AddToCache("dup_x2");
             } else {

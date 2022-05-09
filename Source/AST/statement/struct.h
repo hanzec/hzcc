@@ -23,7 +23,7 @@ class StructDeclareNode : public DeclNode {
     [[nodiscard]] bool IsStructDecl() const override { return true; }
 
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 
   private:
     const std::shared_ptr<Type> _type;

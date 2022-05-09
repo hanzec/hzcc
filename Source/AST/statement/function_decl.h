@@ -35,7 +35,7 @@ class FunctionDeclNode : public DeclNode {
 
     bool set_body(std::unique_ptr<AST::CompoundStmt> declaration);
 
-    std::unique_ptr<AST::CompoundStmt>& GetBody();
+    std::unique_ptr<AST::CompoundStmt>& Body();
 
     std::list<std::unique_ptr<ParamVarDecl>>& GetParams();
 
@@ -46,7 +46,7 @@ class FunctionDeclNode : public DeclNode {
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
 #ifdef NDEBUG
-    [[nodiscard]] std::string Dump(std::string_view ident) const override;
+    [[nodiscard]] std::string Dump(const std::string& ident) const override;
 #endif
 
     [[nodiscard]] bool IsFuncDecl() const override;
@@ -54,9 +54,9 @@ class FunctionDeclNode : public DeclNode {
     bool AddFunctionArgument(std::unique_ptr<ParamVarDecl> type);
 
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
     [[nodiscard]] std::string PrintAdditionalInfo(
-        std::string_view ident) const override;
+        const std::string& ident) const override;
 
   private:
     std::shared_ptr<Type> _return_type;

@@ -12,23 +12,45 @@ class ForStatement : public ASTNode {
   public:
     ForStatement(std::unique_ptr<ASTNode> init, std::unique_ptr<ASTNode> cond,
                  std::unique_ptr<ASTNode> step, std::unique_ptr<ASTNode> body,
-                 std::pair<int, int> location)
-        : ASTNode(location),
-          _init(std::move(init)),
-          _cond(std::move(cond)),
-          _step(std::move(step)),
-          _body(std::move(body)) {}
+                 std::pair<int, int> location);
 
     Status visit(ASTVisitor& visitor) override;
 
     [[nodiscard]] bool HasBody() const override { return true; }
 
 #ifdef NDEBUG
-    [[nodiscard]] std::string Dump(std::string_view ident) const override;
+    [[nodiscard]] std::string Dump(const std::string& ident) const override;
 #endif
 
+    /**
+     * @brief Get the init statement.
+     * @return The init statement.
+     */
+    [[nodiscard]] std::unique_ptr<ASTNode>& InitStmt();
+
+    /**
+     * @brief Get the condition statement.
+     * @return The condition statement.
+     */
+    [[nodiscard]] std::unique_ptr<ASTNode>& CondStmt();
+
+    /**
+     * @brief Get the step expression.
+     * @return  The step expression.
+     */
+    [[nodiscard]] std::unique_ptr<ASTNode>& StepStmt();
+
+    /**
+     * @brief Get the body of the for statement
+     * @return  The body of the for statement
+     */
+    [[nodiscard]] std::unique_ptr<ASTNode>& BodyStmt();
+
+    [[nodiscard]] const char* NodeName() const override;
+
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] std::string PrintAdditionalInfo(
+        const std::string& ident) const override;
 
   private:
     std::unique_ptr<ASTNode> _init;

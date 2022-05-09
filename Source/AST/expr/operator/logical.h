@@ -20,14 +20,19 @@ class LogicalExpr : public OperatorBase {
 
     Status visit(ASTVisitor& visitor) override;
 
-  protected:
     /**
      * @brief Get node name
      * @return node name
      */
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
+
+    [[nodiscard]] LogicalType GetLogicalType() const;
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
+
+  protected:
+    [[nodiscard]] std::string PrintAdditionalInfo(
+        const std::string& ident) const override;
 
   private:
     LogicalType _type;

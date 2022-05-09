@@ -7,7 +7,7 @@
 
 namespace Hzcc::AST {
 
-const char* AST::SizeofExpr::GetNodeName() const { return "SizeofExpr"; }
+const char* AST::SizeofExpr::NodeName() const { return "SizeofExpr"; }
 
 std::shared_ptr<Type> SizeofExpr::GetType() const {
     return Type::GetBasicType("int", {Lexical::TokenType::kConst});

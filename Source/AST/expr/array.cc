@@ -12,7 +12,7 @@
 #include "options.h"
 namespace Hzcc::AST {
 
-const char* AST::ArraySubscriptExpr::GetNodeName() const {
+const char* AST::ArraySubscriptExpr::NodeName() const {
     return "ArraySubscriptExpr";
 }
 std::shared_ptr<Type> ArraySubscriptExpr::GetType() const {
@@ -21,13 +21,13 @@ std::shared_ptr<Type> ArraySubscriptExpr::GetType() const {
 }
 
 std::string ArraySubscriptExpr::PrintAdditionalInfo(
-    std::string_view ident) const {
+    const std::string& ident) const {
     std::string result = std::string();
 
     result += GetType()->GetName() + "\n";
 
-    result += _name->Dump(std::string(ident) + " |") + "\n";
-    result += _index_expr->Dump(std::string(ident) + " `");
+    result += _name->Dump(ident + " |") + "\n";
+    result += _index_expr->Dump(ident + " `");
 
     return result;
 }

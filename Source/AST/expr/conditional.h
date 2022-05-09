@@ -23,8 +23,17 @@ class ConditionalExpr : public ASTNode {
 
     [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
+    [[nodiscard]] std::unique_ptr<ASTNode>& GetContStmt();
+
+    [[nodiscard]] std::unique_ptr<ASTNode>& GetTrueExpr();
+
+    [[nodiscard]] std::unique_ptr<ASTNode>& GetFalseExpr();
+
+    [[nodiscard]] const char* NodeName() const override;
+
   protected:
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] std::string PrintAdditionalInfo(
+        const std::string& ident) const override;
 
   private:
     std::unique_ptr<ASTNode> _cond;

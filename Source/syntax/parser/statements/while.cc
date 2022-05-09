@@ -24,6 +24,8 @@ WhileStatement::WhileStatement() noexcept
                  TypeNameUtil::name_pretty<AST::WhileStatement>()) {}
 std::unique_ptr<AST::ASTNode> WhileStatement::parse_impl(
     AST::CompilationUnit& context, TokenList& tokens) {
+    EnterLoop(); // enter loop
+
     // check if the next token is [while]
     auto while_loc = TokenListUtils::peek(tokens).Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kWhile, tokens);
@@ -39,8 +41,9 @@ std::unique_ptr<AST::ASTNode> WhileStatement::parse_impl(
     // push a semicolon for easier parsing
     tokens.push_front(Lexical::Token(Lexical::TokenType::kSemiColon, -1, -1));
 
+    ExitLoop(); // exit loop
     return std::make_unique<AST::WhileStatement>(
-        std::move(body), std::move(condition), while_loc);
+        std::move(condition), std::move(body), while_loc);
 }
 
 }  // namespace Hzcc::Syntax::Parser

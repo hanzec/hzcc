@@ -5,6 +5,21 @@
 #include "codegen/jvm/JVMGenerator.h"
 #include "codegen/jvm/utils/ConstValUtils.h"
 namespace Hzcc::Codegen {
+constexpr static const std::array<OpHint, OpHint::kOpHint_ENUM_SIZE>
+    kOpHintReverseStrings = {kOpHint_GreaterEqual,
+                             kOpHint_NEqual,
+                             kOpHint_Equal,
+                             kOpHint_LessEqual,
+                             kOpHint_Greater,
+                             kOpHint_Less,
+                             kOpHint_Logical_GreaterEqual,
+                             kOpHint_Logical_NEqual,
+                             kOpHint_Logical_Equal,
+                             kOpHint_Logical_LessEqual,
+                             kOpHint_Logical_Greater,
+                             kOpHint_Logical_Less,
+                             kOpHint_Logical_NEqual};
+
 Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
@@ -29,7 +44,8 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                 Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
                 AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
                            " 1");
-                AddToCache(LoadFromVariable(var_name));
+                if (_request_leave || _under_compare)
+                    AddToCache(LoadFromVariable(var_name));
             } else {
                 AddToCache(LoadFromVariable(var_name));
                 AddToCache(Utils::PushConstVal(1));
@@ -41,7 +57,7 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
 
                 // increase and save
                 AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "add");
-                if (_request_leave) AddToCache("dup");
+                if (_request_leave || _under_compare) AddToCache("dup");
                 AddToCache(SaveToVariable(var_name));
             }
         } break;
@@ -55,7 +71,8 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                 Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
                 AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
                            " -1");
-                AddToCache(LoadFromVariable(var_name));
+                if (_request_leave || _under_compare)
+                    AddToCache(LoadFromVariable(var_name));
             } else {
                 AddToCache(LoadFromVariable(var_name));
                 AddToCache(Utils::PushConstVal(1));
@@ -67,7 +84,7 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
 
                 // increase and save
                 AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "sub");
-                if (_request_leave) AddToCache("dup");
+                if (_request_leave || _under_compare) AddToCache("dup");
                 AddToCache(SaveToVariable(var_name));
             }
         } break;
@@ -78,12 +95,13 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
             auto var_name = ConsumeReturnStack();
             if (!IsGlobalVar(var_name) &&
                 Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
-                AddToCache(LoadFromVariable(var_name));
+                if (_request_leave || _under_compare)
+                    AddToCache(LoadFromVariable(var_name));
                 AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
                            " 1");
             } else {
                 AddToCache(LoadFromVariable(var_name));
-                if (_request_leave) AddToCache("dup");
+                if (_request_leave || _under_compare) AddToCache("dup");
                 AddToCache(Utils::PushConstVal(1));
 
                 // Generate type convert instruction if necessary
@@ -104,12 +122,13 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
             auto var_name = ConsumeReturnStack();
             if (!IsGlobalVar(var_name) &&
                 Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
-                AddToCache(LoadFromVariable(var_name));
+                if (_request_leave || _under_compare)
+                    AddToCache(LoadFromVariable(var_name));
                 AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
                            " -1");
             } else {
                 AddToCache(LoadFromVariable(var_name));
-                if (_request_leave) AddToCache("dup");
+                if (_request_leave || _under_compare) AddToCache("dup");
                 AddToCache(Utils::PushConstVal(1));
 
                 // Generate type convert instruction if necessary
@@ -123,9 +142,17 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
             }
         } break;
         case AST::kUnaryType_UnaryMinus:
-            HZCC_JVM_GENERATE_LOAD_INSTR(
-                HZCC_JVM_Visit_Node(p_expr->GetExpr()));
-            AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "neg");
+            if (_request_leave || _under_compare) {
+                auto last_op_hint = GetLastOpHint();
+                if (last_op_hint == kOpHint_None) {
+                    HZCC_JVM_GENERATE_LOAD_INSTR(
+                        HZCC_JVM_Visit_Node(p_expr->GetExpr()));
+                    AddToCache(Utils::GetTypeName(p_expr->GetType(), true) +
+                               "neg");
+                } else {
+                    SetLastOpHint(kOpHintReverseStrings[last_op_hint]);
+                }
+            }
             break;
         case AST::kUnaryType_Reference:
         case AST::kUnaryType_Dereference:

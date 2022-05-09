@@ -15,8 +15,9 @@
 #include "version.h"
 namespace Hzcc::Codegen {
 JVMGenerator::JVMGenerator(const std::string& output,
-                           AST::CompilationUnit& unit)
+                           AST::CompilationUnit& unit, bool output_c_ret_code)
     : Generator(output, unit),
+      _generate_c_ret_code(output_c_ret_code),
       StackManager(std::filesystem::path(unit.GetFileName())
                        .replace_extension()
                        .filename()) {
@@ -68,7 +69,7 @@ Status JVMGenerator::Generate() {
                 IncLindeIndent();
                 AddToCache(".code stack 2 locals 0");
                 IncLindeIndent();
-                HZCC_JVM_NOT_REQUEST_LEAVE_VAL(                // NOLINT
+                HZCC_NOT_LEAVE_RET_ON_STACK(                   // NOLINT
                     HZCC_JVM_NOT_GENERATE_LOAD_INSTR(          // NOLINT
                         HZCC_ExceptOK_WITH_RETURN(             // NOLINT
                             ast_node.second->visit(*this))));  // NOLINT
@@ -133,18 +134,28 @@ Status JVMGenerator::Generate() {
 .method public static main : ([Ljava/lang/String;)V
     .code stack 2 locals 2
         invokestatic Method )"
-                << GetCurrentClassName() << R"( main ()I
+                << GetCurrentClassName() << R"( main ()I)"
+                << (!_generate_c_ret_code ? R"(
         istore_1
         getstatic Field java/lang/System out Ljava/io/PrintStream;
         ldc 'Return code: '
         invokevirtual Method java/io/PrintStream print (Ljava/lang/String;)V
         getstatic Field java/lang/System out Ljava/io/PrintStream;
         iload_1
-        invokevirtual Method java/io/PrintStream println (I)V
+        invokevirtual Method java/io/PrintStream println (I)V)"
+                                          : "")
+                << std::endl
+                << R"(
         return
     .end code
 .end method
 )";
+
+    // file name
+    output_file << ".sourcefile '" << unit.GetFileName() << "'" << std::endl;
+
+    // generate class end
+    output_file << ".end class" << std::endl;
     output_file.close();
 
     return Status::OkStatus();
@@ -165,4 +176,4 @@ const std::string& JVMGenerator::GetCurrentClassName() {
 void JVMGenerator::PushReturnStack(const std::string& stackID) {
     _return_stack.push_back(stackID);
 }
-}  // namespace Hzcc::Codegen::JVM
+}  // namespace Hzcc::Codegen

@@ -8,7 +8,7 @@
 #include "options.h"
 namespace Hzcc::AST {
 
-const char* OperatorBase::GetNodeName() const { return "OperatorBase"; }
+const char* OperatorBase::NodeName() const { return "OperatorBase"; }
 const std::unique_ptr<ASTNode>& OperatorBase::GetLHS() const { return _lhs; }
 const std::unique_ptr<ASTNode>& OperatorBase::GetRHS() const { return _rhs; }
 

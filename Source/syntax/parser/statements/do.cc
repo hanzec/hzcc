@@ -18,8 +18,10 @@ DoStatement::DoStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::DoStatement>(),
                  TypeNameUtil::name_pretty<AST::DoStatement>()) {}
 
-std::unique_ptr<AST::ASTNode> DoStatement::parse_impl(AST::CompilationUnit& context,
-                                                      TokenList& tokens) {
+std::unique_ptr<AST::ASTNode> DoStatement::parse_impl(
+    AST::CompilationUnit& context, TokenList& tokens) {
+    EnterLoop();  // enter loop
+
     // check if the next token is [do]
     auto do_loc = tokens.front().Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kDo, tokens);
@@ -35,8 +37,9 @@ std::unique_ptr<AST::ASTNode> DoStatement::parse_impl(AST::CompilationUnit& cont
     auto condition = ParseCondition(context, tokens);
     if (condition == nullptr) return nullptr;
 
-    return std::make_unique<AST::DoStatement>(std::move(body),
-                                              std::move(condition), do_loc);
+    ExitLoop();  // exit loop
+    return std::make_unique<AST::DoStatement>(std::move(condition),
+                                              std::move(body), do_loc);
 }
 
 }  // namespace Hzcc::Syntax::Parser

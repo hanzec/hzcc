@@ -3,6 +3,7 @@
 //
 #include "ASTNode.h"
 
+#include <algorithm>
 #include <utility>
 
 #include "AST/DeduceValue.h"
@@ -13,13 +14,14 @@ namespace Hzcc::AST {
 ASTNode::ASTNode(std::pair<int, int> loc)
     : _id(_counter_ += 1), _node_location(std::move(loc)) {}
 
-std::string ASTNode::Dump(const std::string_view ident) const {
+std::string ASTNode::Dump(const std::string& ident) const {
 #ifndef NDEBUG
-    return std::string(ident) + "-" + GetNodeName() + " [" +
-           std::to_string(GetNodeId()) + "] " +
-           "<line:" + std::to_string(_node_location.first) +
+    auto new_ident = ident;
+    std::replace(new_ident.begin(), new_ident.end(), '`', ' ');
+    return ident + "-" + NodeName() + " [" + std::to_string(GetNodeId()) +
+           "] " + "<line:" + std::to_string(_node_location.first) +
            ", col:" + std::to_string(_node_location.second) + ">" + " " +
-           PrintAdditionalInfo(ident);
+           PrintAdditionalInfo(new_ident);
 #else
     std::stringstream ret;
 
@@ -41,8 +43,8 @@ std::string ASTNode::Dump(const std::string_view ident) const {
                        PrintAdditionalInfo("");
         }
     } else {
-        ret << std::string(ident) + "Line " << std::setw(3)
-            << std::to_string(GetLine() + 1) << std::setw(0)
+        ret << ident + "Line " << std::setw(3) << std::to_string(GetLine() + 1)
+            << std::setw(0)
             << ": expression has type " + (GetType()->GetName() == "double"
                                                ? "float"
                                                : GetType()->GetName());
@@ -57,7 +59,7 @@ std::pair<int, int> ASTNode::Location() const { return _node_location; }
 
 uint64_t ASTNode::GetNodeId() const { return _id; }
 
-std::string ASTNode::PrintAdditionalInfo(const std::string_view ident) const {
+std::string ASTNode::PrintAdditionalInfo(const std::string& ident) const {
     return {};
 }
 ASTNode::~ASTNode() {}

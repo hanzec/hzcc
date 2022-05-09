@@ -59,11 +59,11 @@ class VarDecl : public DeclNode {
      * @brief Get the name of current Node
      * @return "VarDecl"
      */
-    [[nodiscard]] const char* GetNodeName() const override;
+    [[nodiscard]] const char* NodeName() const override;
 
   protected:
     [[nodiscard]] std::string PrintAdditionalInfo(
-        std::string_view ident) const override;
+        const std::string& ident) const override;
 
   private:
     std::shared_ptr<Type> _type;

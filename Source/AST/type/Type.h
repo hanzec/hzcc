@@ -51,10 +51,34 @@ class Type : public std::enable_shared_from_this<Type> {
     [[nodiscard]] bool IsConst() const;
 
     /**
-     * @brief Check if the type is a constant value.
+     * @brief Check if the type is void
      * @return
      */
     [[nodiscard]] bool IsVoid() const;
+
+    /**
+     * @brief Check if the type is character
+     * @return
+     */
+    [[nodiscard]] bool IsChar() const;
+
+    /**
+     * @brief Check if the type is Float
+     * @return
+     */
+    [[nodiscard]] bool IsFloat() const;
+
+    /**
+     * @brief Check if the type is Double
+     * @return
+     */
+    [[nodiscard]] bool IsDouble() const;
+
+    /**
+     * @brief Check if the type is Integer
+     * @return
+     */
+    [[nodiscard]] bool IsInteger() const;
 
     /**
      * @brief Check if the type is the same as another type.
@@ -102,7 +126,7 @@ class Type : public std::enable_shared_from_this<Type> {
 
   protected:
     friend class CompilationUnit;  // can only create/destroy Type through
-                              // CompilationUnit.
+                                   // CompilationUnit.
     /**
      * @brief Constructor of Type.
      * @param name The name of the type.

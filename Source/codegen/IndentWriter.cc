@@ -3,6 +3,8 @@
 //
 
 #include "IndentWriter.h"
+
+#include <cstring>
 namespace Hzcc::Codegen {
 
 std::string IndentWriter::GetAllCachedLine() { return _output.str(); }
@@ -10,7 +12,7 @@ std::string IndentWriter::GetAllCachedLine() { return _output.str(); }
 void IndentWriter::IncLindeIndent() { _indent += _indent_str; }
 
 void IndentWriter::DecLindeIndent() {
-    _indent = _indent.substr(0, _indent.size() - 4);
+    _indent = _indent.substr(0, _indent.length() - 4);
 }
 
 void IndentWriter::AddToCache(const std::string& output) {
