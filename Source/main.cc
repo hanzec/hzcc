@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
     }
 
     // compilation process
-    std::list<Hzcc::AST::CompilationUnit> compilation_units;
+    std::list<std::shared_ptr<Hzcc::AST::CompilationUnit>> compilation_units;
     for (int i = 0; i < input_files.size(); i++) {
         Hzcc::Message::set_current_file(input_files[0]);
 
@@ -156,10 +156,12 @@ int main(int argc, char* argv[]) {
          * Syntax Analysis                                                   #
          * ##################################################################*/
         Hzcc::Message::set_current_part("Parser");
-        Hzcc::AST::CompilationUnit compilation_unit(input_files[i]);
+        Hzcc::Syntax::TokenList token_list(tokens);
+        auto compilation_unit =
+            std::make_shared<Hzcc::AST::CompilationUnit>(input_files[i]);
 
         // run Syntax analysis
-        if (!Hzcc::Syntax::GenerateAST(compilation_unit, tokens).Ok()) {
+        if (!Hzcc::Syntax::GenerateAST(token_list, compilation_unit).Ok()) {
             return 0;
         }
 
@@ -171,10 +173,10 @@ int main(int argc, char* argv[]) {
 
         if (flag4) {
             if (output_file.empty()) {
-                std::cout << compilation_unit.Dump() << std::endl;
+                std::cout << compilation_unit->Dump() << std::endl;
             } else {
                 std::fstream outfile(output_file, std::fstream::out);
-                outfile << compilation_unit.Dump() << std::endl;
+                outfile << compilation_unit->Dump() << std::endl;
                 outfile.close();
             }
             return 0;
@@ -190,7 +192,7 @@ int main(int argc, char* argv[]) {
 
     // Compile to JVM instr
     for (auto& unit : compilation_units) {
-        DVLOG(0) << "AST Dump\n" << unit.Dump();
+        DVLOG(0) << "AST Dump\n" << unit->Dump();
         Hzcc::Pass::PassManagerImpl pass_manager;
         Hzcc::Codegen::JVMGenerator jvm_generator(output_file, unit, flag6);
 

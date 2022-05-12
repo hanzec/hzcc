@@ -38,13 +38,13 @@ ForStatement::ForStatement(std::unique_ptr<ASTNode> init,
       _cond(std::move(cond)),
       _step(std::move(step)),
       _body(std::move(body)) {
-    DLOG_ASSERT(_init != nullptr)
+    DLOG_IF(WARNING, _init != nullptr)
         << " init is nullptr for for statement (id = " << GetNodeId() << ")";
-    DLOG_ASSERT(_cond != nullptr)
+    DLOG_IF(WARNING, _cond != nullptr)
         << " cond is nullptr for for statement (id = " << GetNodeId() << ")";
-    DLOG_ASSERT(_step != nullptr)
+    DLOG_IF(WARNING, _step != nullptr)
         << " step is nullptr for for statement (id = " << GetNodeId() << ")";
-    DLOG_ASSERT(_body != nullptr)
+    DLOG_IF(WARNING, _body != nullptr)
         << " body is nullptr for for statement (id = " << GetNodeId() << ")";
 }
 

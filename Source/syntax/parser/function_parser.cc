@@ -14,16 +14,13 @@
 #include "syntax/utils/common_utils.h"
 
 namespace Hzcc::Syntax::Parser {
-using namespace TokenListUtils;
 Function::Function() noexcept
     : ParserBase(TypeNameUtil::hash<AST::FunctionDeclNode>(),
                  TypeNameUtil::name_pretty<AST::FunctionDeclNode>()) {}
 
-std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context,
-                                                   TokenList& tokens,
-                                                   TokenList& attributes) {
-    ConcatAttribute(attributes, tokens);
-    auto return_type_name_str = ParseTypeName(context, tokens);
+std::unique_ptr<AST::ASTNode> Function::parse_impl(TokenList& tokens,
+                                                   SyntaxContext& context) {
+    auto return_type_name_str = ParseTypeName(tokens, context);
 
     if (return_type_name_str.empty() ||
         !context.hasType(TokenListToString(return_type_name_str))) {
@@ -33,7 +30,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context
     auto return_type =
         context.getNamedType(TokenListToString(return_type_name_str), {});
 
-    auto func_name = pop_list(tokens);
+    auto func_name = tokens.pop();
 
     // function can only be defined in global scope
     if (!context.AtRoot()) {
@@ -48,7 +45,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLParentheses, tokens);
 
     // next token should not be ',', if it is, it means empty argument list
-    if (tokens.front().Type() == Lexical::TokenType::kComma) {
+    if (tokens.peek().Type() == Lexical::TokenType::kComma) {
         MYCC_PrintFirstTokenError_ReturnNull(tokens, "Expected type name");
     }
 
@@ -63,19 +60,19 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context
     }
 
     // actual function node
-    auto func_node = std::make_unique<AST::FunctionDeclNode>(
-        func_name, return_type, attributes);
+    auto func_node =
+        std::make_unique<AST::FunctionDeclNode>(func_name, return_type);
 
     // parse argument list
     bool first = false;
     std::list<std::shared_ptr<AST::Type>> arg_types;
     do {
         // consume ',' if available
-        if (peek(tokens).Type() == Lexical::TokenType::kComma) {
-            pop_list(tokens);
+        if (tokens.peek().Type() == Lexical::TokenType::kComma) {
+            tokens.pop();
         } else {
             // directly break if ')'
-            if (peek(tokens).Type() == Lexical::TokenType::kRParentheses) {
+            if (tokens.peek().Type() == Lexical::TokenType::kRParentheses) {
                 break;
             } else if (first) {
                 MYCC_PrintFirstTokenError_ReturnNull(tokens, "Expected ','");
@@ -83,16 +80,16 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context
         }
 
         // get base argument_type
-        auto head = tokens.front();
-        auto type_name = ParseTypeName(context, tokens);
+        auto head = tokens.peek();
+        auto type_name = ParseTypeName(tokens, context);
 
         if (type_name.empty()) {
-            MYCC_PrintTokenError(peek(tokens), "Expected type name");
+            MYCC_PrintTokenError(tokens.peek(), "Expected type name");
             return nullptr;
         }
 
-        auto [argument_type, attrs, name_token] =
-            ParseTypeDecl(TokenListToString(type_name), context, tokens);
+        auto [argument_type, name_token] =
+            ParseTypeDecl(TokenListToString(type_name), tokens, context);
 
         if (argument_type == nullptr) {
             if (head == *tokens.begin()) {
@@ -115,10 +112,11 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context
 
         first = true;
         arg_types.push_back(argument_type);
+        auto attr = tokens.LoadCachedAttributes();
         func_node->AddFunctionArgument(std::make_unique<AST::ParamVarDecl>(
-            name_token, argument_type, attrs));
+            name_token, argument_type, attr));
     } while (!tokens.empty() &&
-             peek(tokens).Type() != Lexical::TokenType::kRParentheses);
+             tokens.peek().Type() != Lexical::TokenType::kRParentheses);
 
     // check ')'  and consume
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRParentheses, tokens);
@@ -134,8 +132,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context
             MYCC_PrintTokenError_ReturnNull(
                 func_name, "Function '" + func_name.Value() +
                                "' already defined with different argument "
-                               "number from previous definition in " +
-                               context.GetFileName() + ":" +
+                               "number from previous definition in line" +
                                std::to_string(line_no));
         }
 
@@ -144,8 +141,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context
             MYCC_PrintTokenError_ReturnNull(
                 func_name, "Function " + return_type->GetName() + " " +
                                func_name.Value() + " already defined with " +
-                               func_type->GetName() + " return type in fine " +
-                               context.GetFileName() + ":" +
+                               func_type->GetName() + " return type in line " +
                                std::to_string(line_no));
         }
 
@@ -155,8 +151,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context
                 MYCC_PrintTokenError_ReturnNull(
                     func_name, "Function " + func_name.Value() +
                                    " already defined with different argument "
-                                   "type in fine " +
-                                   context.GetFileName() + ":" +
+                                   "type in line " +
                                    std::to_string(line_no));
             }
             func_type_attributes.pop_front();
@@ -168,7 +163,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context
                         return_type, arg_types);
 
     // trying to parse the function body if it exists
-    if (peek(tokens).Type() == Lexical::TokenType::kLBrace) {
+    if (tokens.peek().Type() == Lexical::TokenType::kLBrace) {
         // create a new named scope
         context.enterScope(func_name.Value(), return_type);
 
@@ -179,8 +174,8 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context
         }
 
         // trying to parser the function body
-        auto func_body = ParserFactory::ParseAST<AST::CompoundStmt>(
-            context, tokens, attributes);
+        auto func_body =
+            ParserFactory::ParseAST<AST::CompoundStmt>(tokens, context);
 
         // if function body is syntax correct, then add it to the function
         // node and back to current the scope
@@ -194,8 +189,8 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(AST::CompilationUnit& context
     }
 
     // if the function body is not exits, then we need to check the ";"
-    else if (peek(tokens).Type() == Lexical::TokenType::kSemiColon) {
-        pop_list(tokens);
+    else if (tokens.peek().Type() == Lexical::TokenType::kSemiColon) {
+        tokens.pop();
     }
 
     // if the function body is not exits, then we need to check the ";"

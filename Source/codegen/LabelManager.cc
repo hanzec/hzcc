@@ -110,7 +110,9 @@ void LabelManager::EnterScope(std::pair<int, int> loop_loc, ScopedType type) {
 
 LabelManager::~LabelManager() {
     DLOG_ASSERT(_scope_stack.empty())
-        << " scope stack is not empty when destructing LabelManager";
+        << " scope stack is not empty when destructing LabelManager, "
+        << _scope_stack.size()
+        << " scopes left, head: " << _scope_stack.front().first;
 }
 
 void LabelManager::ResetLables() {

@@ -109,5 +109,5 @@ if (${E2E_DEPENDS_MET})
     add_lit_test_set(lexical_part1 "${CMAKE_CURRENT_LIST_DIR}/lexical/part1")
 
     # add part3 test set
-    add_lit_test_set(lexical_part3 "${CMAKE_CURRENT_LIST_DIR}/lexical/part3")
+    add_lit_test_set(lexical_part3 "${CMAKE_CURRENT_LIST_DIR}/syntax/part3")
 endif ()

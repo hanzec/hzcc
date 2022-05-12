@@ -11,7 +11,7 @@ const char* AST::EmptyStatement::NodeName() const {
     return "EmptyStatement";
 }
 std::shared_ptr<Type> EmptyStatement::GetType() const {
-    return Type::GetBasicType("void", {Lexical::TokenType::kConst});
+    return Type::GetTypeOf("void", {Lexical::TokenType::kConst});
 }
 Status EmptyStatement::visit(ASTVisitor& visitor) {
     return visitor.visit(this);

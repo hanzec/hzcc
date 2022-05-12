@@ -73,16 +73,16 @@ std::shared_ptr<Type> LiteralExpr::GetType() const {
     static std::list<std::string> const_type_list = {"const"};
     switch (_type) {
         case LiteralType::kLiteralType_Char:
-            return Type::GetBasicType("char", {Lexical::TokenType::kConst});
+            return Type::GetTypeOf("char", {});
         case LiteralType::kLiteralType_Real_number:
-            return Type::GetBasicType("float", {Lexical::TokenType::kConst});
+            return Type::GetTypeOf("float", {});
         case LiteralType::kLiteralType_String:
             return ArrayType::GetArrayOfBasicType(
-                Type::GetBasicType("char", {}),
+                Type::GetTypeOf("char", {}),
                 std::make_unique<LiteralExpr>(_value.size() + 1),
                 {Lexical::TokenType::kConst});
         case LiteralType::kLiteralType_Integer:
-            return Type::GetBasicType("int", {Lexical::TokenType::kConst});
+            return Type::GetTypeOf("int", {});
         default:
             DLOG_ASSERT(false) << "unexpected literal type";
     }

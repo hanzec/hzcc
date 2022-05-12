@@ -97,25 +97,6 @@ class PrintMessageReporter {
 #undef print_message
 #define print_message PrintMessageReporter(__FUNCTION__, __FILE__, __LINE__)
 #endif
-
-#define MYCC_PrintTokenError(token, message)                                 \
-    Message::print_message(Message::kError, (message), (token).SourceLine(), \
-                           (token).Location(), (token).Value());
-
-#define MYCC_PrintFirstTokenError(tokens, message) \
-    const auto& error_token = (tokens).front();    \
-    MYCC_PrintTokenError(error_token, message)
-
-#define MYCC_PrintTokenError_ReturnNull(token, message) \
-    MYCC_PrintTokenError(token, message) return nullptr;
-
-#define MYCC_PrintFirstTokenError_ReturnNull(tokens, message)      \
-    const auto& error_token =                                      \
-        (tokens).empty()                                           \
-            ? Lexical::Token(Lexical::TokenType::kUnknown, -1, -1) \
-            : (tokens).front();                                    \
-    MYCC_PrintTokenError_ReturnNull(error_token, message)
-
 }  // namespace Hzcc::Message
 
 #endif  // MYCC_PRINT_ERROR_MESSAGE_H

@@ -12,11 +12,8 @@
 namespace Hzcc::AST {
 
 FunctionDeclNode::FunctionDeclNode(const Lexical::Token& function_name,
-                                   std::shared_ptr<Type> return_type,
-                                   std::list<Lexical::Token>& attribute)
-    : DeclNode(function_name), _return_type(std::move(return_type)) {
-    attribute.clear();  // TODO need modify
-}
+                                   std::shared_ptr<Type> return_type)
+    : DeclNode(function_name), _return_type(std::move(return_type)) {}
 bool FunctionDeclNode::set_body(
     std::unique_ptr<AST::CompoundStmt> declaration) {
     if (declaration == nullptr) {
@@ -47,9 +44,9 @@ std::string FunctionDeclNode::PrintAdditionalInfo(
 
     // print argument node
     if (!_function_param.empty()) {
+        result << "\n";
         for (const auto& arg : _function_param) {
-            result << "\n" +
-                          arg->Dump(ident + (arg == _function_param.back() &&
+            result << arg->Dump(ident + (arg == _function_param.back() &&
                                                      _function_body == nullptr
                                                  ? " `"
                                                  : " |")) +

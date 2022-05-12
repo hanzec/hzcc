@@ -5,9 +5,7 @@
 
 #include "lexical/Token.h"
 namespace Hzcc::AST {
-const char* StructDeclareNode::NodeName() const {
-    return "StructDeclareNode";
-}
+const char* StructDeclareNode::NodeName() const { return "StructDeclareNode"; }
 StructDeclareNode::StructDeclareNode(const std::string& name,
                                      const Lexical::Token& token,
                                      std::shared_ptr<StructType> type)
@@ -15,4 +13,5 @@ StructDeclareNode::StructDeclareNode(const std::string& name,
 Status StructDeclareNode::visit(ASTVisitor& visitor) {
     return visitor.visit(this);
 }
+std::shared_ptr<Type> StructDeclareNode::GetType() const { return _type; }
 }  // namespace Hzcc::AST

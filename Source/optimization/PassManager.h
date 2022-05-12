@@ -17,7 +17,7 @@ class PassManager {
      * @param F The function to be run.
      * @return Status the status of the pass.
      */
-    virtual Status RunPass(AST::CompilationUnit& F) = 0;
+    virtual Status RunPass(std::shared_ptr<AST::CompilationUnit> F) = 0;
 };
 
 }  // namespace Hzcc::Pass

@@ -10,7 +10,7 @@ namespace Hzcc::AST {
 const char* AST::SizeofExpr::NodeName() const { return "SizeofExpr"; }
 
 std::shared_ptr<Type> SizeofExpr::GetType() const {
-    return Type::GetBasicType("int", {Lexical::TokenType::kConst});
+    return Type::GetTypeOf("int", {Lexical::TokenType::kConst});
 }
 Status SizeofExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 }  // namespace Hzcc::AST

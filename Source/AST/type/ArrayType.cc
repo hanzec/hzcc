@@ -24,10 +24,10 @@ std::shared_ptr<Type> ArrayType::GetArrayOfBasicType(
     auto final_type =
         std::make_shared<make_shared_enabler>(type, std::move(size), attrs);
 
-    if (_types.find(final_type->GetName()) != _types.end()) {
-        return _types[final_type->GetName()];
+    if (_cached_types.find(final_type->GetName()) != _cached_types.end()) {
+        return _cached_types[final_type->GetName()];
     } else {
-        _types[final_type->GetName()] = final_type;
+        _cached_types[final_type->GetName()] = final_type;
         return final_type;
     }
 }
@@ -35,7 +35,8 @@ std::shared_ptr<Type> ArrayType::GetArrayOfBasicType(
 ArrayType::ArrayType(const std::shared_ptr<Type>& base_type,
                      std::unique_ptr<ASTNode> array_size,
                      const std::list<Lexical::TokenType>& attrs)
-    : Type(base_type->GetName() +
+    : Type(Type::GetBaseType(
+               base_type->GetName() +
                (array_size == nullptr
                     ? "[]"
                     : (array_size->GetDeducedValue().has_value()
@@ -44,7 +45,7 @@ ArrayType::ArrayType(const std::shared_ptr<Type>& base_type,
                                                     .value()
                                                     .AsInt()) +
                                  "]"
-                           : "[VLA]")),
+                           : "[VLA]"))),
            {}),
       _size_node(std::move(array_size)),
       _base_type(base_type) {}

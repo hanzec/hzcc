@@ -7,6 +7,7 @@
 #include "AST/CompilationUnit.h"
 #include "AST/statement/value_decl.h"
 #include "lexical/Token.h"
+#include "syntax/SyntaxContext.h"
 #include "syntax/utils/common_utils.h"
 #include "utils/type_name_utils.h"
 namespace Hzcc::Syntax::Parser {
@@ -15,20 +16,25 @@ ValueDeclare::ValueDeclare() noexcept
                 TypeNameUtil::name_pretty<AST::VarDecl>()) {}
 
 std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
-    Hzcc::AST::CompilationUnit& context, Hzcc::Syntax::TokenList& tokens,
-    Hzcc::Syntax::TokenList& attributes) {
-    // push attrs back to token stream
-    tokens.insert(tokens.begin(), attributes.begin(), attributes.end());
-
+    TokenList& tokens, Hzcc::Syntax::SyntaxContext& context) {
     // consume type and val define
-    auto type_name = ParseTypeName(context, tokens);
-    auto [type, attrs, name] =
-        ParseTypeDecl(TokenListToString(type_name), context, tokens);
+    auto attrs = tokens.LoadCachedAttributes();
+    auto type_name = ParseTypeName(tokens, context);
+    auto [type, name] =
+        ParseTypeDecl(TokenListToString(type_name), tokens, context);
 
     // check if type is valid
     if (!type) {
         DLOG(ERROR) << "Parse type failed";
         return nullptr;
+    }
+
+    // if not fist declare, cannot have any attributes
+    if (!_is_fist_declare) {
+        if (attrs.size() != attribute_size_) {
+            MYCC_PrintFirstTokenError_ReturnNull(
+                tokens, "Expected ';' at end of declaration");
+        }
     }
 
     // check duplicate variable, here we only check if the variable is
@@ -42,8 +48,7 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
                 name.Value() +
                 (is_global ? "' duplicates global variable declared in\n"
                            : "' duplicates local variable declared in\n") +
-                "\t\tfile " + context.GetFileName() + " line " +
-                std::to_string(line_no));
+                " line " + std::to_string(line_no));
     }
 
     // variable cannot be defined as void
@@ -54,7 +59,7 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
 
     // for a function definition, we only allow one per line.
     if (type->IsFuncPtr()) {
-        if (tokens.front().Type() != Lexical::TokenType::kSemiColon) {
+        if (tokens.peek().Type() != Lexical::TokenType::kSemiColon) {
             DLOG(ERROR) << "Expect \";\" after function pointer";
             MYCC_PrintFirstTokenError_ReturnNull(
                 tokens, "Expect \";\" after function pointer");
@@ -62,19 +67,19 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
     }
 
     // check if current statement is a function definition
-    if (peek(tokens).Type() == Lexical::TokenType::kLParentheses) {
+    if (tokens.peek().Type() == Lexical::TokenType::kLParentheses) {
         MYCC_PrintFirstTokenError_ReturnNull(
             tokens, "Function definition not allowed here");
     }
 
     // add new variable
     std::unique_ptr<AST::ASTNode> var_value{nullptr};
-    if (tokens.front().Type() == Lexical::TokenType::kAssign) {
+    if (tokens.peek().Type() == Lexical::TokenType::kAssign) {
         // consume assign
-        pop_list(tokens);
+        tokens.pop();
 
         // parse initial value
-        auto value_node = tokens.front();
+        auto value_node = tokens.peek();
         auto value = ParseConditionalExpr(context, tokens);
 
         // check if value is valid
@@ -107,22 +112,18 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
 
     // if define multiple value, we will add type back to tokens and parse in
     // next parser call
-    if (tokens.front().Type() == Lexical::TokenType::kComma) {
-        pop_list(tokens);  // consume ',' since we don't need it
-        auto error_attrs = GetAttribute(tokens);
-        if (!error_attrs.empty()) {
-            MYCC_PrintFirstTokenError_ReturnNull(
-                error_attrs, error_token.Value() + " is not allowed here");
-        }
+    if (tokens.peek().Type() == Lexical::TokenType::kComma) {
+        tokens.pop();  // consume ',' since we don't need it
+        _is_fist_declare = false;
 
         // push all types back to tokens
-        tokens.insert(tokens.begin(), type_name.begin(), type_name.end());
-
-        // push attrs back to tokens
-        tokens.insert(tokens.begin(), attrs.begin(), attrs.end());
-
-        tokens.push_front(
-            Lexical::Token(Lexical::TokenType::kSemiColon, -1, -1));
+        attribute_size_ = attrs.size();
+        tokens.insert_front(attrs.begin(), attrs.end());
+        tokens.insert_front(type_name.begin(), type_name.end());
+        tokens.push(Lexical::Token(Lexical::TokenType::kSemiColon, -1, -1));
+    } else {
+        attribute_size_ = 0;
+        _is_fist_declare = true;
     }
 
     // create new variable if not in root context
@@ -133,7 +134,6 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
         }
         context.addVariable(name.Location().first, name.Value(), type);
     }
-    attributes.clear();
 
     return std::make_unique<AST::VarDecl>(type, attrs, name,
                                           std::move(var_value));

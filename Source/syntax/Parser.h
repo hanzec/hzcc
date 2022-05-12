@@ -19,38 +19,27 @@
 #include "AST/statement/if.h"
 #include "AST/statement/struct.h"
 #include "AST/statement/value_decl.h"
+#include "SyntaxContext.h"
 #include "parser/base_parser.h"
 #include "parser/statement_parser.h"
 #include "syntax/parser/function_parser.h"
-#include "syntax/parser/statements/block_parser.h"
+#include "syntax/parser/statements/compound_parser.h"
 #include "syntax/parser/statements/do_parser.h"
 #include "syntax/parser/statements/for_parser.h"
 #include "syntax/parser/statements/if_parser.h"
 #include "syntax/parser/statements/struct_parser.h"
 #include "syntax/parser/statements/value_decl_parser.h"
 #include "syntax/parser/statements/while_parser.h"
-#include "utils/debug_utils.h"
 #include "utils/type_name_utils.h"
 namespace Hzcc::Syntax {
 class ParserFactory {
   public:
     template <class name>
-    static std::unique_ptr<name> ParseAST(AST::CompilationUnit& context,  // NOLINT
-                                          std::list<Lexical::Token>& tokens) {
+    static std::unique_ptr<name> ParseAST(TokenList& tokens,
+                                          SyntaxContext& context) {
         return std::unique_ptr<name>(
             static_cast<name*>(GetParser<name>(TypeNameUtil::hash<name>())
-                                   ->parse(context, tokens)
-                                   .release()));
-    }
-
-    template <class name>
-    static std::unique_ptr<name> ParseAST(
-        AST::CompilationUnit& context,           // NOLINT
-        std::list<Lexical::Token>& tokens,  // NOLINT
-        std::list<Lexical::Token> attributes) {
-        return std::unique_ptr<name>(
-            static_cast<name*>(GetParser<name>(TypeNameUtil::hash<name>())
-                                   ->parse(context, tokens, attributes)
+                                   ->parse(tokens, context)
                                    .release()));
     }
 
@@ -72,7 +61,7 @@ class ParserFactory {
                       {TypeNameUtil::hash<AST::FunctionDeclNode>(),
                        std::make_shared<Parser::Function>()},
                       {TypeNameUtil::hash<AST::CompoundStmt>(),
-                       std::make_shared<Parser::BlockStatement>()},
+                       std::make_shared<Parser::CompoundStatement>()},
                       {TypeNameUtil::hash<AST::DoStatement>(),
                        std::make_shared<Parser::DoStatement>()},
                       {TypeNameUtil::hash<AST::ForStatement>(),
@@ -99,31 +88,16 @@ class ParserFactoryReporter {
     }
 
     template <class name>
-    std::unique_ptr<name> ParseAST(AST::CompilationUnit& context,
-                                   std::list<Lexical::Token>& tokens) {
+    std::unique_ptr<name> ParseAST(TokenList& tokens, SyntaxContext& context) {
         DVLOG(SYNTAX_LOG_LEVEL)
             << "\nRequest Parser From: [" << _caller << "] " << _file << ":"
             << _line << "\n"
             << "\tParseAST: " << TypeNameUtil::name_pretty<name>() << "\n"
-            << "\tToken: " << MYCC_PRETTY_PRINT_TOKEN(tokens.front()) << "\n"
+            << "\tToken: " << MYCC_PRETTY_PRINT_TOKEN(tokens.peek()) << "\n"
             << "\tattributes: []"
             << "\n"
             << "\tUsingParser: " << std::hex << TypeNameUtil::hash<name>();
-        return ParserFactory::ParseAST<name>(context, tokens);
-    }
-
-    template <class name>
-    std::unique_ptr<name> ParseAST(AST::CompilationUnit& context,
-                                   std::list<Lexical::Token>& tokens,  // NOLINT
-                                   std::list<Lexical::Token>& attributes) {
-        DVLOG(SYNTAX_LOG_LEVEL)
-            << "\nRequest Parser From: [" << _caller << "] " << _file << ":"
-            << _line << "\n"
-            << "\tParseAST: " << TypeNameUtil::name_pretty<name>() << "\n"
-            << "\tToken: " << MYCC_PRETTY_PRINT_TOKEN(tokens.front()) << "\n"
-            << "\tattributes: " << Debug::PrintAttributeList(attributes) << "\n"
-            << "\tUsingParser: " << std::hex << TypeNameUtil::hash<name>();
-        return ParserFactory::ParseAST<name>(context, tokens, attributes);
+        return ParserFactory::ParseAST<name>(tokens, context);
     }
 
   private:

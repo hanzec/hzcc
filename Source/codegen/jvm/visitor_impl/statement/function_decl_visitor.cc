@@ -34,10 +34,24 @@ Status JVMGenerator::visit(AST::FunctionDeclNode* p_expr) {
         /** #################################################################
          *  ## Generate Function Info #######################################
          *  ################################################################# */
+        // visiting function parameters
+        std::stringstream func_signature;
+        func_signature << '(';
         for (auto& param : p_expr->GetParams()) {
             param->visit(funcAnalyzer);
+            func_signature << Utils::GetTypeName(param->GetType());
         }
+        func_signature << ')' << Utils::GetTypeName(p_expr->GetType());
+
+        // visiting function body
         p_expr->Body()->visit(funcAnalyzer);
+
+        // add current function to function table
+        auto final_func_signature = func_signature.str();
+        std::transform(final_func_signature.begin(), final_func_signature.end(),
+                       final_func_signature.begin(), ::toupper);
+        _function_table[p_expr->GetName()] = {GetCurrentClassName(),
+                                              final_func_signature};
 
         /** #################################################################
          *  ## Function Checking ############################################

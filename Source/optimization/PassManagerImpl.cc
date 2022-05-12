@@ -20,9 +20,10 @@ bool PassManagerImpl::reg_pass_internal(std::unique_ptr<PassBase> pass,
     }
 }
 
-Status PassManagerImpl::RunPass(AST::CompilationUnit& compile_unit) {
+Status PassManagerImpl::RunPass(
+    std::shared_ptr<AST::CompilationUnit> compile_unit) {
     // Run Function Pass
-    for (auto& decl : compile_unit.GetDecls()) {
+    for (auto& decl : compile_unit->GetDecls()) {
         DVLOG(OPT_LOG_LEVEL) << "Visit: " << decl.first;
         if (decl.second->IsFuncDecl()) {
             /**
@@ -38,7 +39,7 @@ Status PassManagerImpl::RunPass(AST::CompilationUnit& compile_unit) {
     }
 
     // print final AST
-    DVLOG(OPT_LOG_LEVEL) << "Final AST: " << std::endl << compile_unit.Dump();
+    DVLOG(OPT_LOG_LEVEL) << "Final AST: " << std::endl << compile_unit->Dump();
     return Status::OkStatus();
 }
 

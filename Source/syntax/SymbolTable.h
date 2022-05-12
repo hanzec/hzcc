@@ -1,19 +1,23 @@
 //
 // Created by chen_ on 2022/4/9.
 //
-#ifndef MYCC_SOURCE_AST_SYMBOLTABLE_H_
-#define MYCC_SOURCE_AST_SYMBOLTABLE_H_
 #include <list>
 #include <memory>
 #include <string>
 #include <unordered_map>
-namespace Hzcc::AST {
+#ifndef MYCC_SOURCE_AST_SYMBOLTABLE_H_
+#define MYCC_SOURCE_AST_SYMBOLTABLE_H_
+namespace Hzcc {
+namespace AST {
 class Type;
 class StructType;
+}  // namespace AST
+
+namespace Syntax {
 class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
   public:
-    SymbolTable(std::shared_ptr<Type> return_type,
-                std::shared_ptr<SymbolTable> parent);
+    SymbolTable(std::shared_ptr<AST::Type> return_type,
+                std::weak_ptr<SymbolTable> parent);
 
     /**
      * @brief Return the parent of this symbol table.
@@ -40,7 +44,7 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
      * @return false if type name is existed as other type or as registered
      * variable identifier.
      */
-    std::shared_ptr<StructType> addStructType(const std::string& name);
+    std::shared_ptr<AST::StructType> addStructType(const std::string& name);
 
     /**
      * @brief Get the type's shared_ptr with the given name.
@@ -54,7 +58,7 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
      * @return std::shared_ptr<Type> The type with the given name or nullptr if
      * not found.
      */
-    std::shared_ptr<Type> getType(const std::string& name);
+    std::shared_ptr<AST::Type> getType(const std::string& name);
 
     /**
      * @brief Check if the symbol table has a variable with the given name.
@@ -75,7 +79,7 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
      * registered type identifier.
      */
     void addVariable(int line_no, const std::string& name,
-                     std::shared_ptr<Type>& token_types);
+                     std::shared_ptr<AST::Type>& token_types);
 
     int getVariableDeclLine(const std::string& name);
 
@@ -85,7 +89,7 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
      * @return std::shared_ptr<Type> The variable with the given name or nullptr
      * if not found.
      */
-    std::shared_ptr<Type> getVariableType(const std::string& name);
+    std::shared_ptr<AST::Type> getVariableType(const std::string& name);
 
     /**
      * @brief Enter a new symbol table.
@@ -94,14 +98,14 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
      */
     std::shared_ptr<SymbolTable> EnterScope();
 
-    std::shared_ptr<Type> GetReturnType();
+    std::shared_ptr<AST::Type> GetReturnType();
 
   private:
     /**
      * Current Scoped Information
      */
     bool _is_function_scope = false;
-    std::shared_ptr<Type> _return_type;
+    std::shared_ptr<AST::Type> _return_type;
 
     /**
      * Upper scope information
@@ -111,14 +115,15 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
     /**
      * Variables table
      */
-    std::unordered_map<std::string, std::pair<int, std::shared_ptr<Type>>>
+    std::unordered_map<std::string, std::pair<int, std::shared_ptr<AST::Type>>>
         _variable_lookup_table;
 
     /**
      * Types table
      */
-    std::unordered_map<std::string, std::shared_ptr<Type>> _named_types;
+    std::unordered_map<std::string, std::shared_ptr<AST::Type>> _named_types;
     std::list<std::shared_ptr<SymbolTable>> _scoped_contexts;
 };
-}  // namespace Hzcc::AST
+}  // namespace Syntax
+}  // namespace Hzcc
 #endif  // MYCC_SOURCE_AST_SYMBOLTABLE_H_

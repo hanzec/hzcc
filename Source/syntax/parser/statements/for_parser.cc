@@ -4,14 +4,14 @@
 //
 // Created by chen_ on 2022/3/24.
 //
-#include "AST/statement/for.h"
+#include "for_parser.h"
 
 #include <list>
 
 #include "AST/CompilationUnit.h"
 #include "AST/statement/compound.h"
 #include "AST/statement/empty.h"
-#include "for_parser.h"
+#include "AST/statement/for.h"
 #include "lexical/token_type.h"
 #include "syntax/Parser.h"
 #include "syntax/parser/base_parser.h"
@@ -19,20 +19,19 @@
 #include "utils/message_utils.h"
 
 namespace Hzcc::Syntax::Parser {
-using namespace TokenListUtils;
 ForStatement::ForStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::ForStatement>(),
                  TypeNameUtil::name_pretty<AST::ForStatement>()) {}
-std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(
-    AST::CompilationUnit& context, TokenList& tokens) {
+std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(TokenList& tokens,
+                                                       SyntaxContext& context) {
     EnterLoop();  // enter loop
 
     // check first token is for
-    auto for_loc = tokens.front().Location();
+    auto for_loc = tokens.peek().Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kFor, tokens);
 
     // check next token is (
-    auto left_paren_loc = tokens.front().Location();
+    auto left_paren_loc = tokens.peek().Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLParentheses, tokens);
 
     // enter new scope
@@ -40,8 +39,8 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(
 
     // parse initializer
     std::unique_ptr<AST::ASTNode> initializer{nullptr};
-    if (peek(tokens).Type() != Lexical::TokenType::kSemiColon) {
-        initializer = ParserFactory::ParseAST<AST::ASTNode>(context, tokens);
+    if (tokens.peek().Type() != Lexical::TokenType::kSemiColon) {
+        initializer = ParserFactory::ParseAST<AST::ASTNode>(tokens, context);
         if (initializer == nullptr) {
             DLOG(ERROR) << "initializer is not nullptr";
             return nullptr;
@@ -51,13 +50,13 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(
     } else {
         // consume ';'
         initializer =
-            std::make_unique<AST::EmptyStatement>(pop_list(tokens).Location());
+            std::make_unique<AST::EmptyStatement>(tokens.pop().Location());
     }
 
     // parse condition
     std::unique_ptr<AST::ASTNode> condition{nullptr};
-    if (peek(tokens).Type() != Lexical::TokenType::kSemiColon) {
-        condition = ParserFactory::ParseAST<AST::ASTNode>(context, tokens);
+    if (tokens.peek().Type() != Lexical::TokenType::kSemiColon) {
+        condition = ParserFactory::ParseAST<AST::ASTNode>(tokens, context);
         if (condition == nullptr) {
             DLOG(ERROR) << "condition is not nullptr";
             return nullptr;
@@ -68,13 +67,13 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(
     } else {
         // consume ';'
         condition =
-            std::make_unique<AST::EmptyStatement>(pop_list(tokens).Location());
+            std::make_unique<AST::EmptyStatement>(tokens.pop().Location());
     }
 
     // parse increment
     std::unique_ptr<AST::ASTNode> increment{nullptr};
-    if (peek(tokens).Type() != Lexical::TokenType::kRParentheses) {
-        increment = ParserFactory::ParseAST<AST::ASTNode>(context, tokens);
+    if (tokens.peek().Type() != Lexical::TokenType::kRParentheses) {
+        increment = ParserFactory::ParseAST<AST::ASTNode>(tokens, context);
         if (increment == nullptr) {
             DLOG(ERROR) << "increment parse failed is not nullptr";
             return nullptr;
@@ -85,13 +84,13 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(
     } else {
         // consume ')'
         increment =
-            std::make_unique<AST::EmptyStatement>(pop_list(tokens).Location());
+            std::make_unique<AST::EmptyStatement>(tokens.pop().Location());
     }
 
     // parse body and return
     std::unique_ptr<AST::ASTNode> body{nullptr};
-    if (peek(tokens).Type() != Lexical::TokenType::kSemiColon) {
-        body = ParseBodyStatement(context, tokens);
+    if (tokens.peek().Type() != Lexical::TokenType::kSemiColon) {
+        body = ParseBodyStatement(tokens, context, false);
         if (body == nullptr) return nullptr;
     } else {
         DLOG(WARNING) << "for statement body is empty";
@@ -101,7 +100,7 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(
     context.leaveScope();
 
     // push a semicolon for easier parsing
-    tokens.push_front(Lexical::Token(Lexical::TokenType::kSemiColon, -1, -1));
+    tokens.push(Lexical::Token(Lexical::TokenType::kSemiColon, -1, -1));
 
     ExitLoop();  // exit loop
     return std::make_unique<AST::ForStatement>(

@@ -1,14 +1,14 @@
 //
 // Created by chen_ on 2022/3/24.
 //
-#include "AST/statement/if.h"
+#include "if_parser.h"
 
 #include <list>
 
 #include "AST/CompilationUnit.h"
 #include "AST/statement/compound.h"
+#include "AST/statement/if.h"
 #include "AST/type/Type.h"
-#include "if_parser.h"
 #include "lexical/Token.h"
 #include "syntax/Parser.h"
 #include "syntax/parser/base_parser.h"
@@ -16,21 +16,20 @@
 #include "utils/message_utils.h"
 
 namespace Hzcc::Syntax::Parser {
-using namespace TokenListUtils;
 IfStatement::IfStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::IfStatement>(),
                  TypeNameUtil::name_pretty<AST::IfStatement>()) {}
-std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(
-    AST::CompilationUnit& context, TokenList& tokens) {
-    auto ref = tokens.front();
+std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
+                                                      SyntaxContext& context) {
+    auto ref = tokens.peek();
 
     // check first if
-    auto if_loc = tokens.front().Location();
+    auto if_loc = tokens.peek().Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kIf, tokens);
 
     // parsing condition
-    auto cond_token = tokens.front();
-    auto cond = ParseCondition(context, tokens);
+    auto cond_token = tokens.peek();
+    auto cond = ParseCondition(tokens, context);
     if (!cond) {
         return nullptr;
     }
@@ -44,7 +43,7 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(
     }
 
     // parsing body
-    auto body = ParseBodyStatement(context, tokens, false);
+    auto body = ParseBodyStatement(tokens, context, false);
     if (!body) {
         return nullptr;
     }
@@ -54,10 +53,10 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(
                                                      std::move(body), if_loc);
 
     // parsing [else] and [else if] statement
-    while (peek(tokens).Type() == Lexical::TokenType::kElse) {
-        auto prev_else = pop_list(tokens);  // consume else;
+    while (tokens.peek().Type() == Lexical::TokenType::kElse) {
+        auto prev_else = tokens.pop();  // consume else;
         // if this is single else statement
-        if (peek(tokens).Type() == Lexical::TokenType::kLBrace) {
+        if (tokens.peek().Type() == Lexical::TokenType::kLBrace) {
             if (ifNode->HasElse()) {
                 MYCC_PrintTokenError_ReturnNull(
                     prev_else,
@@ -67,7 +66,7 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(
                 context.enterScope();
 
                 if (!ifNode->setElse(ParserFactory::ParseAST<AST::CompoundStmt>(
-                        context, tokens))) {
+                        tokens, context))) {
                     DLOG(ERROR) << "Parse else body failed";
                     return nullptr;
                 }
@@ -78,43 +77,42 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(
         }
 
         // else-if statements
-        else if (peek(tokens).Type() == Lexical::TokenType::kIf) {
-            pop_list(tokens);  // consume if
+        else if (tokens.peek().Type() == Lexical::TokenType::kIf) {
+            tokens.pop();  // consume if
+            MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLParentheses,
+                                            tokens);
 
-            MYCC_CheckElse_ReturnNull(Lexical::TokenType::kLParentheses,
-                                      tokens) {
-                auto else_if_token = tokens.front();
-                auto else_if_condition = ParseCondition(context, tokens);
+            auto else_if_token = tokens.peek();
+            auto else_if_condition = ParseCondition(tokens, context);
 
-                // make sure else-if condition is valid
-                if (!else_if_condition) {
-                    DLOG(ERROR) << "Parse else-if condition failed";
-                    return nullptr;
-                }
-
-                // check if else-if condition is valid
-                if (Options::Global_enable_type_checking &&
-                    else_if_condition->GetType()->IsVoid()) {
-                    Message::set_current_part("Type checking");
-                    MYCC_PrintTokenError_ReturnNull(
-                        else_if_token,
-                        "if condition has non-numeric type void");
-                    Message::set_current_part("Parser");
-                }
-
-                // add else-if statement
-                if (!ifNode->addElseIf(
-                        std::move(else_if_condition),
-                        ParseBodyStatement(context, tokens, false))) {
-                    DLOG(ERROR) << "Parse if body failed";
-                    return nullptr;
-                }
+            // make sure else-if condition is valid
+            if (!else_if_condition) {
+                DLOG(ERROR) << "Parse else-if condition failed";
+                return nullptr;
             }
+
+            // check if else-if condition is valid
+            if (Options::Global_enable_type_checking &&
+                else_if_condition->GetType()->IsVoid()) {
+                Message::set_current_part("Type checking");
+                MYCC_PrintTokenError_ReturnNull(
+                    else_if_token, "if condition has non-numeric type void");
+                Message::set_current_part("Parser");
+            }
+
+            // add else-if statement
+            if (!ifNode->addElseIf(
+                    std::move(else_if_condition),
+                    ParseBodyStatement(tokens, context, false))) {
+                DLOG(ERROR) << "Parse if body failed";
+                return nullptr;
+            }
+
         }
 
         // else statements without code block
         else {
-            if (!ifNode->setElse(ParseBodyStatement(context, tokens, false))) {
+            if (!ifNode->setElse(ParseBodyStatement(tokens, context, false))) {
                 DLOG(ERROR) << "Parse else if (without code block) failed";
                 return nullptr;
             }

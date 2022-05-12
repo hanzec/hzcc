@@ -54,6 +54,7 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
             switch (line_buf[col]) {
                 case ' ':
                 case '\t':
+                case '\r':
                     break;  // skip tab
                 case '@':   // skip @
                 case '`':

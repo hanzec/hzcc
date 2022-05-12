@@ -22,7 +22,7 @@ LogicalExpr::LogicalExpr(const Lexical::Token& type,
 }
 
 std::shared_ptr<Type> LogicalExpr::GetType() const {
-    return Type::GetBasicType("char", {});
+    return Type::GetTypeOf("char", {});
 }
 Status LogicalExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 LogicalType LogicalExpr::GetLogicalType() const { return _type; }

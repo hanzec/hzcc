@@ -38,7 +38,7 @@ class JVMGenerator : public Generator,
                      protected IndentWriter,
                      protected JVM::StackManager {
   public:
-    JVMGenerator(const std::string& output, AST::CompilationUnit& unit,
+    JVMGenerator(const std::string& output, const std::shared_ptr<AST::CompilationUnit>& unit,
                  bool output_c_ret_code = false);
 
     /**

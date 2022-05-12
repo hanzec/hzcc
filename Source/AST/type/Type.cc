@@ -3,29 +3,60 @@
 //
 #include "Type.h"
 
-#include <cassert>
+#include <string>
+#include <utility>
 
 #include "ArrayType.h"
-#include "lexical/utils/symbol_utils.h"
-#include "lexical/utils/token_utils.h"
+#include "BaseType.h"
+#include "syntax/utils/token_utils.h"
 #include "utils/logging.h"
+#include "lexical/utils/symbol_utils.h"
 
 namespace Hzcc::AST {
-std::string Type::ToString(const std::list<std::shared_ptr<Type>>& types) {
-    std::string ret = "(";
-    for (const auto& type : types) {
-        ret += type->GetName() + ",";
+
+constexpr static int CONST_ATTR_INDEX = 0;
+
+Type::BaseTypePtr Type::GetBaseType(const std::string& name) {
+    if (_cached_b_types.find(name) != _cached_b_types.end()) {
+        return _cached_b_types[name];
+    } else {
+        return _cached_b_types.emplace(name, std::make_shared<BaseType>(name))
+            .first->second;
     }
-    return ret.replace(ret.size() - 1, 1, ")");
 }
 
-std::shared_ptr<Type> Type::GetBasicType(
+std::shared_ptr<Type> Type::GetTypeOf(
+    const std::shared_ptr<Type>& other_type,
+    const std::list<Lexical::TokenType>& attrs) {
+    // shared helper function
+    struct make_shared_enabler : public Type {
+        explicit make_shared_enabler(const std::shared_ptr<BaseType>& name,
+                                     const std::list<Lexical::TokenType>& attrs)
+            : Type(name, attrs) {}
+    };
+
+    // check if the type name is empty
+    DLOG_ASSERT(other_type != nullptr)
+        << "Type::GetTypeOf: other_type is nullptr";
+
+    // check if the type is already cached
+    auto new_type =
+        std::make_shared<make_shared_enabler>(other_type->_base_type, attrs);
+    if (_cached_types.find(new_type->GetName()) != _cached_types.end()) {
+        return _cached_types[new_type->GetName()];
+    } else {
+        return _cached_types.emplace(new_type->GetName(), new_type)
+            .first->second;
+    }
+}
+
+std::shared_ptr<Type> Type::GetTypeOf(
     const std::string& name, const std::list<Lexical::TokenType>& attrs) {
     // shared helper function
     struct make_shared_enabler : public Type {
         explicit make_shared_enabler(const std::string& name,
                                      const std::list<Lexical::TokenType>& attrs)
-            : Type(name, attrs) {}
+            : Type(Type::GetBaseType(name), attrs) {}
     };
 
     // check if the type name is empty
@@ -39,34 +70,32 @@ std::shared_ptr<Type> Type::GetBasicType(
     // we will avoid creating a new type if the type already exists which means
     // there will be no same type with different id
     auto type = std::make_shared<make_shared_enabler>(name, attrs);
-    if (_types.find(type->GetName()) != _types.end()) {
-        return _types[type->GetName()];
+    if (_cached_types.find(type->GetName()) != _cached_types.end()) {
+        return _cached_types[type->GetName()];
     } else {
-        _types[type->GetName()] = type;
+        _cached_types[type->GetName()] = type;
         return type;
     }
 }
 
-Type::Type(const std::string& name, const std::list<Lexical::TokenType>& attrs)
-    : _name(name), _id(++_counter_), _is_const(false) {
-    // check type name
-    DLOG_ASSERT(!(name.find(' ') != std::string::npos &&
-                  name.find("struct") == std::string::npos))
-        << "type name cannot contain space";
-
+Type::Type(BaseTypePtr base_type, const std::list<Lexical::TokenType>& attrs)
+    : _base_type(std::move(base_type)), _id(++_counter_) {
     // check attrs
     for (const auto& attr : attrs) {
         // the attribute should also be a valid attribute
-        DLOG_ASSERT(Lexical::TokenUtils::IsAttribute(attr))
+        DLOG_ASSERT(Syntax::TokenUtils::IsAttribute(attr))
             << " invalid attribute: "
             << Lexical::SymbolUtils::TokenTypeToString(attr);
+    }
 
-        // handle const attribute
-        if (attr == Lexical::TokenType::kConst) {
-            if (_is_const) {
-                DLOG(ERROR) << "type cannot be const twice";
+    // setting attrs
+    for (size_t i = 0; i < kVariableAttrTableSize; ++i) {
+        for (auto attr : attrs) {
+            if (attr == Syntax::TokenUtils::kAtrributeTable[i]) {
+                _attrs[i] = true;
+            } else {
+                _attrs[i] = false;
             }
-            _is_const = true;
         }
     }
 }
@@ -87,42 +116,38 @@ bool Type::IsFuncPtr() const { return false; }
 
 std::string Type::Dump() { return GetName(); }
 
-bool Type::IsConst() const { return _is_const; }
+bool Type::IsConst() const { return _attrs[CONST_ATTR_INDEX]; }
 
 bool Type::IsSame(const Type& type) const {
-    return type._is_const == this->_is_const && this->_name == type._name;
+    return type._attrs == this->_attrs && this->_base_type == type._base_type;
 }
 
 bool Type::IsSame(const std::shared_ptr<Type>& type) const {
     DLOG_ASSERT(type != nullptr) << " comparing current type with nullptr!";
-    return this->_name == type->_name;
+    return type->_attrs == this->_attrs && this->_base_type == type->_base_type;
 }
+
 std::string Type::GetName(bool without_attr) const {
     if (without_attr) {
-        return _name;
+        return _base_type->GetName();
     } else {
-        return (_is_const ? "const " : "") + _name;
+        return (IsConst() ? "const " : "") + _base_type->GetName();
     }
 }
-std::shared_ptr<Type> Type::GetConstType() const {
-    if (_is_const) {
-        return std::make_shared<Type>(*this);
+std::shared_ptr<Type> Type::GetConstType() {
+    if (IsConst()) {
+        return shared_from_this();
     } else {
-        return GetBasicType(_name, {Lexical::TokenType::kConst});
+        return GetTypeOf(shared_from_this(), {Lexical::TokenType::kConst});
     }
 }
-
-std::list<Lexical::TokenType> Type::GetAttributes() const {
-    if (_is_const) {
-        return {Lexical::TokenType::kConst};
-    } else {
-        return {};
+std::list<Lexical::TokenType> Type::GetAttributes() {
+    std::list<Lexical::TokenType> ret;
+    for (size_t i = 0; i < kVariableAttrTableSize; ++i) {
+        if (_attrs[i]) {
+            ret.push_back(Syntax::TokenUtils::kAtrributeTable[i]);
+        }
     }
+    return ret;
 }
-bool Type::IsVoid() const { return _name == "void"; }
-bool Type::IsChar() const { return _name == "char"; }
-bool Type::IsFloat() const { return _name == "float"; }
-bool Type::IsDouble() const { return _name == "double"; }
-bool Type::IsInteger() const { return _name == "int"; }
-
 }  // namespace Hzcc::AST

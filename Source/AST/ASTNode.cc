@@ -66,7 +66,10 @@ ASTNode::~ASTNode() {}
 std::optional<DeduceValue> ASTNode::GetDeducedValue() const {
     return std::nullopt;
 }
-std::shared_ptr<Type> ASTNode::GetType() const { return nullptr; }
+std::shared_ptr<Type> ASTNode::GetType() const {
+    DLOG(FATAL) << "GetType() is not implemented for " << NodeName();
+    return nullptr;
+}
 std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
     const std::shared_ptr<Type>& lhs_type, std::unique_ptr<ASTNode> rhs) {
     bool modified = false;
@@ -81,7 +84,17 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
             // deduced value are calculate as double
             if (rhs->GetDeducedValue().value().GetType() ==
                     DeduceValueType::kDeduceValueType_Real_Number &&
-                lhs_type->GetName().find("float") != std::string::npos) {
+                lhs_type->IsFloat()) {
+                modified = true;
+                auto loc = rhs->Location();
+                rhs = std::make_unique<AST::CastExpr>(lhs_type, std::move(rhs),
+                                                      loc);
+                DVLOG(SYNTAX_LOG_LEVEL)
+                    << "Cast DeducedValue:" << rhs->Dump("");
+            }
+
+            // [int = char] cast is allowed
+            else if (rhs->GetType()->IsChar() && lhs_type->IsInteger()) {
                 modified = true;
                 auto loc = rhs->Location();
                 rhs = std::make_unique<AST::CastExpr>(lhs_type, std::move(rhs),
@@ -92,23 +105,21 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
         }
 
         // variable wider cast
-        else if (rhs->GetType()->GetName().find("int") != std::string::npos &&
-                 !lhs_type->IsArray() && !rhs->GetType()->IsArray()) {
-            if (lhs_type->GetName().find("float") != std::string::npos) {
+        else if (rhs->GetType()->IsInteger() && !lhs_type->IsArray() &&
+                 !rhs->GetType()->IsArray()) {
+            if (lhs_type->IsFloat()) {
                 modified = true;
                 auto loc = rhs->Location();
                 rhs = std::make_unique<AST::CastExpr>(
-                    Type::GetBasicType("float",
-                                       rhs->GetType()->GetAttributes()),
+                    Type::GetTypeOf("float", rhs->GetType()->GetAttributes()),
                     std::move(rhs), loc);
                 DVLOG(SYNTAX_LOG_LEVEL) << "Using CastExpr:" << rhs->Dump("");
             }
         }
 
-        else if (rhs->GetType()->GetName().find("double") !=
-                     std::string::npos &&
-                 !lhs_type->IsArray() && !rhs->GetType()->IsArray()) {
-            if (lhs_type->GetName().find("float") != std::string::npos) {
+        else if (rhs->GetType()->IsDouble() && !lhs_type->IsArray() &&
+                 !rhs->GetType()->IsArray()) {
+            if (lhs_type->IsFloat()) {
                 if (!rhs->IsLiteral()) {
                     Message::set_current_part("Type checking");
                     Message::print_message(
@@ -120,8 +131,7 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
                 modified = true;
                 auto loc = rhs->Location();
                 rhs = std::make_unique<AST::CastExpr>(
-                    Type::GetBasicType("float",
-                                       rhs->GetType()->GetAttributes()),
+                    Type::GetTypeOf("float", rhs->GetType()->GetAttributes()),
                     std::move(rhs), loc);
                 DVLOG(SYNTAX_LOG_LEVEL) << "Using CastExpr:" << rhs->Dump("");
             } else {
@@ -129,14 +139,13 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
             }
         }
 
-        else if (rhs->GetType()->GetName().find("float") != std::string::npos &&
-                 !lhs_type->IsArray() && !rhs->GetType()->IsArray()) {
-            if (lhs_type->GetName().find("double") != std::string::npos) {
+        else if (rhs->GetType()->IsFloat() && !lhs_type->IsArray() &&
+                 !rhs->GetType()->IsArray()) {
+            if (lhs_type->IsDouble()) {
                 modified = true;
                 auto loc = rhs->Location();
                 rhs = std::make_unique<AST::CastExpr>(
-                    Type::GetBasicType("double",
-                                       rhs->GetType()->GetAttributes()),
+                    Type::GetTypeOf("double", rhs->GetType()->GetAttributes()),
                     std::move(rhs), loc);
                 DVLOG(SYNTAX_LOG_LEVEL) << "Using CastExpr:" << rhs->Dump("");
             } else {
@@ -144,23 +153,23 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
             }
         }
 
-        else if (rhs->GetType()->GetName().find("char") != std::string::npos &&
-                 !lhs_type->IsArray() && !rhs->GetType()->IsArray()) {
-            if (lhs_type->GetName().find("int") != std::string::npos) {
+        else if (rhs->GetType()->IsChar() && !lhs_type->IsArray() &&
+                 !rhs->GetType()->IsArray()) {
+            if (lhs_type->IsInteger()) {
                 modified = true;
                 auto loc = rhs->Location();
                 rhs = std::make_unique<AST::CastExpr>(
-                    Type::GetBasicType("int", rhs->GetType()->GetAttributes()),
+                    Type::GetTypeOf("int", rhs->GetType()->GetAttributes()),
                     std::move(rhs), loc);
                 DVLOG(SYNTAX_LOG_LEVEL) << "Using CastExpr:" << rhs->Dump("");
-            } else if (lhs_type->GetName().find("float") != std::string::npos) {
+            } else if (lhs_type->IsFloat()) {
                 modified = true;
                 auto loc = rhs->Location();
                 auto rhs_attr = rhs->GetType()->GetAttributes();
                 rhs = std::make_unique<AST::CastExpr>(
-                    Type::GetBasicType("int", rhs_attr),
+                    Type::GetTypeOf("int", rhs_attr),
                     std::make_unique<AST::CastExpr>(
-                        Type::GetBasicType("float", rhs_attr), std::move(rhs),
+                        Type::GetTypeOf("float", rhs_attr), std::move(rhs),
                         loc),
                     loc);
                 DVLOG(SYNTAX_LOG_LEVEL) << "Using CastExpr:" << rhs->Dump("");

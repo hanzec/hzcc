@@ -68,7 +68,7 @@ std::string RelationalExpr::PrintAdditionalInfo(
     return ret.str();
 }
 std::shared_ptr<Type> RelationalExpr::GetType() const {
-    return Type::GetBasicType("char", {});
+    return Type::GetTypeOf("char", {});
 }
 Status RelationalExpr::visit(ASTVisitor& visitor) {
     return visitor.visit(this);

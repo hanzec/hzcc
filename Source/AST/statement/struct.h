@@ -15,10 +15,11 @@ class StructDeclareNode : public DeclNode {
   public:
     explicit StructDeclareNode(const std::string& name,
                                const Lexical::Token& token,
-
                                std::shared_ptr<StructType> type);
 
     Status visit(ASTVisitor& visitor) override;
+
+    [[nodiscard]] std::shared_ptr<Type> GetType() const override;
 
     [[nodiscard]] bool IsStructDecl() const override { return true; }
 

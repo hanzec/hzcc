@@ -1,12 +1,12 @@
 //
 // Created by chen_ on 2022/3/24.
 //
-#include "AST/statement/compound.h"
+#include "compound_parser.h"
 
 #include <list>
 
 #include "AST/CompilationUnit.h"
-#include "block_parser.h"
+#include "AST/statement/compound.h"
 #include "lexical/Token.h"
 #include "syntax/Parser.h"
 #include "syntax/parser/base_parser.h"
@@ -14,14 +14,14 @@
 #include "utils/message_utils.h"
 
 namespace Hzcc::Syntax::Parser {
-BlockStatement::BlockStatement() noexcept
+CompoundStatement::CompoundStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::CompoundStmt>(),
                  TypeNameUtil::name_pretty<AST::CompoundStmt>()){};
 
-std::unique_ptr<AST::ASTNode> BlockStatement::parse_impl(
-    AST::CompilationUnit& context, TokenList& tokens) {
+std::unique_ptr<AST::ASTNode> CompoundStatement::parse_impl(
+    TokenList& tokens, SyntaxContext& context) {
     // check if the next token is '{'
-    auto prev_token = tokens.front();
+    auto prev_token = tokens.peek();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLBrace, tokens);
 
     // create new block node
@@ -30,9 +30,9 @@ std::unique_ptr<AST::ASTNode> BlockStatement::parse_impl(
 
     // parse statements
     while (!tokens.empty() &&
-           tokens.front().Type() != Lexical::TokenType::kRBrace) {
+           tokens.peek().Type() != Lexical::TokenType::kRBrace) {
         if (!block_node->AddStatement(
-                ParserFactory::ParseAST<AST::ASTNode>(context, tokens))) {
+                ParserFactory::ParseAST<AST::ASTNode>(tokens, context))) {
             DVLOG(SYNTAX_LOG_LEVEL) << "Parse block statement error";
             return nullptr;
         }

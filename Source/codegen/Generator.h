@@ -14,7 +14,7 @@ class CompilationUnit;
 namespace Codegen {
 class Generator {
   public:
-    Generator(const std::string& output, AST::CompilationUnit& unit);
+    Generator(const std::string& output, std::shared_ptr<AST::CompilationUnit> unit);
     Generator();
     /**
      * @brief Generate the code for the given compilation unit.
@@ -26,13 +26,13 @@ class Generator {
     virtual Status Generate() = 0;  // NOLINT
   protected:
 
-    AST::CompilationUnit& GetCompilationUnit();
+    std::shared_ptr<AST::CompilationUnit> GetCompilationUnit();
 
     [[nodiscard]] const std::filesystem::path& GetOutputFilePath() const;
 
   private:
     std::filesystem::path _output_file;
-    AST::CompilationUnit& _current_unit;
+    std::shared_ptr<AST::CompilationUnit> _current_unit;
 };
 }  // namespace Codegen
 }  // namespace Hzcc

@@ -27,10 +27,14 @@ Status JVMGenerator::visit(Hzcc::AST::ConditionalExpr *p_expr) {
      *     ...Condition...
      *  LABEL_entry:
      *     ...TrueStatement...
-     *     goto LABEL_exit;
+     *     goto Label_EXIT_ALL
      *  Label_exit:
      *     ...FalseStatement...
+     *  Label_EXIT_ALL:
+     *     ...
      */
+
+    auto exit_label = GenerateLabel("exit_all");
 
     // Generate condition expression
     HZCC_CONTEXT_COMPARE(HZCC_JVM_Visit_Node(p_expr->GetContStmt()))
@@ -41,7 +45,7 @@ Status JVMGenerator::visit(Hzcc::AST::ConditionalExpr *p_expr) {
     IncLindeIndent();
 
     HZCC_NOT_LEAVE_RET_ON_STACK(HZCC_JVM_Visit_Node(p_expr->GetTrueExpr()));
-    AddToCache("goto " + GetScopeExitLabel());
+    AddToCache("goto " + exit_label);
 
     DecLindeIndent();
     AddToCache(GetScopeExitLabel() + ":");
@@ -49,6 +53,11 @@ Status JVMGenerator::visit(Hzcc::AST::ConditionalExpr *p_expr) {
 
     HZCC_NOT_LEAVE_RET_ON_STACK(HZCC_JVM_Visit_Node(p_expr->GetFalseExpr()));
 
+    DecLindeIndent();
+    AddToCache(exit_label + ":");
+    IncLindeIndent();
+
+    LeaveScope();
     return Status::OkStatus();
 }
 }  // namespace Hzcc::Codegen

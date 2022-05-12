@@ -1,22 +1,27 @@
+#include <bitset>
 #include <list>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <utility>
 
+#include "BaseType.h"
 #include "lexical/token_type.h"
+#include "syntax/utils/token_utils.h"
 #include "utils/logging.h"
-
 #ifndef MYCC_AST_TYPE_H
 #define MYCC_AST_TYPE_H
 namespace Hzcc::AST {
 class ASTNode;
+class BaseType;
 /**
  * @class Type
  * @brief Type of a variable or a function.
  */
 class Type : public std::enable_shared_from_this<Type> {
   public:
+    using TypePtr = std::shared_ptr<Type>;
+
     /**
      * @brief Deconstructor of Type.
      * @Note: When a Type is deconstructed, if this Type is last one created, id
@@ -52,33 +57,33 @@ class Type : public std::enable_shared_from_this<Type> {
 
     /**
      * @brief Check if the type is void
-     * @return
+     * @return True if the type is void, false otherwise.
      */
-    [[nodiscard]] bool IsVoid() const;
+    [[nodiscard]] bool IsVoid() const { return _base_type->IsVoid(); }
 
     /**
      * @brief Check if the type is character
-     * @return
+     * @return True if the type is character, false otherwise.
      */
-    [[nodiscard]] bool IsChar() const;
+    [[nodiscard]] bool IsChar() const { return _base_type->IsChar(); }
 
     /**
      * @brief Check if the type is Float
-     * @return
+     * @return True if the type is Float, false otherwise.
      */
-    [[nodiscard]] bool IsFloat() const;
+    [[nodiscard]] bool IsFloat() const { return _base_type->IsFloat(); }
 
     /**
      * @brief Check if the type is Double
-     * @return
+     * @return True if the type is Double, false otherwise.
      */
-    [[nodiscard]] bool IsDouble() const;
+    [[nodiscard]] bool IsDouble() const { return _base_type->IsDouble(); }
 
     /**
      * @brief Check if the type is Integer
-     * @return
+     * @return True if the type is Integer, false otherwise.
      */
-    [[nodiscard]] bool IsInteger() const;
+    [[nodiscard]] bool IsInteger() const { return _base_type->IsInteger(); }
 
     /**
      * @brief Check if the type is the same as another type.
@@ -106,46 +111,55 @@ class Type : public std::enable_shared_from_this<Type> {
      * copy of self.
      * @return std::string The declare name of the type.
      */
-    [[nodiscard]] std::shared_ptr<Type> GetConstType() const;
+    [[nodiscard]] std::shared_ptr<Type> GetConstType();
 
+    std::list<Lexical::TokenType> GetAttributes();
     /**
-     * @brief Return the same type of this type but without const attribute.
-     * @note For the type does not have const attribute, this function will
-     * return copy of self.
-     * @return std::string The declare name of the type.
+     * @brief Get the basic type from its name.
+     * @param name The name of the basic type.
+     * @param attrs The attributes of the basic type.
      */
-    [[nodiscard]] std::list<Lexical::TokenType> GetAttributes() const;
+    static std::shared_ptr<Type> GetTypeOf(
+        const std::string& name, const std::list<Lexical::TokenType>& attrs);
 
     /**
      * @brief Get the basic type from its name.
      * @param name The name of the basic type.
      * @param attrs The attributes of the basic type.
      */
-    static std::shared_ptr<Type> GetBasicType(
-        const std::string& name, const std::list<Lexical::TokenType>& attrs);
+    static std::shared_ptr<Type> GetTypeOf(
+        const std::shared_ptr<Type>& other_type,
+        const std::list<Lexical::TokenType>& attrs);
 
   protected:
-    friend class CompilationUnit;  // can only create/destroy Type through
-                                   // CompilationUnit.
+    using BaseTypePtr = std::shared_ptr<BaseType>;
+
+    /**
+     * @brief Get the basic type from its name.
+     * @param name The name of the basic type.
+     * @param attrs The attributes of the basic type.
+     */
+    static BaseTypePtr GetBaseType(const std::string& name);
+
     /**
      * @brief Constructor of Type.
-     * @param name The name of the type.
+     * @param base_type The base type of the type.
      * @param attrs The attributes of the type.
      */
-    Type(const std::string& name, const std::list<Lexical::TokenType>& attrs);
+    Type(BaseTypePtr base_type, const std::list<Lexical::TokenType>& attrs);
 
     [[nodiscard]] uint64_t GetTypeId() const { return _id; }
 
-    static std::string ToString(const std::list<std::shared_ptr<Type>>& types);
-
-    inline static std::unordered_map<std::string, std::shared_ptr<Type>> _types;
+    inline static std::unordered_map<std::string, TypePtr> _cached_types;
+    inline static std::unordered_map<std::string, BaseTypePtr> _cached_b_types;
 
   private:
-    bool _is_const;
     uint64_t _id;
-    std::string _name;
+    BaseTypePtr _base_type;
     inline static uint64_t _counter_ = 0;
+    std::bitset<kVariableAttrTableSize> _attrs;
 };
+
 }  // namespace Hzcc::AST
 
 #endif  // MYCC_AST_TYPE_H

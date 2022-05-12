@@ -54,7 +54,7 @@ UnaryExpr::UnaryExpr(const Lexical::Token& type, std::unique_ptr<ASTNode> expr)
 }
 std::shared_ptr<Type> UnaryExpr::GetType() const {
     if (_type == kUnaryType_LogicalNot)
-        return Type::GetBasicType("char", {Lexical::TokenType::kConst});
+        return Type::GetTypeOf("char", {Lexical::TokenType::kConst});
     else
         return _expr->GetType();
 }

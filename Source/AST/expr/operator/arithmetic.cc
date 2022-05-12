@@ -11,13 +11,15 @@
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
 namespace Hzcc::AST {
-constexpr static std::array<const char*, ArithmeticType::kArithmeticType_ENUM_SIZE>
+constexpr static std::array<const char*,
+                            ArithmeticType::kArithmeticType_ENUM_SIZE>
     kArithmeticStr = {"add", "sub", "mul", "div", "mod"};
 
 const char* ArithmeticExpr::NodeName() const { return "ArithmeticExpr"; }
 
 std::optional<DeduceValue> ArithmeticExpr::GetDeducedValue() const {
-    if (!GetType()->IsConst()) {
+    if (!(GetLHS()->GetDeducedValue().has_value() &&
+          GetRHS()->GetDeducedValue().has_value())) {
         return std::nullopt;
     }
 
@@ -80,8 +82,8 @@ std::string ArithmeticExpr::PrintAdditionalInfo(
     // print LHS and RHS info
     std::string new_ident(ident);
     std::replace(new_ident.begin(), new_ident.end(), '`', ' ');
-    ss << std::endl << GetLHS()->Dump(new_ident + '|');
-    ss << std::endl << GetRHS()->Dump(new_ident + '`');
+    ss << std::endl << GetLHS()->Dump(new_ident + " |");
+    ss << std::endl << GetRHS()->Dump(new_ident + " `");
 
     return ss.str();
 };
