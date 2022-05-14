@@ -16,12 +16,12 @@ Status JVMGenerator::visit(Hzcc::AST::RelationalExpr *p_expr) {
      *  ##################################################################### */
 
     // evaluate left expression
-    HZCC_LEAVE_RET_ON_STACK(                                    // NOLINT
+    HZCC_LEAVE_RET_ON_STACK(                                       // NOLINT
         HZCC_JVM_GENERATE_LOAD_INSTR(                              // NOLINT
             HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetLHS())));  // NOLINT
 
     // evaluate right expression
-    HZCC_LEAVE_RET_ON_STACK(                                    // NOLINT
+    HZCC_LEAVE_RET_ON_STACK(                                       // NOLINT
         HZCC_JVM_GENERATE_LOAD_INSTR(                              // NOLINT
             HZCC_JVM_Use_Deduced_IF_POSSIBLE(p_expr->GetRHS())));  // NOLINT
 

@@ -14,7 +14,8 @@ namespace Pass {
 class FunctionPass : public PassBase {
   public:
     bool IsFunctionPass() override { return true; }
-    virtual std::pair<bool, bool> RunOnFunction(std::unique_ptr<AST::FunctionDeclNode>& F) = 0;
+    virtual std::pair<bool, bool> RunOnFunction(
+        std::unique_ptr<AST::FunctionDeclNode>& F) = 0;
 };
 }  // namespace Pass
 }  // namespace Hzcc

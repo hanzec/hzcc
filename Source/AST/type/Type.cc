@@ -8,9 +8,9 @@
 
 #include "ArrayType.h"
 #include "BaseType.h"
+#include "lexical/utils/symbol_utils.h"
 #include "syntax/utils/token_utils.h"
 #include "utils/logging.h"
-#include "lexical/utils/symbol_utils.h"
 
 namespace Hzcc::AST {
 

@@ -30,7 +30,7 @@ class EmptyStatementRemoval : public FunctionPass {
         auto& body = F->Body();
         auto& stmts = body->GetBodyStatements();
         auto iter = stmts.begin();
-        while(iter != body->GetBodyStatements().end()) {
+        while (iter != body->GetBodyStatements().end()) {
             if ((*iter)->IsEmptyStmt()) {
                 modified = true;
                 stmts.erase(iter++);

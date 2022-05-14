@@ -29,7 +29,6 @@ std::unique_ptr<AST::ASTNode> WhileStatement::parse_impl(
     auto while_loc = tokens.peek().Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kWhile, tokens);
 
-
     // parse condition
     auto condition = ParseCondition(tokens, context);
     if (condition == nullptr) return nullptr;

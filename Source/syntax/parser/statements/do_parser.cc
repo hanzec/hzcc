@@ -18,8 +18,7 @@ DoStatement::DoStatement() noexcept
     : ParserBase(TypeNameUtil::hash<AST::DoStatement>(),
                  TypeNameUtil::name_pretty<AST::DoStatement>()) {}
 
-std::unique_ptr<AST::ASTNode> DoStatement::parse_impl(
-    TokenList& tokens,
+std::unique_ptr<AST::ASTNode> DoStatement::parse_impl(TokenList& tokens,
                                                       SyntaxContext& context) {
     EnterLoop();  // enter loop
 

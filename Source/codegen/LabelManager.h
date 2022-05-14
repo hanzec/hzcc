@@ -72,7 +72,6 @@ class LabelManager {
      */
     const std::string& GenerateLabel(const std::string& name = "");
 
-
     void ResetLables();
 
     void SetLineNumberTag(const std::string& tag, int line_number);

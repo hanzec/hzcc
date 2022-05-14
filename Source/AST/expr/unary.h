@@ -32,6 +32,7 @@ class UnaryExpr : public ASTNode {
     [[nodiscard]] std::unique_ptr<ASTNode>& GetExpr();
 
     [[nodiscard]] UnaryType GetUnaryType() const;
+
   protected:
     [[nodiscard]] const char* NodeName() const override;
 

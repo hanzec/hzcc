@@ -25,8 +25,8 @@ class FunctionDeclNode : public DeclNode {
      * @param return_type the return type of the function
      * @param arguments the arguments of the function
      */
-    FunctionDeclNode(const Lexical::Token& function_name,    // NOLINT
-                     std::shared_ptr<Type> return_type);  // NOLINT
+    FunctionDeclNode(const Lexical::Token& function_name,  // NOLINT
+                     std::shared_ptr<Type> return_type);   // NOLINT
 
     ~FunctionDeclNode() override = default;
 

@@ -14,7 +14,8 @@ class CompilationUnit;
 namespace Codegen {
 class Generator {
   public:
-    Generator(const std::string& output, std::shared_ptr<AST::CompilationUnit> unit);
+    Generator(const std::string& output,
+              std::shared_ptr<AST::CompilationUnit> unit);
     Generator();
     /**
      * @brief Generate the code for the given compilation unit.
@@ -25,7 +26,6 @@ class Generator {
      */
     virtual Status Generate() = 0;  // NOLINT
   protected:
-
     std::shared_ptr<AST::CompilationUnit> GetCompilationUnit();
 
     [[nodiscard]] const std::filesystem::path& GetOutputFilePath() const;

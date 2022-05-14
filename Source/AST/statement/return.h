@@ -28,7 +28,6 @@ class ReturnNode : public ASTNode {
     [[nodiscard]] const char* NodeName() const override;
 
   protected:
-
     [[nodiscard]] std::string PrintAdditionalInfo(
         const std::string& ident) const override;
 

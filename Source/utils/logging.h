@@ -1,6 +1,8 @@
-#include "lexical/utils/symbol_utils.h"
 #include <glog/logging.h>
+
 #include <iomanip>
+
+#include "lexical/utils/symbol_utils.h"
 #ifndef MYCC_UTILS_LOGGING_H_
 #define MYCC_UTILS_LOGGING_H_
 namespace Hzcc {

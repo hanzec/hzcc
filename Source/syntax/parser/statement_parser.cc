@@ -50,7 +50,7 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(TokenList& tokens,
                 std::make_unique<AST::EmptyStatement>(tokens.peek().Location());
             break;
         case Lexical::TokenType::kStruct:
-            if(tokens.peek3().Type() == Lexical::TokenType::kLBrace) {
+            if (tokens.peek3().Type() == Lexical::TokenType::kLBrace) {
                 node = ParserFactory::ParseAST<AST::StructDeclareNode>(tokens,
                                                                        context);
             } else {

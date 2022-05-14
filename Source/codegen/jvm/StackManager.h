@@ -29,10 +29,10 @@ class StackManager {
     void AddGlobalVar(const std::string& name, const std::string& type);
 
     void AddLocalVar(uint32_t id, const std::string& name,
-                          const std::string& type);
+                     const std::string& type);
 
     void AddLocalTmpVar(uint32_t id, const std::string& name,
-                          const std::string& type);
+                        const std::string& type);
 
     void ResetLocalVars();
 

@@ -22,8 +22,7 @@ std::string VarDecl::PrintAdditionalInfo(const std::string& ident) const {
     // base information
     ss << GetName() << " " << _type->GetName();
 
-    if (HasInitExpr())
-        ss << std::endl << _init_expr->Dump(ident + " `");
+    if (HasInitExpr()) ss << std::endl << _init_expr->Dump(ident + " `");
 
     return ss.str();
 }

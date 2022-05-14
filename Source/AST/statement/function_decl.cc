@@ -47,9 +47,9 @@ std::string FunctionDeclNode::PrintAdditionalInfo(
         result << "\n";
         for (const auto& arg : _function_param) {
             result << arg->Dump(ident + (arg == _function_param.back() &&
-                                                     _function_body == nullptr
-                                                 ? " `"
-                                                 : " |")) +
+                                                 _function_body == nullptr
+                                             ? " `"
+                                             : " |")) +
                           (arg == _function_param.back() ? "" : "\n");
         }
     }

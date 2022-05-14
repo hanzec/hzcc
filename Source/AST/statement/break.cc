@@ -5,9 +5,7 @@
 
 namespace Hzcc::AST {
 
-const char* AST::BreakStatement::NodeName() const {
-    return "BreakStatement";
-}
+const char* AST::BreakStatement::NodeName() const { return "BreakStatement"; }
 Status BreakStatement::visit(ASTVisitor& visitor) {
     return visitor.visit(this);
 }

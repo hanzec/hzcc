@@ -1,4 +1,5 @@
 #include "CompilationUnit.h"
+
 #include "AST/DeduceValue.h"
 #include "AST/statement/compound.h"
 #include "AST/type/ArrayType.h"
@@ -39,7 +40,6 @@ void CompilationUnit::addDecl(std::unique_ptr<DeclNode> node) {
         DLOG(FATAL) << "Unsupported ASTNode type, only support decl node";
     }
 }
-
 
 std::string CompilationUnit::Dump() const {
     std::stringstream ret;

@@ -27,7 +27,6 @@ class IfStatement : public ASTNode {
 
     [[nodiscard]] std::unique_ptr<ASTNode>& ElseStmt();
 
-
     /**
      * @brief Get the list of else-if statement. The return format is a vector
      * of pair, where the first element is the condition, and the second element

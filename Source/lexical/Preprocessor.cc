@@ -11,9 +11,9 @@
 //#include "utils/Status.h"
 //#include "utils/logging.h"
 //#include "utils/message_utils.h"
-//namespace Hzcc::Lexical {
+// namespace Hzcc::Lexical {
 //
-//Status PreprocessSourceInternal(
+// Status PreprocessSourceInternal(
 //    std::istream& input, std::ostream& output,
 //    std::list<std::string>& included_files,
 //    std::unordered_map<std::string, std::string>& table) {
@@ -192,7 +192,7 @@
 //    }
 //}
 //
-//Status PreprocessSource(const std::filesystem::path& input,
+// Status PreprocessSource(const std::filesystem::path& input,
 //                        std::ostream& output) {
 //    DLOG_ASSERT(std::filesystem::exists(input))
 //        << "PreprocessSource: input file " << input << " not found";

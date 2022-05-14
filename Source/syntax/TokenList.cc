@@ -43,7 +43,7 @@ const Lexical::Token& TokenList::peek3() const {
 std::_List_iterator<Hzcc::Lexical::Token> TokenList::insert_front(
     std::_List_iterator<Hzcc::Lexical::Token> begin,
     std::_List_iterator<Hzcc::Lexical::Token> end) {
-    DVLOG(SYNTAX_LOG_LEVEL) << "insert_front: " ;
+    DVLOG(SYNTAX_LOG_LEVEL) << "insert_front: ";
     return list::insert(list::begin(), begin, end);
 }
 std::list<Lexical::Token> TokenList::LoadCachedAttributes() {

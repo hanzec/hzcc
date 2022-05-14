@@ -15,8 +15,7 @@ class DoStatement : public ASTNode {
             << " condition is nullptr for do statement (id: " << GetNodeId()
             << ")";
         DLOG_ASSERT(_body != nullptr)
-            << " body is nullptr for do statement (id: " << GetNodeId()
-            << ")";
+            << " body is nullptr for do statement (id: " << GetNodeId() << ")";
     }
 
     Status visit(ASTVisitor& visitor) override;
@@ -28,7 +27,6 @@ class DoStatement : public ASTNode {
     [[nodiscard]] std::unique_ptr<ASTNode>& CondStmt();
 
     [[nodiscard]] std::unique_ptr<ASTNode>& BodyStmt();
-
 
   protected:
     [[nodiscard]] std::string PrintAdditionalInfo(

@@ -7,7 +7,6 @@
 #include <memory>
 #include <string>
 
-
 #include "lexical/utils/symbol_utils.h"
 #include "syntax/SyntaxContext.h"
 #include "syntax/TokenList.h"

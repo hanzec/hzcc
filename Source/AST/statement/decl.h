@@ -26,7 +26,6 @@ class DeclNode : public ASTNode {
 
     [[nodiscard]] virtual bool IsFuncDecl() const { return false; }
 
-
   private:
     std::string _decl_name;
 };

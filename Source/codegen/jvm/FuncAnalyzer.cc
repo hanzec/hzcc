@@ -104,7 +104,7 @@ Status FuncAnalyzer::visit(Hzcc::AST::AssignExpr *p_expr) {
         }
 
         // we evaluate the RHS
-        HZCC_LEAVE_RET_ON_STACK(                       // NOLINT
+        HZCC_LEAVE_RET_ON_STACK(                          // NOLINT
             HZCC_JVM_GENERATE_LOAD_INSTR(                 // NOLINT
                 HZCC_JVM_Visit_Node(p_expr->GetRHS())));  // NOLINT
 
@@ -334,8 +334,7 @@ Status FuncAnalyzer::visit(Hzcc::AST::ParamVarDecl *p_expr) {
 Status FuncAnalyzer::visit(Hzcc::AST::ReturnNode *p_expr) {
     _has_return = true;
     HZCC_JVM_GENERATE_LOAD_INSTR(
-        HZCC_LEAVE_RET_ON_STACK(
-        HZCC_JVM_Visit_Node(p_expr->GetReturnVal())));
+        HZCC_LEAVE_RET_ON_STACK(HZCC_JVM_Visit_Node(p_expr->GetReturnVal())));
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::WhileStatement *p_expr) {

@@ -20,12 +20,11 @@ class CompilationUnit {
     int a;
     explicit CompilationUnit(std::string file_name);
 
-    CompilationUnit(CompilationUnit &&) = default;
+    CompilationUnit(CompilationUnit&&) = default;
 
     ~CompilationUnit();
 
     [[nodiscard]] std::string Dump() const;
-
 
     [[nodiscard]] std::string GetFileName() const;
 
@@ -39,14 +38,14 @@ class CompilationUnit {
      */
     void addDecl(std::unique_ptr<DeclNode> node);
 
-    std::list<std::pair<std::string, std::unique_ptr<AST::DeclNode>>>& GetDecls();
+    std::list<std::pair<std::string, std::unique_ptr<AST::DeclNode>>>&
+    GetDecls();
 
   protected:
     const std::string _file_name;
 
     std::list<std::pair<std::string, std::unique_ptr<AST::DeclNode>>>
         _global_decl;
-
 };
 
 }  // namespace Hzcc::AST
