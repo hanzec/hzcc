@@ -1,7 +1,7 @@
 //
 // Created by chen_ on 2022/5/8.
 //
-#include "AST/expr/conditional.h"
+#include "AST/expr/ternary.h"
 #include "codegen/jvm/JVMGenerator.h"
 namespace Hzcc::Codegen {
 constexpr static const std::array<const char *, OpHint::kOpHint_ENUM_SIZE>
@@ -10,7 +10,7 @@ constexpr static const std::array<const char *, OpHint::kOpHint_ENUM_SIZE>
                       "ifeq ",      "ifle ",      "ifgt",       "iflt ",
                       "ifeq "};
 
-Status JVMGenerator::visit(Hzcc::AST::ConditionalExpr *p_expr) {
+Status JVMGenerator::visit(Hzcc::AST::TernaryExpr *p_expr) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */

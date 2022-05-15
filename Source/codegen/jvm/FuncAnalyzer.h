@@ -54,7 +54,7 @@ class FuncAnalyzer : public AST::ASTVisitor {
     Status visit(Hzcc::AST::RelationalExpr* p_expr) override;
     Status visit(Hzcc::AST::AccessExpr* p_expr) override;
     Status visit(Hzcc::AST::ArraySubscriptExpr* p_expr) override;
-    Status visit(Hzcc::AST::ConditionalExpr* p_expr) override;
+    Status visit(Hzcc::AST::TernaryExpr* p_expr) override;
     Status visit(Hzcc::AST::DeclRefExpr* p_expr) override;
     Status visit(Hzcc::AST::SizeofExpr* p_expr) override;
     Status visit(Hzcc::AST::UnaryExpr* p_expr) override;

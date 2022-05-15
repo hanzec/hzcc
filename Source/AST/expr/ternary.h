@@ -8,12 +8,12 @@
 #ifndef MYCC_SOURCE_AST_OPERATOR_CONDITIONAL_H_
 #define MYCC_SOURCE_AST_OPERATOR_CONDITIONAL_H_
 namespace Hzcc::AST {
-class ConditionalExpr : public ASTNode {
+class TernaryExpr : public ASTNode {
   public:
-    ConditionalExpr(std::unique_ptr<ASTNode> cond,
-                    std::unique_ptr<ASTNode> true_expr,
-                    std::unique_ptr<ASTNode> false_expr,
-                    std::pair<int, int> location)
+    TernaryExpr(std::unique_ptr<ASTNode> cond,
+                std::unique_ptr<ASTNode> true_expr,
+                std::unique_ptr<ASTNode> false_expr,
+                std::pair<int, int> location)
         : ASTNode(location),
           _cond(std::move(cond)),
           _true_expr(std::move(true_expr)),

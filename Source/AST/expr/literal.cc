@@ -91,7 +91,7 @@ std::shared_ptr<Type> LiteralExpr::GetType() const {
 
 bool LiteralExpr::IsAssignable() const { return false; }
 Status LiteralExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
-LiteralType LiteralExpr::LiteralType() const { return _type; }
+LiteralType LiteralExpr::GetLiteralType() const { return _type; }
 bool LiteralExpr::IsLiteral() const { return true; }
 const std::string& LiteralExpr::GetValue() const { return _value; }
 

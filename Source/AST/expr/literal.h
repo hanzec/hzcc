@@ -38,7 +38,7 @@ class LiteralExpr : public ASTNode {
 
     [[nodiscard]] bool IsLiteral() const override;
 
-    [[nodiscard]] LiteralType LiteralType() const;
+    [[nodiscard]] LiteralType GetLiteralType() const;
 
     [[nodiscard]] const std::string& GetValue() const;
 

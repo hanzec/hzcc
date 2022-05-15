@@ -13,7 +13,7 @@ Status JVMGenerator::visit(Hzcc::AST::LiteralExpr *p_expr) {
 
     // for string literal we push value use LDC then call java method to get
     // char array
-    if (p_expr->LiteralType() == AST::LiteralType::kLiteralType_String) {
+    if (p_expr->GetLiteralType() == AST::LiteralType::kLiteralType_String) {
         AddToCache("ldc '" + p_expr->GetValue() + "'");
         AddToCache("invokevirtual Method java/lang/String toCharArray ()[C");
     }

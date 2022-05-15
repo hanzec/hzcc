@@ -217,7 +217,7 @@ Status FuncAnalyzer::visit(Hzcc::AST::ArraySubscriptExpr *p_expr) {
 
     return Status::OkStatus();
 }
-Status FuncAnalyzer::visit(Hzcc::AST::ConditionalExpr *p_expr) {
+Status FuncAnalyzer::visit(Hzcc::AST::TernaryExpr *p_expr) {
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::DeclRefExpr *p_expr) {

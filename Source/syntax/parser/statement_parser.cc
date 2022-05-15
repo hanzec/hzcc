@@ -9,7 +9,6 @@
 #include "AST/expr/access.h"
 #include "AST/expr/array.h"
 #include "AST/expr/cast.h"
-#include "AST/expr/conditional.h"
 #include "AST/expr/literal.h"
 #include "AST/expr/operator/arithmetic.h"
 #include "AST/expr/operator/assign.h"
@@ -18,6 +17,7 @@
 #include "AST/expr/operator/logical.h"
 #include "AST/expr/operator/relational.h"
 #include "AST/expr/sizeof.h"
+#include "AST/expr/ternary.h"
 #include "AST/expr/unary.h"
 #include "AST/statement/break.h"
 #include "AST/statement/continue.h"
@@ -306,7 +306,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseConditionalExpr(
             Message::set_current_part("Parser");
         }
 
-        return std::make_unique<AST::ConditionalExpr>(
+        return std::make_unique<AST::TernaryExpr>(
             std::move(lhs), std::move(mhs), std::move(rhs), cond_loc);
     } else {
         return lhs;

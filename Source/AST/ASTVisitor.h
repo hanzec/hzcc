@@ -19,7 +19,7 @@ class LogicalExpr;
 class RelationalExpr;
 class AccessExpr;
 class ArraySubscriptExpr;
-class ConditionalExpr;
+class TernaryExpr;
 class DeclRefExpr;
 class LiteralExpr;
 class SizeofExpr;
@@ -97,7 +97,7 @@ class ASTVisitor {
                       << " not implemented!";
         return Status::OkStatus();
     };
-    virtual Status visit(Hzcc::AST::ConditionalExpr* p_expr) {
+    virtual Status visit(Hzcc::AST::TernaryExpr* p_expr) {
         DLOG(WARNING) << "AST Visitor for Node " << __FUNCTION__
                       << " Hzcc::AST::ConditionalExpr"
                       << " not implemented!";

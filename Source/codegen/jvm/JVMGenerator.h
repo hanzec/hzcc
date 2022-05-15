@@ -77,7 +77,7 @@ class JVMGenerator : public Generator,
     Status visit(Hzcc::AST::ArithmeticExpr* p_expr) override;
     Status visit(Hzcc::AST::WhileStatement* p_expr) override;
     Status visit(Hzcc::AST::BreakStatement* p_expr) override;
-    Status visit(Hzcc::AST::ConditionalExpr* p_expr) override;
+    Status visit(Hzcc::AST::TernaryExpr* p_expr) override;
     Status visit(Hzcc::AST::FunctionDeclNode* p_expr) override;
     Status visit(Hzcc::AST::ContinueStatement* p_expr) override;
     Status visit(Hzcc::AST::ArraySubscriptExpr* p_expr) override;

@@ -23,7 +23,23 @@
     <configurations />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="Changes" />
+    <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="Changes">
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/mycc.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mycc.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/ASTVisitor.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTVisitor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/conditional.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/conditional.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/literal.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/literal.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/literal.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/literal.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/FuncAnalyzer.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/FuncAnalyzer.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/FuncAnalyzer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/FuncAnalyzer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/conditional_visitor.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/literal_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/literal_visitor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -147,6 +163,11 @@
       </texify-makeindex>
       <method v="2" />
     </configuration>
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="AST_NODE_DeduceValue.char_literal_0" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="mycc_test" TEST_CLASS="AST_NODE_DeduceValue" TEST_METHOD="char_literal_0" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -166,11 +187,6 @@
       </method>
     </configuration>
     <configuration name="FileCheck" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="FileCheck" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="FileCheck">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
