@@ -1,0 +1,528 @@
+-bash: ./CheckR_5.sh./mycc: No such file or directory
+-bash: ./CheckR_5.sh./mycc: No such file or directory
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+expr_literal1.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;31m    Target code assembly failed:[0;39m
+        | expr_literal1.j:2:1: error: Expected '.class' or '.version'.
+        | 
+        | ^
+expr_literal2.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;31m    Target code assembly failed:[0;39m
+        | expr_literal2.j:2:1: error: Expected '.class' or '.version'.
+        | 
+        | ^
+expr_literal3.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;31m    Target code assembly failed:[0;39m
+        | expr_literal3.j:2:1: error: Expected '.class' or '.version'.
+        | 
+        | ^
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+expr_locals1.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;31m    Target code assembly failed:[0;39m
+        | expr_locals1.j:2:1: error: Expected '.class' or '.version'.
+        | 
+        | ^
+expr_locals2.c
+[1;32m    No compile errors[0;39m, running assembler
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+ 
+expr_locals1.c :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33miload[ _]0[0;39m
+		  ----------------------------------------------------
+        Test  2:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33miload[ _]1[0;39m
+		  ----------------------------------------------------
+        Test  3:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mfload[ _]2[0;39m
+		  ----------------------------------------------------
+        Test  4:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mfload[ _]0[0;39m
+		  ----------------------------------------------------
+        Test  5:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33miload[ _]1[0;39m
+		  ----------------------------------------------------
+        Test  6:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33miload[ _]0[0;39m
+		  ----------------------------------------------------
+        Test  7:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33miload 6[0;39m
+		  ----------------------------------------------------
+        Test  8:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mfload 7[0;39m
+		  ----------------------------------------------------
+expr_locals2.c :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33miload[ _]0[0;39m
+		  ----------------------------------------------------
+        Test  2:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33miload[ _]1[0;39m
+		  ----------------------------------------------------
+        Test  3:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mfload[ _]2[0;39m
+		  ----------------------------------------------------
+        Test  4:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mfload[ _]0[0;39m
+		  ----------------------------------------------------
+        Test  5:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33miload[ _]1[0;39m
+		  ----------------------------------------------------
+        Test  6:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33miload[ _]0[0;39m
+		  ----------------------------------------------------
+        Test  7:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33miload 6[0;39m
+		  ----------------------------------------------------
+        Test  8:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mfload 7[0;39m
+		  ----------------------------------------------------
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+ 
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+ 
+expr_literal1.c:  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 65|sipush 65|ldc 65[0;39m
+		  ----------------------------------------------------
+        Test  2:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33miconst_4|bipush 4|sipush 4|ldc 4[0;39m
+		  ----------------------------------------------------
+        Test  3:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mldc [+]?3.14159[0-9]*[0;39m
+		  ----------------------------------------------------
+expr_literal2.c:  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 66|sipush 66|ldc 66[0;39m
+		  ----------------------------------------------------
+        Test  2:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33msipush 1234|ldc 1234[0;39m
+		  ----------------------------------------------------
+        Test  3:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mldc [+]?5.50*[0;39m
+		  ----------------------------------------------------
+expr_literal3.c:  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 67|sipush 67|ldc 67[0;39m
+		  ----------------------------------------------------
+        Test  2:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33msipush 345|ldc 345[0;39m
+		  ----------------------------------------------------
+        Test  3:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mldc [+]?3.140*[0;39m
+		  ----------------------------------------------------
+Running tests using compiler:
+  | 
+  | 440/540 My wimpy C compiler, version 3.0
+  |    Written by Andrew Miner
+  |    Summer 2021
+  | 
+  | Run with no arguments to see usage and switches
+  | 
+ 
+expr_literal1.c:  [1;32mNo compile errors[0;39m
+        Test  1:  [1;32m#1[0;39m  [1;32mPASSED[0;39m
+        Test  2:  [1;32m#1[0;39m  [1;32mPASSED[0;39m
+        Test  3:  Running tests using compiler:
+  | 
+  | 440/540 My wimpy C compiler, version 3.0
+  |    Written by Andrew Miner
+  |    Summer 2021
+  | 
+  | Run with no arguments to see usage and switches
+  | 
+ 
+A_init1.c      :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;32m#1[0;39m  [1;32mPASSED[0;39m
+        Test  2:  [1;32m#1[0;39m  [1;32mPASSED[0;39m
+        Test  3:  [1;32m#1[0;39m  [1;32mPASSED[0;39m
+A_init2.c      :  [1;32mNo compile errors[0;39m
+        Test  1:  Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+ 
+A_init1.c      :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 10|sipush 10|ldc 10[0;39m
+		  | [1;33mnewarray char[0;39m
+		  | [1;33mastore[ _]0[0;39m
+		  ----------------------------------------------------
+        Test  2:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 15|sipush 15|ldc 15[0;39m
+		  | [1;33mnewarray int[0;39m
+		  | [1;33mastore[ _]0[0;39m
+		  ----------------------------------------------------
+        Test  3:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 22|sipush 22|ldc 22[0;39m
+		  | [1;33mnewarray float[0;39m
+		  | [1;33mastore[ _]0[0;39m
+		  ----------------------------------------------------
+A_init2.c      :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 10|sipush 10|ldc 10[0;39m
+		  | [1;33mnewarray char[0;39m
+		  | [1;33mastore[ _]1[0;39m
+		  ----------------------------------------------------
+        Test  2:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 15|sipush 15|ldc 15[0;39m
+		  | [1;33mnewarray int[0;39m
+		  | [1;33mastore[ _]2[0;39m
+		  ----------------------------------------------------
+        Test  3:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 22|sipush 22|ldc 22[0;39m
+		  | [1;33mnewarray float[0;39m
+		  | [1;33mastore[ _]3[0;39m
+		  ----------------------------------------------------
+A_init3.c      :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 10|sipush 10|ldc 10[0;39m
+		  | [1;33mnewarray char[0;39m
+		  | [1;33mastore[ _][12][0;39m
+		  ----------------------------------------------------
+        Test  2:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 15|sipush 15|ldc 15[0;39m
+		  | [1;33mnewarray int[0;39m
+		  | [1;33mastore[ _][123][0;39m
+		  ----------------------------------------------------
+        Test  3:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 21|sipush 21|ldc 21[0;39m
+		  | [1;33mnewarray char[0;39m
+		  | [1;33mastore[ _]3|astore [45][0;39m
+		  ----------------------------------------------------
+        Test  4:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mldc 22|sipush 22|bipush 22[0;39m
+		  | [1;33mnewarray int[0;39m
+		  | [1;33mastore [45]|astore[ _]3[0;39m
+		  ----------------------------------------------------
+        Test  5:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mbipush 23|sipush 23|ldc 23[0;39m
+		  | [1;33mnewarray float[0;39m
+		  | [1;33mastore[ _]3|astore [45][0;39m
+		  ----------------------------------------------------
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+ 
+noreturn1.c    :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mreturn[0;39m
+		  ----------------------------------------------------
+noreturn2.c    :  [1;33mFirst error message lines different[0;39m
+		  Expected error stream
+		  --------------------------------------------------------
+		  |  Code generation error in file noreturn2.c line 7
+		  |  	Missing return in non-void function thing
+		  --------------------------------------------------------
+		  Student's error stream
+		  --------------------------------------------------------
+		  |  E20220516 16:06:02.145942 736719 message_utils.cc:112] File: "noreturn2.c" is not readable
+		  |  Code Generator error in file noreturn2.c line 4 near text  
+		  |  	Missing return in non-void function thing
+		  --------------------------------------------------------
+noreturn3.c    :  [1;33mFirst error message lines different[0;39m
+		  Expected error stream
+		  --------------------------------------------------------
+		  |  Code generation error in file noreturn3.c line 7
+		  |  	Missing return in non-void function thing
+		  --------------------------------------------------------
+		  Student's error stream
+		  --------------------------------------------------------
+		  |  E20220516 16:06:03.261592 736733 message_utils.cc:112] File: "noreturn3.c" is not readable
+		  |  Code Generator error in file noreturn3.c line 4 near text  
+		  |  	Missing return in non-void function thing
+		  --------------------------------------------------------
