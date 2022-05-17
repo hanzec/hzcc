@@ -1,0 +1,981 @@
+E20220516 19:57:11.390920 752390 main.cc:82] No mode selected!
+
+Error running compiler executable: ./mycc -o
+But this might be an error in mode 0.
+Run script with no arguments to see usage instructions.
+
+Continuing in aa seconds...15 seconds...14 seconds...13 seconds...12 seconds...11 seconds...10 seconds...09 seconds...08 seconds...07 seconds...06 seconds...05 seconds...04 seconds...03 seconds...02 seconds...01 seconds....                
+
+expr_fcall1.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | E20220516 19:57:26.544363 752411 main.cc:82] No mode selected!
+         ---------------------------------------------------------
+expr_fcall2.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | E20220516 19:57:27.714854 752435 main.cc:82] No mode selected!
+         ---------------------------------------------------------
+expr_fcall3.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | E20220516 19:57:28.874887 752444 main.cc:82] No mode selected!
+         ---------------------------------------------------------
+expr_fcall4.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | E20220516 19:57:30.014168 752453 main.cc:82] No mode selected!
+         ---------------------------------------------------------
+expr_fcall5.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | E20220516 19:57:31.161819 752462 main.cc:82] No mode selected!
+         ---------------------------------------------------------
+./CheckR_6.sh: line 77: -o: command not found
+
+Error running compiler executable: -o
+But this might be an error in mode 0.
+Run script with no arguments to see usage instructions.
+
+Continuing in aa seconds...15 seconds...14 seconds...13 seconds...12 seconds...11 seconds...10 seconds...09 seconds...08 seconds...07 seconds...06 seconds...05 seconds...04 seconds...03 seconds...02 seconds...01 seconds....                
+
+expr_fcall1.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | nice: invalid option -- 'o'
+         | Try 'nice --help' for more information.
+         ---------------------------------------------------------
+expr_fcall2.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | nice: invalid option -- 'o'
+         | Try 'nice --help' for more information.
+         ---------------------------------------------------------
+expr_fcall3.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | nice: invalid option -- 'o'
+         | Try 'nice --help' for more information.
+         ---------------------------------------------------------
+expr_fcall4.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | nice: invalid option -- 'o'
+         | Try 'nice --help' for more information.
+         ---------------------------------------------------------
+expr_fcall5.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | nice: invalid option -- 'o'
+         | Try 'nice --help' for more information.
+         ---------------------------------------------------------
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+expr_fcall1.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+expr_fcall2.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+expr_fcall3.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+[1;31m    No test outputs; check with another script[0;39m
+expr_fcall4.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Parser error in file expr_fcall4.c line 4 near text putchar
+         | 	Function putchar not found
+         ---------------------------------------------------------
+expr_fcall5.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+expr_io1.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Parser error in file expr_io1.c line 3 near text putchar
+         | 	Function putchar not found
+         ---------------------------------------------------------
+expr_io2.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Parser error in file expr_io2.c line 3 near text getchar
+         | 	Function getchar not found
+         ---------------------------------------------------------
+expr_io3.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Type checking error in file expr_io3.c line 7 near text putchar
+         | 	Function putchar not found
+         ---------------------------------------------------------
+expr_io4.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Parser error in file expr_io4.c line 4 near text putchar
+         | 	Function putchar not found
+         ---------------------------------------------------------
+expr_io5.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Parser error in file expr_io5.c line 4 near text putchar
+         | 	Function putchar not found
+         ---------------------------------------------------------
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+expr_var1.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+expr_var2.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Parser error in file expr_var2.c line 4 near text putchar
+         | 	Function putchar not found
+         ---------------------------------------------------------
+expr_var3.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Type checking error in file expr_var3.c line 6 near text putchar
+         | 	Function putchar not found
+         ---------------------------------------------------------
+expr_var4.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Type checking error in file expr_var4.c line 8 near text putchar
+         | 	Function putchar not found
+         ---------------------------------------------------------
+expr_var5.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Type checking error in file expr_var5.c line 10 near text putchar
+         | 	Function putchar not found
+         ---------------------------------------------------------
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+ 
+expr_var1.c    :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  | .method public static main : ()I
+		  |   .code stack 21 locals 1
+		  |     [1;33mL_LINE_0:[0;39m
+		  |     [1;33mL_LINE_1:[0;39m
+		  |     [1;33mbipush 49[0;39m
+		  |     [1;33mistore 0[0;39m
+		  |     [1;33mL_LINE_2:[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33minvokestatic Method libc putchar (I)I[0;39m
+		  |     [1;33mpop[0;39m
+		  |     [1;33mL_LINE_3:[0;39m
+		  |     [1;33mbipush 10[0;39m
+		  |     [1;33minvokestatic Method libc putchar (I)I[0;39m
+		  |     [1;33mpop[0;39m
+		  |     [1;33mL_LINE_4:[0;39m
+		  |     [1;33miconst_0[0;39m
+		  |     [1;33mireturn[0;39m
+		  |     .linenumbertable
+		  |       [1;33mL_LINE_0 5[0;39m
+		  |       [1;33mL_LINE_1 6[0;39m
+		  |       [1;33mL_LINE_2 7[0;39m
+		  |       [1;33mL_LINE_3 8[0;39m
+		  |       [1;33mL_LINE_4 9[0;39m
+		  |     .end linenumbertable
+		  |   .end code
+		  | .end method
+		  | .method public static main : ([Ljava/lang/String
+		  |   .code stack 2 locals 2
+		  |     [1;33minvokestatic Method expr_var1 main ()I[0;39m
+		  |     [1;33mreturn[0;39m
+		  |   .end code
+		  | .end method
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33m49[0;39m
+		  | [1;33m?dup[0;39m
+		  | [1;33mistore_0[0;39m
+		  ----------------------------------------------------
+        Test  2:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  | .method public static main : ()I
+		  |   .code stack 21 locals 1
+		  |     [1;33mL_LINE_0:[0;39m
+		  |     [1;33mL_LINE_1:[0;39m
+		  |     [1;33mbipush 49[0;39m
+		  |     [1;33mistore 0[0;39m
+		  |     [1;33mL_LINE_2:[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33minvokestatic Method libc putchar (I)I[0;39m
+		  |     [1;33mpop[0;39m
+		  |     [1;33mL_LINE_3:[0;39m
+		  |     [1;33mbipush 10[0;39m
+		  |     [1;33minvokestatic Method libc putchar (I)I[0;39m
+		  |     [1;33mpop[0;39m
+		  |     [1;33mL_LINE_4:[0;39m
+		  |     [1;33miconst_0[0;39m
+		  |     [1;33mireturn[0;39m
+		  |     .linenumbertable
+		  |       [1;33mL_LINE_0 5[0;39m
+		  |       [1;33mL_LINE_1 6[0;39m
+		  |       [1;33mL_LINE_2 7[0;39m
+		  |       [1;33mL_LINE_3 8[0;39m
+		  |       [1;33mL_LINE_4 9[0;39m
+		  |     .end linenumbertable
+		  |   .end code
+		  | .end method
+		  | .method public static main : ([Ljava/lang/String
+		  |   .code stack 2 locals 2
+		  |     [1;33minvokestatic Method expr_var1 main ()I[0;39m
+		  |     [1;33mreturn[0;39m
+		  |   .end code
+		  | .end method
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33miload_0[0;39m
+		  | [1;33mputchar[0;39m
+		  ----------------------------------------------------
+expr_var2.c    :  [1;31mCompilation generated errors (first 10 lines):[0;39m
+		  --------------------------------------------------------
+		  |  Parser error in file expr_var2.c line 4 near text putchar
+		  |  	Function putchar not found
+		  --------------------------------------------------------
+expr_var3.c    :  [1;31mCompilation generated errors (first 10 lines):[0;39m
+		  --------------------------------------------------------
+		  |  Type checking error in file expr_var3.c line 6 near text putchar
+		  |  	Function putchar not found
+		  --------------------------------------------------------
+expr_var4.c    :  [1;31mCompilation generated errors (first 10 lines):[0;39m
+		  --------------------------------------------------------
+		  |  Type checking error in file expr_var4.c line 8 near text putchar
+		  |  	Function putchar not found
+		  --------------------------------------------------------
+expr_var5.c    :  [1;31mCompilation generated errors (first 10 lines):[0;39m
+		  --------------------------------------------------------
+		  |  Type checking error in file expr_var5.c line 10 near text putchar
+		  |  	Function putchar not found
+		  --------------------------------------------------------
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+tc_do1.c
+[1;31m    Missing error message[0;39m
+tc_do2.c
+[1;31m    Missing error message[0;39m
+tc_for1.c
+[1;31m    Missing error message[0;39m
+tc_for2.c
+[1;31m    Missing error message[0;39m
+tc_if1.c
+[1;31m    Missing error message[0;39m
+tc_if2.c
+[1;36m    First error messages match lines[0;39m
+		Expected error stream
+		--------------------------------------------------------
+		|  Type checking error in file tc_if2.c line 9
+		|  	if condition has non-numeric type void
+		--------------------------------------------------------
+		Student's error stream
+		--------------------------------------------------------
+		|  Type checking error in file tc_if2.c line 9 near text (
+		|  	if condition has non-numeric type void
+		--------------------------------------------------------
+tc_wh1.c
+[1;31m    Missing error message[0;39m
+tc_wh2.c
+[1;31m    Missing error message[0;39m
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+ifthen1.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthen2.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthen3.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthen4.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthen5.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthenelse1.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthenelse2.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthenelse3.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthenelse4.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthenelse5.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Type checking error in file ifthenelse5.c line 9 near text y
+         | 	Expected '(', but got 'Identity'
+         ---------------------------------------------------------
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+ifthenelse1.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthenelse2.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthenelse3.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthenelse4.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ifthenelse5.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Type checking error in file ifthenelse5.c line 9 near text y
+         | 	Expected '(', but got 'Identity'
+         ---------------------------------------------------------
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+while1.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+while2.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+while3.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+while4.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+while5.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;31m    Target code assembly failed:[0;39m
+        | while5.j:103:13: error: Expected LABEL_DEF, '.annotationdefault', '.attribute', '.bootstrapmethods', '.catch', '.code', '.constantvalue', '.deprecated', '.enclosing', '.end', '.exceptions', '.innerclasses', '.linenumbertable', '.localvariabletable', '.localvariabletypetable', '.methodparameters', '.module', '.modulemainclass', '.modulepackages', '.nesthost', '.nestmembers', '.noimplicitstackmap', '.record', '.runtime', '.signature', '.sourcedebugextension', '.sourcefile', '.stack', '.stackmaptable', '.synthetic', 'aaload', 'aastore', 'aconst_null', 'aload', 'aload_0', 'aload_1', 'aload_2', 'aload_3', 'anewarray', 'areturn', 'arraylength', 'astore', 'astore_0', 'astore_1', 'astore_2', 'astore_3', 'athrow', 'baload', 'bastore', 'bipush', 'caload', 'castore', 'checkcast', 'd2f', 'd2i', 'd2l', 'dadd', 'daload', 'dastore', 'dcmpg', 'dcmpl', 'dconst_0', 'dconst_1', 'ddiv', 'dload', 'dload_0', 'dload_1', 'dload_2', 'dload_3', 'dmul', 'dneg', 'drem', 'dreturn', 'dstore', 'dstore_0', 'dstore_1', 'dstore_2', 'dstore_3', 'dsub', 'dup', 'dup2', 'dup2_x1', 'dup2_x2', 'dup_x1', 'dup_x2', 'f2d', 'f2i', 'f2l', 'fadd', 'faload', 'fastore', 'fcmpg', 'fcmpl', 'fconst_0', 'fconst_1', 'fconst_2', 'fdiv', 'fload', 'fload_0', 'fload_1', 'fload_2', 'fload_3', 'fmul', 'fneg', 'frem', 'freturn', 'fstore', 'fstore_0', 'fstore_1', 'fstore_2', 'fstore_3', 'fsub', 'getfield', 'getstatic', 'goto', 'goto_w', 'i2b', 'i2c', 'i2d', 'i2f', 'i2l', 'i2s', 'iadd', 'iaload', 'iand', 'iastore', 'iconst_0', 'iconst_1', 'iconst_2', 'iconst_3', 'iconst_4', 'iconst_5', 'iconst_m1', 'idiv', 'if_acmpeq', 'if_acmpne', 'if_icmpeq', 'if_icmpge', 'if_icmpgt', 'if_icmple', 'if_icmplt', 'if_icmpne', 'ifeq', 'ifge', 'ifgt', 'ifle', 'iflt', 'ifne', 'ifnonnull', 'ifnull', 'iinc', 'iload', 'iload_0', 'iload_1', 'iload_2', 'iload_3', 'imul', 'ineg', 'instanceof', 'invokedynamic', 'invokeinterface', 'invokespecial', 'invokestatic', 'invokevirtual', 'ior', 'irem', 'ireturn', 'ishl', 'ishr', 'istore', 'istore_0', 'istore_1', 'istore_2', 'istore_3', 'isub', 'iushr', 'ixor', 'jsr', 'jsr_w', 'l2d', 'l2f', 'l2i', 'ladd', 'laload', 'land', 'lastore', 'lcmp', 'lconst_0', 'lconst_1', 'ldc', 'ldc2_w', 'ldc_w', 'ldiv', 'lload', 'lload_0', 'lload_1', 'lload_2', 'lload_3', 'lmul', 'lneg', 'lookupswitch', 'lor', 'lrem', 'lreturn', 'lshl', 'lshr', 'lstore', 'lstore_0', 'lstore_1', 'lstore_2', 'lstore_3', 'lsub', 'lushr', 'lxor', 'monitorenter', 'monitorexit', 'multianewarray', 'new', 'newarray', 'nop', 'pop', 'pop2', 'putfield', 'putstatic', 'ret', 'return', 'saload', 'sastore', 'sipush', 'swap', 'tableswitch', or 'wide'.
+        |             vreturn
+        |             ^~~~~~~ 
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+dowhile1.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m on input dowhile1.input1
+    [1;32moutput matches[0;39m on input dowhile1.input2
+    [1;32moutput matches[0;39m on input dowhile1.input3
+dowhile2.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m on input dowhile2.input1
+    [1;32moutput matches[0;39m on input dowhile2.input2
+    [1;32moutput matches[0;39m on input dowhile2.input3
+dowhile3.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;31m    Target code assembly failed:[0;39m
+        | dowhile3.j:2:1: error: Expected '.class' or '.version'.
+        | 
+        | ^
+dowhile4.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;31m    Target code assembly failed:[0;39m
+        | dowhile4.j:2:1: error: Expected '.class' or '.version'.
+        | 
+        | ^
+dowhile5.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m on input dowhile5.input1
+    [1;32moutput matches[0;39m on input dowhile5.input2
+    [1;32moutput matches[0;39m on input dowhile5.input3
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+ 
+dowhile1.c     :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  | .method public static main : ()I
+		  |   .code stack 22 locals 1
+		  |     [1;33mL_LINE_0:[0;39m
+		  |     [1;33mL_LINE_1:[0;39m
+		  |     [1;33minvokestatic Method libc getchar ()I[0;39m
+		  |     [1;33mbipush 47[0;39m
+		  |     [1;33misub[0;39m
+		  |     [1;33mistore 0[0;39m
+		  |     [1;33mL_LINE_2:[0;39m
+		  |     [1;33mL9_2_do_entry:[0;39m
+		  |     [1;33mL_LINE_3:[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33miconst_1[0;39m
+		  |     [1;33misub[0;39m
+		  |     [1;33mistore 0[0;39m
+		  |     [1;33mL_LINE_4:[0;39m
+		  |     [1;33mbipush 35[0;39m
+		  |     [1;33minvokestatic Method libc putchar (I)I[0;39m
+		  |     [1;33mpop[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33mifne L9_2_do_entry[0;39m
+		  |     [1;33mL9_2_do_exit:[0;39m
+		  |     [1;33mL_LINE_5:[0;39m
+		  |     [1;33mbipush 10[0;39m
+		  |     [1;33minvokestatic Method libc putchar (I)I[0;39m
+		  |     [1;33mpop[0;39m
+		  |     [1;33mL_LINE_6:[0;39m
+		  |     [1;33miconst_0[0;39m
+		  |     [1;33mireturn[0;39m
+		  |     .linenumbertable
+		  |       [1;33mL_LINE_0 7[0;39m
+		  |       [1;33mL_LINE_1 8[0;39m
+		  |       [1;33mL_LINE_2 9[0;39m
+		  |       [1;33mL_LINE_3 10[0;39m
+		  |       [1;33mL_LINE_4 11[0;39m
+		  |       [1;33mL_LINE_5 13[0;39m
+		  |       [1;33mL_LINE_6 14[0;39m
+		  |     .end linenumbertable
+		  |   .end code
+		  | .end method
+		  | .method public static main : ([Ljava/lang/String
+		  |   .code stack 2 locals 2
+		  |     [1;33minvokestatic Method dowhile1 main ()I[0;39m
+		  |     [1;33mreturn[0;39m
+		  |   .end code
+		  | .end method
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mLA:[0;39m
+		  | [1;33miload_0[0;39m
+		  | [1;33miconst_1[0;39m
+		  | [1;33misub[0;39m
+		  | [1;33m?dup[0;39m
+		  | [1;33mistore_0[0;39m
+		  | [1;33m?iload_0[0;39m
+		  | [1;33m?pop[0;39m
+		  | [1;33m35[0;39m
+		  | [1;33mputchar[0;39m
+		  | [1;33m?pop[0;39m
+		  | [1;33miload_0[0;39m
+		  | [1;33mifne LA[0;39m
+		  ----------------------------------------------------
+dowhile2.c     :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  | .method public static main : ()I
+		  |   .code stack 21 locals 1
+		  |     [1;33mL_LINE_0:[0;39m
+		  |     [1;33mL_LINE_1:[0;39m
+		  |     [1;33minvokestatic Method libc getchar ()I[0;39m
+		  |     [1;33mistore 0[0;39m
+		  |     [1;33mL_LINE_2:[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33mbipush 32[0;39m
+		  |     [1;33mif_icmple L9_2_if_exit[0;39m
+		  |     [1;33mL9_2_if_entry:[0;39m
+		  |     [1;33mL_LINE_3:[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33mbipush 32[0;39m
+		  |     [1;33misub[0;39m
+		  |     [1;33mistore 0[0;39m
+		  |     [1;33mL_LINE_4:[0;39m
+		  |     [1;33mL11_4_do_entry:[0;39m
+		  |     [1;33mL_LINE_5:[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33miconst_1[0;39m
+		  |     [1;33misub[0;39m
+		  |     [1;33mdup[0;39m
+		  |     [1;33mistore 0[0;39m
+		  |     [1;33mbipush 32[0;39m
+		  |     [1;33miadd[0;39m
+		  |     [1;33minvokestatic Method libc putchar (I)I[0;39m
+		  |     [1;33mpop[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33mifne L11_4_do_entry[0;39m
+		  |     [1;33mL11_4_do_exit:[0;39m
+		  |     [1;33mL_LINE_6:[0;39m
+		  |     [1;33mgoto L9_2_if_stmt_end[0;39m
+		  |     [1;33mL9_2_if_exit:[0;39m
+		  |     [1;33mL9_2_if_stmt_end:[0;39m
+		  |     [1;33mL_LINE_7:[0;39m
+		  |     [1;33mbipush 10[0;39m
+		  |     [1;33minvokestatic Method libc putchar (I)I[0;39m
+		  |     [1;33mpop[0;39m
+		  |     [1;33mL_LINE_8:[0;39m
+		  |     [1;33miconst_0[0;39m
+		  |     [1;33mireturn[0;39m
+		  |     .linenumbertable
+		  |       [1;33mL_LINE_0 7[0;39m
+		  |       [1;33mL_LINE_1 8[0;39m
+		  |       [1;33mL_LINE_2 9[0;39m
+		  |       [1;33mL_LINE_3 10[0;39m
+		  |       [1;33mL_LINE_4 11[0;39m
+		  |       [1;33mL_LINE_5 12[0;39m
+		  |       [1;33mL_LINE_6 13[0;39m
+		  |       [1;33mL_LINE_7 15[0;39m
+		  |       [1;33mL_LINE_8 16[0;39m
+		  |     .end linenumbertable
+		  |   .end code
+		  | .end method
+		  | .method public static main : ([Ljava/lang/String
+		  |   .code stack 2 locals 2
+		  |     [1;33minvokestatic Method dowhile2 main ()I[0;39m
+		  |     [1;33mreturn[0;39m
+		  |   .end code
+		  | .end method
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mLA:[0;39m
+		  | [1;33miload_0[0;39m
+		  | [1;33miconst_1[0;39m
+		  | [1;33misub[0;39m
+		  | [1;33m?dup[0;39m
+		  | [1;33mistore_0[0;39m
+		  | [1;33m?iload_0[0;39m
+		  | [1;33m32[0;39m
+		  | [1;33miadd[0;39m
+		  | [1;33mputchar[0;39m
+		  | [1;33m?pop[0;39m
+		  | [1;33miload_0[0;39m
+		  | [1;33mifne LA[0;39m
+		  ----------------------------------------------------
+dowhile3.c     :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;33m#2[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mLA:[0;39m
+		  | [1;33miload_1[0;39m
+		  | [1;33m?dup[0;39m
+		  | [1;33mistore_0[0;39m
+		  | [1;33m?iload_0[0;39m
+		  | [1;33m?pop[0;39m
+		  | [1;33mgetchar[0;39m
+		  | [1;33m?dup[0;39m
+		  | [1;33mistore_1[0;39m
+		  | [1;33m?iload_1[0;39m
+		  | [1;33m32[0;39m
+		  | [1;33mif_icmpgt LA[0;39m
+		  ----------------------------------------------------
+dowhile4.c     :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mLA:[0;39m
+		  | [1;33m48[0;39m
+		  | [1;33miload_0[0;39m
+		  | [1;33m?dup[0;39m
+		  | [1;33mistore_1[0;39m
+		  | [1;33m?iload_1[0;39m
+		  | [1;33miadd[0;39m
+		  | [1;33mputchar[0;39m
+		  | [1;33mpop[0;39m
+		  | [1;33mLB:[0;39m
+		  | [1;33m35[0;39m
+		  | [1;33mputchar[0;39m
+		  | [1;33m?pop[0;39m
+		  | [1;33miload_1[0;39m
+		  | [1;33miconst_1[0;39m
+		  | [1;33misub[0;39m
+		  | [1;33m?dup[0;39m
+		  | [1;33mistore_1[0;39m
+		  | [1;33m?iload_1[0;39m
+		  | [1;33mifne LB[0;39m
+		  | [1;33m10[0;39m
+		  | [1;33mputchar[0;39m
+		  | [1;33m?pop[0;39m
+		  | [1;33miload_0[0;39m
+		  | [1;33miconst_1[0;39m
+		  | [1;33misub[0;39m
+		  | [1;33m?dup[0;39m
+		  | [1;33mistore_0[0;39m
+		  | [1;33m?iload_0[0;39m
+		  | [1;33mifne LA[0;39m
+		  ----------------------------------------------------
+dowhile5.c     :  [1;32mNo compile errors[0;39m
+        Test  1:  [1;33m#1[0;39m  [1;33m#2[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  | .method public static writeint : (I)V
+		  |   .code stack 21 locals 1
+		  |     [1;33mL_LINE_0:[0;39m
+		  |     [1;33mL7_2_do_entry:[0;39m
+		  |     [1;33mL_LINE_1:[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33mbipush 10[0;39m
+		  |     [1;33mirem[0;39m
+		  |     [1;33mbipush 48[0;39m
+		  |     [1;33miadd[0;39m
+		  |     [1;33minvokestatic Method libc putchar (I)I[0;39m
+		  |     [1;33mpop[0;39m
+		  |     [1;33mL_LINE_2:[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33mbipush 10[0;39m
+		  |     [1;33midiv[0;39m
+		  |     [1;33mistore 0[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33mifne L7_2_do_entry[0;39m
+		  |     [1;33mL7_2_do_exit:[0;39m
+		  |     [1;33mL_LINE_3:[0;39m
+		  |     [1;33mbipush 10[0;39m
+		  |     [1;33minvokestatic Method libc putchar (I)I[0;39m
+		  |     [1;33mpop[0;39m
+		  |     [1;33mL_LINE_4:[0;39m
+		  |     [1;33mreturn[0;39m
+		  |     .linenumbertable
+		  |       [1;33mL_LINE_0 7[0;39m
+		  |       [1;33mL_LINE_1 8[0;39m
+		  |       [1;33mL_LINE_2 9[0;39m
+		  |       [1;33mL_LINE_3 11[0;39m
+		  |       [1;33mL_LINE_4 12[0;39m
+		  |     .end linenumbertable
+		  |   .end code
+		  | .end method
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mLA:[0;39m
+		  | [1;33miload_0[0;39m
+		  | [1;33m10[0;39m
+		  | [1;33mirem[0;39m
+		  | [1;33m48[0;39m
+		  | [1;33miadd[0;39m
+		  | [1;33mputchar[0;39m
+		  | [1;33mpop[0;39m
+		  | [1;33miload_0[0;39m
+		  | [1;33m10[0;39m
+		  | [1;33midiv[0;39m
+		  | [1;33mistore_0[0;39m
+		  | [1;33miload_0[0;39m
+		  | [1;33mifne LA[0;39m
+		  ----------------------------------------------------
+        Test  2:  [1;33m#1[0;39m  [1;33m#2[0;39m  [1;31mFAILED[0;39m
+
+		  Student's method
+		  ----------------------------------------------------
+		  | .method public static readint : ()I
+		  |   .code stack 21 locals 3
+		  |     [1;33mL_LINE_0:[0;39m
+		  |     [1;33mL_LINE_1:[0;39m
+		  |     [1;33mL_LINE_2:[0;39m
+		  |     [1;33mL_LINE_3:[0;39m
+		  |     [1;33miconst_0[0;39m
+		  |     [1;33mistore 1[0;39m
+		  |     [1;33mL_LINE_4:[0;39m
+		  |     [1;33miconst_1[0;39m
+		  |     [1;33mistore 2[0;39m
+		  |     [1;33mL_LINE_5:[0;39m
+		  |     [1;33mL22_2_do_entry:[0;39m
+		  |     [1;33mL_LINE_6:[0;39m
+		  |     [1;33minvokestatic Method libc getchar ()I[0;39m
+		  |     [1;33mistore 0[0;39m
+		  |     [1;33mL_LINE_7:[0;39m
+		  |     [1;33mbipush 10[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33mif_icmpne L24_4_if_exit[0;39m
+		  |     [1;33mL24_4_if_entry:[0;39m
+		  |     [1;33mL_LINE_8:[0;39m
+		  |     [1;33miconst_0[0;39m
+		  |     [1;33mistore 0[0;39m
+		  |     [1;33mgoto L24_4_if_stmt_end[0;39m
+		  |     [1;33mL24_4_if_exit:[0;39m
+		  |     [1;33mL_LINE_9:[0;39m
+		  |     [1;33miload 1[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33mbipush 48[0;39m
+		  |     [1;33misub[0;39m
+		  |     [1;33miload 2[0;39m
+		  |     [1;33mimul[0;39m
+		  |     [1;33miadd[0;39m
+		  |     [1;33mistore 1[0;39m
+		  |     [1;33mL_LINE_10:[0;39m
+		  |     [1;33miload 2[0;39m
+		  |     [1;33mbipush 10[0;39m
+		  |     [1;33mimul[0;39m
+		  |     [1;33mistore 2[0;39m
+		  |     [1;33mL24_4_if_stmt_end:[0;39m
+		  |     [1;33miload 0[0;39m
+		  |     [1;33mifne L22_2_do_entry[0;39m
+		  |     [1;33mL22_2_do_exit:[0;39m
+		  |     [1;33mL_LINE_11:[0;39m
+		  |     [1;33miload 1[0;39m
+		  |     [1;33mireturn[0;39m
+		  |     .linenumbertable
+		  |       [1;33mL_LINE_0 17[0;39m
+		  |       [1;33mL_LINE_1 18[0;39m
+		  |       [1;33mL_LINE_2 19[0;39m
+		  |       [1;33mL_LINE_3 20[0;39m
+		  |       [1;33mL_LINE_4 21[0;39m
+		  |       [1;33mL_LINE_5 22[0;39m
+		  |       [1;33mL_LINE_6 23[0;39m
+		  |       [1;33mL_LINE_7 24[0;39m
+		  |       [1;33mL_LINE_8 25[0;39m
+		  |       [1;33mL_LINE_9 27[0;39m
+		  |       [1;33mL_LINE_10 28[0;39m
+		  |       [1;33mL_LINE_11 31[0;39m
+		  |     .end linenumbertable
+		  |   .end code
+		  | .end method
+		  ----------------------------------------------------
+
+		  One possible expected sequence
+		  ----------------------------------------------------
+		  | [1;33mLA:[0;39m
+		  | [1;33mgetchar[0;39m
+		  | [1;33mistore[0;39m
+		  | [1;33m10[0;39m
+		  | [1;33miload[0;39m
+		  | [1;33mif_icmpne LB[0;39m
+		  | [1;33m0[0;39m
+		  | [1;33mistore[0;39m
+		  | [1;33mgoto LC[0;39m
+		  | [1;33mLB:[0;39m
+		  ----------------------------------------------------
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+ 
+tc_do1.c       :  [1;31mMissing error message[0;39m
+tc_do2.c       :  [1;31mMissing error message[0;39m
+tc_for1.c      :  [1;31mMissing error message[0;39m
+tc_for2.c      :  Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+for0.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+for1.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+for2.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+for3.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+for4.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+for5.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+for6.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+for7.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+ternary1.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ternary2.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ternary3.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ternary4.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+ternary5.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+break1.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Parser error in file break1.c line 4 near text putchar
+         | 	Function putchar not found
+         ---------------------------------------------------------
+break2.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+break3.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+break4.c
+[1;31m    Unexpected compile error[0;39m
+         First 20 lines of error stream:
+         ---------------------------------------------------------
+         | Parser error in file break4.c line 4 near text putchar
+         | 	Function putchar not found
+         ---------------------------------------------------------
+break5.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;32moutput matches[0;39m
+Running tests using compiler:
+  | My bare-bones C compiler (for COM 440/540)
+  | 	Written by Hanze Chen (hanzech@iastate.edu)
+  | 	Version 0.1.0_5c55c46(pyrite-n3.cs.iastate.edu)
+  | 	2022-05-16 13:47:09
+  | 
+
+continue1.c
+[1;32m    No compile errors[0;39m, running assembler
+[1;32m    Target code assembles[0;39m, running tests
+    [1;31mTimeout exceeded
+        [0;39m[1;31moutput differs[0;39m
+         Expected output (first 20 lines):
+         ---------------------------------------------------------
+         | JIHGFEDCBA
+         ---------------------------------------------------------
+
+         Given output (first 20 lines):
+         ---------------------------------------------------------
+         | JIHGFEDCBA@?>=<;:9876543210/.-,+*)('&%$#"! 
+
+
+         | 	 
