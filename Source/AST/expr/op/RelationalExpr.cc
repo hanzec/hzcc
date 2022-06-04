@@ -49,7 +49,6 @@ RelationalExpr::RelationalExpr(const std::string_view& type,    // NOLINT
 
 const char* AST::RelationalExpr::NodeName() const { return "RelationalExpr"; }
 
-
 std::string RelationalExpr::PrintDetail(const std::string& ident) const {
     std::stringstream ret;
 

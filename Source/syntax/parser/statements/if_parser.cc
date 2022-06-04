@@ -49,8 +49,8 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
     }
 
     // generate ifNode
-    auto ifNode = std::make_unique<AST::IfStmt>(std::move(cond),
-                                                     std::move(body), if_loc);
+    auto ifNode =
+        std::make_unique<AST::IfStmt>(std::move(cond), std::move(body), if_loc);
 
     // parsing [else] and [else if] stmt
     while (tokens.peek().Type() == Lexical::TokenType::kElse) {
@@ -59,8 +59,7 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
         if (tokens.peek().Type() == Lexical::TokenType::kLBrace) {
             if (ifNode->HasElse()) {
                 MYCC_PrintTokenError_ReturnNull(
-                    prev_else,
-                    "If stmt cannot have multiple else statements")
+                    prev_else, "If stmt cannot have multiple else statements")
             } else {
                 // enter new scope
                 context.enterScope();

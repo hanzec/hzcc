@@ -40,9 +40,8 @@ const Lexical::Token& TokenList::peek2() const { return *(std::next(begin())); }
 const Lexical::Token& TokenList::peek3() const {
     return *(std::next(std::next(begin())));
 }
-void TokenList::insert_front(
-    std::_List_iterator<Hzcc::Lexical::Token> begin,
-    std::_List_iterator<Hzcc::Lexical::Token> end) {
+void TokenList::insert_front(std::_List_iterator<Hzcc::Lexical::Token> begin,
+                             std::_List_iterator<Hzcc::Lexical::Token> end) {
     DVLOG(SYNTAX_LOG_LEVEL) << "insert_front: ";
     list::insert(list::begin(), begin, end);
 }

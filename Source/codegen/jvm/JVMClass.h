@@ -3,6 +3,7 @@
 //
 #include <string>
 #include <utility>
+
 #include "Type.h"
 #include "utils/Status.h"
 #include "utils/logging.h"
@@ -11,7 +12,7 @@
 namespace Hzcc::Codegen::JVM {
 class JVMClass {
   public:
-    JVMClass(std::string class_name,std::string source_file_name);
+    JVMClass(std::string class_name, std::string source_file_name);
 
   protected:
     class CodeSection {
@@ -26,7 +27,6 @@ class JVMClass {
   private:
     const std::string _class_name;
     const std::string _source_file_name;
-
 };
 }  // namespace Hzcc::Codegen::JVM
 #endif  // HZCC_SOURCE_CODEGEN_JVM_JVM_CLASS_H

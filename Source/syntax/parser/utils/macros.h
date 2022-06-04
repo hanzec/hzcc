@@ -29,7 +29,7 @@
                 std::is_same_v<const Lexical::Token&, decltype(token)>,       \
             "Macro type mismatch, need Lexical::Token for 1st variable");     \
         if (Options::Global_enable_type_checking) {                           \
-            Message::set_current_part("RetType checking");                       \
+            Message::set_current_part("RetType checking");                    \
             if (not_void &&                                                   \
                 (lhs->GetType()->IsVoid() || rhs->GetType()->IsVoid())) {     \
                 MYCC_PrintTokenError_ReturnNull(                              \

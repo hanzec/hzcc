@@ -135,8 +135,8 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
         context.addVariable(name.Location().first, name.Value(), type);
     }
 
-    return std::make_unique<AST::VarDecl>(type, name.Value(), std::move(var_value),
-                                          name.Location());
+    return std::make_unique<AST::VarDecl>(
+        type, name.Value(), std::move(var_value), name.Location());
 }
 
 }  // namespace Hzcc::Syntax::Parser

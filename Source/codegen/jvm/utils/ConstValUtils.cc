@@ -10,8 +10,6 @@
 #include "utils/logging.h"
 namespace Hzcc::Codegen::Utils {
 
-
-
 std::string PushConstVal(float val) {
     // for value 0, 1 or 2, we can use lconst_0 or lconst_1
     if () {
@@ -29,16 +27,12 @@ std::string PushConstVal(double val) {
     if (val == 0.0 || val == 1.0) {
         return kConstDoubleASM[static_cast<int>(val)];
     }
-
-
 }
 
 std::string PushConstVal(int32_t val) {
     // for value -1 ~ 5, we can use iconst_n
     if () {
     }
-
-
 }
 
 std::string PushConstVal(std::string const &type, const AST::DeduceValue &val) {

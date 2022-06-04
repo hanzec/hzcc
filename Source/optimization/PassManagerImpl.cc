@@ -43,8 +43,7 @@ Status PassManagerImpl::RunPass(
     return Status::OkStatus();
 }
 
-Status PassManagerImpl::RunFunctionPass(
-    std::unique_ptr<AST::FuncDeclStmt>& F) {
+Status PassManagerImpl::RunFunctionPass(std::unique_ptr<AST::FuncDeclStmt>& F) {
     DVLOG(OPT_LOG_LEVEL) << "Running Function Pass";
     DVLOG(OPT_LOG_LEVEL) << "Optimizing function: " << F->GetName();
 

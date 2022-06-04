@@ -6,7 +6,7 @@
 #define FCALL3_CLASS_SOURCE_CODEGEN_JVM_JVM_INSTR_INSTRUCTION_H_
 namespace Hzcc::Codegen::JVM {
 class Instruction {
-    public:
+  public:
     Instruction(int consume_count, int push_count)
         : _consume_count(consume_count), _push_count(push_count){};
 
@@ -15,6 +15,7 @@ class Instruction {
     [[nodiscard]] int ConsumeCount() const { return _consume_count; }
 
     virtual std::string GenerateInstr() = 0;
+
   private:
     const int _push_count;
     const int _consume_count;

@@ -12,12 +12,6 @@
 #include "lexical/keywords.h"
 namespace Hzcc::Codegen::Utils {
 
-
-
-
-
 std::string GetTypeName(const std::shared_ptr<AST::Type> &type,
-                        bool replace_char) {
-
-}
+                        bool replace_char) {}
 }  // namespace Hzcc::Codegen::Utils

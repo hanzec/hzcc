@@ -44,7 +44,9 @@ bool IfStmt::addElseIf(std::unique_ptr<ASTNode> Cond,
 bool IfStmt::HasElse() const { return _else_statement_ != nullptr; }
 bool IfStmt::HasBody() const { return true; }
 const std::unique_ptr<ASTNode> &IfStmt::CondStmt() { return _condition; }
-const std::unique_ptr<ASTNode> &IfStmt::BodyStmt() { return _if_body_statement; }
+const std::unique_ptr<ASTNode> &IfStmt::BodyStmt() {
+    return _if_body_statement;
+}
 std::vector<std::pair<std::unique_ptr<ASTNode>, std::unique_ptr<ASTNode>>>
     &IfStmt::ElseIfStmt() {
     return _elseIfs;

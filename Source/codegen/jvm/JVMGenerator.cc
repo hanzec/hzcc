@@ -34,8 +34,6 @@ Status JVMGenerator::Generate() {
     DVLOG(CODE_GEN_LEVEL) << "input file: " << unit->GetFileName()
                           << ", output file: " << GetOutputFilePath();
 
-
-
     /** #####################################################################
      *  ### Global Variables                                              ###
      *  ##################################################################### */
@@ -89,7 +87,6 @@ Status JVMGenerator::Generate() {
     }
     output_file << GetAllCachedLine();
     DecLindeIndent();
-
 
     return Status::OkStatus();
 }

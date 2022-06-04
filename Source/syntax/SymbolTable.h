@@ -84,8 +84,8 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
     /**
      * @brief Get the variable's shared_ptr with the given name.
      * @param name The name of the variable.
-     * @return std::shared_ptr<RetType> The variable with the given name or nullptr
-     * if not found.
+     * @return std::shared_ptr<RetType> The variable with the given name or
+     * nullptr if not found.
      */
     std::shared_ptr<AST::Type> getVariableType(const std::string& name);
 

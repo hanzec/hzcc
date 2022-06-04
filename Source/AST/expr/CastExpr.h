@@ -27,8 +27,6 @@ class CastExpr : public ASTNode {
      */
     Status visit(ASTVisitor& visitor) override;
 
-
-
     /**
      * @brief Determine whether the node is a literal node or not
      * @return true if the node is a literal node, false otherwise
@@ -53,7 +51,6 @@ class CastExpr : public ASTNode {
      * @return the type that is being casted to
      */
     [[nodiscard]] std::shared_ptr<Type> RetType() const override;
-
 
   protected:
     /**

@@ -79,8 +79,8 @@ Status GenerateAST(TokenList& tokens,
                      tokens.peek2().Type() == Lexical::kLParentheses) {
                 tokens.insert_front(type_name.begin(), type_name.end());
 
-                auto new_node = ParserFactory::ParseAST<AST::FuncDeclStmt>(
-                    tokens, context);
+                auto new_node =
+                    ParserFactory::ParseAST<AST::FuncDeclStmt>(tokens, context);
 
                 if (new_node != nullptr) {
                     context.addDecl(std::move(new_node));

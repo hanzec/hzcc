@@ -12,6 +12,7 @@ class ConstInstr : public Instruction {
     ConstInstr(const JVM::Type &type, const AST::DeduceValue &val);
 
     std::string GenerateInstr() override;
+
   private:
     const JVM::Type &_type;
     const AST::DeduceValue &_val;

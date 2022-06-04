@@ -2,6 +2,7 @@
 // Created by chen_ on 2022/3/29.
 //
 #include "VarDecl.h"
+
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
 VarDecl::VarDecl(std::shared_ptr<Type> type,      // NOLINT

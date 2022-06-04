@@ -62,8 +62,8 @@ Status JVMGenerator::visit(Hzcc::AST::RelationalExpr *p_expr) {
                 SetLastOpHint(OpHint::kOpHint_Logical_Less);
                 break;
             case AST::kRelationalType_ENUM_SIZE:
-                DLOG(FATAL)
-                    << "error Relational OP RetType : kRelationalType_ENUM_SIZE";
+                DLOG(FATAL) << "error Relational OP RetType : "
+                               "kRelationalType_ENUM_SIZE";
                 break;
         }
     } else {

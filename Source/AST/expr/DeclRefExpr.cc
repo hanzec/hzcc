@@ -3,7 +3,6 @@
 //
 #include "DeclRefExpr.h"
 
-
 #include "AST/type/Type.h"
 #include "AST/utils/macro.h"
 

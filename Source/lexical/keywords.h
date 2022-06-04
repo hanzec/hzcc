@@ -22,7 +22,7 @@ namespace Hzcc::Lexical::Keywords {
  * Literals RetType's table.
  */
 constexpr static std::array<const char *, KLiteralsTypeTableSize>
-    kLiteralsSymbol{"RetType",       "Char",   "Integer",
+    kLiteralsSymbol{"RetType",    "Char",   "Integer",
                     "RealNumber", "String", "Identity"};
 
 /**

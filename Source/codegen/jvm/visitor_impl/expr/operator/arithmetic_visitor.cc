@@ -40,8 +40,7 @@ Status JVMGenerator::visit(Hzcc::AST::ArithmeticExpr* p_expr) {
     } else {
         DVLOG(MESSAGE_ERROR_TRACING)
             << "skip code gen for node " << p_expr->NodeName()
-            << "(line:" << p_expr->GetLine() << " id: " << p_expr->Id()
-            << ")";
+            << "(line:" << p_expr->GetLine() << " id: " << p_expr->Id() << ")";
     }
 
     return Status::OkStatus();
