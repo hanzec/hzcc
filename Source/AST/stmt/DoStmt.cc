@@ -5,9 +5,9 @@
 
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
-DoStatement::DoStatement(std::unique_ptr<ASTNode> cond,   // NOLINT
-                         std::unique_ptr<ASTNode> body,   // NOLINT
-                         const std::pair<int, int>& pos)  // NOLINT
+DoStatement::DoStatement(std::unique_ptr<ASTNode> cond,  // NOLINT
+                         std::unique_ptr<ASTNode> body,  // NOLINT
+                         const Position& pos)            // NOLINT
     : ASTNode(pos), _cond(std::move(cond)), _body(std::move(body)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

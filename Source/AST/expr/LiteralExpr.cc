@@ -8,7 +8,7 @@
 #include "AST/type/Type.h"
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
-LiteralExpr::LiteralExpr(int64_t value, const std::pair<int, int>& location)
+LiteralExpr::LiteralExpr(int64_t value, const Position& location)
     : ASTNode(location),
       _type(kLiteralType_Integer),
       _value(std::to_string(value)) {}

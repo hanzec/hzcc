@@ -104,8 +104,8 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(TokenList& tokens,
 
     ExitLoop();  // exit loop
     return std::make_unique<AST::ForStmt>(
-        std::move(initializer), std::move(condition), std::move(increment),
-        std::move(body), for_loc);
+        for_loc, std::move(initializer), std::move(condition),
+        std::move(increment), std::move(body));
 }
 
 }  // namespace Hzcc::Syntax::Parser

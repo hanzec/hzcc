@@ -62,25 +62,23 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(TokenList& tokens,
             if (tokens.peek().Type() != Lexical::TokenType::kSemiColon) {
                 auto ret_expr = ParseCommaExpr(context, tokens);
                 if (ret_expr) {
-                    if (Options::Global_enable_type_checking) {
-                        if (context.AtRoot()) {
+                    if (context.AtRoot()) {
+                        MYCC_PrintTokenError_ReturnNull(
+                            token,
+                            "return stmt is not allowed in the root "
+                            "scope");
+                    } else if (*ret_expr->RetType() ==
+                               *context.GetReturnType()) {
+                        auto rhs_type = ret_expr->RetType();
+                        ret_expr = AST::ASTNode::CastTo(context.GetReturnType(),
+                                                        std::move(ret_expr));
+                        if (ret_expr == nullptr) {
                             MYCC_PrintTokenError_ReturnNull(
                                 token,
-                                "return stmt is not allowed in the root "
-                                "scope");
-                        } else if (*ret_expr->RetType() ==
-                                   *context.GetReturnType()) {
-                            auto rhs_type = ret_expr->RetType();
-                            ret_expr = AST::ASTNode::CastTo(
-                                context.GetReturnType(), std::move(ret_expr));
-                            if (ret_expr == nullptr) {
-                                MYCC_PrintTokenError_ReturnNull(
-                                    token,
-                                    "return stmt type is not match, "
-                                    "require: " +
-                                        context.GetReturnType()->GetName() +
-                                        ", got: " + rhs_type->GetName());
-                            }
+                                "return stmt type is not match, "
+                                "require: " +
+                                    context.GetReturnType()->GetName() +
+                                    ", got: " + rhs_type->GetName());
                         }
                     }
 
@@ -171,8 +169,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseCommaExpr(SyntaxContext& context,
             return nullptr;
         }
 
-        return std::make_unique<AST::CommaExpr>(
-            next.Value(), std::move(lhs), std::move(rhs), next.Location());
+        return std::make_unique<AST::CommaExpr>(next.Location(), next.Value(),
+                                                std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -215,40 +213,37 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAssignExpr(SyntaxContext& context,
                                             "Left-hand side is not assignable")
         }
 
-        if (Options::Global_enable_type_checking) {
-            Message::set_current_part("RetType checking");
-            // LHS cannot be const variable
-            if (lhs->RetType()->IsConst()) {
-                VLOG(SYNTAX_LOG_LEVEL) << "LHS：" << lhs->Dump("");
-                MYCC_PrintTokenError_ReturnNull(
-                    assign_type, "Left hand side is not assignable")
-            }
+        // LHS cannot be const variable
+        if (lhs->RetType()->IsConst()) {
+            VLOG(SYNTAX_LOG_LEVEL) << "LHS：" << lhs->Dump("");
+            MYCC_PrintTokenError_ReturnNull(assign_type,
+                                            "Left hand side is not assignable")
+        }
 
-            // lhs and rhs should not be arrayed
-            if (lhs->RetType()->IsArray() || rhs->RetType()->IsArray()) {
-                MYCC_PrintTokenError_ReturnNull(
-                    assign_type, "No match for binary operation " +
-                                     lhs->RetType()->GetName() + " " +
-                                     Lexical::SymbolUtils::TokenTypeToString(
-                                         assign_type.Type()) +
-                                     " " + rhs->RetType()->GetName())
-            }
+        // lhs and rhs should not be arrayed
+        if (lhs->RetType()->IsArray() || rhs->RetType()->IsArray()) {
+            MYCC_PrintTokenError_ReturnNull(
+                assign_type, "No match for binary operation " +
+                                 lhs->RetType()->GetName() + " " +
+                                 Lexical::SymbolUtils::TokenTypeToString(
+                                     assign_type.Type()) +
+                                 " " + rhs->RetType()->GetName())
+        }
 
-            if (!(*lhs->RetType() == *rhs->RetType())) {
-                auto rhs_type = rhs->RetType();
-                rhs = AST::ASTNode::CastTo(lhs->RetType(), std::move(rhs));
-                if (rhs == nullptr) {
-                    MYCC_PrintTokenError_ReturnNull(
-                        assign_type, "Assignment mismatch " +
-                                         lhs->RetType()->GetName() +
-                                         " += " + rhs_type->GetName());
-                }
+        if (!(*lhs->RetType() == *rhs->RetType())) {
+            auto rhs_type = rhs->RetType();
+            rhs = AST::ASTNode::CastTo(lhs->RetType(), std::move(rhs));
+            if (rhs == nullptr) {
+                MYCC_PrintTokenError_ReturnNull(
+                    assign_type, "Assignment mismatch " +
+                                     lhs->RetType()->GetName() +
+                                     " += " + rhs_type->GetName());
             }
         }
 
-        return std::make_unique<AST::AssignExpr>(assign_type.Value(),
-                                                 std::move(lhs), std::move(rhs),
-                                                 assign_type.Location());
+        return std::make_unique<AST::AssignExpr>(
+            assign_type.Location(), assign_type.Value(), std::move(lhs),
+            std::move(rhs));
     } else {
         return lhs;
     }
@@ -291,10 +286,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseConditionalExpr(
             return nullptr;
         }
 
-        if (Options::Global_enable_type_checking &&
-            !(*mhs->RetType() == *rhs->RetType())) {
-            Message::set_current_part("RetType checking");
-
+        if (!(*mhs->RetType() == *rhs->RetType())) {
             auto rhs_type = mhs->RetType();
             rhs = AST::ASTNode::CastTo(mhs->RetType(), std::move(rhs));
             if (rhs == nullptr) {
@@ -302,12 +294,10 @@ std::unique_ptr<AST::ASTNode> Statement::ParseConditionalExpr(
                     next, "Expect type " + lhs->RetType()->GetName() +
                               " but get " + rhs_type->GetName());
             }
-
-            Message::set_current_part("Parser");
         }
 
         return std::make_unique<AST::TernaryExpr>(
-            std::move(lhs), std::move(mhs), std::move(rhs), cond_loc);
+            cond_loc, std::move(lhs), std::move(mhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -334,10 +324,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalOrExpr(
         }
 
         // todo only allow char
-        if (Options::Global_enable_type_checking &&
-            !(*lhs->RetType() == *rhs->RetType())) {
-            Message::set_current_part("RetType checking");
-
+        if (!(*lhs->RetType() == *rhs->RetType())) {
             // LHS and rhs should not be void
             if (lhs->RetType()->GetName(true) == "void" ||
                 rhs->RetType()->GetName() == "void") {
@@ -365,7 +352,6 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalOrExpr(
                     next, "Expect type " + lhs->RetType()->GetName() +
                               " but get " + rhs_type->GetName());
             }
-            Message::set_current_part("Parser");
         }
 
         return std::make_unique<AST::LogicalExpr>(
@@ -396,10 +382,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalAndExpr(
         }
 
         // todo only allow char
-        if (Options::Global_enable_type_checking &&
-            !(*lhs->RetType() == *rhs->RetType())) {
-            Message::set_current_part("RetType checking");
-
+        if (!(*lhs->RetType() == *rhs->RetType())) {
             // LHS and rhs should not be void
             if (lhs->RetType()->GetName(true) == "void" ||
                 rhs->RetType()->GetName() == "void") {
@@ -427,8 +410,6 @@ std::unique_ptr<AST::ASTNode> Statement::ParseLogicalAndExpr(
                     next, "Expect type " + lhs->RetType()->GetName() +
                               " but get " + rhs_type->GetName());
             }
-
-            Message::set_current_part("Parser");
         }
 
         return std::make_unique<AST::LogicalExpr>(
@@ -458,10 +439,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseOrExpr(
             return nullptr;
         }
 
-        if (Options::Global_enable_type_checking &&
-            !(*lhs->RetType() == *rhs->RetType())) {
-            Message::set_current_part("RetType checking");
-
+        if (!(*lhs->RetType() == *rhs->RetType())) {
             // LHS and rhs should not be void
             if (lhs->RetType()->GetName(true) == "void" ||
                 rhs->RetType()->GetName() == "void") {
@@ -489,12 +467,10 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseOrExpr(
                     next, "Expect type " + lhs->RetType()->GetName() +
                               " but get " + rhs_type->GetName());
             }
-
-            Message::set_current_part("Parser");
         }
 
         return std::make_unique<AST::BitwiseExpr>(
-            next.Value(), std::move(lhs), std::move(rhs), next.Location());
+            next.Location(), next.Value(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -520,10 +496,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseXorExpr(
             return nullptr;
         }
 
-        if (Options::Global_enable_type_checking &&
-            !(*lhs->RetType() == *rhs->RetType())) {
-            Message::set_current_part("RetType checking");
-
+        if (!(*lhs->RetType() == *rhs->RetType())) {
             // LHS and rhs should not be void
             if (lhs->RetType()->GetName(true) == "void" ||
                 rhs->RetType()->GetName() == "void") {
@@ -551,11 +524,10 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseXorExpr(
                     next, "Expect type " + lhs->RetType()->GetName() +
                               " but get " + rhs_type->GetName());
             }
-            Message::set_current_part("Parser");
         }
 
         return std::make_unique<AST::BitwiseExpr>(
-            next.Value(), std::move(lhs), std::move(rhs), next.Location());
+            next.Location(), next.Value(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -582,10 +554,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseAndExpr(
             return nullptr;
         }
 
-        if (Options::Global_enable_type_checking &&
-            !(*lhs->RetType() == *rhs->RetType())) {
-            Message::set_current_part("RetType checking");
-
+        if (!(*lhs->RetType() == *rhs->RetType())) {
             // LHS and rhs should not be void
             if (lhs->RetType()->GetName(true) == "void" ||
                 rhs->RetType()->GetName() == "void") {
@@ -614,10 +583,9 @@ std::unique_ptr<AST::ASTNode> Statement::ParseBitwiseAndExpr(
                     next, "Expect type " + lhs->RetType()->GetName() +
                               " but get " + rhs_type->GetName());
             }
-            Message::set_current_part("Parser");
         }
         return std::make_unique<AST::BitwiseExpr>(
-            next.Value(), std::move(lhs), std::move(rhs), next.Location());
+            next.Location(), next.Value(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -643,10 +611,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseEqualityExpr(
             return nullptr;
         }
 
-        if (Options::Global_enable_type_checking &&
-            !(*lhs->RetType() == *rhs->RetType())) {
-            Message::set_current_part("RetType checking");
-
+        if (!(*lhs->RetType() == *rhs->RetType())) {
             // LHS and rhs should not be void
             if (lhs->RetType()->GetName(true) == "void" ||
                 rhs->RetType()->GetName() == "void") {
@@ -674,12 +639,10 @@ std::unique_ptr<AST::ASTNode> Statement::ParseEqualityExpr(
                     type, "Expect type " + lhs->RetType()->GetName() +
                               " but get " + rhs_type->GetName());
             }
-
-            Message::set_current_part("Parser");
         }
 
         return std::make_unique<AST::RelationalExpr>(
-            type.Value(), std::move(lhs), std::move(rhs), type.Location());
+            type.Location(), type.Value(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -709,10 +672,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseRelationalExpr(
             return nullptr;
         }
 
-        if (Options::Global_enable_type_checking &&
-            !(*lhs->RetType() == *rhs->RetType())) {
-            Message::set_current_part("RetType checking");
-
+        if (!(*lhs->RetType() == *rhs->RetType())) {
             // LHS and rhs should not be void
             if (lhs->RetType()->GetName(true) == "void" ||
                 rhs->RetType()->GetName() == "void") {
@@ -740,11 +700,10 @@ std::unique_ptr<AST::ASTNode> Statement::ParseRelationalExpr(
                     type, "Expect type " + lhs->RetType()->GetName() +
                               " but get " + rhs_type->GetName());
             }
-            Message::set_current_part("Parser");
         }
 
         return std::make_unique<AST::RelationalExpr>(
-            type.Value(), std::move(lhs), std::move(rhs), type.Location());
+            type.Location(), type.Value(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -770,10 +729,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseShiftExpr(SyntaxContext& context,
             return nullptr;
         }
 
-        if (Options::Global_enable_type_checking &&
-            !(*lhs->RetType() == *rhs->RetType())) {
-            Message::set_current_part("RetType checking");
-
+        if (!(*lhs->RetType() == *rhs->RetType())) {
             // LHS and rhs should not be void
             if (lhs->RetType()->GetName(true) == "void" ||
                 rhs->RetType()->GetName() == "void") {
@@ -804,7 +760,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseShiftExpr(SyntaxContext& context,
         }
 
         return std::make_unique<AST::BitwiseExpr>(
-            type.Value(), std::move(lhs), std::move(rhs), type.Location());
+            type.Location(), type.Value(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -831,45 +787,37 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAdditiveExpr(
             return nullptr;
         }
 
-        if (Options::Global_enable_type_checking) {
-            Message::set_current_part("RetType checking");
+        // LHS and rhs should not be void
+        if (lhs->RetType()->GetName(true) == "void" ||
+            rhs->RetType()->GetName() == "void") {
+            MYCC_PrintTokenError_ReturnNull(
+                type, "No match for binary operation void " +
+                          Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
+                          " void")
+        }
 
-            // LHS and rhs should not be void
-            if (lhs->RetType()->GetName(true) == "void" ||
-                rhs->RetType()->GetName() == "void") {
+        // lhs and rhs should not be arrayed
+        if (lhs->RetType()->IsArray() || rhs->RetType()->IsArray()) {
+            MYCC_PrintTokenError_ReturnNull(
+                type, "No match for binary operation " +
+                          lhs->RetType()->GetName() + " " +
+                          Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
+                          " " + rhs->RetType()->GetName())
+        }
+
+        // LHS == RHS
+        if (!(*lhs->RetType() == *rhs->RetType())) {
+            auto rhs_type = rhs->RetType();
+            rhs = AST::ASTNode::CastTo(lhs->RetType(), std::move(rhs));
+            if (rhs == nullptr) {
                 MYCC_PrintTokenError_ReturnNull(
-                    type,
-                    "No match for binary operation void " +
-                        Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
-                        " void")
+                    type, "Expect type " + lhs->RetType()->GetName() +
+                              " but get " + rhs_type->GetName());
             }
-
-            // lhs and rhs should not be arrayed
-            if (lhs->RetType()->IsArray() || rhs->RetType()->IsArray()) {
-                MYCC_PrintTokenError_ReturnNull(
-                    type,
-                    "No match for binary operation " +
-                        lhs->RetType()->GetName() + " " +
-                        Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
-                        " " + rhs->RetType()->GetName())
-            }
-
-            // LHS == RHS
-            if (!(*lhs->RetType() == *rhs->RetType())) {
-                auto rhs_type = rhs->RetType();
-                rhs = AST::ASTNode::CastTo(lhs->RetType(), std::move(rhs));
-                if (rhs == nullptr) {
-                    MYCC_PrintTokenError_ReturnNull(
-                        type, "Expect type " + lhs->RetType()->GetName() +
-                                  " but get " + rhs_type->GetName());
-                }
-            }
-
-            Message::set_current_part("Parser");
         }
 
         return std::make_unique<AST::ArithmeticExpr>(
-            type.Value(), std::move(lhs), std::move(rhs), type.Location());
+            type.Location(), type.Value(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -899,45 +847,37 @@ std::unique_ptr<AST::ASTNode> Statement::ParseMultiplicativeExpr(
             return nullptr;
         }
 
-        if (Options::Global_enable_type_checking) {
-            Message::set_current_part("RetType checking");
+        // LHS and rhs should not be void
+        if (lhs->RetType()->GetName(true) == "void" ||
+            rhs->RetType()->GetName() == "void") {
+            MYCC_PrintTokenError_ReturnNull(
+                type, "No match for binary operation void " +
+                          Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
+                          " void")
+        }
 
-            // LHS and rhs should not be void
-            if (lhs->RetType()->GetName(true) == "void" ||
-                rhs->RetType()->GetName() == "void") {
+        // lhs and rhs should not be arrayed
+        if (lhs->RetType()->IsArray() || rhs->RetType()->IsArray()) {
+            MYCC_PrintTokenError_ReturnNull(
+                type, "No match for binary operation " +
+                          lhs->RetType()->GetName() + " " +
+                          Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
+                          " " + rhs->RetType()->GetName())
+        }
+
+        // LHS == RHS
+        if (!(*lhs->RetType() == *rhs->RetType())) {
+            auto rhs_type = rhs->RetType();
+            rhs = AST::ASTNode::CastTo(lhs->RetType(), std::move(rhs));
+            if (rhs == nullptr) {
                 MYCC_PrintTokenError_ReturnNull(
-                    type,
-                    "No match for binary operation void " +
-                        Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
-                        " void")
+                    type, "Expect type " + lhs->RetType()->GetName() +
+                              " but get " + rhs_type->GetName());
             }
-
-            // lhs and rhs should not be arrayed
-            if (lhs->RetType()->IsArray() || rhs->RetType()->IsArray()) {
-                MYCC_PrintTokenError_ReturnNull(
-                    type,
-                    "No match for binary operation " +
-                        lhs->RetType()->GetName() + " " +
-                        Lexical::SymbolUtils::TokenTypeToString(type.Type()) +
-                        " " + rhs->RetType()->GetName())
-            }
-
-            // LHS == RHS
-            if (!(*lhs->RetType() == *rhs->RetType())) {
-                auto rhs_type = rhs->RetType();
-                rhs = AST::ASTNode::CastTo(lhs->RetType(), std::move(rhs));
-                if (rhs == nullptr) {
-                    MYCC_PrintTokenError_ReturnNull(
-                        type, "Expect type " + lhs->RetType()->GetName() +
-                                  " but get " + rhs_type->GetName());
-                }
-            }
-
-            Message::set_current_part("Parser");
         }
 
         return std::make_unique<AST::ArithmeticExpr>(
-            type.Value(), std::move(lhs), std::move(rhs), type.Location());
+            type.Location(), type.Value(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -959,8 +899,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(SyntaxContext& context,
             return nullptr;
         }
 
-        return std::make_unique<AST::UnaryExpr>(type.Value(), std::move(rhs),
-                                                type.Location());
+        return std::make_unique<AST::UnaryExpr>(type.Location(), type.Value(),
+                                                std::move(rhs));
     }
 
     // for cast expression, we should parse the next expression
@@ -990,30 +930,24 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(SyntaxContext& context,
             return nullptr;
         }
 
-        if (Options::Global_enable_type_checking) {
-            Message::set_current_part("RetType checking");
-            // RetType == RHS
-
-            if ((argument_type->IsArray() && !rhs->RetType()->IsArray()) ||
-                (!argument_type->IsArray() && rhs->RetType()->IsArray()) ||
-                (argument_type->GetName() == "void" ||
-                 rhs->RetType()->GetName() == "void")) {
-                MYCC_PrintTokenError_ReturnNull(
-                    cast_loc, "Cannot cast expression of type " +
-                                  rhs->RetType()->GetName() + " to " +
-                                  argument_type->GetName());
-            }
-
-            Message::set_current_part("Parser");
+        // RetType == RHS
+        if ((argument_type->IsArray() && !rhs->RetType()->IsArray()) ||
+            (!argument_type->IsArray() && rhs->RetType()->IsArray()) ||
+            (argument_type->GetName() == "void" ||
+             rhs->RetType()->GetName() == "void")) {
+            MYCC_PrintTokenError_ReturnNull(
+                cast_loc, "Cannot cast expression of type " +
+                              rhs->RetType()->GetName() + " to " +
+                              argument_type->GetName());
         }
 
         if (rhs->RetType()->IsConst()) {
             return std::make_unique<AST::CastExpr>(
-                argument_type->GetConstType(), std::move(rhs),
-                cast_loc.Location());
+                cast_loc.Location(), argument_type->GetConstType(),
+                std::move(rhs));
         } else {
             return std::make_unique<AST::CastExpr>(
-                argument_type, std::move(rhs), cast_loc.Location());
+                cast_loc.Location(), argument_type, std::move(rhs));
         }
     }
 
@@ -1070,7 +1004,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(SyntaxContext& context,
             }
 
             return std::make_unique<AST::UnaryExpr>(
-                type.Value(), std::move(rhs), type.Location());
+                type.Location(), type.Value(), std::move(rhs));
         } else {
             auto lhs = ParseAccessExpr(context, tokens);
             if (lhs == nullptr) {
@@ -1095,7 +1029,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(SyntaxContext& context,
 
                 auto type = tokens.pop();
                 return std::make_unique<AST::UnaryExpr>(
-                    type.Value(), std::move(lhs), type.Location());
+                    type.Location(), type.Value(), std::move(lhs));
             } else if (tokens.peek().Type() ==
                        Lexical::TokenType::kSelfDecrement) {
                 // LHS has to be a variable Node
@@ -1111,7 +1045,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(SyntaxContext& context,
                 }
                 auto type = tokens.pop();
                 return std::make_unique<AST::UnaryExpr>(
-                    type.Value(), std::move(lhs), type.Location());
+                    type.Location(), type.Value(), std::move(lhs));
             } else {
                 return std::move(lhs);
             }
@@ -1147,33 +1081,28 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAccessExpr(SyntaxContext& context,
                 auto memberName = tokens.pop();
 
                 //  check if the type has this member
-                if (Options::Global_enable_type_checking) {
-                    Message::set_current_part("RetType checking");
 
-                    if (!currentExpr->RetType()->IsStruct()) {
-                        MYCC_PrintFirstTokenError_ReturnNull(
-                            tokens,
-                            "Expect struct type for member "
-                            "access")
-                    }
+                if (!currentExpr->RetType()->IsStruct()) {
+                    MYCC_PrintFirstTokenError_ReturnNull(
+                        tokens,
+                        "Expect struct type for member "
+                        "access")
+                }
 
-                    auto type = dynamic_cast<AST::StructType*>(
-                                    currentExpr->RetType().get())
-                                    ->GetChild(memberName.Value());
+                auto type =
+                    dynamic_cast<AST::StructType*>(currentExpr->RetType().get())
+                        ->GetChild(memberName.Value());
 
-                    // check member name
-                    if (type == nullptr) {
-                        MYCC_PrintFirstTokenError_ReturnNull(
-                            tokens, "Unknown member '" + memberName.Value() +
-                                        "' in " +
-                                        currentExpr->RetType()->GetName())
-                    }
-                    Message::set_current_part("Parser");
+                // check member name
+                if (type == nullptr) {
+                    MYCC_PrintFirstTokenError_ReturnNull(
+                        tokens, "Unknown member '" + memberName.Value() +
+                                    "' in " + currentExpr->RetType()->GetName())
                 }
 
                 currentExpr = std::make_unique<AST::AccessExpr>(
-                    isPtr, memberName.Value(), std::move(currentExpr),
-                    memberName.Location());
+                    isPtr, memberName.Location(), memberName.Value(),
+                    std::move(currentExpr));
             } else {
                 // consume the ']'
                 auto start = tokens.peek();
@@ -1189,8 +1118,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAccessExpr(SyntaxContext& context,
                 }
 
                 // check type
-                if (Options::Global_enable_type_checking &&
-                    !currentExpr->RetType()->IsArray()) {
+                if (!currentExpr->RetType()->IsArray()) {
                     MYCC_PrintFirstTokenError_ReturnNull(
                         tokens, "Expect array type for array accessor")
                 }
@@ -1200,8 +1128,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAccessExpr(SyntaxContext& context,
                 MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRBracket,
                                                 tokens);
                 currentExpr = std::make_unique<AST::ArraySubscriptExpr>(
-                    std::move(currentExpr), std::move(indexExpr),
-                    start.Location());
+                    start.Location(), std::move(currentExpr),
+                    std::move(indexExpr));
             }
         } while (tokens.peek().Type() == Lexical::TokenType::kDot ||
                  tokens.peek().Type() == Lexical::TokenType::kArrow ||
@@ -1250,20 +1178,15 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
                 return nullptr;
             }
 
-            // should be integer
-            if (Options::Global_enable_type_checking) {
-                Message::set_current_part("RetType checking");
-                auto int_type = AST::Type::GetTypeOf("int", {});
-                if (!(*int_type == *index->RetType())) {
-                    auto index_type = index->RetType();
-                    index = AST::ASTNode::CastTo(int_type, std::move(index));
-                    if (index == nullptr) {
-                        MYCC_PrintTokenError_ReturnNull(
-                            start,
-                            "Expect type int but get " + index_type->GetName());
-                    }
+            auto int_type = AST::Type::GetTypeOf("int", {});
+            if (!(*int_type == *index->RetType())) {
+                auto index_type = index->RetType();
+                index = AST::ASTNode::CastTo(int_type, std::move(index));
+                if (index == nullptr) {
+                    MYCC_PrintTokenError_ReturnNull(
+                        start,
+                        "Expect type int but get " + index_type->GetName());
                 }
-                Message::set_current_part("Parser");
             }
 
             // consume the ']'
@@ -1277,11 +1200,12 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
 
             auto type = context.getVariableType(name.Value());
 
-            if (type->IsArray() || !Options::Global_enable_type_checking) {
+            if (type->IsArray()) {
                 return std::make_unique<AST::ArraySubscriptExpr>(
-                    std::make_unique<AST::DeclRefExpr>(type, name.Value(),
-                                                       name.Location()),
-                    std::move(index), start.Location());
+                    start.Location(),
+                    std::make_unique<AST::DeclRefExpr>(name.Location(), type,
+                                                       name.Value()),
+                    std::move(index));
             } else {
                 MYCC_PrintTokenError_ReturnNull(
                     name, "Expect array type for array accessor");
@@ -1293,8 +1217,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
             tokens.pop();  // consume the '('
 
             // check function name is matched
-            if (Options::Global_enable_type_checking &&
-                !context.hasFunction(name.Value())) {
+            if (!context.hasFunction(name.Value())) {
                 MYCC_PrintTokenError_ReturnNull(
                     name, "Function " + name.Value() + " not found");
             }
@@ -1336,54 +1259,45 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
                 context.getFuncRetAndArgType(name.Value());
 
             // function call need to have same number of arguments
-            if (Options::Global_enable_type_checking) {
-                Message::set_current_part("RetType checking");
 
-                if (!context.hasFunction(name.Value())) {
-                    MYCC_PrintTokenError_ReturnNull(
-                        name, "Function " + name.Value() + " not found");
+            if (!context.hasFunction(name.Value())) {
+                MYCC_PrintTokenError_ReturnNull(
+                    name, "Function " + name.Value() + " not found");
+            }
+
+            // check number of arguments
+            if (funcType.size() != args_expr.size()) {
+                // generate type string first
+                std::string type_str = "(";
+                for (const auto& arg : funcType) {
+                    type_str += arg->GetName() + ", ";
                 }
+                type_str.replace(type_str.end() - 2, type_str.end(), ")");
 
-                // check number of arguments
-                if (funcType.size() != args_expr.size()) {
-                    // generate type string first
-                    std::string type_str = "(";
-                    for (const auto& arg : funcType) {
-                        type_str += arg->GetName() + ", ";
+                // print out error message
+                MYCC_PrintTokenError_ReturnNull(
+                    name, "Parameter mismatch in call to " +
+                              return_type->GetName() + " " + name.Value() +
+                              type_str + "\n\tExpected " +
+                              std::to_string(funcType.size()) + ", received " +
+                              std::to_string(args_expr.size()) + " parameters");
+            }
+
+            // check argument types for all arguments
+            for (auto& expr : args_expr) {
+                if (!(*expr->RetType() == *funcType.front())) {
+                    auto arg_type = expr->RetType();
+                    expr =
+                        AST::ASTNode::CastTo(funcType.front(), std::move(expr));
+                    if (expr == nullptr) {
+                        MYCC_PrintTokenError_ReturnNull(
+                            name, "Expect type " + funcType.front()->GetName() +
+                                      " for argument " +
+                                      std::to_string(args_expr.size() + 1) +
+                                      " but get " + arg_type->GetName());
                     }
-                    type_str.replace(type_str.end() - 2, type_str.end(), ")");
-
-                    // print out error message
-                    MYCC_PrintTokenError_ReturnNull(
-                        name,
-                        "Parameter mismatch in call to " +
-                            return_type->GetName() + " " + name.Value() +
-                            type_str + "\n\tExpected " +
-                            std::to_string(funcType.size()) + ", received " +
-                            std::to_string(args_expr.size()) + " parameters");
                 }
-
-                // check argument types for all arguments
-                for (auto& expr : args_expr) {
-                    if (!(*expr->RetType() == *funcType.front())) {
-                        auto arg_type = expr->RetType();
-                        expr = AST::ASTNode::CastTo(funcType.front(),
-                                                    std::move(expr));
-                        if (expr == nullptr) {
-                            MYCC_PrintTokenError_ReturnNull(
-                                name, "Expect type " +
-                                          funcType.front()->GetName() +
-                                          " for argument " +
-                                          std::to_string(args_expr.size() + 1) +
-                                          " but get " + arg_type->GetName());
-                        }
-                    }
-                    funcType.pop_front();
-                }
-
-                Message::set_current_part("Parser");
-            } else {
-                return_type = context.getNamedType("void", {});
+                funcType.pop_front();
             }
 
             // consume the ')'
@@ -1391,15 +1305,14 @@ std::unique_ptr<AST::ASTNode> Statement::ParsePostfixExpr(
                                             tokens);
 
             return std::make_unique<AST::FuncCallStmt>(
-                return_type, name.Value(), name.Location(),
+                name.Location(), return_type, name.Value(),
                 std::move(args_expr));
         }
 
-        if (context.hasVariable(name.Value(), false) ||
-            !Options::Global_enable_type_checking) {
+        if (context.hasVariable(name.Value(), false)) {
             return std::make_unique<AST::DeclRefExpr>(
-                context.getVariableType(name.Value()), name.Value(),
-                name.Location());
+                name.Location(), context.getVariableType(name.Value()),
+                name.Value());
         } else {
             MYCC_PrintTokenError_ReturnNull(
                 name, "Undefined variable: " + name.Value());

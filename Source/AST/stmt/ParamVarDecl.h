@@ -15,9 +15,9 @@ class ParamVarDecl : public VarDecl {
      * @param loc location of the parameter
      * @param type type of the parameter
      */
-    ParamVarDecl(std::shared_ptr<Type> type,       // NOLINT
-                 const std::string_view& name,     // NOLINT
-                 const std::pair<int, int>& loc);  // NOLINT
+    ParamVarDecl(std::shared_ptr<Type> type,    // NOLINT
+                 const std::string_view& name,  // NOLINT
+                 const Position& loc);          // NOLINT
 
     /**
      * @brief AST Visitor acceptor

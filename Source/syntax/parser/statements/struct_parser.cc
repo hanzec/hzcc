@@ -128,7 +128,7 @@ std::unique_ptr<AST::ASTNode> StructDeclare::parse_impl(
         return nullptr;
     }
 
-    return std::make_unique<AST::StructDeclStmt>(struct_node->GetName(),
-                                                 struct_node, ref.Location());
+    return std::make_unique<AST::StructDeclStmt>(
+        ref.Location(), struct_node->GetName(), struct_node);
 }
 }  // namespace Hzcc::Syntax::Parser

@@ -45,10 +45,10 @@ class AssignExpr : public OperatorBase {
      * @param rhs  Right hand side expression
      * @param location Location of the assign expression
      */
-    AssignExpr(const std::string_view& type,          // NOLINT
-               std::unique_ptr<ASTNode> lhs,          // NOLINT
-               std::unique_ptr<ASTNode> rhs,          // NOLINT
-               const std::pair<int, int>& location);  // NOLINT
+    AssignExpr(const Position& location,       // NOLINT
+               const std::string_view& type,   // NOLINT
+               std::unique_ptr<ASTNode> lhs,   // NOLINT
+               std::unique_ptr<ASTNode> rhs);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor

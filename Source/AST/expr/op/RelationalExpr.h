@@ -36,10 +36,9 @@ class RelationalExpr : public OperatorBase {
      * @param rhs Right hand side expression
      * @param loc Location of the relational expression
      */
-    RelationalExpr(const std::string_view& type,     // NOLINT
-                   std::unique_ptr<ASTNode> lhs,     // NOLINT
-                   std::unique_ptr<ASTNode> rhs,     // NOLINT
-                   const std::pair<int, int>& loc);  // NOLINT
+    RelationalExpr(const Position& loc, const std::string_view& type,
+                   std::unique_ptr<ASTNode> lhs,
+                   std::unique_ptr<ASTNode> rhs);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor

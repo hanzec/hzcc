@@ -13,7 +13,7 @@ class CompoundStmt : public ASTNode {
      * @brief Constructor of CompoundStmt
      * @param loc location of the compound statement
      */
-    explicit CompoundStmt(const std::pair<int, int>& loc);
+    explicit CompoundStmt(const Position& loc);
 
     /**
      * @brief AST Visitor acceptor

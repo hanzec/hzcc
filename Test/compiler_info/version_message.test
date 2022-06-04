@@ -1,0 +1,6 @@
+//RUN: %mycc -v | %FileCheck --test_rules="%s"
+//RUN: %mycc -version | %FileCheck --test_rules="%s"
+//CHECK:       hzcc - A C compiler
+//CHECK-NEXT:         Written by Hanze Chen (tony.chen424@gmail.com)
+//CHECK-NEXT:         Version {{[0-9]+.[0-9]+.[0-9]*_[0-9a-z]+\([0-9a-zA-z.]+\)}}
+//CHECK-NEXT:         Build Time {{[0-9]{4}-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-6][0-9]:[0-6][0-9]}}

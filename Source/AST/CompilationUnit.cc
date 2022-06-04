@@ -30,8 +30,7 @@ void CompilationUnit::addDecl(std::unique_ptr<DeclStmt> node) {
             });
 
         // we need to make sure function/decl name is unique
-        if (node_ptr != _global_decl.end() &&
-            Options::Global_enable_naming_checking) {
+        if (node_ptr != _global_decl.end()) {
             DLOG(FATAL) << "Decl name: " << fuc_name << " already defined !";
         } else {
             // move ownership of decl node to global_decl

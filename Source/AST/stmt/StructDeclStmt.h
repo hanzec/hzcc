@@ -13,12 +13,11 @@ class StructDeclStmt : public DeclStmt {
     /**
      * @brief Constructor of StructDeclStmt
      * @param name name of the struct
+     * @param loc loc of the struct
      * @param type type of the struct
-     * @param location location of the struct
      */
-    StructDeclStmt(const std::string_view& name,          // NOLINT
-                   std::shared_ptr<StructType> type,      // NOLINT
-                   const std::pair<int, int>& location);  // NOLINT
+    StructDeclStmt(const Position& loc, const std::string_view& name,
+                   std::shared_ptr<StructType> type);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor
@@ -26,8 +25,6 @@ class StructDeclStmt : public DeclStmt {
      * @return return object of Hzcc::Status with content of visit result
      */
     Status visit(ASTVisitor& visitor) override;
-
-    [[nodiscard]] std::shared_ptr<Type> RetType() const override;
 
     [[nodiscard]] bool IsStructDecl() const override { return true; }
 

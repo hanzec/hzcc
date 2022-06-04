@@ -18,8 +18,6 @@ enum Level {
     kInfo,
 };
 
-void set_current_part(const std::string_view& part);
-
 std::string get_current_file();
 
 void set_current_file(const std::filesystem::path& filename);

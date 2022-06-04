@@ -34,10 +34,9 @@ class ArithmeticExpr : public OperatorBase {
      * @param rhs right hand side of the expression.
      * @param location location of the expression.
      */
-    ArithmeticExpr(const std::string_view& type,          // NOLINT
-                   std::unique_ptr<ASTNode> lhs,          // NOLINT
-                   std::unique_ptr<ASTNode> rhs,          // NOLINT
-                   const std::pair<int, int>& location);  // NOLINT
+    ArithmeticExpr(const Position& location, const std::string_view& type,
+                   std::unique_ptr<ASTNode> lhs,
+                   std::unique_ptr<ASTNode> rhs);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor

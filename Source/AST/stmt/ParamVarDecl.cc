@@ -8,8 +8,8 @@
 namespace Hzcc::AST {
 ParamVarDecl::ParamVarDecl(std::shared_ptr<Type> type,
                            const std::string_view& name,
-                           const std::pair<int, int>& loc)  // NO_LINT
-    : VarDecl(type, name, std::unique_ptr<EmptyStatement>(), loc){
+                           const Position& loc)  // NO_LINT
+    : VarDecl(loc, std::move(type), name, std::unique_ptr<EmptyStatement>()){
           /** ############################################################
            *  ### Runtime Assertion                                   ###
            *  ###########################################################*/

@@ -20,5 +20,5 @@ if not lit.util.which(FileCheck_executable):
     lit_config.fatal('Cannot find OutputCheck executable in your PATH')
 
 # compiler executables
-mycc_executable = os.path.join(binary_root, 'mycc')
-config.substitutions.append(('%mycc',mycc_executable))
+hzcc_executable = os.path.join(binary_root, 'hzcc')
+config.substitutions.append(('%mycc',hzcc_executable))

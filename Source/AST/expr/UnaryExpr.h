@@ -20,9 +20,8 @@ enum PACKED UnaryType {
 
 class UnaryExpr : public ASTNode {
   public:
-    UnaryExpr(const std::string_view& type,          // NOLINT
-              std::unique_ptr<ASTNode> expr,         // NOLINT
-              const std::pair<int, int>& location);  // NOLINT
+    UnaryExpr(const Position& location, const std::string_view& type,
+              std::unique_ptr<ASTNode> expr);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor

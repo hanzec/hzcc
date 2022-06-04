@@ -7,8 +7,7 @@
 #include "AST/utils/macro.h"
 
 namespace Hzcc::AST {
-SizeofExpr::SizeofExpr(std::unique_ptr<ASTNode> expr,
-                       const std::pair<int, int>& location)
+SizeofExpr::SizeofExpr(std::unique_ptr<ASTNode> expr, const Position& location)
     : ASTNode(location), _expr(std::move(expr)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

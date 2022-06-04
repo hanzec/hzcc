@@ -16,9 +16,8 @@ class ArraySubscriptExpr : public ASTNode {
      * @param array the array array expression
      * @param subscript the array subscript expression
      */
-    ArraySubscriptExpr(std::unique_ptr<ASTNode> array,        // NOLINT
-                       std::unique_ptr<ASTNode> subscript,    // NOLINT
-                       const std::pair<int, int>& location);  // NOLINT
+    ArraySubscriptExpr(const Position& location, std::unique_ptr<ASTNode> array,
+                       std::unique_ptr<ASTNode> subscript);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor

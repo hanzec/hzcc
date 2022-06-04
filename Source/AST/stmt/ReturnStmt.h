@@ -13,8 +13,8 @@ class ReturnStmt : public ASTNode {
      * @param expr expression of the return statement
      * @param loc location of the return statement
      */
-    ReturnStmt(std::unique_ptr<ASTNode> expr,    // NOLINT
-               const std::pair<int, int>& loc);  // NOLINT
+    ReturnStmt(std::unique_ptr<ASTNode> expr,  // NOLINT
+               const Position& loc);           // NOLINT
 
     /**
      * @brief AST Visitor acceptor

@@ -5,7 +5,7 @@
 
 #include "AST/type/Type.h"
 namespace Hzcc::AST {
-EmptyStatement::EmptyStatement(const std::pair<int, int>& loc) : ASTNode(loc) {}
+EmptyStatement::EmptyStatement(const Position& loc) : ASTNode(loc) {}
 
 const char* AST::EmptyStatement::NodeName() const { return "EmptyStatement"; }
 std::shared_ptr<Type> EmptyStatement::RetType() const {

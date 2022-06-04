@@ -16,9 +16,8 @@ class WhileStmt : public ASTNode {
      * @param body body of the while
      * @param loc location of the while
      */
-    WhileStmt(std::unique_ptr<ASTNode> cond,    // NOLINT
-              std::unique_ptr<ASTNode> body,    // NOLINT
-              const std::pair<int, int>& loc);  // NOLINT
+    WhileStmt(const Position& loc, std::unique_ptr<ASTNode> cond,
+              std::unique_ptr<ASTNode> body);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor

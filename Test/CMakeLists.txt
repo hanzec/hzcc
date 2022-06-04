@@ -102,11 +102,11 @@ enable_testing()
 if (${E2E_DEPENDS_MET})
     message(STATUS "E2E testing is enabled.")
 
-    # add part0 test set
-    add_lit_test_set(lexical_part0 "${CMAKE_CURRENT_LIST_DIR}/lexical/part0")
+    # add compiler_info test set
+    add_lit_test_set(compiler_info "${CMAKE_CURRENT_LIST_DIR}/compiler_info")
 
-    # add part1 test set
-    add_lit_test_set(lexical_part1 "${CMAKE_CURRENT_LIST_DIR}/lexical/part1")
+    # add token_parsing test set
+    add_lit_test_set(token_parsing "${CMAKE_CURRENT_LIST_DIR}/lexical/")
 
     # add part3 test set
     add_lit_test_set(lexical_part3 "${CMAKE_CURRENT_LIST_DIR}/syntax/part3")

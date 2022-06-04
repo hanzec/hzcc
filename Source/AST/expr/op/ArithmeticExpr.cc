@@ -13,11 +13,11 @@ constexpr static std::array<const char*,
                             ArithmeticType::kArithmeticType_ENUM_SIZE>
     kArithmeticStr = {"add", "sub", "mul", "div", "mod"};
 
-ArithmeticExpr::ArithmeticExpr(const std::string_view& type,         // NOLINT
-                               std::unique_ptr<ASTNode> lhs,         // NOLINT
-                               std::unique_ptr<ASTNode> rhs,         // NOLINT
-                               const std::pair<int, int>& location)  // NOLINT
-    : OperatorBase(std::move(lhs), std::move(rhs), location) {
+ArithmeticExpr::ArithmeticExpr(const Position& location,
+                               const std::string_view& type,
+                               std::unique_ptr<ASTNode> lhs,
+                               std::unique_ptr<ASTNode> rhs)  // NOLINT
+    : OperatorBase(location, std::move(lhs), std::move(rhs)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */

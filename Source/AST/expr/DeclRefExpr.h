@@ -12,9 +12,8 @@ class DeclRefExpr : public ASTNode {
      * @param type type of the variable
      * @param name The name of the variable.
      */
-    DeclRefExpr(std::shared_ptr<Type> type,       // NO_LINT
-                const std::string_view& name,     // NO_LINT
-                const std::pair<int, int>& loc);  // NO_LINT
+    DeclRefExpr(const Position& loc, std::shared_ptr<Type> type,
+                const std::string_view& name);  // NO_LINT
 
     /**
      * @brief AST Visitor acceptor

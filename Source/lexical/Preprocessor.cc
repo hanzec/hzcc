@@ -47,7 +47,6 @@
 //
 //                // include file has to be available
 //                if (!std::filesystem::exists(final_file_name)) {
-//                    Message::set_current_part("Preprocessor");
 //                    Message::set_current_file(final_file_name);
 //                    Message::print_message(
 //                        Message::kError,
@@ -59,8 +58,7 @@
 //                if (std::find(included_files.begin(), included_files.end(),
 //                              final_file_name.string()) !=
 //                    included_files.end()) {
-//                    Message::set_current_part("Preprocessor");
-//                    Message::set_current_file(final_file_name);
+
 //                    Message::print_message(
 //                        Message::kError,
 //                        "include loop detected: " + final_file_name.string(),

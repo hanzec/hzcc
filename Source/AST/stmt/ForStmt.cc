@@ -5,11 +5,9 @@
 
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
-ForStmt::ForStmt(std::unique_ptr<ASTNode> init,        // NOLINT
-                 std::unique_ptr<ASTNode> cond,        // NOLINT
-                 std::unique_ptr<ASTNode> step,        // NOLINT
-                 std::unique_ptr<ASTNode> body,        // NOLINT
-                 const std::pair<int, int>& location)  // NOLINT
+ForStmt::ForStmt(const Position& location, std::unique_ptr<ASTNode> init,
+                 std::unique_ptr<ASTNode> cond, std::unique_ptr<ASTNode> step,
+                 std::unique_ptr<ASTNode> body)  // NOLINT
     : ASTNode(location),
       _init(std::move(init)),
       _cond(std::move(cond)),

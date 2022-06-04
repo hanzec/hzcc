@@ -134,14 +134,31 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
                 } break;
                 case '\'': {  // handling char literal
                     auto start = col + 1;
-                    col = line.find_first_of('\'', start);
+                    col = col + (line[col + 1] == '\\' ? 3 : 2);
 
-                    // handling escape sequence
-                    while (line_buf[col - 1] == '\\')
-                        col = line.find_first_of('\'', col + 1);
+                    // if not found '\'' then error
+                    if (line[col] != '\'') {
+                        have_error = true;
+                        Message::print_message(Message::kError,
+                                               "unclosed char literal", line,
+                                               std::make_pair(row, start - 1));
+                        col = line.length();
+                    } else {
+                        // handling ASCII escape sequence
+                        char new_char;
+                        auto tmp_string = line.substr(start, col - start);
+                        for (int i = 0; i < tmp_string.length(); ++i) {
+                            if (tmp_string[i] == '\\' &&
+                                (new_char = SymbolUtils::ToASCIIControlCode(
+                                     tmp_string[i + 1])) != (char)0xFF) {
+                                tmp_string.replace(i, 2, 1, new_char);
+                            }
+                        }
 
-                    tokens.emplace_back(line.substr(start, col - start),
-                                        TokenType::kChar, row, start, line);
+                        // add token
+                        tokens.emplace_back(tmp_string, TokenType::kChar, row,
+                                            start - 1, line);
+                    }
                 } break;
                 default: {
                     if (std::isdigit(line_buf[col])) {
@@ -286,9 +303,21 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
                                 if (!std::regex_match(tmp_numbers,
                                                       kOct_number_regex)) {
                                     have_error = true;
+
+                                    // looking for which digit is invalid
+                                    auto invalid_digit =
+                                        tmp_numbers.find_first_not_of(
+                                            "01234567", 1);
+
                                     Message::print_message(
-                                        Message::kError, "invalid octo number",
-                                        line, std::make_pair(row, start));
+                                        Message::kError,
+                                        "Invalid digit '" +
+                                            std::string(
+                                                1, tmp_numbers[invalid_digit]) +
+                                            "' in octal constant",
+                                        line,
+                                        std::make_pair(row,
+                                                       start + invalid_digit));
                                 }
 
                                 // check range

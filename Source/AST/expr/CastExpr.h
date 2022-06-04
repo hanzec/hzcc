@@ -16,9 +16,8 @@ class CastExpr : public ASTNode {
      * @param expr the expression to cast
      * @param location location of the cast operator
      */
-    CastExpr(std::shared_ptr<Type> type,            // NOLINT
-             std::unique_ptr<ASTNode> expr,         // NOLINT
-             const std::pair<int, int>& location);  // NOLINT
+    CastExpr(const Position& location, std::shared_ptr<Type> type,
+             std::unique_ptr<ASTNode> expr);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor

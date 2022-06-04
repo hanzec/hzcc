@@ -7,8 +7,8 @@
 #include "AST/utils/macro.h"
 
 namespace Hzcc::AST {
-ReturnStmt::ReturnStmt(std::unique_ptr<ASTNode> expr,   // NOLINT
-                       const std::pair<int, int>& loc)  // NOLINT
+ReturnStmt::ReturnStmt(std::unique_ptr<ASTNode> expr,  // NOLINT
+                       const Position& loc)            // NOLINT
     : ASTNode(loc), _return_val(std::move(expr)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

@@ -16,11 +16,9 @@ class ForStmt : public ASTNode {
      * @param body body of the for loop
      * @param location location of the for loop
      */
-    ForStmt(std::unique_ptr<ASTNode> init,         // NOLINT
-            std::unique_ptr<ASTNode> cond,         // NOLINT
-            std::unique_ptr<ASTNode> step,         // NOLINT
-            std::unique_ptr<ASTNode> body,         // NOLINT
-            const std::pair<int, int>& location);  // NOLINT
+    ForStmt(const Position& location, std::unique_ptr<ASTNode> init,
+            std::unique_ptr<ASTNode> cond, std::unique_ptr<ASTNode> step,
+            std::unique_ptr<ASTNode> body);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor

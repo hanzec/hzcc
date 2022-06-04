@@ -7,10 +7,9 @@
 namespace Hzcc::AST {
 class TernaryExpr : public ASTNode {
   public:
-    TernaryExpr(std::unique_ptr<ASTNode> cond,         // NOLINT
-                std::unique_ptr<ASTNode> true_expr,    // NOLINT
-                std::unique_ptr<ASTNode> false_expr,   // NOLINT
-                const std::pair<int, int>& location);  // NOLINT
+    TernaryExpr(const Position& location, std::unique_ptr<ASTNode> cond,
+                std::unique_ptr<ASTNode> true_expr,
+                std::unique_ptr<ASTNode> false_expr);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor

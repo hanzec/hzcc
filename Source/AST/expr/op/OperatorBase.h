@@ -13,9 +13,8 @@ class OperatorBase : public ASTNode {
      * @param rhs right hand side expression
      * @param loc location of operator
      */
-    OperatorBase(std::unique_ptr<ASTNode> lhs,     // NOLINT
-                 std::unique_ptr<ASTNode> rhs,     // NOLINT
-                 const std::pair<int, int>& loc);  // NOLINT
+    OperatorBase(const Position& loc, std::unique_ptr<ASTNode> lhs,
+                 std::unique_ptr<ASTNode> rhs);  // NOLINT
 
     /**
      * @brief Get the type of the current expression. The type of OperatorBase

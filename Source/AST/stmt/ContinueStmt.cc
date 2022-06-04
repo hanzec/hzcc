@@ -4,7 +4,7 @@
 #include "ContinueStmt.h"
 
 namespace Hzcc::AST {
-ContinueStmt::ContinueStmt(const std::pair<int, int>& loc) : ASTNode(loc) {}
+ContinueStmt::ContinueStmt(const Position& loc) : ASTNode(loc) {}
 
 const char* AST::ContinueStmt::NodeName() const { return "ContinueStmt"; }
 Status ContinueStmt::visit(ASTVisitor& visitor) { return visitor.visit(this); }

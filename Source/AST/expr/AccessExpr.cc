@@ -6,10 +6,9 @@
 #include "AST/type/StructType.h"
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
-AccessExpr::AccessExpr(bool isPtr,                             // NOLINT
-                       const std::string_view& field,          // NOLINT
-                       std::unique_ptr<ASTNode> chain_access,  // NOLINT
-                       const std::pair<int, int>& location)    // NOLINT
+AccessExpr::AccessExpr(bool isPtr, const Position& location,
+                       const std::string_view& field,
+                       std::unique_ptr<ASTNode> chain_access)  // NOLINT
     : ASTNode(location),
       _ptr_access(isPtr),
       _field(std::string(field)),

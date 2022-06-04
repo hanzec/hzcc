@@ -17,9 +17,8 @@ class FuncCallStmt : public ASTNode {
      * @param location location of the function call
      * @param args arguments of the function call
      */
-    FuncCallStmt(std::shared_ptr<Type> type,                 // NOLINT
-                 const std::string_view& name,               // NOLINT
-                 const std::pair<int, int>& location,        // NOLINT
+    FuncCallStmt(const Position& location, std::shared_ptr<Type> type,
+                 const std::string_view& name,
                  std::list<std::unique_ptr<ASTNode>> args);  // NOLINT
 
     /**

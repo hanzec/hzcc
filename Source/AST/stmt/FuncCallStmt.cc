@@ -5,9 +5,8 @@
 
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
-FuncCallStmt::FuncCallStmt(std::shared_ptr<Type> type,
+FuncCallStmt::FuncCallStmt(const Position& location, std::shared_ptr<Type> type,
                            const std::string_view& name,
-                           const std::pair<int, int>& location,
                            std::list<std::unique_ptr<ASTNode>> args)  // NO_LINT
     : ASTNode(location),
       _args(std::move(args)),

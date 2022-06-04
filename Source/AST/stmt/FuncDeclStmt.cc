@@ -8,16 +8,14 @@
 
 namespace Hzcc::AST {
 
-FuncDeclStmt::FuncDeclStmt(const std::string_view& name,         // NO_LINT
-                           std::shared_ptr<Type> return_type,    // NO_LINT
-                           const std::pair<int, int>& location)  // NO_LINT
-    : DeclStmt(name, location), _return_type(std::move(return_type)) {
+FuncDeclStmt::FuncDeclStmt(const Position& location,
+                           const std::string_view& name,
+                           std::shared_ptr<Type> return_type)  // NO_LINT
+    : DeclStmt(std::move(return_type), name, location) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
-    // name is checked in DeclStmt
-    HZCC_RUNTIME_CHECK(_return_type != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("return type is nullptr", this);
+    // name and type is checked in DeclStmt
 }
 
 bool FuncDeclStmt::set_body(std::unique_ptr<AST::CompoundStmt> declaration) {
@@ -33,7 +31,7 @@ bool FuncDeclStmt::set_body(std::unique_ptr<AST::CompoundStmt> declaration) {
 
 std::string FuncDeclStmt::PrintDetail(const std::string& ident) const {
     std::stringstream result;
-    result << _return_type->GetName() + " " + GetName();
+    result << RetType()->GetName() + " " + GetName();
 
     // print its arguments
     result << " (";
@@ -89,8 +87,6 @@ ArgumentList FuncDeclStmt::getArguments() {
 }
 
 bool FuncDeclStmt::IsFuncDecl() const { return true; }
-
-std::shared_ptr<Type> FuncDeclStmt::RetType() const { return _return_type; }
 
 bool FuncDeclStmt::HasBody() const { return _function_body != nullptr; }
 

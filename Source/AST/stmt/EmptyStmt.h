@@ -12,7 +12,7 @@ class EmptyStatement : public ASTNode {
      * @brief Constructor of EmptyStatement
      * @param loc location of the empty statement
      */
-    explicit EmptyStatement(const std::pair<int, int>& loc);
+    explicit EmptyStatement(const Position& loc);
 
     /**
      * @brief AST Visitor acceptor

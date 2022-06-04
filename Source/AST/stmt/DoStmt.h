@@ -14,9 +14,9 @@ class DoStatement : public ASTNode {
      * @param body body of the do statement
      * @param pos location of the do statement
      */
-    DoStatement(std::unique_ptr<ASTNode> cond,    // NOLINT
-                std::unique_ptr<ASTNode> body,    // NOLINT
-                const std::pair<int, int>& pos);  // NOLINT
+    DoStatement(std::unique_ptr<ASTNode> cond,  // NOLINT
+                std::unique_ptr<ASTNode> body,  // NOLINT
+                const Position& pos);           // NOLINT
 
     /**
      * @brief AST Visitor acceptor

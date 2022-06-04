@@ -13,10 +13,10 @@ enum PACKED LogicalType {
 
 class LogicalExpr : public OperatorBase {
   public:
-    LogicalExpr(const std::string_view& type,     // NOLINT
-                std::unique_ptr<ASTNode> lhs,     // NOLINT
-                std::unique_ptr<ASTNode> rhs,     // NOLINT
-                const std::pair<int, int>& loc);  // NOLINT
+    LogicalExpr(const std::string_view& type,  // NOLINT
+                std::unique_ptr<ASTNode> lhs,  // NOLINT
+                std::unique_ptr<ASTNode> rhs,  // NOLINT
+                const Position& loc);          // NOLINT
 
     /**
      * @brief AST Visitor acceptor

@@ -11,7 +11,7 @@ class BreakStmt : public ASTNode {
      * @brief Constructor of BreakStmt
      * @param loc location of the break statement
      */
-    explicit BreakStmt(const std::pair<int, int>& loc);
+    explicit BreakStmt(const Position& loc);
 
     /**
      * @brief AST Visitor acceptor

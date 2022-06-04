@@ -12,7 +12,7 @@ class ContinueStmt : public ASTNode {
      * @brief Constructor of ContinueStmt
      * @param loc location of the continue statement
      */
-    explicit ContinueStmt(const std::pair<int, int>& loc);
+    explicit ContinueStmt(const Position& loc);
 
     /**
      * @brief AST Visitor acceptor

@@ -5,9 +5,8 @@
 
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
-WhileStmt::WhileStmt(std::unique_ptr<ASTNode> cond,
-                     std::unique_ptr<ASTNode> body,
-                     const std::pair<int, int>& loc)  // NO_LINT
+WhileStmt::WhileStmt(const Position& loc, std::unique_ptr<ASTNode> cond,
+                     std::unique_ptr<ASTNode> body)  // NO_LINT
     : ASTNode(loc), _cond(std::move(cond)), _body(std::move(body)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

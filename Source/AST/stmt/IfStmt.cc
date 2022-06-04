@@ -7,9 +7,8 @@
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
 
-IfStmt::IfStmt(std::unique_ptr<ASTNode> cond,        // NOLINT
-               std::unique_ptr<ASTNode> body,        // NOLINT
-               const std::pair<int, int> &location)  // NOLINT
+IfStmt::IfStmt(const Position &location, std::unique_ptr<ASTNode> cond,
+               std::unique_ptr<ASTNode> body)  // NOLINT
     : ASTNode(location),
       _condition(std::move(cond)),
       _if_body_statement(std::move(body)) {

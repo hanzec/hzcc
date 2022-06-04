@@ -9,9 +9,8 @@
 #include "AST/utils/macro.h"
 
 namespace Hzcc::AST {
-CastExpr::CastExpr(std::shared_ptr<Type> type,           // NOLINT
-                   std::unique_ptr<ASTNode> expr,        // NOLINT
-                   const std::pair<int, int>& location)  // NOLINT
+CastExpr::CastExpr(const Position& location, std::shared_ptr<Type> type,
+                   std::unique_ptr<ASTNode> expr)  // NOLINT
     : ASTNode(location),
       _cast_type(std::move(type)),
       _cast_expr(std::move(expr)) {

@@ -2,6 +2,7 @@
 #include <unordered_map>
 
 #include "lexical/token_type.h"
+#include "macro.h"
 
 #ifndef HZCC_LEXICAL_LEXICAL_TOKEN_H
 #define HZCC_LEXICAL_LEXICAL_TOKEN_H
@@ -27,7 +28,7 @@ class Token {
      * @param col column number of current LexicalToken exists in the source
      * code
      */
-    Token(TokenType token_type, int row, int col) noexcept;
+    Token(TokenType token_type, uint_fast32_t row, uint_fast32_t col) noexcept;
 
     /**
      * @brief The LexicalToken constructor
@@ -36,7 +37,7 @@ class Token {
      * @param col column number of current LexicalToken exists in the source
      * code
      */
-    Token(TokenType token_type, int row, int col,
+    Token(TokenType token_type, uint_fast32_t row, uint_fast32_t col,
           const std::string& line) noexcept;
 
     /**
@@ -47,8 +48,8 @@ class Token {
      * @param col column number of current LexicalToken exists in the source
      * code
      */
-    Token(const std::string& token_string, TokenType token_type, int row,
-          int col) noexcept;
+    Token(const std::string& token_string, TokenType token_type,
+          uint_fast32_t row, uint_fast32_t col) noexcept;
 
     /**
      * @brief The LexicalToken constructor
@@ -58,8 +59,9 @@ class Token {
      * @param col column number of current LexicalToken exists in the source
      * code
      */
-    Token(const std::string& token_string, TokenType token_type, int row,
-          int col, const std::string& line) noexcept;
+    Token(const std::string& token_string, TokenType token_type,
+          uint_fast32_t row, uint_fast32_t col,
+          const std::string& line) noexcept;
 
     /**
      * @brief The LexicalToken Destructor
@@ -99,7 +101,7 @@ class Token {
      * @return std::pair<int, int> the location of the token in the
      *         source file which is a three tuple variable (row, column)
      */
-    [[nodiscard]] const std::pair<int, int>& Location() const noexcept;
+    [[nodiscard]] const Position& Location() const noexcept;
 
     /**
      * @brief Get the cached source line of the token
@@ -120,7 +122,7 @@ class Token {
 
   private:
     TokenType _token_type;
-    std::pair<int, int> _token_location;
+    Position _location;
     const std::string* _token_val_ref = nullptr;
     const std::string* _source_line_val_ref = nullptr;
 

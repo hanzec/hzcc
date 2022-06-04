@@ -6,11 +6,11 @@
 #include "AST/type/Type.h"
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
-LogicalExpr::LogicalExpr(const std::string_view& type,    // NOLINT
-                         std::unique_ptr<ASTNode> lhs,    // NOLINT
-                         std::unique_ptr<ASTNode> rhs,    // NOLINT
-                         const std::pair<int, int>& loc)  // NOLINT
-    : OperatorBase(std::move(lhs), std::move(rhs), loc) {
+LogicalExpr::LogicalExpr(const std::string_view& type,  // NOLINT
+                         std::unique_ptr<ASTNode> lhs,  // NOLINT
+                         std::unique_ptr<ASTNode> rhs,  // NOLINT
+                         const Position& loc)           // NOLINT
+    : OperatorBase(loc, std::move(lhs), std::move(rhs)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */

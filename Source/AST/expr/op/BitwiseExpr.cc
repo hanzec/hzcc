@@ -5,11 +5,10 @@
 
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
-BitwiseExpr::BitwiseExpr(const std::string_view& type,
+BitwiseExpr::BitwiseExpr(const Position& loc, const std::string_view& type,
                          std::unique_ptr<ASTNode> lhs,
-                         std::unique_ptr<ASTNode> rhs,
-                         const std::pair<int, int>& loc)  // NOLINT
-    : OperatorBase(std::move(rhs), std::move(lhs), loc) {
+                         std::unique_ptr<ASTNode> rhs)  // NOLINT
+    : OperatorBase(loc, std::move(rhs), std::move(lhs)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */

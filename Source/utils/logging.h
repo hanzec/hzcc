@@ -24,7 +24,7 @@ void initLogging(char argv[]);
 #define HZCC_RUNTIME_CHECK(cond)                                    \
     static_assert(std::is_convertible<decltype(cond), bool>::value, \
                   "Macro type mismatch, need bool for cond");       \
-    LOG_ASSERT(cond) << " \033[1;31m[Internal]\033[0m: "
+    LOG_IF(FATAL, !(cond)) << "\033[1;31m[Internal]\033[0m: "
 
 #define HZCC_PRETTY_PRINT_TOKEN(token)                                        \
     std::setfill(' ') << "\033[0;33m[" << std::setw(8) << std::right          \

@@ -7,6 +7,7 @@
 #include <string>
 
 #include "ASTVisitor.h"
+#include "macro.h"
 #include "utils/logging.h"
 #ifndef HZCC_AST_AST_NODE_H
 #define HZCC_AST_AST_NODE_H
@@ -18,7 +19,7 @@ class ASTNode {
   public:
     virtual ~ASTNode();
 
-    explicit ASTNode(std::pair<int, int> loc);
+    explicit ASTNode(Position loc);
 
     /**
      * @brief The unique id of the node.
@@ -31,7 +32,7 @@ class ASTNode {
      * have the form of (line, column).
      * @return The location of this ASTNode
      */
-    [[nodiscard]] const std::pair<int, int>& Location() const;
+    [[nodiscard]] const Position& Location() const;
 
     /**
      * @brief Determine whether the node have a body or not
@@ -116,8 +117,8 @@ class ASTNode {
 
   private:
     const uint64_t _id;
+    const Position _node_location;
     inline static uint64_t _counter_ = 0;
-    std::pair<int, int> _node_location{-1, -1};
 };
 
 }  // namespace Hzcc::AST

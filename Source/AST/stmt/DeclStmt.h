@@ -12,8 +12,9 @@ class DeclStmt : public ASTNode {
      * @param name name of the declaration
      * @param loc location of the declaration
      */
-    DeclStmt(const std::string_view& name,     // NOLINT
-             const std::pair<int, int>& loc);  // NOLINT
+    DeclStmt(std::shared_ptr<Type> type,    // NOLINT
+             const std::string_view& name,  // NOLINT
+             const Position& loc);          // NOLINT
 
     [[nodiscard]] std::string GetName() const;
 
@@ -28,6 +29,8 @@ class DeclStmt : public ASTNode {
 
     [[nodiscard]] virtual bool HasInitExpr() const;
 
+    [[nodiscard]] std::shared_ptr<Type> RetType() const override;
+
     /**
      * @brief Get Name of the node
      * @return will always return "DeclStmt"
@@ -35,7 +38,8 @@ class DeclStmt : public ASTNode {
     [[nodiscard]] const char* NodeName() const override;
 
   private:
-    std::string _decl_name;
+    const std::string _decl_name;
+    const std::shared_ptr<Type> _type;
 };
 }  // namespace Hzcc::AST
 #endif  // HZCC_AST_STATEMENT_DECL_STMT_H

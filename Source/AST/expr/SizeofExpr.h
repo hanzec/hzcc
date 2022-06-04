@@ -12,8 +12,7 @@ class SizeofExpr : public ASTNode {
      * @param expr the expression to get the size of
      * @param location location of the sizeof operator
      */
-    SizeofExpr(std::unique_ptr<ASTNode> expr,
-               const std::pair<int, int>& location);
+    SizeofExpr(std::unique_ptr<ASTNode> expr, const Position& location);
 
     /**
      * @brief AST Visitor acceptor

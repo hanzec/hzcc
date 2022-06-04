@@ -15,9 +15,8 @@ class IfStmt : public ASTNode {
      * @param body body of the if statement
      * @param location location of the if statement
      */
-    IfStmt(std::unique_ptr<ASTNode> cond,         // NOLINT
-           std::unique_ptr<ASTNode> body,         // NOLINT
-           const std::pair<int, int>& location);  // NOLINT
+    IfStmt(const Position& location, std::unique_ptr<ASTNode> cond,
+           std::unique_ptr<ASTNode> body);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor

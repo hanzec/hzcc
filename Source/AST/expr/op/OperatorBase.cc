@@ -7,9 +7,8 @@
 #include "AST/type/Type.h"
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
-OperatorBase::OperatorBase(std::unique_ptr<ASTNode> lhs,    // NOLINT
-                           std::unique_ptr<ASTNode> rhs,    // NOLINT
-                           const std::pair<int, int>& loc)  // NOLINT
+OperatorBase::OperatorBase(const Position& loc, std::unique_ptr<ASTNode> lhs,
+                           std::unique_ptr<ASTNode> rhs)  // NOLINT
     : ASTNode(loc), _lhs(std::move(lhs)), _rhs(std::move(rhs)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

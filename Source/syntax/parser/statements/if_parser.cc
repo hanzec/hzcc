@@ -35,11 +35,9 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
     }
 
     // if condition could be converted to int
-    if (Options::Global_enable_type_checking && cond->RetType()->IsVoid()) {
-        Message::set_current_part("RetType checking");
+    if (cond->RetType()->IsVoid()) {
         MYCC_PrintTokenError_ReturnNull(
             cond_token, "if condition has non-numeric type void");
-        Message::set_current_part("Parser");
     }
 
     // parsing body
@@ -50,7 +48,7 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
 
     // generate ifNode
     auto ifNode =
-        std::make_unique<AST::IfStmt>(std::move(cond), std::move(body), if_loc);
+        std::make_unique<AST::IfStmt>(if_loc, std::move(cond), std::move(body));
 
     // parsing [else] and [else if] stmt
     while (tokens.peek().Type() == Lexical::TokenType::kElse) {
@@ -91,12 +89,9 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
             }
 
             // check if else-if condition is valid
-            if (Options::Global_enable_type_checking &&
-                else_if_condition->RetType()->IsVoid()) {
-                Message::set_current_part("RetType checking");
+            if (else_if_condition->RetType()->IsVoid()) {
                 MYCC_PrintTokenError_ReturnNull(
                     else_if_token, "if condition has non-numeric type void");
-                Message::set_current_part("Parser");
             }
 
             // add else-if stmt

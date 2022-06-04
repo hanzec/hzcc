@@ -20,10 +20,9 @@ class VarDecl : public DeclStmt {
      * @param decl_name The name of the variable
      * @param init The initial value of the variable (optional)
      */
-    VarDecl(std::shared_ptr<Type> type,       // NOLINT
-            const std::string_view& name,     // NOLINT
-            std::unique_ptr<ASTNode> init,    // NOLINT
-            const std::pair<int, int>& loc);  // NOLINT
+    VarDecl(const Position& loc, std::shared_ptr<Type> type,
+            const std::string_view& name,
+            std::unique_ptr<ASTNode> init);  // NOLINT
 
     /**
      * @brief visitor for AST
@@ -37,12 +36,6 @@ class VarDecl : public DeclStmt {
      * @return true if contains init value, false otherwise
      */
     [[nodiscard]] bool HasInitExpr() const override;
-
-    /**
-     * @brief Get the type of current VarDecl
-     * @return the type of current VarDecl
-     */
-    [[nodiscard]] std::shared_ptr<Type> RetType() const override;
 
     /**
      * @brief Get the init AST Node of current VarDecl Node
@@ -70,7 +63,6 @@ class VarDecl : public DeclStmt {
         const std::string& ident) const override;
 
   private:
-    std::shared_ptr<Type> _type;
     std::unique_ptr<AST::ASTNode> _init_expr;
 };
 

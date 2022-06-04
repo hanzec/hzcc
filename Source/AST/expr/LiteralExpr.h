@@ -24,7 +24,7 @@ class LiteralExpr : public ASTNode {
      * @param value The integer value
      * @param location The location of this node in source code
      */
-    explicit LiteralExpr(int64_t value, const std::pair<int, int>& location);
+    LiteralExpr(int64_t value, const Position& location);
 
     /**
      * @brief Construct a new Literal Expr object from Token

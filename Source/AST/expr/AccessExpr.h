@@ -16,10 +16,9 @@ class AccessExpr : public ASTNode {
      * @param chain_access if have chain access or EmptyStmt otherwise
      * @param location location of access expression
      */
-    AccessExpr(bool isPtr,                             // NO_LINT
-               const std::string_view& field,          // NO_LINT
-               std::unique_ptr<ASTNode> chain_access,  // NO_LINT
-               const std::pair<int, int>& location);   // NO_LINT
+    AccessExpr(bool isPtr, const Position& location,
+               const std::string_view& field,
+               std::unique_ptr<ASTNode> chain_access);  // NO_LINT
 
     /**
      * @brief AST Visitor acceptor

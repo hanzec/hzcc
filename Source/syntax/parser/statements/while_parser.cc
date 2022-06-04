@@ -41,8 +41,8 @@ std::unique_ptr<AST::ASTNode> WhileStatement::parse_impl(
     tokens.push(Lexical::Token(Lexical::TokenType::kSemiColon, -1, -1));
 
     ExitLoop();  // exit loop
-    return std::make_unique<AST::WhileStmt>(std::move(condition),
-                                            std::move(body), while_loc);
+    return std::make_unique<AST::WhileStmt>(while_loc, std::move(condition),
+                                            std::move(body));
 }
 
 }  // namespace Hzcc::Syntax::Parser

@@ -7,9 +7,8 @@
 #include "AST/utils/macro.h"
 
 namespace Hzcc::AST {
-DeclRefExpr::DeclRefExpr(std::shared_ptr<Type> type,      // NO_LINT
-                         const std::string_view& name,    // NO_LINT
-                         const std::pair<int, int>& loc)  // NO_LINT
+DeclRefExpr::DeclRefExpr(const Position& loc, std::shared_ptr<Type> type,
+                         const std::string_view& name)  // NO_LINT
     : ASTNode(loc), _name(std::string(name)), _type(std::move(type)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

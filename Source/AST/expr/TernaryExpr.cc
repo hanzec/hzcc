@@ -6,10 +6,10 @@
 #include "AST/type/Type.h"
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
-TernaryExpr::TernaryExpr(std::unique_ptr<ASTNode> cond,        // NOLINT
-                         std::unique_ptr<ASTNode> true_expr,   // NOLINT
-                         std::unique_ptr<ASTNode> false_expr,  // NOLINT
-                         const std::pair<int, int>& location)  // NOLINT
+TernaryExpr::TernaryExpr(const Position& location,
+                         std::unique_ptr<ASTNode> cond,
+                         std::unique_ptr<ASTNode> true_expr,
+                         std::unique_ptr<ASTNode> false_expr)  // NOLINT
     : ASTNode(location),
       _cond(std::move(cond)),
       _true_expr(std::move(true_expr)),

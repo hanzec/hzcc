@@ -7,9 +7,8 @@
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
 ArraySubscriptExpr::ArraySubscriptExpr(
-    std::unique_ptr<ASTNode> array,       // NOLINT
-    std::unique_ptr<ASTNode> subscript,   // NOLINT
-    const std::pair<int, int>& location)  // NOLINT
+    const Position& location, std::unique_ptr<ASTNode> array,
+    std::unique_ptr<ASTNode> subscript)  // NOLINT
     : ASTNode(location),
       _array(std::move(array)),
       _subscript(std::move(subscript)) {

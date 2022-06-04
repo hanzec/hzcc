@@ -11,9 +11,8 @@ namespace Hzcc::AST {
 constexpr static std::array<const char*, kUnaryType_ENUM_SIZE> kUnaryOpSTR = {
     "-", "++(Pre)", "--(Pre)", "++(Post)", "--(Post)", "&", "*", "!", "~"};
 
-UnaryExpr::UnaryExpr(const std::string_view& type,
-                     std::unique_ptr<ASTNode> expr,
-                     const std::pair<int, int>& location)
+UnaryExpr::UnaryExpr(const Position& location, const std::string_view& type,
+                     std::unique_ptr<ASTNode> expr)
     : ASTNode(location), _expr(std::move(expr)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

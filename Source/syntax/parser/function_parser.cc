@@ -50,9 +50,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(TokenList& tokens,
     }
 
     // function name cannot be empty
-    if (Options::Global_enable_type_checking &&
-        Options::Global_enable_naming_checking &&
-        !Options::Global_allow_same_name_for_func_val &&
+    if (!Options::Global_allow_same_name_for_func_val &&
         context.hasVariable(func_name.Value(), true)) {
         MYCC_PrintTokenError_ReturnNull(
             func_name, "Function '" + func_name.Value() +
@@ -61,7 +59,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(TokenList& tokens,
 
     // actual function node
     auto func_node = std::make_unique<AST::FuncDeclStmt>(
-        func_name.Value(), return_type, func_name.Location());
+        func_name.Location(), func_name.Value(), return_type);
 
     // parse argument list
     bool first = false;
@@ -122,8 +120,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(TokenList& tokens,
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRParentheses, tokens);
 
     // function with same name must match previous definition
-    if (Options::Global_enable_type_checking &&
-        context.hasFunction(func_name.Value())) {
+    if (context.hasFunction(func_name.Value())) {
         auto [func_type, func_type_attributes, line_no] =
             context.getFuncRetAndArgType(func_name.Value());
 

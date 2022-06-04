@@ -4,7 +4,7 @@
 #include "BreakStmt.h"
 
 namespace Hzcc::AST {
-BreakStmt::BreakStmt(const std::pair<int, int>& loc) : ASTNode(loc) {}
+BreakStmt::BreakStmt(const Position& loc) : ASTNode(loc) {}
 
 const char* AST::BreakStmt::NodeName() const { return "BreakStmt"; }
 Status BreakStmt::visit(ASTVisitor& visitor) { return visitor.visit(this); }

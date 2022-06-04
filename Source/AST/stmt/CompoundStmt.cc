@@ -4,7 +4,7 @@
 #include "CompoundStmt.h"
 namespace Hzcc::AST {
 
-CompoundStmt::CompoundStmt(const std::pair<int, int>& loc) : ASTNode(loc) {}
+CompoundStmt::CompoundStmt(const Position& loc) : ASTNode(loc) {}
 
 bool CompoundStmt::AddStatement(std::unique_ptr<ASTNode> statement) {
     if (statement == nullptr) {

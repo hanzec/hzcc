@@ -17,7 +17,7 @@ namespace Hzcc::Lexical {
 Token::Token(const Token& old)
     : _token_type(old._token_type),
       _token_val_ref(old._token_val_ref),
-      _token_location(old._token_location),
+      _location(old._location),
       _source_line_val_ref(old._source_line_val_ref) {
     // token string
     if (old._token_val_ref !=
@@ -43,10 +43,11 @@ Token::Token(const Token& old)
     }
 }
 
-Token::Token(TokenType token_type, int row, int col) noexcept
-    : _token_type(token_type), _token_location(std::make_pair(row, col)) {}
+Token::Token(TokenType token_type, uint_fast32_t row,
+             uint_fast32_t col) noexcept
+    : _token_type(token_type), _location(std::make_pair(row, col)) {}
 
-Token::Token(TokenType token_type, int row, int col,
+Token::Token(TokenType token_type, uint_fast32_t row, uint_fast32_t col,
              const std::string& line) noexcept
     : Token(token_type, row, col) {
     auto ref = _const_value_storage.find(line);
@@ -63,9 +64,9 @@ Token::Token(TokenType token_type, int row, int col,
     }
 }
 
-Token::Token(const std::string& token_string, TokenType token_type, int row,
-             int col) noexcept
-    : _token_type(token_type), _token_location(std::make_pair(row, col)) {
+Token::Token(const std::string& token_string, TokenType token_type,
+             uint_fast32_t row, uint_fast32_t col) noexcept
+    : _token_type(token_type), _location(std::make_pair(row, col)) {
     auto ref = _const_value_storage.find(token_string);
     if (ref != _const_value_storage.end()) {
         ref->second += 1;
@@ -80,8 +81,9 @@ Token::Token(const std::string& token_string, TokenType token_type, int row,
     }
 }
 
-Token::Token(const std::string& token_string, TokenType token_type, int row,
-             int col, const std::string& line) noexcept
+Token::Token(const std::string& token_string, TokenType token_type,
+             uint_fast32_t row, uint_fast32_t col,
+             const std::string& line) noexcept
     : Token(token_string, token_type, row, col) {
     auto ref = _const_value_storage.find(line);
     if (ref != _const_value_storage.end()) {
@@ -140,6 +142,8 @@ std::string Token::Value(bool escape) const noexcept {
     } else {
         if (escape) {
             std::stringstream ss;
+            if (_token_type == TokenType::kChar) ss << "\'";
+            if (_token_type == TokenType::kString) ss << "\"";
             for (auto& c : *_token_val_ref) {
                 if (std::iscntrl(c)) {
                     ss << SymbolUtils::ASCIIControlCodeToString(c);
@@ -147,6 +151,8 @@ std::string Token::Value(bool escape) const noexcept {
                     ss << c;
                 }
             }
+            if (_token_type == TokenType::kChar) ss << "\'";
+            if (_token_type == TokenType::kString) ss << "\"";
             return ss.str();
         } else {
             return {*_token_val_ref};
@@ -154,8 +160,9 @@ std::string Token::Value(bool escape) const noexcept {
     }
 }
 
-const std::pair<int, int>& Token::Location() const noexcept {
-    return _token_location;
+const std::pair<uint_fast32_t, uint_fast32_t>& Token::Location()
+    const noexcept {
+    return _location;
 }
 
 std::string Token::SourceLine() const noexcept {

@@ -20,9 +20,8 @@ class FuncDeclStmt : public DeclStmt {
      * @param return_type the return type of the function
      * @param location the location of the function
      */
-    FuncDeclStmt(const std::string_view& name,          // NOLINT
-                 std::shared_ptr<Type> return_type,     // NOLINT
-                 const std::pair<int, int>& location);  // NOLINT
+    FuncDeclStmt(const Position& location, const std::string_view& name,
+                 std::shared_ptr<Type> return_type);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor
@@ -44,8 +43,6 @@ class FuncDeclStmt : public DeclStmt {
      * @return true if the node have a body, false otherwise
      */
     [[nodiscard]] bool HasBody() const override;
-
-    [[nodiscard]] std::shared_ptr<Type> RetType() const override;
 
     [[nodiscard]] bool IsFuncDecl() const override;
 
@@ -69,7 +66,6 @@ class FuncDeclStmt : public DeclStmt {
         const std::string& ident) const override;
 
   private:
-    const std::shared_ptr<Type> _return_type;
     std::unique_ptr<CompoundStmt> _function_body;
     std::list<std::unique_ptr<ParamVarDecl>> _function_param;
 };

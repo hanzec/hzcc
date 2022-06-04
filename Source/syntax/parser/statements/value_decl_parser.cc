@@ -90,24 +90,20 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
         }
 
         // check type compatibility
-        if (Options::Global_enable_type_checking) {
-            Message::set_current_part("RetType checking");
 
-            // type should be compatible
-            if (*type == *value->RetType()) {
-                auto orig_type = value->RetType();
-                value = AST::ASTNode::CastTo(type, std::move(value));
-                if (value == nullptr) {
-                    MYCC_PrintTokenError_ReturnNull(
-                        value_node,
-                        "Initialization for ' " + name.Value() +
-                            "' has wrong type: " + orig_type->GetName() +
-                            " expected: " + type->GetName());
-                }
+        // type should be compatible
+        if (*type == *value->RetType()) {
+            auto orig_type = value->RetType();
+            value = AST::ASTNode::CastTo(type, std::move(value));
+            if (value == nullptr) {
+                MYCC_PrintTokenError_ReturnNull(
+                    value_node,
+                    "Initialization for ' " + name.Value() +
+                        "' has wrong type: " + orig_type->GetName() +
+                        " expected: " + type->GetName());
             }
         }
         var_value = std::move(value);
-        Message::set_current_part("Parser");
     }
 
     // if define multiple value, we will add type back to tokens and parse in
@@ -135,8 +131,8 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
         context.addVariable(name.Location().first, name.Value(), type);
     }
 
-    return std::make_unique<AST::VarDecl>(
-        type, name.Value(), std::move(var_value), name.Location());
+    return std::make_unique<AST::VarDecl>(name.Location(), type, name.Value(),
+                                          std::move(var_value));
 }
 
 }  // namespace Hzcc::Syntax::Parser
