@@ -1,86 +1,87 @@
 ###############################################################################
 ## Project Sources ############################################################
 ###############################################################################
-file(GLOB MYCC_AST_HDRS ${CMAKE_CURRENT_LIST_DIR}/*.h)
-file(GLOB MYCC_AST_SRCS ${CMAKE_CURRENT_LIST_DIR}/*.cc)
+file(GLOB hzcc_ast_hdrs ${CMAKE_CURRENT_LIST_DIR}/*.h)
+file(GLOB hzcc_ast_srcs ${CMAKE_CURRENT_LIST_DIR}/*.cc)
 
 # project sources
-target_sources(mycc PRIVATE ${MYCC_AST_HDRS} ${MYCC_AST_SRCS})
+target_sources(hzcc PRIVATE ${hzcc_ast_hdrs} ${hzcc_ast_srcs})
 
 ###############################################################################
 ## AST Cast ###################################################################
 ###############################################################################
-file(GLOB MYCC_AST_CAST_HDRS expr/cast/*.h)
-file(GLOB MYCC_AST_CAST_SRCS expr/cast/*.cc)
+file(GLOB hzcc_ast_cast_hdrs expr/cast/*.h)
+file(GLOB hzcc_ast_cast_srcs expr/cast/*.cc)
 
 # project sources
-target_sources(mycc PRIVATE ${MYCC_AST_CAST_HDRS} ${MYCC_AST_CAST_SRCS})
+target_sources(hzcc PRIVATE ${hzcc_ast_cast_hdrs} ${hzcc_ast_cast_srcs})
 
 ###############################################################################
-## AST Type ###################################################################
+## AST RetType ###################################################################
 ###############################################################################
-file(GLOB MYCC_AST_TYPE_HDRS ${CMAKE_CURRENT_LIST_DIR}/type/*.h)
-file(GLOB MYCC_AST_TYPE_SRCS ${CMAKE_CURRENT_LIST_DIR}/type/*.cc)
+file(GLOB hzcc_ast_type_hdrs ${CMAKE_CURRENT_LIST_DIR}/type/*.h)
+file(GLOB hzcc_ast_type_srcs ${CMAKE_CURRENT_LIST_DIR}/type/*.cc)
 
 # project sources
-target_sources(mycc PRIVATE ${MYCC_AST_TYPE_HDRS} ${MYCC_AST_TYPE_SRCS})
+target_sources(hzcc PRIVATE ${hzcc_ast_type_hdrs} ${hzcc_ast_type_srcs})
 
 ###############################################################################
 ## AST Utils ##################################################################
 ###############################################################################
-file(GLOB MYCC_AST_UTILS_HDRS ${CMAKE_CURRENT_LIST_DIR}/utils/*.h)
-file(GLOB MYCC_AST_UTILS_SRCS ${CMAKE_CURRENT_LIST_DIR}/utils/*.cc)
+file(GLOB hzcc_ast_utils_hdrs ${CMAKE_CURRENT_LIST_DIR}/utils/*.h)
+file(GLOB hzcc_ast_utils_srcs ${CMAKE_CURRENT_LIST_DIR}/utils/*.cc)
 
 # project sources
-target_sources(mycc PRIVATE ${MYCC_AST_UTILS_HDRS} ${MYCC_AST_UTILS_SRCS})
+target_sources(hzcc PRIVATE ${hzcc_ast_utils_hdrs} ${hzcc_ast_utils_srcs})
 
 ###############################################################################
 ## AST Value ##################################################################
 ###############################################################################
-file(GLOB MYCC_AST_VALUE_HDRS ${CMAKE_CURRENT_LIST_DIR}/value/*.h)
-file(GLOB MYCC_AST_VALUE_SRCS ${CMAKE_CURRENT_LIST_DIR}/value/*.cc)
+file(GLOB hzcc_ast_value_hdrs ${CMAKE_CURRENT_LIST_DIR}/value/*.h)
+file(GLOB hzcc_ast_value_srcs ${CMAKE_CURRENT_LIST_DIR}/value/*.cc)
 
 # project sources
-target_sources(mycc PRIVATE ${MYCC_AST_VALUE_HDRS} ${MYCC_AST_VALUE_SRCS})
+target_sources(hzcc PRIVATE ${hzcc_ast_value_hdrs} ${hzcc_ast_value_srcs})
 
 ###############################################################################
 ## AST Operator #############################################################
 ###############################################################################
-file(GLOB MYCC_AST_EXPRESSION_HDRS ${CMAKE_CURRENT_LIST_DIR}/expr/*.h)
-file(GLOB MYCC_AST_EXPRESSION_SRCS ${CMAKE_CURRENT_LIST_DIR}/expr/*.cc)
-file(GLOB MYCC_AST_EXPRESSION_OP_HDRS ${CMAKE_CURRENT_LIST_DIR}/expr/operator/*.h)
-file(GLOB MYCC_AST_EXPRESSION_OP_SRCS ${CMAKE_CURRENT_LIST_DIR}/expr/operator/*.cc)
+file(GLOB hzcc_ast_expression_hdrs ${CMAKE_CURRENT_LIST_DIR}/expr/*.h)
+file(GLOB hzcc_ast_expression_srcs ${CMAKE_CURRENT_LIST_DIR}/expr/*.cc)
+file(GLOB hzcc_ast_expression_op_hdrs ${CMAKE_CURRENT_LIST_DIR}/expr/op/*.h)
+file(GLOB hzcc_ast_expression_op_srcs ${CMAKE_CURRENT_LIST_DIR}/expr/op/*.cc)
+
 # project sources
-target_sources(mycc PRIVATE
-        ${MYCC_AST_EXPRESSION_HDRS} ${MYCC_AST_EXPRESSION_SRCS}
-        ${MYCC_AST_EXPRESSION_OP_HDRS} ${MYCC_AST_EXPRESSION_OP_SRCS})
+target_sources(hzcc PRIVATE
+        ${hzcc_ast_expression_hdrs} ${hzcc_ast_expression_srcs}
+        ${hzcc_ast_expression_op_hdrs} ${hzcc_ast_expression_op_srcs})
 
 ###############################################################################
 ## AST Statement #############################################################
 ###############################################################################
-file(GLOB MYCC_AST_STATEMENTS_HDRS ${CMAKE_CURRENT_LIST_DIR}/statement/*.h)
-file(GLOB MYCC_AST_STATEMENTS_SRCS ${CMAKE_CURRENT_LIST_DIR}/statement/*.cc)
+file(GLOB hzcc_ast_statements_hdrs ${CMAKE_CURRENT_LIST_DIR}/stmt/*.h)
+file(GLOB hzcc_ast_statements_srcs ${CMAKE_CURRENT_LIST_DIR}/stmt/*.cc)
 
 # project sources
-target_sources(mycc PRIVATE ${MYCC_AST_STATEMENTS_HDRS} ${MYCC_AST_STATEMENTS_SRCS})
+target_sources(hzcc PRIVATE ${hzcc_ast_statements_hdrs} ${hzcc_ast_statements_srcs})
 
 ###############################################################################
 ## Testing Source #############################################################
 ###############################################################################
 if (ENABLE_TESTING MATCHES "ON")
     # looking for the source code
-    file(GLOB MYCC_SYNTAX_TEST_SRCS ${CMAKE_CURRENT_LIST_DIR}/test/*_test.cc)
+    file(GLOB hzcc_SYNTAX_TEST_SRCS ${CMAKE_CURRENT_LIST_DIR}/test/*_test.cc)
 
-    # add to mycc_test target
-    target_sources(mycc_test
+    # add to hzcc_test target
+    target_sources(hzcc_test
             PRIVATE
-            ${MYCC_SYNTAX_TEST_SRCS}
-            ${MYCC_AST_HDRS} ${MYCC_AST_SRCS}
-            ${MYCC_AST_CAST_HDRS} ${MYCC_AST_CAST_SRCS}
-            ${MYCC_AST_TYPE_HDRS} ${MYCC_AST_TYPE_SRCS}
-            ${MYCC_AST_UTILS_HDRS} ${MYCC_AST_UTILS_SRCS}
-            ${MYCC_AST_VALUE_HDRS} ${MYCC_AST_VALUE_SRCS}
-            ${MYCC_AST_STATEMENTS_HDRS} ${MYCC_AST_STATEMENTS_SRCS}
-            ${MYCC_AST_EXPRESSION_HDRS} ${MYCC_AST_EXPRESSION_SRCS}
-            ${MYCC_AST_EXPRESSION_OP_HDRS} ${MYCC_AST_EXPRESSION_OP_SRCS})
+            ${hzcc_SYNTAX_TEST_SRCS}
+            ${hzcc_ast_hdrs} ${hzcc_ast_srcs}
+            ${hzcc_ast_cast_hdrs} ${hzcc_ast_cast_srcs}
+            ${hzcc_ast_type_hdrs} ${hzcc_ast_type_srcs}
+            ${hzcc_ast_utils_hdrs} ${hzcc_ast_utils_srcs}
+            ${hzcc_ast_value_hdrs} ${hzcc_ast_value_srcs}
+            ${hzcc_ast_statements_hdrs} ${hzcc_ast_statements_srcs}
+            ${hzcc_ast_expression_hdrs} ${hzcc_ast_expression_srcs}
+            ${hzcc_ast_expression_op_hdrs} ${hzcc_ast_expression_op_srcs})
 endif ()

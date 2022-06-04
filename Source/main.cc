@@ -1,5 +1,5 @@
 //
-// Created by chen_ on 2022/1/23.
+// Created by Hanze Chen on 2022/1/23.
 //
 
 #include <glog/logging.h>
@@ -184,21 +184,21 @@ int main(int argc, char* argv[]) {
         compilation_units.push_back(std::move(compilation_unit));
     }
 
-    /** ##################################################################
-     * Code Generation                                                  #
-     * ##################################################################*/
-    Hzcc::Message::set_current_part("Code generation ");
-    Hzcc::Message::set_current_part("Code Generator");
-
-    // Compile to JVM instr
-    for (auto& unit : compilation_units) {
-        DVLOG(0) << "AST Dump\n" << unit->Dump();
-        Hzcc::Pass::PassManagerImpl pass_manager;
-        Hzcc::Codegen::JVMGenerator jvm_generator(output_file, unit, flag6);
-
-        pass_manager.RunPass(unit);
-        jvm_generator.Generate();
-    }
+//    /** ##################################################################
+//     * Code Generation                                                  #
+//     * ##################################################################*/
+//    Hzcc::Message::set_current_part("Code generation ");
+//    Hzcc::Message::set_current_part("Code Generator");
+//
+//    // Compile to JVM instr
+//    for (auto& unit : compilation_units) {
+//        DVLOG(0) << "AST Dump\n" << unit->Dump();
+//        Hzcc::Pass::PassManagerImpl pass_manager;
+//        Hzcc::Codegen::JVMGenerator jvm_generator(output_file, unit, flag6);
+//
+//        pass_manager.RunPass(unit);
+//        jvm_generator.Generate();
+//    }
 
     return 0;
 }

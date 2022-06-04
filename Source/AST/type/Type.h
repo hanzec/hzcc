@@ -9,23 +9,23 @@
 #include "lexical/token_type.h"
 #include "syntax/utils/token_utils.h"
 #include "utils/logging.h"
-#ifndef MYCC_AST_TYPE_H
-#define MYCC_AST_TYPE_H
+#ifndef HZCC_AST_TYPE_TYPE_H
+#define HZCC_AST_TYPE_TYPE_H
 namespace Hzcc::AST {
 class ASTNode;
 class BaseType;
 /**
- * @class Type
- * @brief Type of a variable or a function.
+ * @class RetType
+ * @brief RetType of a variable or a function.
  */
 class Type : public std::enable_shared_from_this<Type> {
   public:
     using TypePtr = std::shared_ptr<Type>;
 
     /**
-     * @brief Deconstructor of Type.
-     * @Note: When a Type is deconstructed, if this Type is last one created, id
-     * of this Type will be reused.
+     * @brief Deconstructor of RetType.
+     * @Note: When a Type is deconstructed, if this RetType is last one created,
+     * id of this RetType will be reused.
      */
     virtual ~Type();
 
@@ -86,16 +86,16 @@ class Type : public std::enable_shared_from_this<Type> {
     [[nodiscard]] bool IsInteger() const { return _base_type->IsInteger(); }
 
     /**
-     * @brief Check if the type is the same as another type.
-     * @return True if the type is the same as another type, false otherwise.
+     * @brief Check if the type is Long
+     * @return True if the type is Long, false otherwise.
      */
-    [[nodiscard]] bool IsSame(const Type& type) const;
+    [[nodiscard]] bool IsLong() const { return _base_type->IsLong(); }
 
     /**
-     * @brief Check if the type is the same as another type.
-     * @return True if the type is the same as another type, false otherwise.
+     * @brief Check if the type is Short
+     * @return True if the type is Short, false otherwise.
      */
-    [[nodiscard]] virtual bool IsSame(const std::shared_ptr<Type>& type) const;
+    [[nodiscard]] bool IsShort() const { return _base_type->IsShort(); }
 
     /**
      * @brief Get the declare name of the type.
@@ -131,6 +131,12 @@ class Type : public std::enable_shared_from_this<Type> {
         const std::shared_ptr<Type>& other_type,
         const std::list<Lexical::TokenType>& attrs);
 
+    // overload operator == for RetType
+    bool operator==(const Type& type) const;
+
+    // overload operator != for RetType
+    bool operator!=(const Type& type) const;
+
   protected:
     using BaseTypePtr = std::shared_ptr<BaseType>;
 
@@ -142,7 +148,7 @@ class Type : public std::enable_shared_from_this<Type> {
     static BaseTypePtr GetBaseType(const std::string& name);
 
     /**
-     * @brief Constructor of Type.
+     * @brief Constructor of RetType.
      * @param base_type The base type of the type.
      * @param attrs The attributes of the type.
      */
@@ -153,6 +159,12 @@ class Type : public std::enable_shared_from_this<Type> {
     inline static std::unordered_map<std::string, TypePtr> _cached_types;
     inline static std::unordered_map<std::string, BaseTypePtr> _cached_b_types;
 
+    /**
+     * @brief Check if the type is the same as another type.
+     * @return True if the type is the same as another type, false otherwise.
+     */
+    [[nodiscard]] virtual bool IsSame(const Type& rhs) const;
+
   private:
     uint64_t _id;
     BaseTypePtr _base_type;
@@ -162,4 +174,4 @@ class Type : public std::enable_shared_from_this<Type> {
 
 }  // namespace Hzcc::AST
 
-#endif  // MYCC_AST_TYPE_H
+#endif  // HZCC_AST_TYPE_TYPE_H

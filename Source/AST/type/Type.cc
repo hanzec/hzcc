@@ -37,7 +37,7 @@ std::shared_ptr<Type> Type::GetTypeOf(
 
     // check if the type name is empty
     DLOG_ASSERT(other_type != nullptr)
-        << "Type::GetTypeOf: other_type is nullptr";
+        << "RetType::GetTypeOf: other_type is nullptr";
 
     // check if the type is already cached
     auto new_type =
@@ -122,11 +122,6 @@ bool Type::IsSame(const Type& type) const {
     return type._attrs == this->_attrs && this->_base_type == type._base_type;
 }
 
-bool Type::IsSame(const std::shared_ptr<Type>& type) const {
-    DLOG_ASSERT(type != nullptr) << " comparing current type with nullptr!";
-    return type->_attrs == this->_attrs && this->_base_type == type->_base_type;
-}
-
 std::string Type::GetName(bool without_attr) const {
     if (without_attr) {
         return _base_type->GetName();
@@ -150,4 +145,6 @@ std::list<Lexical::TokenType> Type::GetAttributes() {
     }
     return ret;
 }
+bool Type::operator==(const Type& rhs) const { return IsSame(rhs); }
+bool Type::operator!=(const Type& type) const { return !IsSame(type); }
 }  // namespace Hzcc::AST

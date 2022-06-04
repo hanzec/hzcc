@@ -9,8 +9,8 @@
 
 #include <list>
 
-#include "AST/statement/compound.h"
-#include "AST/statement/do.h"
+#include "AST/stmt/CompoundStmt.h"
+#include "AST/stmt/DoStmt.h"
 #include "lexical/Token.h"
 #include "syntax/parser/base_parser.h"
 #include "syntax/utils/common_utils.h"
@@ -19,8 +19,8 @@
 
 namespace Hzcc::Syntax::Parser {
 WhileStatement::WhileStatement() noexcept
-    : ParserBase(TypeNameUtil::hash<AST::WhileStatement>(),
-                 TypeNameUtil::name_pretty<AST::WhileStatement>()) {}
+    : ParserBase(TypeNameUtil::hash<AST::WhileStmt>(),
+                 TypeNameUtil::name_pretty<AST::WhileStmt>()) {}
 std::unique_ptr<AST::ASTNode> WhileStatement::parse_impl(
     TokenList& tokens, SyntaxContext& context) {
     EnterLoop();  // enter loop
@@ -33,7 +33,7 @@ std::unique_ptr<AST::ASTNode> WhileStatement::parse_impl(
     auto condition = ParseCondition(tokens, context);
     if (condition == nullptr) return nullptr;
 
-    // parse body statement
+    // parse body stmt
     auto body = ParseBodyStatement(tokens, context, false);
     if (body == nullptr) return nullptr;
 
@@ -41,8 +41,8 @@ std::unique_ptr<AST::ASTNode> WhileStatement::parse_impl(
     tokens.push(Lexical::Token(Lexical::TokenType::kSemiColon, -1, -1));
 
     ExitLoop();  // exit loop
-    return std::make_unique<AST::WhileStatement>(std::move(condition),
-                                                 std::move(body), while_loc);
+    return std::make_unique<AST::WhileStmt>(std::move(condition),
+                                            std::move(body), while_loc);
 }
 
 }  // namespace Hzcc::Syntax::Parser

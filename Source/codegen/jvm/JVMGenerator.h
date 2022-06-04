@@ -1,9 +1,6 @@
 //
 // Created by chen_ on 2022/4/10.
 //
-
-#ifndef MYCC_SOURCE_CODEGEN_JVM_JVMGENERATOR_H_
-#define MYCC_SOURCE_CODEGEN_JVM_JVMGENERATOR_H_
 #include <memory>
 #include <string_view>
 
@@ -14,6 +11,8 @@
 #include "codegen/jvm/StackManager.h"
 #include "codegen/jvm/utils/macro.h"
 
+#ifndef HZCC_CODEGEN_JVM_JVM_GENERATOR_H
+#define HZCC_CODEGEN_JVM_JVM_GENERATOR_H
 namespace Hzcc::Codegen {
 enum PACKED OpHint {
     kOpHint_Less = 0,
@@ -35,7 +34,6 @@ enum PACKED OpHint {
 class JVMGenerator : public Generator,
                      public AST::ASTVisitor,
                      protected LabelManager,
-                     protected IndentWriter,
                      protected JVM::StackManager {
   public:
     JVMGenerator(const std::string& output,
@@ -62,24 +60,24 @@ class JVMGenerator : public Generator,
     Status visit(Hzcc::AST::VarDecl* p_expr) override;
     Status visit(Hzcc::AST::CastExpr* p_expr) override;
     Status visit(Hzcc::AST::UnaryExpr* p_expr) override;
-    Status visit(Hzcc::AST::ReturnNode* p_expr) override;
+    Status visit(Hzcc::AST::ReturnStmt* p_expr) override;
     Status visit(Hzcc::AST::AssignExpr* p_expr) override;
     Status visit(Hzcc::AST::LogicalExpr* p_expr) override;
     Status visit(Hzcc::AST::DoStatement* p_expr) override;
-    Status visit(Hzcc::AST::IfStatement* p_expr) override;
+    Status visit(Hzcc::AST::IfStmt* p_expr) override;
     Status visit(Hzcc::AST::DeclRefExpr* p_expr) override;
     Status visit(Hzcc::AST::LiteralExpr* p_expr) override;
-    Status visit(Hzcc::AST::FunctionCall* p_expr) override;
-    Status visit(Hzcc::AST::ForStatement* p_expr) override;
+    Status visit(Hzcc::AST::FuncCallStmt* p_expr) override;
+    Status visit(Hzcc::AST::ForStmt* p_expr) override;
     Status visit(Hzcc::AST::CompoundStmt* p_expr) override;
     Status visit(Hzcc::AST::RelationalExpr* p_expr) override;
     Status visit(Hzcc::AST::EmptyStatement* p_expr) override;
     Status visit(Hzcc::AST::ArithmeticExpr* p_expr) override;
-    Status visit(Hzcc::AST::WhileStatement* p_expr) override;
-    Status visit(Hzcc::AST::BreakStatement* p_expr) override;
+    Status visit(Hzcc::AST::WhileStmt* p_expr) override;
+    Status visit(Hzcc::AST::BreakStmt* p_expr) override;
     Status visit(Hzcc::AST::TernaryExpr* p_expr) override;
-    Status visit(Hzcc::AST::FunctionDeclNode* p_expr) override;
-    Status visit(Hzcc::AST::ContinueStatement* p_expr) override;
+    Status visit(Hzcc::AST::FuncDeclStmt* p_expr) override;
+    Status visit(Hzcc::AST::ContinueStmt* p_expr) override;
     Status visit(Hzcc::AST::ArraySubscriptExpr* p_expr) override;
     /**######################################################
      * ## Stack Management                                  ##
@@ -126,4 +124,4 @@ class JVMGenerator : public Generator,
 
 }  // namespace Hzcc::Codegen
 
-#endif  // MYCC_SOURCE_CODEGEN_JVM_JVMGENERATOR_H_
+#endif  // HZCC_CODEGEN_JVM_JVM_GENERATOR_H

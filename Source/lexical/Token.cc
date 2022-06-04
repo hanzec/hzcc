@@ -154,7 +154,7 @@ std::string Token::Value(bool escape) const noexcept {
     }
 }
 
-std::pair<int, int> Token::Location() const noexcept { return _token_location; }
+const std::pair<int, int>& Token::Location() const noexcept { return _token_location; }
 
 std::string Token::SourceLine() const noexcept {
     return _source_line_val_ref == nullptr ? "NO_SOURCE_LINE"

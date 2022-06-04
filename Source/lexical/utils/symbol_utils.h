@@ -1,8 +1,6 @@
 //
 // Created by chen_ on 2022/2/1.
 //
-#ifndef MYCC_SYMBOL_UTILS_H
-#define MYCC_SYMBOL_UTILS_H
 #include <array>
 #include <cstring>
 #include <string>
@@ -10,6 +8,8 @@
 #include "lexical/keywords.h"
 #include "lexical/token_type.h"
 
+#ifndef HZCC_SYMBOL_UTILS_H
+#define HZCC_SYMBOL_UTILS_H
 namespace Hzcc::Lexical::SymbolUtils {
 /**
  * @Brief: internal constexpr wrap for searching an std::array with constexpr,
@@ -212,4 +212,4 @@ ALWAYS_INLINE std::string TokenTypeToString(TokenType tokenType) {
     }
 }
 }  // namespace Hzcc::Lexical::SymbolUtils
-#endif  // MYCC_SYMBOL_UTILS_H
+#endif  // HZCC_SYMBOL_UTILS_H

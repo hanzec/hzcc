@@ -1,12 +1,9 @@
 //
 // Created by chen_ on 2022/3/26.
 //
-#include <stdint.h>
-
-#ifndef MYCC_SOURCE_UTILS_FNV1A_HASH_H_
-#define MYCC_SOURCE_UTILS_FNV1A_HASH_H_
+#ifndef HZCC_SOURCE_UTILS_FNV1A_HASH_H_
+#define HZCC_SOURCE_UTILS_FNV1A_HASH_H_
 namespace Hzcc {
-
 // FNV1a c++11 constexpr compile time hash functions, 32 and 64 bit
 // str should be a null terminated string literal, value should be left out
 // e.g hash_32_fnv1a_const("example")
@@ -34,4 +31,4 @@ inline constexpr uint64_t hash_64_fnv1a_const(
                      &str[1], (value ^ uint64_t(str[0])) * prime_64_const);
 }
 }  // namespace Hzcc
-#endif  // MYCC_SOURCE_UTILS_FNV1A_HASH_H_
+#endif  // HZCC_SOURCE_UTILS_FNV1A_HASH_H_

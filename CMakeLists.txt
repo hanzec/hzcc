@@ -6,7 +6,8 @@ cmake_minimum_required(VERSION 3.20.0) # we need unzip files
 # build root checks
 if (NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     if (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
-        message(FATAL_ERROR "Building in source is not supported, consider build with -B/path/to/my/build/folder")
+        message(FATAL_ERROR "Building in source is not supported,
+                             consider build with -B/path/to/my/build/folder")
     endif ()
 endif ()
 
@@ -15,6 +16,9 @@ if (NOT DEFINED CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
     message(STATUS "CMAKE_BUILD_TYPE is not set, defaulting to ${CMAKE_BUILD_TYPE}")
 endif ()
+
+# generate compile_commands.json for clangd
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # add custom cmake scrips location
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -63,11 +67,11 @@ FetchContent_Declare(
         GIT_REPOSITORY https://github.com/microsoft/vcpkg.git)
 FetchContent_MakeAvailable(vcpkg)
 
-# generate compile_commands.json for clangd
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-# append vcpkg cmake scripts to our project cmake scripts
+# setup vcpkg
 list(APPEND CMAKE_MODULE_PATH "${vcpkg_SOURCE_DIR}/scripts/cmake")
+
+# setup include directories
+include_directories("${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/include/")
 
 ###############################################################################
 ## Setup vcpkg ################################################################
@@ -78,14 +82,17 @@ if ((EXISTS "${vcpkg_SOURCE_DIR}/vcpkg") OR (EXISTS "${vcpkg_SOURCE_DIR}/vcpkg.e
 else ()
     message(STATUS "Not Found builded vcpkg, bootstrap vcpkg now...")
     if (WIN32)
-        execute_process(COMMAND "${vcpkg_SOURCE_DIR}/bootstrap-vcpkg.bat" -disableMetrics
+        execute_process(
+                COMMAND "${vcpkg_SOURCE_DIR}/bootstrap-vcpkg.bat" -disableMetrics
                 RESULT_VARIABLE VCPKG_STATUS
                 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-        execute_process(COMMAND "${vcpkg_SOURCE_DIR}/vcpkg.exe" integrate install
+        execute_process(
+                COMMAND "${vcpkg_SOURCE_DIR}/vcpkg.exe" integrate install
                 RESULT_VARIABLE VCPKG_STATUS
                 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
     else ()
-        execute_process(COMMAND bash "${vcpkg_SOURCE_DIR}/bootstrap-vcpkg.sh" -disableMetrics
+        execute_process(
+                COMMAND bash "${vcpkg_SOURCE_DIR}/bootstrap-vcpkg.sh" -disableMetrics
                 RESULT_VARIABLE VCPKG_STATUS
                 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
     endif ()
@@ -102,14 +109,12 @@ if (NOT DEFINED CMAKE_TOOLCHAIN_FILE)
         message(VERBOSE "Found cmake scripts at ${vcpkg_SOURCE_DIR}")
         set(CMAKE_TOOLCHAIN_FILE "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake" CACHE PATH "toolchain file")
     else ()
-        message(FATAL_ERROR " Not Found VCPKG cmake scripts at Source/third_party/scripts/buildsystems/vcpkg.cmake !")
+        message(FATAL_ERROR "Not Found VCPKG cmake scripts at
+                             Source/third_party/scripts/buildsystems/vcpkg.cmake")
     endif ()
 else ()
     message(VERBOSE "CMAKE_TOOLCHAIN_FILE is already define as ${CMAKE_TOOLCHAIN_FILE}")
 endif ()
-
-# setup include directories
-include_directories("${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/include/")
 
 ###############################################################################
 ## System Information  ########################################################
@@ -141,13 +146,13 @@ project(mycc VERSION 0.1.0)
 ###############################################################################
 ## Compiler Targets ###########################################################
 ###############################################################################
-add_executable(mycc)
-set_target_properties(mycc PROPERTIES FOLDER MyCC_Target)
+# hzcc target
+add_executable(hzcc)
 
+# testing target
 if (ENABLE_TESTING MATCHES "ON")
     message(STATUS "Enable testing...")
-    add_executable(mycc_test)
-    set_target_properties(mycc_test PROPERTIES FOLDER MyCC_Target)
+    add_executable(hzcc_test)
 endif ()
 
 ###############################################################################
@@ -176,7 +181,7 @@ endif ()
 ###############################################################################
 if (ENABLE_TESTING MATCHES "ON")
     include(GoogleTest)
-    gtest_discover_tests(mycc_test)
+    gtest_discover_tests(hzcc_test)
 endif ()
 
 ###############################################################################

@@ -7,8 +7,8 @@
 #include <vector>
 
 #include "AST/ASTVisitor.h"
-#ifndef MYCC_SOURCE_CODEGEN_JVM_FUNCANALYZER_H_
-#define MYCC_SOURCE_CODEGEN_JVM_FUNCANALYZER_H_
+#ifndef HZCC_CODEGEN_JVM_FUNC_ANALYZER_H
+#define HZCC_CODEGEN_JVM_FUNC_ANALYZER_H
 namespace Hzcc::Codegen::JVM {
 
 class FuncAnalyzer : public AST::ASTVisitor {
@@ -40,8 +40,8 @@ class FuncAnalyzer : public AST::ASTVisitor {
     [[nodiscard]] uint32_t GetMaxStackSize() const;
 
     /**
-     * @brief  Rerturn if current function has return statement or not
-     * @return true if has return statement, false otherwise
+     * @brief  Rerturn if current function has return stmt or not
+     * @return true if has return stmt, false otherwise
      */
     [[nodiscard]] bool HasValidReturn() const;
 
@@ -58,20 +58,20 @@ class FuncAnalyzer : public AST::ASTVisitor {
     Status visit(Hzcc::AST::DeclRefExpr* p_expr) override;
     Status visit(Hzcc::AST::SizeofExpr* p_expr) override;
     Status visit(Hzcc::AST::UnaryExpr* p_expr) override;
-    Status visit(Hzcc::AST::BreakStatement* p_expr) override;
+    Status visit(Hzcc::AST::BreakStmt* p_expr) override;
     Status visit(Hzcc::AST::CompoundStmt* p_expr) override;
-    Status visit(Hzcc::AST::ContinueStatement* p_expr) override;
+    Status visit(Hzcc::AST::ContinueStmt* p_expr) override;
     Status visit(Hzcc::AST::DoStatement* p_expr) override;
     Status visit(Hzcc::AST::EmptyStatement* p_expr) override;
-    Status visit(Hzcc::AST::ForStatement* p_expr) override;
-    Status visit(Hzcc::AST::FunctionCall* p_expr) override;
-    Status visit(Hzcc::AST::FunctionDeclNode* p_expr) override;
-    Status visit(Hzcc::AST::DeclNode* p_expr) override;
-    Status visit(Hzcc::AST::IfStatement* p_expr) override;
+    Status visit(Hzcc::AST::ForStmt* p_expr) override;
+    Status visit(Hzcc::AST::FuncCallStmt* p_expr) override;
+    Status visit(Hzcc::AST::FuncDeclStmt* p_expr) override;
+    Status visit(Hzcc::AST::DeclStmt* p_expr) override;
+    Status visit(Hzcc::AST::IfStmt* p_expr) override;
     Status visit(Hzcc::AST::ParamVarDecl* p_expr) override;
-    Status visit(Hzcc::AST::ReturnNode* p_expr) override;
+    Status visit(Hzcc::AST::ReturnStmt* p_expr) override;
     Status visit(Hzcc::AST::VarDecl* p_expr) override;
-    Status visit(Hzcc::AST::WhileStatement* p_expr) override;
+    Status visit(Hzcc::AST::WhileStmt* p_expr) override;
     Status visit(Hzcc::AST::LiteralExpr* p_expr) override;
 
   protected:
@@ -150,4 +150,4 @@ class FuncAnalyzer : public AST::ASTVisitor {
     const std::unordered_map<std::string, std::string>& _global_vars;
 };
 }  // namespace Hzcc::Codegen::JVM
-#endif  // MYCC_SOURCE_CODEGEN_JVM_FUNCANALYZER_H_
+#endif  // HZCC_CODEGEN_JVM_FUNC_ANALYZER_H

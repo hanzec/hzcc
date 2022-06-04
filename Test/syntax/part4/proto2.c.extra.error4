@@ -1,4 +1,4 @@
-Type checking error in file proto2.c line 6
+RetType checking error in file proto2.c line 6
 	Prototype int thingy(int, int, int)
 	conflicts with earlier prototype
 	int thingy(int, int)

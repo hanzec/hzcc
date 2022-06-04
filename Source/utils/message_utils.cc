@@ -107,10 +107,10 @@ void print_message_internal(Level error_level, const std::string& message,
         }
         std::string line;
         std::getline(file, line);
-        print_message(error_level, message, line, line_info);
+        print_message_internal(error_level, message, line, line_info);
     } else {
         LOG(ERROR) << "File: " << current_filename << " is not readable";
-        print_message(error_level, message, "", line_info);
+        print_message_internal(error_level, message, "", line_info);
     }
 }
 

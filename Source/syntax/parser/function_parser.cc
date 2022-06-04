@@ -6,8 +6,8 @@
 #include <list>
 
 #include "AST/CompilationUnit.h"
-#include "AST/statement/compound.h"
-#include "AST/statement/function_decl.h"
+#include "AST/stmt/CompoundStmt.h"
+#include "AST/stmt/FuncDeclStmt.h"
 #include "lexical/Token.h"
 #include "syntax/Parser.h"
 #include "syntax/parser/base_parser.h"
@@ -15,8 +15,8 @@
 
 namespace Hzcc::Syntax::Parser {
 Function::Function() noexcept
-    : ParserBase(TypeNameUtil::hash<AST::FunctionDeclNode>(),
-                 TypeNameUtil::name_pretty<AST::FunctionDeclNode>()) {}
+    : ParserBase(TypeNameUtil::hash<AST::FuncDeclStmt>(),
+                 TypeNameUtil::name_pretty<AST::FuncDeclStmt>()) {}
 
 std::unique_ptr<AST::ASTNode> Function::parse_impl(TokenList& tokens,
                                                    SyntaxContext& context) {
@@ -60,8 +60,8 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(TokenList& tokens,
     }
 
     // actual function node
-    auto func_node =
-        std::make_unique<AST::FunctionDeclNode>(func_name, return_type);
+    auto func_node = std::make_unique<AST::FuncDeclStmt>(
+        func_name.Value(), return_type, func_name.Location());
 
     // parse argument list
     bool first = false;
@@ -114,7 +114,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(TokenList& tokens,
         arg_types.push_back(argument_type);
         auto attr = tokens.LoadCachedAttributes();
         func_node->AddFunctionArgument(std::make_unique<AST::ParamVarDecl>(
-            name_token, argument_type, attr));
+            argument_type, name_token.Value(), name_token.Location()));
     } while (!tokens.empty() &&
              tokens.peek().Type() != Lexical::TokenType::kRParentheses);
 
@@ -137,7 +137,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(TokenList& tokens,
         }
 
         // compare return type
-        if (!func_type->IsSame(return_type)) {
+        if (!(*func_type == *return_type)) {
             MYCC_PrintTokenError_ReturnNull(
                 func_name, "Function " + return_type->GetName() + " " +
                                func_name.Value() + " already defined with " +
@@ -147,7 +147,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(TokenList& tokens,
 
         // compare all argument type
         for (const auto& type : arg_types) {
-            if (!type->IsSame(func_type_attributes.front())) {
+            if (!(*type == *func_type_attributes.front())) {
                 MYCC_PrintTokenError_ReturnNull(
                     func_name, "Function " + func_name.Value() +
                                    " already defined with different argument "

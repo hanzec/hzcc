@@ -2,8 +2,8 @@
 // Created by chen_ on 2022/3/26.
 //
 #include "Type.h"
-#ifndef MYCC_SOURCE_AST_TYPE_ARRAY_TYPE_H_
-#define MYCC_SOURCE_AST_TYPE_ARRAY_TYPE_H_
+#ifndef HZCC_AST_TYPE_ARRAY_TYPE_H
+#define HZCC_AST_TYPE_ARRAY_TYPE_H
 namespace Hzcc::AST {
 class ArrayType : public Type {
   public:
@@ -19,7 +19,7 @@ class ArrayType : public Type {
 
     [[nodiscard]] std::unique_ptr<AST::ASTNode>& GetArraySizeNode();
 
-    [[nodiscard]] bool IsSame(const std::shared_ptr<Type>& type) const override;
+    [[nodiscard]] bool IsSame(const Type& type) const override;
 
     /**
      * @brief Get the basic type from its name.
@@ -41,4 +41,4 @@ class ArrayType : public Type {
 };
 
 }  // namespace Hzcc::AST
-#endif  // MYCC_SOURCE_AST_TYPE_ARRAY_TYPE_H_
+#endif  // HZCC_AST_TYPE_ARRAY_TYPE_H

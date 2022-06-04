@@ -1,27 +1,27 @@
 ###############################################################################
-## Project Sources ############################################################
-###############################################################################
-file(GLOB MYCC_LEXICAL_HDRS ${CMAKE_CURRENT_LIST_DIR}/*.h)
-file(GLOB MYCC_LEXICAL_SRCS ${CMAKE_CURRENT_LIST_DIR}/*.cc)
-
-# project sources
-target_sources(mycc PRIVATE ${MYCC_LEXICAL_HDRS} ${MYCC_LEXICAL_SRCS})
-
-###############################################################################
 ## Lexical Utils ##############################################################
 ###############################################################################
 add_subdirectory(utils)
+
+###############################################################################
+## Lexical Sources ############################################################
+###############################################################################
+file(GLOB hzcc_lexical_hdrs ${CMAKE_CURRENT_LIST_DIR}/*.h)
+file(GLOB hzcc_lexical_srcs ${CMAKE_CURRENT_LIST_DIR}/*.cc)
+
+# project sources
+target_sources(hzcc PRIVATE ${hzcc_lexical_hdrs} ${hzcc_lexical_srcs})
 
 ###############################################################################
 ## Testing Source #############################################################
 ###############################################################################
 if (ENABLE_TESTING MATCHES "ON")
     # looking for the source code
-    file(GLOB MYCC_LEXICAL_TEST_SRCS ${CMAKE_CURRENT_LIST_DIR}/test/*_test.cc)
+    file(GLOB hzcc_lexical_test ${CMAKE_CURRENT_LIST_DIR}/test/*_test.cc)
 
     # add to mycc_test target
-    target_sources(mycc_test
+    target_sources(hzcc_test
             PRIVATE
-            ${MYCC_LEXICAL_TEST_SRCS}
-            ${MYCC_LEXICAL_HDRS} ${MYCC_LEXICAL_SRCS})
+            ${hzcc_lexical_test}
+            ${hzcc_lexical_hdrs} ${hzcc_lexical_srcs})
 endif ()

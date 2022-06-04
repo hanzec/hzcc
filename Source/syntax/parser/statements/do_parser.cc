@@ -7,7 +7,7 @@
 #include <list>
 
 #include "AST/CompilationUnit.h"
-#include "AST/statement/do.h"
+#include "AST/stmt/DoStmt.h"
 #include "lexical/Token.h"
 #include "syntax/Parser.h"
 #include "syntax/utils/common_utils.h"
@@ -26,7 +26,7 @@ std::unique_ptr<AST::ASTNode> DoStatement::parse_impl(TokenList& tokens,
     auto do_loc = tokens.peek().Location();
     MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kDo, tokens);
 
-    // parse body statement
+    // parse body stmt
     auto body = ParseBodyStatement(tokens, context, false);
     if (body == nullptr) return nullptr;
 

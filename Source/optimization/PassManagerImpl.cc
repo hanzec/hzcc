@@ -5,8 +5,8 @@
 
 #include <memory>
 
-#include "AST/statement/compound.h"
-#include "AST/statement/function_decl.h"
+#include "AST/statement/CompoundStmt.h"
+#include "AST/statement/FuncDeclStmt.h"
 namespace Hzcc::Pass {
 bool PassManagerImpl::reg_pass_internal(std::unique_ptr<PassBase> pass,
                                         const std::string& command,
@@ -30,8 +30,8 @@ Status PassManagerImpl::RunPass(
              * Here we will temporarily move the ownership of the
              * function from ASTNode to current function temporary
              */
-            auto func_decl = std::unique_ptr<AST::FunctionDeclNode>(
-                dynamic_cast<AST::FunctionDeclNode*>(decl.second.release()));
+            auto func_decl = std::unique_ptr<AST::FuncDeclStmt>(
+                dynamic_cast<AST::FuncDeclStmt*>(decl.second.release()));
             DLOG_ASSERT(func_decl != nullptr) << "FuncDecl cast failed";
             HZCC_ExceptOK_WITH_RETURN(RunFunctionPass(func_decl));
             decl.second = std::move(func_decl);
@@ -44,7 +44,7 @@ Status PassManagerImpl::RunPass(
 }
 
 Status PassManagerImpl::RunFunctionPass(
-    std::unique_ptr<AST::FunctionDeclNode>& F) {
+    std::unique_ptr<AST::FuncDeclStmt>& F) {
     DVLOG(OPT_LOG_LEVEL) << "Running Function Pass";
     DVLOG(OPT_LOG_LEVEL) << "Optimizing function: " << F->GetName();
 

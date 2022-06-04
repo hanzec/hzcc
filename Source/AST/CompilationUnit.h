@@ -1,5 +1,3 @@
-#ifndef MYCC_AST_AST_H
-#define MYCC_AST_AST_H
 #include <memory>
 #include <string_view>
 #include <unordered_map>
@@ -7,17 +5,18 @@
 #include <vector>
 
 #include "AST/ASTNode.h"
-#include "AST/expr/decl_ref.h"
-#include "AST/statement/function_decl.h"
+#include "AST/expr/DeclRefExpr.h"
+#include "AST/stmt/FuncDeclStmt.h"
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
 #include "utils/Status.h"
 
+#ifndef HZCC_AST_AST_H
+#define HZCC_AST_AST_H
 namespace Hzcc::AST {
 class StructType;
 class CompilationUnit {
   public:
-    int a;
     explicit CompilationUnit(std::string file_name);
 
     CompilationUnit(CompilationUnit&&) = default;
@@ -36,18 +35,18 @@ class CompilationUnit {
      * @param node
      * @return
      */
-    void addDecl(std::unique_ptr<DeclNode> node);
+    void addDecl(std::unique_ptr<DeclStmt> node);
 
-    std::list<std::pair<std::string, std::unique_ptr<AST::DeclNode>>>&
+    std::list<std::pair<std::string, std::unique_ptr<AST::DeclStmt>>>&
     GetDecls();
 
   protected:
     const std::string _file_name;
 
-    std::list<std::pair<std::string, std::unique_ptr<AST::DeclNode>>>
+    std::list<std::pair<std::string, std::unique_ptr<AST::DeclStmt>>>
         _global_decl;
 };
 
 }  // namespace Hzcc::AST
 
-#endif  // MYCC_AST_AST_H
+#endif  // HZCC_AST_AST_H

@@ -1,12 +1,12 @@
 //
 // Created by chen_ on 2022/3/29.
 //
-#ifndef MYCC_SOURCE_AST_DEDUCEVALUE_H_
-#define MYCC_SOURCE_AST_DEDUCEVALUE_H_
 #include <array>
 #include <cstdint>
 #include <string>
 
+#ifndef HZCC_AST_DEDUCE_VALUE_H
+#define HZCC_AST_DEDUCE_VALUE_H
 namespace Hzcc::AST {
 /**
  * @brief The type of the value, currently only integer, real number and
@@ -90,69 +90,69 @@ class DeduceValue {
 };
 
 /**
- * @brief Overload the operator + for deduce value.
+ * @brief Overload the op + for deduce value.
  * @details The transformation rules are as follows:
  *          |             | Integer     | Real Number |  Character  |
  *          | :---------: | :---------: | :---------: | :---------: |
  *          | Integer     | Integer     | Real Number |   Integer   |
  *          | Real Number | Real Number | Real Number | Real Number |
  *          | Character   | Integer     | Real Number |   Integer   |
- * @param lhs left hand side of the operator
- * @param rhs right hand side of the operator
+ * @param lhs left hand side of the op
+ * @param rhs right hand side of the op
  */
 DeduceValue operator+(DeduceValue lhs, const DeduceValue& rhs);
 
 /**
- * @brief Overload the operator - for deduce value.
+ * @brief Overload the op - for deduce value.
  * @details The transformation rules are as follows:
  *          |             | Integer     | Real Number |  Character  |
  *          | :---------: | :---------: | :---------: | :---------: |
  *          | Integer     | Integer     | Real Number |   Integer   |
  *          | Real Number | Real Number | Real Number | Real Number |
  *          | Character   | Integer     | Real Number |   Integer   |
- * @param lhs left hand side of the operator
- * @param rhs right hand side of the operator
+ * @param lhs left hand side of the op
+ * @param rhs right hand side of the op
  */
 DeduceValue operator-(DeduceValue lhs, const DeduceValue& rhs);
 
 /**
- * @brief Overload the operator * for deduce value.
+ * @brief Overload the op * for deduce value.
  * @details The transformation rules are as follows:
  *          |             | Integer     | Real Number |  Character  |
  *          | :---------: | :---------: | :---------: | :---------: |
  *          | Integer     | Integer     | Real Number |   Integer   |
  *          | Real Number | Real Number | Real Number | Real Number |
  *          | Character   | Integer     | Real Number |   Integer   |
- * @param lhs left hand side of the operator
- * @param rhs right hand side of the operator
+ * @param lhs left hand side of the op
+ * @param rhs right hand side of the op
  */
 DeduceValue operator*(DeduceValue lhs, const DeduceValue& rhs);
 
 /**
- * @brief Overload the operator / for deduce value.
+ * @brief Overload the op / for deduce value.
  * @details The transformation rules are as follows:
  *          |             | Integer     | Real Number |  Character  |
  *          | :---------: | :---------: | :---------: | :---------: |
  *          | Integer     | Integer     | Real Number |   Integer   |
  *          | Real Number | Real Number | Real Number | Real Number |
  *          | Character   | Integer     | Real Number |   Integer   |
- * @param lhs left hand side of the operator
- * @param rhs right hand side of the operator
+ * @param lhs left hand side of the op
+ * @param rhs right hand side of the op
  */
 DeduceValue operator/(DeduceValue lhs, const DeduceValue& rhs);
 
 /**
- * @brief Overload the operator % for deduce value.
+ * @brief Overload the op % for deduce value.
  * @details The transformation rules are as follows:
  *          |             | Integer     | Real Number |  Character  |
  *          | :---------: | :---------: | :---------: | :---------: |
  *          | Integer     | Integer     | Integer     | Integer     |
  *          | Real Number | Integer     | Integer     | Integer     |
  *          | Character   | Integer     | Integer     | Integer     |
- * @param lhs left hand side of the operator
- * @param rhs right hand side of the operator
+ * @param lhs left hand side of the op
+ * @param rhs right hand side of the op
  */
 DeduceValue operator%(DeduceValue lhs, const DeduceValue& rhs);
 }  // namespace Hzcc::AST
 
-#endif  // MYCC_SOURCE_AST_DEDUCEVALUE_H_
+#endif  // HZCC_AST_DEDUCE_VALUE_H

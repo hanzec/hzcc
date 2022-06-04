@@ -3,8 +3,8 @@
 #include <iomanip>
 
 #include "lexical/utils/symbol_utils.h"
-#ifndef MYCC_UTILS_LOGGING_H_
-#define MYCC_UTILS_LOGGING_H_
+#ifndef HZCC_UTILS_LOGGING_H_
+#define HZCC_UTILS_LOGGING_H_
 namespace Hzcc {
 void initLogging(char argv[]);
 
@@ -21,7 +21,12 @@ void initLogging(char argv[]);
 
 #define DVLOG_IF(level, cond) (cond) ? (void)0 : DVLOG(level)
 
-#define MYCC_PRETTY_PRINT_TOKEN(token)                                        \
+#define HZCC_RUNTIME_CHECK(cond)                                    \
+    static_assert(std::is_convertible<decltype(cond), bool>::value, \
+                  "Macro type mismatch, need bool for cond");       \
+    LOG_ASSERT(cond) << " \033[1;31m[Internal]\033[0m: "
+
+#define HZCC_PRETTY_PRINT_TOKEN(token)                                        \
     std::setfill(' ') << "\033[0;33m[" << std::setw(8) << std::right          \
                       << ((int)(token).Type() <= 0xFF                         \
                               ? "Symbol"                                      \
@@ -32,4 +37,4 @@ void initLogging(char argv[]);
                       << ">" << std::setw(-1) << ":@" << std::setw(10)        \
                       << (token).Value(true) << "@\033[0m" << std::setw(-1)
 }  // namespace Hzcc
-#endif  // MYCC_UTILS_LOGGING_H_
+#endif  // HZCC_UTILS_LOGGING_H_

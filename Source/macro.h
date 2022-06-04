@@ -1,9 +1,9 @@
 //
-// Created by chen_ on 2022/1/26.
+// Created by Hanze Chen on 2022/1/26.
 //
 
-#ifndef MYCC_MACRO_H
-#define MYCC_MACRO_H
+#ifndef HZCC_MACRO_H
+#define HZCC_MACRO_H
 
 /** #########################################################################
  *  #### COMPILER FEATURES ##################################################
@@ -33,4 +33,4 @@
 #if defined(__cpp_lib_filesystem) && __has_include(<filesystem>)
 #define HAS_STD_FILESYSTEM
 #endif
-#endif  // MYCC_MACRO_H
+#endif  // HZCC_MACRO_H

@@ -1,9 +1,6 @@
 //
 // Created by chen_ on 2022/4/18.
 //
-
-#ifndef MYCC_SOURCE_OPTMIZATION_PASSMANAGERIMPL_H_
-#define MYCC_SOURCE_OPTMIZATION_PASSMANAGERIMPL_H_
 #include <functional>
 #include <list>
 #include <memory>
@@ -14,6 +11,9 @@
 #include "PassManager.h"
 #include "utils/Status.h"
 #include "utils/logging.h"
+
+#ifndef HZCC_OPTIMIZATION_PASSMANAGER_IMPL_H
+#define HZCC_OPTIMIZATION_PASSMANAGER_IMPL_H
 namespace Hzcc::Pass {
 class PassManagerImpl : public PassManager {
   public:
@@ -52,7 +52,7 @@ class PassManagerImpl : public PassManager {
     };
 
   protected:
-    static Status RunFunctionPass(std::unique_ptr<AST::FunctionDeclNode>& F);
+    static Status RunFunctionPass(std::unique_ptr<AST::FuncDeclStmt>& F);
 
   private:
     inline static std::unordered_set<std::string> _registered_passes;
@@ -85,4 +85,4 @@ class RegisterPass : private PassManagerImpl::RegisterHelper {
     const std::string PASS_DESC;
 };
 }  // namespace Hzcc::Pass
-#endif  // MYCC_SOURCE_OPTMIZATION_PASSMANAGERIMPL_H_
+#endif  // HZCC_OPTIMIZATION_PASSMANAGER_IMPL_H

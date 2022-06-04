@@ -1,8 +1,8 @@
 //
 // Created by chen_ on 2022/2/3.
 //
-#ifndef MYCC_PRINT_ERROR_MESSAGE_H
-#define MYCC_PRINT_ERROR_MESSAGE_H
+#ifndef HZCC_PRINT_ERROR_MESSAGE_H
+#define HZCC_PRINT_ERROR_MESSAGE_H
 #include <filesystem>
 
 #include "lexical/Token.h"
@@ -36,24 +36,6 @@ void print_message_internal(Level error_level, const std::string& message,
                             std::pair<int, int> line_info,
                             const std::string& error_string);
 
-void ALWAYS_INLINE print_message(Level error_level, const std::string& message,
-                                 std::pair<int, int> line_info) {
-    print_message_internal(error_level, message, line_info);
-}
-
-void ALWAYS_INLINE print_message(Level error_level, const std::string& message,
-                                 const std::string& line,
-                                 std::pair<int, int> line_info) {
-    print_message_internal(error_level, message, line, line_info);
-}
-
-void ALWAYS_INLINE print_message(Level error_level, const std::string& message,
-                                 const std::string& line,
-                                 std::pair<int, int> line_info,
-                                 const std::string& error_string) {
-    print_message_internal(error_level, message, line, line_info, error_string);
-}
-
 #ifndef NDEBUG
 class PrintMessageReporter {
   public:
@@ -67,7 +49,7 @@ class PrintMessageReporter {
         DVLOG(MESSAGE_ERROR_TRACING)
             << "Error raised by [" << caller_ << "] " << _input_file << ":"
             << line_ << std::endl;
-        return print_message(error_level, message, line_info);
+        return print_message_internal(error_level, message, line_info);
     }
 
     void operator()(Level error_level, const std::string& message,
@@ -75,7 +57,7 @@ class PrintMessageReporter {
         DVLOG(MESSAGE_ERROR_TRACING)
             << "Error raised by [" << caller_ << "] " << _input_file << ":"
             << line_ << std::endl;
-        return print_message(error_level, message, line, line_info);
+        return print_message_internal(error_level, message, line, line_info);
     }
 
     void operator()(Level error_level, const std::string& message,
@@ -84,8 +66,8 @@ class PrintMessageReporter {
         DVLOG(MESSAGE_ERROR_TRACING)
             << "Error raised by [" << caller_ << "] " << _input_file << ":"
             << line_ << std::endl;
-        return print_message(error_level, message, line, line_info,
-                             error_string);
+        return print_message_internal(error_level, message, line, line_info,
+                                      error_string);
     }
 
   private:
@@ -96,7 +78,10 @@ class PrintMessageReporter {
 
 #undef print_message
 #define print_message PrintMessageReporter(__FUNCTION__, __FILE__, __LINE__)
+#else
+#undef print_message
+#define print_message print_message_internal
 #endif
 }  // namespace Hzcc::Message
 
-#endif  // MYCC_PRINT_ERROR_MESSAGE_H
+#endif  // HZCC_PRINT_ERROR_MESSAGE_H

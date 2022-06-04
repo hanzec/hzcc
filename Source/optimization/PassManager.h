@@ -1,15 +1,14 @@
 //
 // Created by Hanze Chen on 4/11/22.
 //
-
-#ifndef MYCC_SOURCE_OPTMIZATION_PASSMANAGER_H_
-#define MYCC_SOURCE_OPTMIZATION_PASSMANAGER_H_
-#include "pass/FunctionPass.h"
-#include "pass/ImmutablePass.h"
-#include "pass/ModulePass.h"
 #include "pass/PassBase.h"
 #include "utils/Status.h"
+#ifndef HZCC_SOURCE_OPTIMIZATION_PASSMANAGER_H
+#define HZCC_SOURCE_OPTIMIZATION_PASSMANAGER_H
 namespace Hzcc::Pass {
+class ModulePass;
+class FunctionPass;
+class ImmutablePass;
 class PassManager {
   public:
     /**
@@ -22,4 +21,4 @@ class PassManager {
 
 }  // namespace Hzcc::Pass
 
-#endif  // MYCC_SOURCE_OPTMIZATION_PASSMANAGER_H_
+#endif  // HZCC_SOURCE_OPTIMIZATION_PASSMANAGER_H

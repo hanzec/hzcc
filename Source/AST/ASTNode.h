@@ -1,28 +1,16 @@
 //
-// Created by chen_ on 2022/2/3.
+// Created by Hanze Chen on 2022/2/3.
 //
-
-#ifndef MYCC_EXPR_NODE_H
-#define MYCC_EXPR_NODE_H
 
 #include <memory>
 #include <optional>
 #include <string>
-#include <utility>
 
 #include "ASTVisitor.h"
 #include "utils/logging.h"
-
-namespace Hzcc {
-
-namespace Lexical {
-class Token;
-}  // namespace Lexical
-
-/**
- * @brief The base class of all AST nodes.
- */
-namespace AST {
+#ifndef HZCC_AST_AST_NODE_H
+#define HZCC_AST_AST_NODE_H
+namespace Hzcc::AST {
 class Type;
 class CastExpr;
 class DeduceValue;
@@ -32,15 +20,51 @@ class ASTNode {
 
     explicit ASTNode(std::pair<int, int> loc);
 
-    [[nodiscard]] int GetLine() const { return _node_location.first; }
+    /**
+     * @brief The unique id of the node.
+     * @return The unique id of the node.
+     */
+    [[nodiscard]] uint64_t Id() const;
 
+    /**
+     * @brief Get the location of this ASTNode in the source code. The location
+     * have the form of (line, column).
+     * @return The location of this ASTNode
+     */
+    [[nodiscard]] const std::pair<int, int>& Location() const;
+
+    /**
+     * @brief Determine whether the node have a body or not
+     * @return true if the node have a body, false otherwise
+     */
     [[nodiscard]] virtual bool HasBody() const { return false; }
 
-    [[nodiscard]] virtual bool IsAssignable() const { return false; }
+    /**
+     * @brief Determine whether the node is a literal node or not
+     * @return true if the node is a literal node, false otherwise
+     */
+    [[nodiscard]] virtual bool IsLiteral() const { return false; }
 
+    /**
+     * @brief Determine whether the current AST node is a declaration node or
+     * not
+     * @return true if the node is a declaration node, false otherwise
+     */
     [[nodiscard]] virtual bool IsDeclNode() const { return false; }
 
+    /**
+     * @brief Determine whether the current AST node is a struct declaration
+     * node or not node or not
+     * @return true if the node is a struct declaration node, false otherwise
+     */
     [[nodiscard]] virtual bool IsStructDecl() const { return false; }
+
+    /**
+     * @brief Determine whether the current AST node is a empty statement node
+     * or not
+     * @return true if the node is a empty statement node, false otherwise
+     */
+    [[nodiscard]] virtual bool IsEmptyStmt() const { return false; }
 
     /**
      * @brief Determine whether the node is used to access element in array or
@@ -49,10 +73,17 @@ class ASTNode {
      */
     [[nodiscard]] virtual bool IsDereference() const { return false; }
 
-    [[nodiscard]] virtual bool IsEmptyStmt() const { return false; }
+    /**
+     * @brief determine whether the node will return a location value (LValue)
+     * or register value (RValue)
+     * @return true if the node will return a LValue, false otherwise
+     */
+    [[nodiscard]] virtual bool IsReturnLValue() const { return false; }
 
-    [[nodiscard]] virtual bool IsLiteral() const { return false; }
-
+    /**
+     * @brief Determine whether the node is a return statement or not
+     * @return true if the node is a return statement, false otherwise
+     */
     [[nodiscard]] virtual bool IsReturn() const { return false; }
 
     [[nodiscard]] static std::unique_ptr<AST::ASTNode> CastTo(
@@ -62,18 +93,25 @@ class ASTNode {
 
     [[nodiscard]] virtual std::optional<DeduceValue> GetDeducedValue() const;
 
-    [[nodiscard]] virtual std::shared_ptr<Type> GetType() const;
+    [[nodiscard]] virtual std::shared_ptr<Type> RetType() const;
 
     virtual Status visit(ASTVisitor& visitor) = 0;
 
-    [[nodiscard]] std::pair<int, int> Location() const;
-
+    /**
+     * @brief Get Name of the node
+     * @return the name of the node
+     */
     [[nodiscard]] virtual const char* NodeName() const = 0;
 
-    [[nodiscard]] uint64_t GetNodeId() const;
-
   protected:
-    [[nodiscard]] virtual std::string PrintAdditionalInfo(
+    /**
+     * @brief An override function using print extra information when call
+     * ASTNode->Dump()
+     *     // TODO add details of printed information
+     * @param ident the current indentation level
+     * @return std::string generated string
+     */
+    [[nodiscard]] virtual std::string PrintDetail(
         const std::string& ident) const;
 
   private:
@@ -82,8 +120,6 @@ class ASTNode {
     std::pair<int, int> _node_location{-1, -1};
 };
 
-}  // namespace AST
+}  // namespace Hzcc::AST
 
-}  // namespace Hzcc
-
-#endif  // MYCC_EXPR_NODE_H
+#endif  // HZCC_AST_AST_NODE_H

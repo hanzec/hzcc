@@ -6,8 +6,9 @@
 
 #include "lexical/Token.h"
 #include "utils/logging.h"
-#ifndef FACT_CLASS_SOURCE_SYNTAX_TOKENLISTS_H_
-#define FACT_CLASS_SOURCE_SYNTAX_TOKENLISTS_H_
+
+#ifndef HZCC_SYNTAX_TOKEN_LIST_H
+#define HZCC_SYNTAX_TOKEN_LIST_H
 namespace Hzcc {
 namespace Lexical {
 class Token;
@@ -15,9 +16,20 @@ class Token;
 namespace Syntax {
 class TokenList : protected std::list<Lexical::Token> {
   public:
-    using std::list<Lexical::Token>::begin;
+    /**
+     * @brief expose the iterator of the list
+     */
     using std::list<Lexical::Token>::end;
+
+    /**
+     * @brief expose the iterator of the list
+     */
     using std::list<Lexical::Token>::size;
+
+    /**
+     * @brief expose the iterator of the list
+     */
+    using std::list<Lexical::Token>::begin;
 
     explicit TokenList(std::list<Lexical::Token>& list)
         : std::list<Lexical::Token>(list) {}
@@ -32,9 +44,8 @@ class TokenList : protected std::list<Lexical::Token> {
 
     [[nodiscard]] Lexical::Token peek();
 
-    std::_List_iterator<Hzcc::Lexical::Token> insert_front(
-        std::_List_iterator<Hzcc::Lexical::Token> begin,
-        std::_List_iterator<Hzcc::Lexical::Token> end);
+    void insert_front(std::_List_iterator<Hzcc::Lexical::Token> begin,
+                      std::_List_iterator<Hzcc::Lexical::Token> end);
 
     [[nodiscard]] const Lexical::Token& peek2() const;
 
@@ -46,4 +57,4 @@ class TokenList : protected std::list<Lexical::Token> {
 
 }  // namespace Syntax
 }  // namespace Hzcc
-#endif  // FACT_CLASS_SOURCE_SYNTAX_TOKENLISTS_H_
+#endif  // HZCC_SYNTAX_TOKEN_LIST_H

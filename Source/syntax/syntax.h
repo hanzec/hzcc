@@ -3,11 +3,11 @@
 //
 #include "TokenList.h"
 #include "utils/Status.h"
-#ifndef MYCC_SYNTX_H
-#define MYCC_SYNTX_H
+#ifndef HZCC_SYNTAX_SYNTAX_H
+#define HZCC_SYNTAX_SYNTAX_H
 namespace Hzcc::Syntax {
 Status GenerateAST(TokenList& tokens,
                    std::shared_ptr<AST::CompilationUnit> compile_unit);
 }  // namespace Hzcc::Syntax
 
-#endif  // MYCC_SYNTX_H
+#endif  // HZCC_SYNTAX_SYNTAX_H

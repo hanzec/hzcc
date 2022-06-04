@@ -1,14 +1,13 @@
 //
 // Created by Hanze Chen on 4/11/22.
 //
-
-#ifndef MYCC_SOURCE_OPTMIZATION_PASS_IMMUTABLEPASS_H_
-#define MYCC_SOURCE_OPTMIZATION_PASS_IMMUTABLEPASS_H_
 #include "PassBase.h"
 
+#ifndef HZCC_OPTIMIZATION_PASS_IMMUTABLE_PASS_H
+#define HZCC_OPTIMIZATION_PASS_IMMUTABLE_PASS_H
 namespace Hzcc::Pass {
 class ImmutablePass {};
 
 }  // namespace Hzcc::Pass
 
-#endif  // MYCC_SOURCE_OPTMIZATION_PASS_IMMUTABLEPASS_H_
+#endif  // HZCC_OPTIMIZATION_PASS_IMMUTABLE_PASS_H

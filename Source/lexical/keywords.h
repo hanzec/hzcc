@@ -1,7 +1,7 @@
 #include <array>
 
-#ifndef MYCC_LEXICAL_KEYWORDS_H
-#define MYCC_LEXICAL_KEYWORDS_H
+#ifndef HZCC_LEXICAL_KEYWORDS_H
+#define HZCC_LEXICAL_KEYWORDS_H
 
 namespace Hzcc::Lexical::Keywords {
 /**
@@ -19,10 +19,10 @@ namespace Hzcc::Lexical::Keywords {
 #define KPermittedTypeTableSize 10
 
 /**
- * Literals Type's table.
+ * Literals RetType's table.
  */
 constexpr static std::array<const char *, KLiteralsTypeTableSize>
-    kLiteralsSymbol{"Type",       "Char",   "Integer",
+    kLiteralsSymbol{"RetType",       "Char",   "Integer",
                     "RealNumber", "String", "Identity"};
 
 /**
@@ -78,4 +78,4 @@ constexpr static std::array<const char *, KPermittedTypeTableSize>
     kPrimitiveType{"int",  "char",  "float", "double",   "void",
                    "long", "short", "_Bool", "_Complex", "_Imaginary"};
 }  // namespace Hzcc::Lexical::Keywords
-#endif  // MYCC_LEXICAL_KEYWORDS_H
+#endif  // HZCC_LEXICAL_KEYWORDS_H

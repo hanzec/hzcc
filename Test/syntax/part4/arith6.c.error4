@@ -10,5 +10,5 @@ Type checking error in file arith6.c line 10
 	Invalid operand types char[] % char[]
 Type checking error in file arith6.c line 11
 	Invalid operand types char[] & char[]
-Type checking error in file arith6.c line 12
+RetType checking error in file arith6.c line 12
 	Invalid operand types char[] | char[]

@@ -1,7 +1,7 @@
 //
 // Created by chen_ on 2022/5/4.
 //
-#include "AST/expr/unary.h"
+#include "AST/expr/UnaryExpr.h"
 #include "codegen/jvm/JVMGenerator.h"
 #include "codegen/jvm/utils/ConstValUtils.h"
 namespace Hzcc::Codegen {
@@ -32,7 +32,7 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
     /** #####################################################################
      *  ### Code Generation                                               ###
      *  ##################################################################### */
-    // TODO need to support all unary operator
+    // TODO need to support all unary op
     switch (p_expr->GetUnaryType()) {
         case AST::kUnaryType_PreInc: {
             // visit node
@@ -41,7 +41,7 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
 
             auto var_name = ConsumeReturnStack();
             if (!IsGlobalVar(var_name) &&
-                Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+                Utils::GetTypeName(p_expr->GetExpr()->RetType()) == "i") {
                 AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
                            " 1");
                 if (_request_leave || _under_compare)
@@ -51,12 +51,12 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                 AddToCache(Utils::PushConstVal(1));
 
                 // Generate type convert instruction if necessary
-                if (Utils::GetTypeName(p_expr->GetType(), true) != "i")
+                if (Utils::GetTypeName(p_expr->RetType(), true) != "i")
                     AddToCache("i2" +
-                               Utils::GetTypeName(p_expr->GetType(), true));
+                               Utils::GetTypeName(p_expr->RetType(), true));
 
                 // increase and save
-                AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "add");
+                AddToCache(Utils::GetTypeName(p_expr->RetType(), true) + "add");
                 if (_request_leave || _under_compare) AddToCache("dup");
                 AddToCache(SaveToVariable(var_name));
             }
@@ -68,7 +68,7 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
 
             auto var_name = ConsumeReturnStack();
             if (!IsGlobalVar(var_name) &&
-                Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+                Utils::GetTypeName(p_expr->GetExpr()->RetType()) == "i") {
                 AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
                            " -1");
                 if (_request_leave || _under_compare)
@@ -78,12 +78,12 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                 AddToCache(Utils::PushConstVal(1));
 
                 // Generate type convert instruction if necessary
-                if (Utils::GetTypeName(p_expr->GetType(), true) != "i")
+                if (Utils::GetTypeName(p_expr->RetType(), true) != "i")
                     AddToCache("i2" +
-                               Utils::GetTypeName(p_expr->GetType(), true));
+                               Utils::GetTypeName(p_expr->RetType(), true));
 
                 // increase and save
-                AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "sub");
+                AddToCache(Utils::GetTypeName(p_expr->RetType(), true) + "sub");
                 if (_request_leave || _under_compare) AddToCache("dup");
                 AddToCache(SaveToVariable(var_name));
             }
@@ -94,7 +94,7 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                 HZCC_JVM_Visit_Node(p_expr->GetExpr()));
             auto var_name = ConsumeReturnStack();
             if (!IsGlobalVar(var_name) &&
-                Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+                Utils::GetTypeName(p_expr->GetExpr()->RetType()) == "i") {
                 if (_request_leave || _under_compare)
                     AddToCache(LoadFromVariable(var_name));
                 AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
@@ -105,12 +105,12 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                 AddToCache(Utils::PushConstVal(1));
 
                 // Generate type convert instruction if necessary
-                if (Utils::GetTypeName(p_expr->GetType(), true) != "i")
+                if (Utils::GetTypeName(p_expr->RetType(), true) != "i")
                     AddToCache("i2" +
-                               Utils::GetTypeName(p_expr->GetType(), true));
+                               Utils::GetTypeName(p_expr->RetType(), true));
 
                 // increase and save
-                AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "add");
+                AddToCache(Utils::GetTypeName(p_expr->RetType(), true) + "add");
                 AddToCache(SaveToVariable(var_name));
             }
         } break;
@@ -121,7 +121,7 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
 
             auto var_name = ConsumeReturnStack();
             if (!IsGlobalVar(var_name) &&
-                Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+                Utils::GetTypeName(p_expr->GetExpr()->RetType()) == "i") {
                 if (_request_leave || _under_compare)
                     AddToCache(LoadFromVariable(var_name));
                 AddToCache("iinc " + std::to_string(GetStackID(var_name)) +
@@ -132,12 +132,12 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                 AddToCache(Utils::PushConstVal(1));
 
                 // Generate type convert instruction if necessary
-                if (Utils::GetTypeName(p_expr->GetType(), true) != "i")
+                if (Utils::GetTypeName(p_expr->RetType(), true) != "i")
                     AddToCache("i2" +
-                               Utils::GetTypeName(p_expr->GetType(), true));
+                               Utils::GetTypeName(p_expr->RetType(), true));
 
                 // increase and save
-                AddToCache(Utils::GetTypeName(p_expr->GetType(), true) + "sub");
+                AddToCache(Utils::GetTypeName(p_expr->RetType(), true) + "sub");
                 AddToCache(SaveToVariable(var_name));
             }
         } break;
@@ -147,7 +147,7 @@ Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
                 if (last_op_hint == kOpHint_None) {
                     HZCC_JVM_GENERATE_LOAD_INSTR(
                         HZCC_JVM_Visit_Node(p_expr->GetExpr()));
-                    AddToCache(Utils::GetTypeName(p_expr->GetType(), true) +
+                    AddToCache(Utils::GetTypeName(p_expr->RetType(), true) +
                                "neg");
                 } else {
                     SetLastOpHint(kOpHintReverseStrings[last_op_hint]);

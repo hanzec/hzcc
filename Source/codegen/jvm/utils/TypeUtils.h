@@ -5,8 +5,8 @@
 #include <string>
 
 #include "utils/logging.h"
-#ifndef MYCC_SOURCE_CODEGEN_JVM_UTILS_TYPEUTILS_H_
-#define MYCC_SOURCE_CODEGEN_JVM_UTILS_TYPEUTILS_H_
+#ifndef HZCC_CODEGEN_JVM_UTILS_TYPE_UTILS_H
+#define HZCC_CODEGEN_JVM_UTILS_TYPE_UTILS_H
 
 namespace Hzcc {
 namespace AST {
@@ -22,4 +22,4 @@ std::string GetTypeName(const std::shared_ptr<AST::Type> &type,
 }  // namespace Codegen::Utils
 }  // namespace Hzcc
 
-#endif  // MYCC_SOURCE_CODEGEN_JVM_UTILS_TYPEUTILS_H_
+#endif  // HZCC_CODEGEN_JVM_UTILS_TYPE_UTILS_H

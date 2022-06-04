@@ -12,13 +12,13 @@
 #include <utility>
 
 #include "AST/ASTNode.h"
-#include "AST/statement/compound.h"
-#include "AST/statement/do.h"
-#include "AST/statement/for.h"
-#include "AST/statement/function_decl.h"
-#include "AST/statement/if.h"
-#include "AST/statement/struct.h"
-#include "AST/statement/value_decl.h"
+#include "AST/stmt/CompoundStmt.h"
+#include "AST/stmt/DoStmt.h"
+#include "AST/stmt/ForStmt.h"
+#include "AST/stmt/FuncDeclStmt.h"
+#include "AST/stmt/IfStmt.h"
+#include "AST/stmt/StructDeclStmt.h"
+#include "AST/stmt/VarDecl.h"
 #include "SyntaxContext.h"
 #include "parser/base_parser.h"
 #include "parser/statement_parser.h"
@@ -58,21 +58,21 @@ class ParserFactory {
                                      std::shared_ptr<Parser::ParserBase>>
         _parserMap = {{TypeNameUtil::hash<AST::ASTNode>(),
                        std::make_shared<Parser::Statement>()},
-                      {TypeNameUtil::hash<AST::FunctionDeclNode>(),
+                      {TypeNameUtil::hash<AST::FuncDeclStmt>(),
                        std::make_shared<Parser::Function>()},
                       {TypeNameUtil::hash<AST::CompoundStmt>(),
                        std::make_shared<Parser::CompoundStatement>()},
                       {TypeNameUtil::hash<AST::DoStatement>(),
                        std::make_shared<Parser::DoStatement>()},
-                      {TypeNameUtil::hash<AST::ForStatement>(),
+                      {TypeNameUtil::hash<AST::ForStmt>(),
                        std::make_shared<Parser::ForStatement>()},
-                      {TypeNameUtil::hash<AST::IfStatement>(),
+                      {TypeNameUtil::hash<AST::IfStmt>(),
                        std::make_shared<Parser::IfStatement>()},
-                      {TypeNameUtil::hash<AST::WhileStatement>(),
+                      {TypeNameUtil::hash<AST::WhileStmt>(),
                        std::make_shared<Parser::WhileStatement>()},
                       {TypeNameUtil::hash<AST::VarDecl>(),
                        std::make_shared<Parser::ValueDeclare>()},
-                      {TypeNameUtil::hash<AST::StructDeclareNode>(),
+                      {TypeNameUtil::hash<AST::StructDeclStmt>(),
                        std::make_shared<Parser::StructDeclare>()}};
 };
 
@@ -93,7 +93,7 @@ class ParserFactoryReporter {
             << "\nRequest Parser From: [" << _caller << "] " << _file << ":"
             << _line << "\n"
             << "\tParseAST: " << TypeNameUtil::name_pretty<name>() << "\n"
-            << "\tToken: " << MYCC_PRETTY_PRINT_TOKEN(tokens.peek()) << "\n"
+            << "\tToken: " << HZCC_PRETTY_PRINT_TOKEN(tokens.peek()) << "\n"
             << "\tattributes: []"
             << "\n"
             << "\tUsingParser: " << std::hex << TypeNameUtil::hash<name>();

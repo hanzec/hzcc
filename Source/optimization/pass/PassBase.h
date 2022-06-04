@@ -2,8 +2,8 @@
 // Created by chen_ on 2022/4/18.
 //
 
-#ifndef MYCC_SOURCE_OPTIMIZATION_PASS_PASSBASE_H_
-#define MYCC_SOURCE_OPTIMIZATION_PASS_PASSBASE_H_
+#ifndef HZCC_OPTIMIZATION_PASS_PASSBASE_H
+#define HZCC_OPTIMIZATION_PASS_PASSBASE_H
 namespace Hzcc::Pass {
 class PassBase {
   public:
@@ -13,4 +13,4 @@ class PassBase {
     virtual bool IsImmutablePass() { return false; }
 };
 }  // namespace Hzcc::Pass
-#endif  // MYCC_SOURCE_OPTIMIZATION_PASS_PASSBASE_H_
+#endif  // HZCC_OPTIMIZATION_PASS_PASSBASE_H

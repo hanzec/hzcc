@@ -5,7 +5,7 @@
 #include "value_decl_parser.h"
 
 #include "AST/CompilationUnit.h"
-#include "AST/statement/value_decl.h"
+#include "AST/stmt/VarDecl.h"
 #include "lexical/Token.h"
 #include "syntax/SyntaxContext.h"
 #include "syntax/utils/common_utils.h"
@@ -66,7 +66,7 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
         }
     }
 
-    // check if current statement is a function definition
+    // check if current stmt is a function definition
     if (tokens.peek().Type() == Lexical::TokenType::kLParentheses) {
         MYCC_PrintFirstTokenError_ReturnNull(
             tokens, "Function definition not allowed here");
@@ -91,11 +91,11 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
 
         // check type compatibility
         if (Options::Global_enable_type_checking) {
-            Message::set_current_part("Type checking");
+            Message::set_current_part("RetType checking");
 
-            // type shoule be compatible
-            if (!type->IsSame(value->GetType())) {
-                auto orig_type = value->GetType();
+            // type should be compatible
+            if (*type == *value->RetType()) {
+                auto orig_type = value->RetType();
                 value = AST::ASTNode::CastTo(type, std::move(value));
                 if (value == nullptr) {
                     MYCC_PrintTokenError_ReturnNull(
@@ -135,8 +135,8 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
         context.addVariable(name.Location().first, name.Value(), type);
     }
 
-    return std::make_unique<AST::VarDecl>(type, attrs, name,
-                                          std::move(var_value));
+    return std::make_unique<AST::VarDecl>(type, name.Value(), std::move(var_value),
+                                          name.Location());
 }
 
 }  // namespace Hzcc::Syntax::Parser

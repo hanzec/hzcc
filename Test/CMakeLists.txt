@@ -2,7 +2,7 @@
 ## Hzcc E2E Testing ###########################################################
 ###############################################################################
 # a fake target which allow e2e test target require binary target
-add_custom_target(mycc_e2e_test COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS mycc)
+add_custom_target(mycc_e2e_test COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS hzcc)
 
 ###############################################################################
 ## Test Variables #############################################################

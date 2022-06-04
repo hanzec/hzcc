@@ -140,7 +140,7 @@ class convert : public expr {
 class unary_expr : public expr {
     expr* opnd;
     char type;    // i or f
-    char optor;   // operator
+    char optor;   // op
   public:
     unary_expr(char T, char op, expr* opnd);
     virtual ~unary_expr();

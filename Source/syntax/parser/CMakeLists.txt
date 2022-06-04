@@ -1,42 +1,42 @@
 ###############################################################################
 ## BaseParser #################################################################
 ###############################################################################
-file(GLOB MYCC_SYNTAX_BASE_PARSER_HDRS ${CMAKE_CURRENT_LIST_DIR}/*.h)
-file(GLOB MYCC_SYNTAX_BASE_PARSER_SRCS ${CMAKE_CURRENT_LIST_DIR}/*.cc)
+file(GLOB hzcc_syntax_parser_hdrs ${CMAKE_CURRENT_LIST_DIR}/*.h)
+file(GLOB hzcc_syntax_parser_srcs ${CMAKE_CURRENT_LIST_DIR}/*.cc)
 
 # project sources
-target_sources(mycc PRIVATE ${MYCC_SYNTAX_BASE_PARSER_HDRS} ${MYCC_SYNTAX_BASE_PARSER_SRCS})
+target_sources(hzcc PRIVATE ${hzcc_syntax_parser_hdrs} ${hzcc_syntax_parser_srcs})
 
 ###############################################################################
 ## Statements #################################################################
 ###############################################################################
-file(GLOB MYCC_SYNTAX_STMT_PARSER_HDRS ${CMAKE_CURRENT_LIST_DIR}/statements/*.h)
-file(GLOB MYCC_SYNTAX_STMT_PARSER_SRCS ${CMAKE_CURRENT_LIST_DIR}/statements/*.cc)
+file(GLOB hzcc_syntax_parser_stmt_hdrs ${CMAKE_CURRENT_LIST_DIR}/statements/*.h)
+file(GLOB hzcc_syntax_parser_stmt_srcs ${CMAKE_CURRENT_LIST_DIR}/statements/*.cc)
 
 # project sources
-target_sources(mycc PRIVATE ${MYCC_SYNTAX_STMT_PARSER_SRCS} ${MYCC_SYNTAX_STMT_PARSER_HDRS})
+target_sources(hzcc PRIVATE ${hzcc_syntax_parser_stmt_srcs} ${hzcc_syntax_parser_stmt_hdrs})
 
 ###############################################################################
-## Other Stuffs ###############################################################
+## Parser Utils ###############################################################
 ###############################################################################
-file(GLOB MYCC_SYNTAX_PARSER_HDRS ${CMAKE_CURRENT_LIST_DIR}/*.h)
-file(GLOB MYCC_SYNTAX_PARSER_SRCS ${CMAKE_CURRENT_LIST_DIR}/*.cc)
+file(GLOB hzcc_syntax_parser_utils_hdrs ${CMAKE_CURRENT_LIST_DIR}/utils/*.h)
+file(GLOB hzcc_syntax_parser_utils_srcs ${CMAKE_CURRENT_LIST_DIR}/utils/*.cc)
 
 # project sources
-target_sources(mycc PRIVATE ${MYCC_SYNTAX_PARSER_HDRS} ${MYCC_SYNTAX_PARSER_SRCS})
+target_sources(hzcc PRIVATE ${hzcc_syntax_parser_utils_hdrs} ${hzcc_syntax_parser_utils_srcs})
 
 ###############################################################################
 ## Testing Source #############################################################
 ###############################################################################
 if (ENABLE_TESTING MATCHES "ON")
     # looking for the source code
-    file(GLOB MYCC_SYNTAX_PARSER_TEST_SRCS ${CMAKE_CURRENT_LIST_DIR}/test/*_test.cc)
+    file(GLOB hzcc_syntax_parser_test ${CMAKE_CURRENT_LIST_DIR}/test/*_test.cc)
 
     # add to mycc_test target
-    target_sources(mycc_test
+    target_sources(hzcc_test
             PRIVATE
-            ${MYCC_SYNTAX_PARSER_TEST_SRCS}
-            ${MYCC_SYNTAX_PARSER_HDRS} ${MYCC_SYNTAX_PARSER_SRCS}
-            ${MYCC_SYNTAX_BASE_PARSER_HDRS} ${MYCC_SYNTAX_BASE_PARSER_SRCS}
-            ${MYCC_SYNTAX_STMT_PARSER_SRCS} ${MYCC_SYNTAX_STMT_PARSER_HDRS})
+            ${hzcc_syntax_parser_test}
+            ${hzcc_syntax_parser_hdrs} ${hzcc_syntax_parser_srcs}
+            ${hzcc_syntax_parser_stmt_srcs} ${hzcc_syntax_parser_stmt_hdrs}
+            ${hzcc_syntax_parser_utils_hdrs} ${hzcc_syntax_parser_utils_srcs})
 endif ()

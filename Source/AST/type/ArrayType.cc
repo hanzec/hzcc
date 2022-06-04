@@ -3,8 +3,6 @@
 //
 #include "ArrayType.h"
 
-#include <glog/logging.h>
-
 #include <cassert>
 
 #include "AST/ASTNode.h"
@@ -60,19 +58,14 @@ bool ArrayType::HasDeduceSize() {
     return _size_node->GetDeducedValue().has_value();
 }
 
-bool ArrayType::IsSame(const std::shared_ptr<Type>& type) const {
-    // check current type
-    if (type == nullptr) {
-        DLOG(FATAL) << "cannot compare with nullptr";
-    }
-
-    if (type->IsArray()) {
-        auto other = std::dynamic_pointer_cast<ArrayType>(type);
+bool ArrayType::IsSame(const Type& type) const {
+    if (type.IsArray()) {
+        auto other = dynamic_cast<const ArrayType*>(&type);
 
         DLOG_ASSERT(other != nullptr)
             << "dynamic cast to array type failed when IsArray() is true";
 
-        return GetBaseType()->IsSame(other->GetBaseType());
+        return *GetBaseType() == *other->GetBaseType();
     } else {
         return false;
     }

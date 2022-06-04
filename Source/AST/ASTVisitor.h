@@ -1,13 +1,12 @@
 //
-// Created by chen_ on 2022/4/10.
+// Created by Hanze Chen on 2022/4/10.
 //
-
-#ifndef MYCC_SOURCE_AST_ASTVISITOR_H_
-#define MYCC_SOURCE_AST_ASTVISITOR_H_
 #include "utils/Status.h"
 #include "utils/logging.h"
 #include "utils/type_name_utils.h"
 
+#ifndef HZCC_AST_AST_VISITOR_H
+#define HZCC_AST_AST_VISITOR_H
 namespace Hzcc::AST {
 class ASTNode;
 class CastExpr;
@@ -24,21 +23,21 @@ class DeclRefExpr;
 class LiteralExpr;
 class SizeofExpr;
 class UnaryExpr;
-class BreakStatement;
+class BreakStmt;
 class CompoundStmt;
-class ContinueStatement;
-class DeclNode;
+class ContinueStmt;
+class DeclStmt;
 class DoStatement;
 class EmptyStatement;
-class ForStatement;
-class FunctionCall;
-class FunctionDeclNode;
-class IfStatement;
+class ForStmt;
+class FuncCallStmt;
+class FuncDeclStmt;
+class IfStmt;
 class ParamVarDecl;
-class ReturnNode;
-class StructDeclareNode;
+class ReturnStmt;
+class StructDeclStmt;
 class VarDecl;
-class WhileStatement;
+class WhileStmt;
 
 class ASTVisitor {
   public:
@@ -121,9 +120,9 @@ class ASTVisitor {
                       << " not implemented!";
         return Status::OkStatus();
     };
-    virtual Status visit(Hzcc::AST::BreakStatement* p_expr) {
+    virtual Status visit(Hzcc::AST::BreakStmt* p_expr) {
         DLOG(WARNING) << "AST Visitor for Node " << __FUNCTION__
-                      << " Hzcc::AST::BreakStatement"
+                      << " Hzcc::AST::BreakStmt"
                       << " not implemented!";
         return Status::OkStatus();
     };
@@ -133,9 +132,9 @@ class ASTVisitor {
                       << " not implemented!";
         return Status::OkStatus();
     };
-    virtual Status visit(Hzcc::AST::ContinueStatement* p_expr) {
+    virtual Status visit(Hzcc::AST::ContinueStmt* p_expr) {
         DLOG(WARNING) << "AST Visitor for Node " << __FUNCTION__
-                      << " Hzcc::AST::ContinueStatement"
+                      << " Hzcc::AST::ContinueStmt"
                       << " not implemented!";
         return Status::OkStatus();
     };
@@ -151,33 +150,33 @@ class ASTVisitor {
                       << " not implemented!";
         return Status::OkStatus();
     };
-    virtual Status visit(Hzcc::AST::ForStatement* p_expr) {
+    virtual Status visit(Hzcc::AST::ForStmt* p_expr) {
         DLOG(WARNING) << "AST Visitor for Node " << __FUNCTION__
-                      << " Hzcc::AST::ForStatement"
+                      << " Hzcc::AST::ForStmt"
                       << " not implemented!";
         return Status::OkStatus();
     };
-    virtual Status visit(Hzcc::AST::FunctionCall* p_expr) {
+    virtual Status visit(Hzcc::AST::FuncCallStmt* p_expr) {
         DLOG(WARNING) << "AST Visitor for Node " << __FUNCTION__
-                      << " Hzcc::AST::FunctionCall"
+                      << " Hzcc::AST::FuncCallStmt"
                       << " not implemented!";
         return Status::OkStatus();
     };
-    virtual Status visit(Hzcc::AST::FunctionDeclNode* p_expr) {
+    virtual Status visit(Hzcc::AST::FuncDeclStmt* p_expr) {
         DLOG(WARNING) << "AST Visitor for Node " << __FUNCTION__
-                      << " Hzcc::AST::FunctionDeclNode"
+                      << " Hzcc::AST::FuncDeclStmt"
                       << " not implemented!";
         return Status::OkStatus();
     };
-    virtual Status visit(Hzcc::AST::DeclNode* p_expr) {
+    virtual Status visit(Hzcc::AST::DeclStmt* p_expr) {
         DLOG(WARNING) << "AST Visitor for Node " << __FUNCTION__
-                      << " Hzcc::AST::DeclNode"
+                      << " Hzcc::AST::DeclStmt"
                       << " not implemented!";
         return Status::OkStatus();
     };
-    virtual Status visit(Hzcc::AST::IfStatement* p_expr) {
+    virtual Status visit(Hzcc::AST::IfStmt* p_expr) {
         DLOG(WARNING) << "AST Visitor for Node " << __FUNCTION__
-                      << " Hzcc::AST::IfStatement"
+                      << " Hzcc::AST::IfStmt"
                       << " not implemented!";
         return Status::OkStatus();
     };
@@ -187,9 +186,9 @@ class ASTVisitor {
                       << " not implemented!";
         return Status::OkStatus();
     };
-    virtual Status visit(Hzcc::AST::ReturnNode* p_expr) {
+    virtual Status visit(Hzcc::AST::ReturnStmt* p_expr) {
         DLOG(WARNING) << "AST Visitor for Node " << __FUNCTION__
-                      << " Hzcc::AST::ReturnNode"
+                      << " Hzcc::AST::ReturnStmt"
                       << " not implemented!";
         return Status::OkStatus();
     };
@@ -199,9 +198,9 @@ class ASTVisitor {
                       << " not implemented!";
         return Status::OkStatus();
     };
-    virtual Status visit(Hzcc::AST::WhileStatement* p_expr) {
+    virtual Status visit(Hzcc::AST::WhileStmt* p_expr) {
         DLOG(WARNING) << "AST Visitor for Node " << __FUNCTION__
-                      << " Hzcc::AST::WhileStatement"
+                      << " Hzcc::AST::WhileStmt"
                       << " not implemented!";
         return Status::OkStatus();
     };
@@ -214,4 +213,4 @@ class ASTVisitor {
 };
 }  // namespace Hzcc::AST
 
-#endif  // MYCC_SOURCE_AST_ASTVISITOR_H_
+#endif  // HZCC_AST_AST_VISITOR_H

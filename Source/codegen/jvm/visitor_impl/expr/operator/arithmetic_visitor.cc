@@ -2,7 +2,7 @@
 // Created by chen_ on 2022/4/10.
 //
 #include "AST/ASTNode.h"
-#include "AST/expr/operator/arithmetic.h"
+#include "AST/expr/op/ArithmeticExpr.h"
 #include "codegen/jvm/JVMGenerator.h"
 #include "codegen/jvm/utils/TypeUtils.h"
 
@@ -35,12 +35,12 @@ Status JVMGenerator::visit(Hzcc::AST::ArithmeticExpr* p_expr) {
         }))
 
         // write operation
-        AddToCache(Utils::GetTypeName(p_expr->GetType(), true) +
+        AddToCache(Utils::GetTypeName(p_expr->RetType(), true) +
                    ArithmeticASM[p_expr->GetOpType()]);
     } else {
         DVLOG(MESSAGE_ERROR_TRACING)
             << "skip code gen for node " << p_expr->NodeName()
-            << "(line:" << p_expr->GetLine() << " id: " << p_expr->GetNodeId()
+            << "(line:" << p_expr->GetLine() << " id: " << p_expr->Id()
             << ")";
     }
 

@@ -13,6 +13,6 @@ Type checking error in file xc_widenA.c line 12
 Type checking error in file xc_widenA.c line 14
 	Parameter mismatch in call to crust(int, float)
 	Passed parameter #1 has type void
-Type checking error in file xc_widenA.c line 14
+RetType checking error in file xc_widenA.c line 14
 	Parameter mismatch in call to crust(int, float)
 	Passed parameter #2 has type void

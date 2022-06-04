@@ -1,5 +1,5 @@
 //
-// Created by chen_ on 2022/1/26.
+// Created by Hanze Chen on 2022/1/26.
 //
 
 #ifndef MYCC_CONST_MSG_H
@@ -20,11 +20,9 @@ constexpr const char *kMsg_Help =
     "Valid options:\n"
     "\t-o outfile: write to outfile instead of standard output";
 
-constexpr const char *kMsg_Usage = "Usage: mycc -mode [options] infile";
-
 constexpr const char *kMsg_Author =
-    "My bare-bones C compiler (for COM 440/540)\n"
-    "\tWritten by Hanze Chen (hanzech@iastate.edu)\n"
+    "HZCC C compiler\n"
+    "\tWritten by Hanze Chen (tony.chen424@gmail.com)\n"
     "\tVersion " FULL_VERSION "\n\t" BUILD_TIMESTAMP "\n";
 
 #endif  // MYCC_CONST_MSG_H

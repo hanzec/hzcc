@@ -12,4 +12,4 @@ add_custom_target(libc-java
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 # make mycc target depend on libc-java
-add_dependencies(mycc libc-java)
+add_dependencies(hzcc libc-java)

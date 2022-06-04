@@ -1,7 +1,7 @@
 //
 // Created by chen_ on 2022/5/7.
 //
-#include "AST/expr/operator/relational.h"
+#include "AST/expr/operator/RelationalExpr.h"
 #include "codegen/jvm/JVMGenerator.h"
 namespace Hzcc::Codegen {
 
@@ -30,10 +30,10 @@ Status JVMGenerator::visit(Hzcc::AST::RelationalExpr *p_expr) {
      * char int), we can directly set the hint. Otherwise, we need to use the
      * dcmpg/dcmpl or fcmpg/fcmpl
      */
-    if (p_expr->GetLHS()->GetType()->IsDouble() ||
-        p_expr->GetLHS()->GetType()->IsFloat()) {
+    if (p_expr->GetLHS()->RetType()->IsDouble() ||
+        p_expr->GetLHS()->RetType()->IsFloat()) {
         std::string type_identifier =
-            p_expr->GetLHS()->GetType()->IsDouble() ? "d" : "f";
+            p_expr->GetLHS()->RetType()->IsDouble() ? "d" : "f";
 
         // geneate the instruction
         switch (p_expr->OpType()) {
@@ -63,7 +63,7 @@ Status JVMGenerator::visit(Hzcc::AST::RelationalExpr *p_expr) {
                 break;
             case AST::kRelationalType_ENUM_SIZE:
                 DLOG(FATAL)
-                    << "error Relational OP Type : kRelationalType_ENUM_SIZE";
+                    << "error Relational OP RetType : kRelationalType_ENUM_SIZE";
                 break;
         }
     } else {

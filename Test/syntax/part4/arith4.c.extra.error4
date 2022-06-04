@@ -12,5 +12,5 @@ Type checking error in file arith4.c line 14
 	No match for binary operation void % const int
 Type checking error in file arith4.c line 15
 	No match for binary operation void & const int
-Type checking error in file arith4.c line 16
+RetType checking error in file arith4.c line 16
 	No match for binary operation void | const int

@@ -6,8 +6,8 @@
 #include <unordered_set>
 
 #include "macro.h"
-#ifndef MYCC_SOURCE_CODEGEN_JVM_LABELMANAGER_H_
-#define MYCC_SOURCE_CODEGEN_JVM_LABELMANAGER_H_
+#ifndef HZCC_SOURCE_CODEGEN_JVM_LABEL_MANAGER_H
+#define HZCC_SOURCE_CODEGEN_JVM_LABEL_MANAGER_H
 namespace Hzcc::Codegen {
 enum PACKED ScopedType {
     kScopedType_If = 0,
@@ -31,7 +31,7 @@ class LabelManager {
 
     /**
      * @brief Enter a new loop
-     * @param loop_loc the location of the scope statement.
+     * @param loop_loc the location of the scope stmt.
      */
     void EnterScope(std::pair<int, int> loop_loc, ScopedType type);
 
@@ -41,7 +41,7 @@ class LabelManager {
     void LeaveScope();
 
     /**
-     * @brief Get current scope Type
+     * @brief Get current scope RetType
      */
     ScopedType GetCurrentScopeType();
 
@@ -90,4 +90,4 @@ class LabelManager {
     std::list<std::pair<std::string, uint64_t>> _line_number_table;
 };
 }  // namespace Hzcc::Codegen
-#endif  // MYCC_SOURCE_CODEGEN_JVM_LABELMANAGER_H_
+#endif  // HZCC_SOURCE_CODEGEN_JVM_LABEL_MANAGER_H

@@ -5,8 +5,8 @@
 #include <string>
 
 #include "utils/Status.h"
-#ifndef MYCC_SOURCE_CODEGEN_GENERATOR_H_
-#define MYCC_SOURCE_CODEGEN_GENERATOR_H_
+#ifndef HZCC_SOURCE_CODEGEN_GENERATOR_H
+#define HZCC_SOURCE_CODEGEN_GENERATOR_H
 namespace Hzcc {
 namespace AST {
 class CompilationUnit;
@@ -36,4 +36,4 @@ class Generator {
 };
 }  // namespace Codegen
 }  // namespace Hzcc
-#endif  // MYCC_SOURCE_CODEGEN_GENERATOR_H_
+#endif  // HZCC_SOURCE_CODEGEN_GENERATOR_H

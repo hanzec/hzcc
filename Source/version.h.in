@@ -1,9 +1,9 @@
 //
-// Created by chen_ on 2022/1/22.
+// Created by Hanze Chen on 2022/1/22.
 //
 
-#ifndef COMS_550_MYCC_VERSION_H
-#define COMS_550_MYCC_VERSION_H
+#ifndef HZCC_VERSION_H
+#define HZCC_VERSION_H
 
 #define FULL_VERSION "${CMAKE_PROJECT_VERSION}_${GIT_HASH}(${MACHINE_HOST_NAME})"
 #define MAJOR_VERSION "${CMAKE_PROJECT_VERSION_MAJOR}"
@@ -13,4 +13,4 @@
 #define GIT_HASH "${GIT_HASH}"
 #define BUILD_TIMESTAMP "${BUILD_TIMESTAMP}"
 
-#endif //COMS_550_MYCC_VERSION_H
+#endif  // HZCC_VERSION_H

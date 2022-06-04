@@ -3,8 +3,8 @@
 //
 #include <string>
 #include <unordered_map>
-#ifndef MYCC_SOURCE_CODEGEN_JVM_STACKMANAGER_H_
-#define MYCC_SOURCE_CODEGEN_JVM_STACKMANAGER_H_
+#ifndef HZCC_CODEGEN_JVM_STACK_MANAGER_H
+#define HZCC_CODEGEN_JVM_STACK_MANAGER_H
 namespace Hzcc::Codegen::JVM {
 using GlobalVarTable = std::unordered_map<std::string, std::string>;
 
@@ -40,11 +40,11 @@ class StackManager {
     std::string _class_name;
 
     /**
-     * Varname ： [stackID, Type]
+     * Varname ： [stackID, RetType]
      */
     GlobalVarTable _global_vars;
     std::unordered_map<std::string, std::pair<int, std::string>> _tmp_vars;
     std::unordered_map<std::string, std::pair<int, std::string>> _local_vars;
 };
 }  // namespace Hzcc::Codegen::JVM
-#endif  // MYCC_SOURCE_CODEGEN_JVM_STACKMANAGER_H_
+#endif  // HZCC_CODEGEN_JVM_STACK_MANAGER_H

@@ -36,9 +36,9 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
         (p_expr->GetAssignType() == AST::kAssignType_AddAssign ||
          p_expr->GetAssignType() == AST::kAssignType_SubAssign) &&
         // Rule1
-        (!p_expr->GetLHS()->GetType()->IsArray() &&
-         !p_expr->GetLHS()->GetType()->IsFuncPtr() &&
-         Utils::GetTypeName(p_expr->GetLHS()->GetType()) == "i") &&
+        (!p_expr->GetLHS()->RetType()->IsArray() &&
+         !p_expr->GetLHS()->RetType()->IsFuncPtr() &&
+         Utils::GetTypeName(p_expr->GetLHS()->RetType()) == "i") &&
         // Rule2
         p_expr->GetLHS()->GetDeducedValue().has_value()) {
         // then we insert the "IINC" instruction
@@ -62,7 +62,7 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
             // refer for gain the value and push back to stack
             if (p_expr->GetLHS()->IsDereference()) {
                 AddToCache("dup2");
-                AddToCache(Utils::GetTypeName(p_expr->GetLHS()->GetType()) +
+                AddToCache(Utils::GetTypeName(p_expr->GetLHS()->RetType()) +
                            "aload");
             }
 
@@ -80,7 +80,7 @@ Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
         // here we push instructions to generate the assignment
         if (p_expr->GetAssignType() != AST::kAssignType_Assign) {
             // we then do the operation
-            AddToCache(Utils::GetTypeName(p_expr->GetLHS()->GetType(), true) +
+            AddToCache(Utils::GetTypeName(p_expr->GetLHS()->RetType(), true) +
                        kAssignOPASM[p_expr->GetAssignType() - 1]);
         }
 

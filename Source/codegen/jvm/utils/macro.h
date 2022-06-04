@@ -8,8 +8,8 @@
 #include "ConstValUtils.h"
 #include "TypeUtils.h"
 #include "utils/logging.h"
-#ifndef MYCC_SOURCE_CODEGEN_JVM_UTILS_MACRO_H_
-#define MYCC_SOURCE_CODEGEN_JVM_UTILS_MACRO_H_
+#ifndef HZCC_CODEGEN_JVM_UTILS_MACRO_H
+#define HZCC_CODEGEN_JVM_UTILS_MACRO_H
 
 #define HZCC_LEAVE_RET_ON_STACK(expr)                       \
     {                                                       \
@@ -94,4 +94,4 @@
         }                                                                      \
     }
 
-#endif  // MYCC_SOURCE_CODEGEN_JVM_UTILS_MACRO_H_
+#endif  // HZCC_CODEGEN_JVM_UTILS_MACRO_H

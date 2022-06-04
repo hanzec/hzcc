@@ -5,8 +5,8 @@
 
 #include "AST/DeduceValue.h"
 
-#ifndef MYCC_SOURCE_CODEGEN_JVM_UTILS_CONSTVALUTILS_H_
-#define MYCC_SOURCE_CODEGEN_JVM_UTILS_CONSTVALUTILS_H_
+#ifndef HZCC_CODEGEN_JVM_UTILS_CONST_VAL_UTILS_H
+#define HZCC_CODEGEN_JVM_UTILS_CONST_VAL_UTILS_H
 namespace Hzcc::Codegen::Utils {
 
 std::string PushConstVal(char val);
@@ -21,4 +21,4 @@ std::string PushConstVal(int32_t val);
 
 std::string PushConstVal(std::string const &type, const AST::DeduceValue &val);
 }  // namespace Hzcc::Codegen::Utils
-#endif  // MYCC_SOURCE_CODEGEN_JVM_UTILS_CONSTVALUTILS_H_
+#endif  // HZCC_CODEGEN_JVM_UTILS_CONST_VAL_UTILS_H

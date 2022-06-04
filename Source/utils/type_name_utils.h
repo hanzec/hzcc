@@ -4,8 +4,8 @@
 #include <string_view>
 
 #include "fnv1a_hash.h"
-#ifndef MYCC_SOURCE_UTILS_TYPE_NAME_UTILS_H_
-#define MYCC_SOURCE_UTILS_TYPE_NAME_UTILS_H_
+#ifndef HZCC_SOURCE_UTILS_TYPE_NAME_UTILS_H_
+#define HZCC_SOURCE_UTILS_TYPE_NAME_UTILS_H_
 namespace Hzcc {
 struct TypeNameUtil {
     size_t name_hash{0};
@@ -59,4 +59,4 @@ struct TypeNameUtil {
     }
 };
 }  // namespace Hzcc
-#endif  // MYCC_SOURCE_UTILS_TYPE_NAME_UTILS_H_
+#endif  // HZCC_SOURCE_UTILS_TYPE_NAME_UTILS_H_

@@ -6,23 +6,23 @@
 
 #include <algorithm>
 
-#include "AST/expr/array.h"
-#include "AST/expr/cast.h"
-#include "AST/expr/decl_ref.h"
+#include "AST/expr/ArraySubscriptExpr.h"
+#include "AST/expr/CastExpr.h"
+#include "AST/expr/DeclRefExpr.h"
+#include "AST/expr/SizeofExpr.h"
+#include "AST/expr/UnaryExpr.h"
+#include "AST/expr/operator/RelationalExpr.h"
 #include "AST/expr/operator/arithmetic.h"
 #include "AST/expr/operator/assign.h"
 #include "AST/expr/operator/bitwise.h"
 #include "AST/expr/operator/comma.h"
 #include "AST/expr/operator/logical.h"
-#include "AST/expr/operator/relational.h"
-#include "AST/expr/sizeof.h"
-#include "AST/expr/unary.h"
-#include "AST/statement/compound.h"
+#include "AST/statement/CompoundStmt.h"
+#include "AST/statement/FuncCallStmt.h"
+#include "AST/statement/ParamVarDecl.h"
+#include "AST/statement/ReturnStmt.h"
+#include "AST/statement/VarDecl.h"
 #include "AST/statement/empty.h"
-#include "AST/statement/function_call.h"
-#include "AST/statement/param_val_decl.h"
-#include "AST/statement/return.h"
-#include "AST/statement/value_decl.h"
 #include "AST/type/ArrayType.h"
 #include "codegen/jvm/utils/macro.h"
 namespace Hzcc::Codegen::JVM {
@@ -34,8 +34,8 @@ Status FuncAnalyzer::visit(Hzcc::AST::CastExpr *p_expr) {
     // then we get the type of the cast
     if (_generate_load) {
         // avoid generate instruction like "i2i, "c2i"
-        if (Utils::GetTypeName(p_expr->GetCastExpr()->GetType(), true) !=
-            Utils::GetTypeName(p_expr->GetType())) {
+        if (Utils::GetTypeName(p_expr->GetCastExpr()->RetType(), true) !=
+            Utils::GetTypeName(p_expr->RetType())) {
             // "i2f" or "f2i" or "c2f" or "f2c" do not change the stack
         }
     }
@@ -77,9 +77,9 @@ Status FuncAnalyzer::visit(Hzcc::AST::AssignExpr *p_expr) {
         (p_expr->GetAssignType() == AST::kAssignType_AddAssign ||
          p_expr->GetAssignType() == AST::kAssignType_SubAssign) &&
         // Rule1
-        (!p_expr->GetLHS()->GetType()->IsArray() &&
-         !p_expr->GetLHS()->GetType()->IsFuncPtr() &&
-         Utils::GetTypeName(p_expr->GetLHS()->GetType()) == "i") &&
+        (!p_expr->GetLHS()->RetType()->IsArray() &&
+         !p_expr->GetLHS()->RetType()->IsFuncPtr() &&
+         Utils::GetTypeName(p_expr->GetLHS()->RetType()) == "i") &&
         // Rule2
         p_expr->GetLHS()->GetDeducedValue().has_value()) {
         // "IINC" will not change the stack size.
@@ -223,7 +223,7 @@ Status FuncAnalyzer::visit(Hzcc::AST::TernaryExpr *p_expr) {
 Status FuncAnalyzer::visit(Hzcc::AST::DeclRefExpr *p_expr) {
     // Generate push instruction if needed
     if (_generate_load) {
-        if (p_expr->GetType()->IsArray()) {
+        if (p_expr->RetType()->IsArray()) {
             ModifyStackSize(1);
             PushReturnStack(p_expr->VarName());
         } else {
@@ -257,7 +257,7 @@ Status FuncAnalyzer::visit(Hzcc::AST::UnaryExpr *p_expr) {
 
         auto var_name = ConsumeReturnStack();
         if (_global_vars.find(var_name) == _global_vars.end() &&
-            Utils::GetTypeName(p_expr->GetExpr()->GetType()) == "i") {
+            Utils::GetTypeName(p_expr->GetExpr()->RetType()) == "i") {
             ModifyStackSize(LoadFromVariable(var_name));
         } else {
             ModifyStackSize(LoadFromVariable(var_name));
@@ -270,7 +270,7 @@ Status FuncAnalyzer::visit(Hzcc::AST::UnaryExpr *p_expr) {
 
 Status FuncAnalyzer::visit(Hzcc::AST::CompoundStmt *p_expr) {
     /**
-     * CompoundStmt is a list of statements. We will visit each statement
+     * CompoundStmt is a list of statements. We will visit each stmt
      * in the list in order to get the stack size and variables;
      */
 
@@ -280,10 +280,10 @@ Status FuncAnalyzer::visit(Hzcc::AST::CompoundStmt *p_expr) {
     return Status::OkStatus();
 }
 
-Status FuncAnalyzer::visit(Hzcc::AST::BreakStatement *p_expr) {
+Status FuncAnalyzer::visit(Hzcc::AST::BreakStmt *p_expr) {
     return Status::OkStatus();
 }
-Status FuncAnalyzer::visit(Hzcc::AST::ContinueStatement *p_expr) {
+Status FuncAnalyzer::visit(Hzcc::AST::ContinueStmt *p_expr) {
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::DoStatement *p_expr) {
@@ -292,10 +292,10 @@ Status FuncAnalyzer::visit(Hzcc::AST::DoStatement *p_expr) {
 Status FuncAnalyzer::visit(Hzcc::AST::EmptyStatement *p_expr) {
     return Status::OkStatus();
 }
-Status FuncAnalyzer::visit(Hzcc::AST::ForStatement *p_expr) {
+Status FuncAnalyzer::visit(Hzcc::AST::ForStmt *p_expr) {
     return Status::OkStatus();
 }
-Status FuncAnalyzer::visit(Hzcc::AST::FunctionCall *p_expr) {
+Status FuncAnalyzer::visit(Hzcc::AST::FuncCallStmt *p_expr) {
     // generate ars push
     for (auto &arg : p_expr->GetArgsNode()) {
         HZCC_JVM_GENERATE_LOAD_INSTR(HZCC_JVM_Visit_Node(arg));
@@ -317,13 +317,13 @@ Status FuncAnalyzer::visit(Hzcc::AST::FunctionCall *p_expr) {
     return Status::OkStatus();
 }
 
-Status FuncAnalyzer::visit(Hzcc::AST::FunctionDeclNode *p_expr) {
+Status FuncAnalyzer::visit(Hzcc::AST::FuncDeclStmt *p_expr) {
     return Status::OkStatus();
 }
-Status FuncAnalyzer::visit(Hzcc::AST::DeclNode *p_expr) {
+Status FuncAnalyzer::visit(Hzcc::AST::DeclStmt *p_expr) {
     return Status::OkStatus();
 }
-Status FuncAnalyzer::visit(Hzcc::AST::IfStatement *p_expr) {
+Status FuncAnalyzer::visit(Hzcc::AST::IfStmt *p_expr) {
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::ParamVarDecl *p_expr) {
@@ -331,13 +331,13 @@ Status FuncAnalyzer::visit(Hzcc::AST::ParamVarDecl *p_expr) {
                      p_expr->GetLine());
     return Status::OkStatus();
 }
-Status FuncAnalyzer::visit(Hzcc::AST::ReturnNode *p_expr) {
+Status FuncAnalyzer::visit(Hzcc::AST::ReturnStmt *p_expr) {
     _has_return = true;
     HZCC_JVM_GENERATE_LOAD_INSTR(
         HZCC_LEAVE_RET_ON_STACK(HZCC_JVM_Visit_Node(p_expr->GetReturnVal())));
     return Status::OkStatus();
 }
-Status FuncAnalyzer::visit(Hzcc::AST::WhileStatement *p_expr) {
+Status FuncAnalyzer::visit(Hzcc::AST::WhileStmt *p_expr) {
     return Status::OkStatus();
 }
 Status FuncAnalyzer::visit(Hzcc::AST::LiteralExpr *p_expr) {

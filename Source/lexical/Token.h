@@ -3,8 +3,8 @@
 
 #include "lexical/token_type.h"
 
-#ifndef MYCC_LEXICAL_LEXICAL_TOKEN_H
-#define MYCC_LEXICAL_LEXICAL_TOKEN_H
+#ifndef HZCC_LEXICAL_LEXICAL_TOKEN_H
+#define HZCC_LEXICAL_LEXICAL_TOKEN_H
 
 namespace Hzcc::Lexical {
 class Token {
@@ -99,7 +99,7 @@ class Token {
      * @return std::pair<int, int> the location of the token in the
      *         source file which is a three tuple variable (row, column)
      */
-    [[nodiscard]] std::pair<int, int> Location() const noexcept;
+    [[nodiscard]] const std::pair<int, int>& Location() const noexcept;
 
     /**
      * @brief Get the cached source line of the token
@@ -134,4 +134,4 @@ inline bool operator==(const Token& lhs, const Token& rhs) {
 
 }  // namespace Hzcc::Lexical
 
-#endif  // LEXICAL_TOKEN_H
+#endif  // HZCC_LEXICAL_LEXICAL_TOKEN_H

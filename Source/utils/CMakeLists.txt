@@ -1,20 +1,20 @@
 ###############################################################################
 ## Project Sources ############################################################
 ###############################################################################
-file(GLOB MYCC_UTILS_HDRS ${CMAKE_CURRENT_LIST_DIR}/*.h)
-file(GLOB MYCC_UTILS_SRCS ${CMAKE_CURRENT_LIST_DIR}/*.cc)
+file(GLOB hzcc_utils_hdrs ${CMAKE_CURRENT_LIST_DIR}/*.h)
+file(GLOB hzcc_utils_srcs ${CMAKE_CURRENT_LIST_DIR}/*.cc)
 
 # project sources
-target_sources(mycc PRIVATE ${MYCC_UTILS_HDRS} ${MYCC_UTILS_SRCS})
+target_sources(hzcc PRIVATE ${hzcc_utils_hdrs} ${hzcc_utils_srcs})
 
 ###############################################################################
 ## Testing Source #############################################################
 ###############################################################################
 if (ENABLE_TESTING MATCHES "ON")
-    file(GLOB MYCC_UTILS_TEST_SRCS ${CMAKE_CURRENT_LIST_DIR}/test/*_test.cc)
+    file(GLOB hzcc_utils_test ${CMAKE_CURRENT_LIST_DIR}/test/*_test.cc)
 
-    target_sources(mycc_test
+    target_sources(hzcc_test
             PRIVATE
-            ${MYCC_UTILS_TEST_SRCS}
-            ${MYCC_UTILS_HDRS} ${MYCC_UTILS_SRCS})
+            ${hzcc_utils_test}
+            ${hzcc_utils_hdrs} ${hzcc_utils_srcs})
 endif ()

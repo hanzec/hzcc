@@ -1,2 +1,2 @@
-Type checking error in file xc_widen1.c line 4
+RetType checking error in file xc_widen1.c line 4
 	Invalid assignment: int = char

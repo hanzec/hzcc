@@ -12,5 +12,5 @@ Type checking error in file xc_widen8.c line 13
 	Mismatched operand types char != float
 Type checking error in file xc_widen8.c line 15
 	Mismatched operand types char && float
-Type checking error in file xc_widen8.c line 17
+RetType checking error in file xc_widen8.c line 17
 	Mismatched operand types char || int

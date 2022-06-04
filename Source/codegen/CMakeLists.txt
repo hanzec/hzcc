@@ -1,36 +1,36 @@
 ###############################################################################
-## Project Sources ############################################################
-###############################################################################
-file(GLOB MYCC_CODE_GEN_HDRS ${CMAKE_CURRENT_LIST_DIR}/*.h)
-file(GLOB MYCC_CODE_GEN_SRCS ${CMAKE_CURRENT_LIST_DIR}/*.cc)
-
-# project sources
-target_sources(mycc PRIVATE ${MYCC_CODE_GEN_HDRS} ${MYCC_CODE_GEN_SRCS})
-
-###############################################################################
 ## JVM Bytecode Backend #######################################################
 ###############################################################################
 add_subdirectory(jvm)
 
 ###############################################################################
-## Project Sources ############################################################
+## Codegen Sources ############################################################
 ###############################################################################
-file(GLOB MYCC_CODE_GEN_UTILS_HDRS ${CMAKE_CURRENT_LIST_DIR}/utils/*.h)
-file(GLOB MYCC_CODE_GEN_UTILS_SRCS ${CMAKE_CURRENT_LIST_DIR}/utils/*.cc)
+file(GLOB hzcc_code_gen_srcs ${CMAKE_CURRENT_LIST_DIR}/*.h)
+file(GLOB hzcc_code_gen_hdrs ${CMAKE_CURRENT_LIST_DIR}/*.cc)
 
 # project sources
-target_sources(mycc PRIVATE ${MYCC_CODE_GEN_UTILS_HDRS} ${MYCC_CODE_GEN_UTILS_SRCS})
+target_sources(hzcc PRIVATE ${hzcc_code_gen_srcs} ${hzcc_code_gen_hdrs})
+
+###############################################################################
+## Codegen Sources ############################################################
+###############################################################################
+file(GLOB hzcc_code_gen_utils_hdrs ${CMAKE_CURRENT_LIST_DIR}/utils/*.h)
+file(GLOB hzcc_code_gen_utils_srcs ${CMAKE_CURRENT_LIST_DIR}/utils/*.cc)
+
+# project sources
+target_sources(hzcc PRIVATE ${hzcc_code_gen_utils_hdrs} ${hzcc_code_gen_utils_srcs})
 
 ###############################################################################
 ## Testing Source #############################################################
 ###############################################################################
 if (ENABLE_TESTING MATCHES "ON")
     # looking for the source code
-    file(GLOB MYCC_CODE_GEN_TEST_SRCS ${CMAKE_CURRENT_LIST_DIR}/test/*_test.cc)
+    file(GLOB hzcc_code_gen_test ${CMAKE_CURRENT_LIST_DIR}/test/*_test.cc)
 
     # add to mycc_test target
-    target_sources(mycc_test
+    target_sources(hzcc_test
             PRIVATE
-            ${MYCC_CODE_GEN_TEST_SRCS}
-            ${MYCC_CODE_GEN_HDRS} ${MYCC_CODE_GEN_SRCS})
+            ${hzcc_code_gen_test}
+            ${hzcc_code_gen_srcs} ${hzcc_code_gen_hdrs})
 endif ()

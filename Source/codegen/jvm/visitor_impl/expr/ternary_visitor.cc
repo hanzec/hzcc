@@ -1,7 +1,7 @@
 //
 // Created by chen_ on 2022/5/8.
 //
-#include "AST/expr/ternary.h"
+#include "AST/expr/TernaryExpr.h"
 #include "codegen/jvm/JVMGenerator.h"
 namespace Hzcc::Codegen {
 constexpr static const std::array<const char *, OpHint::kOpHint_ENUM_SIZE>
@@ -22,7 +22,7 @@ Status JVMGenerator::visit(Hzcc::AST::TernaryExpr *p_expr) {
     EnterScope(p_expr->Location(), kScopedType_Ternary);
 
     /**
-     * Ternary operator structure:
+     * Ternary op structure:
      *     ...
      *     ...Condition...
      *  LABEL_entry:

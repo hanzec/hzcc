@@ -6,8 +6,8 @@
 #include <list>
 
 #include "AST/CompilationUnit.h"
-#include "AST/statement/compound.h"
-#include "AST/statement/if.h"
+#include "AST/stmt/CompoundStmt.h"
+#include "AST/stmt/IfStmt.h"
 #include "AST/type/Type.h"
 #include "lexical/Token.h"
 #include "syntax/Parser.h"
@@ -17,8 +17,8 @@
 
 namespace Hzcc::Syntax::Parser {
 IfStatement::IfStatement() noexcept
-    : ParserBase(TypeNameUtil::hash<AST::IfStatement>(),
-                 TypeNameUtil::name_pretty<AST::IfStatement>()) {}
+    : ParserBase(TypeNameUtil::hash<AST::IfStmt>(),
+                 TypeNameUtil::name_pretty<AST::IfStmt>()) {}
 std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
                                                       SyntaxContext& context) {
     auto ref = tokens.peek();
@@ -35,8 +35,8 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
     }
 
     // if condition could be converted to int
-    if (Options::Global_enable_type_checking && cond->GetType()->IsVoid()) {
-        Message::set_current_part("Type checking");
+    if (Options::Global_enable_type_checking && cond->RetType()->IsVoid()) {
+        Message::set_current_part("RetType checking");
         MYCC_PrintTokenError_ReturnNull(
             cond_token, "if condition has non-numeric type void");
         Message::set_current_part("Parser");
@@ -49,18 +49,18 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
     }
 
     // generate ifNode
-    auto ifNode = std::make_unique<AST::IfStatement>(std::move(cond),
+    auto ifNode = std::make_unique<AST::IfStmt>(std::move(cond),
                                                      std::move(body), if_loc);
 
-    // parsing [else] and [else if] statement
+    // parsing [else] and [else if] stmt
     while (tokens.peek().Type() == Lexical::TokenType::kElse) {
         auto prev_else = tokens.pop();  // consume else;
-        // if this is single else statement
+        // if this is single else stmt
         if (tokens.peek().Type() == Lexical::TokenType::kLBrace) {
             if (ifNode->HasElse()) {
                 MYCC_PrintTokenError_ReturnNull(
                     prev_else,
-                    "If statement cannot have multiple else statements")
+                    "If stmt cannot have multiple else statements")
             } else {
                 // enter new scope
                 context.enterScope();
@@ -93,14 +93,14 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
 
             // check if else-if condition is valid
             if (Options::Global_enable_type_checking &&
-                else_if_condition->GetType()->IsVoid()) {
-                Message::set_current_part("Type checking");
+                else_if_condition->RetType()->IsVoid()) {
+                Message::set_current_part("RetType checking");
                 MYCC_PrintTokenError_ReturnNull(
                     else_if_token, "if condition has non-numeric type void");
                 Message::set_current_part("Parser");
             }
 
-            // add else-if statement
+            // add else-if stmt
             if (!ifNode->addElseIf(
                     std::move(else_if_condition),
                     ParseBodyStatement(tokens, context, false))) {

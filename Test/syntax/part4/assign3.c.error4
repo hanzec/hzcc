@@ -16,5 +16,5 @@ Type checking error in file assign3.c line 17
 	Invalid assignment: int[] -= int
 Type checking error in file assign3.c line 18
 	Invalid assignment: int[] *= int
-Type checking error in file assign3.c line 19
+RetType checking error in file assign3.c line 19
 	Invalid assignment: int[] /= int

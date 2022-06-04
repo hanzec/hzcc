@@ -3,8 +3,8 @@
 //
 #include "Type.h"
 
-#ifndef MYCC_SOURCE_AST_TYPE_FUNC_PTR_TYPE_H_
-#define MYCC_SOURCE_AST_TYPE_FUNC_PTR_TYPE_H_
+#ifndef HZCC_AST_TYPE_FUNC_PTR_TYPE_H
+#define HZCC_AST_TYPE_FUNC_PTR_TYPE_H
 namespace Hzcc::AST {
 static std::string ToString(const std::list<Type::TypePtr>& types) {
     std::string ret = "(";
@@ -28,4 +28,4 @@ class FuncPtrType : public Type {
 };
 
 }  // namespace Hzcc::AST
-#endif  // MYCC_SOURCE_AST_TYPE_FUNC_PTR_TYPE_H_
+#endif  // HZCC_AST_TYPE_FUNC_PTR_TYPE_H

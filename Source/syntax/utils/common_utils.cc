@@ -5,7 +5,7 @@
 #include "common_utils.h"
 
 #include "AST/CompilationUnit.h"
-#include "AST/statement/compound.h"
+#include "AST/stmt/CompoundStmt.h"
 #include "lexical/Token.h"
 #include "lexical/token_type.h"
 #include "syntax/Parser.h"
@@ -131,7 +131,7 @@ std::unique_ptr<AST::ASTNode> ParseBodyStatement(TokenList& tokens,
         auto body_statement =
             ParserFactory::ParseAST<AST::CompoundStmt>(tokens, context);
         if (!body_statement) {
-            DLOG(ERROR) << "Parse body statement failed";
+            DLOG(ERROR) << "Parse body stmt failed";
             return nullptr;
         }
 
@@ -149,7 +149,7 @@ std::unique_ptr<AST::ASTNode> ParseBodyStatement(TokenList& tokens,
             ParserFactory::ParseAST<AST::ASTNode>(tokens, context);
 
         if (!body_statement) {
-            DLOG(ERROR) << "Parse body statement failed";
+            DLOG(ERROR) << "Parse body stmt failed";
             return nullptr;
         }
 
@@ -252,7 +252,7 @@ std::tuple<std::shared_ptr<AST::Type>, Lexical::Token> ParseTypeDecl(
     }
 
     /**
-     * Parse Function Pointer Type
+     * Parse Function Pointer RetType
      */
     else if (tokens.peek().Type() == Lexical::TokenType::kLParentheses) {
         tokens.pop();
@@ -341,7 +341,7 @@ std::tuple<std::shared_ptr<AST::Type>, Lexical::Token> ParseTypeDecl(
                 Lexical::Token(Lexical::TokenType::kUnknown, -1, -1));
         } else {
             // TODO we need print more useful error message
-            DLOG(WARNING) << "Type " << type_name << " is not defined";
+            DLOG(WARNING) << "RetType " << type_name << " is not defined";
             return std::make_tuple(
                 nullptr, Lexical::Token(Lexical::TokenType::kUnknown, -1, -1));
         }

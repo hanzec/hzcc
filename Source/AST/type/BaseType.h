@@ -3,8 +3,8 @@
 //
 #include <bitset>
 #include <string>
-#ifndef FACT_CLASS_SOURCE_AST_TYPE_BASETYPE_H_
-#define FACT_CLASS_SOURCE_AST_TYPE_BASETYPE_H_
+#ifndef HZCC_AST_TYPE_BASE_TYPE_H
+#define HZCC_AST_TYPE_BASE_TYPE_H
 namespace Hzcc::AST {
 enum PrimitiveType {
     kPrimitiveType_int = 0,
@@ -12,6 +12,8 @@ enum PrimitiveType {
     kPrimitiveType_double,
     kPrimitiveType_char,
     kPrimitiveType_void,
+    kPrimitiveType_long,
+    kPrimitiveType_short,
     kPrimitiveType_ENUM_SIZE,  // must be the last one
 };
 
@@ -54,6 +56,18 @@ class BaseType {
     [[nodiscard]] bool IsInteger() const { return _type[kPrimitiveType_int]; }
 
     /**
+     * @brief Check if the type is Long
+     * @return True if the type is Long, false otherwise.
+     */
+    [[nodiscard]] bool IsLong() const { return _type[kPrimitiveType_long]; }
+
+    /**
+     * @brief Check if the type is Short
+     * @return True if the type is Short, false otherwise.
+     */
+    [[nodiscard]] bool IsShort() const { return _type[kPrimitiveType_short]; }
+
+    /**
      * @brief The base type id
      * @return uint64_t The base type id
      */
@@ -65,11 +79,6 @@ class BaseType {
     inline static uint64_t _counter_ = 0;
     std::bitset<kPrimitiveType_ENUM_SIZE> _type;
 };
-
-/**#############################################################
- * ## Message Print Helper                       ###############
- * ############################################################ */
-
 }  // namespace Hzcc::AST
 
-#endif  // FACT_CLASS_SOURCE_AST_TYPE_BASETYPE_H_
+#endif  // HZCC_AST_TYPE_BASE_TYPE_H

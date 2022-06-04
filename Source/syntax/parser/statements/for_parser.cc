@@ -9,9 +9,9 @@
 #include <list>
 
 #include "AST/CompilationUnit.h"
-#include "AST/statement/compound.h"
-#include "AST/statement/empty.h"
-#include "AST/statement/for.h"
+#include "AST/stmt/CompoundStmt.h"
+#include "AST/stmt/EmptyStmt.h"
+#include "AST/stmt/ForStmt.h"
 #include "lexical/token_type.h"
 #include "syntax/Parser.h"
 #include "syntax/parser/base_parser.h"
@@ -20,8 +20,8 @@
 
 namespace Hzcc::Syntax::Parser {
 ForStatement::ForStatement() noexcept
-    : ParserBase(TypeNameUtil::hash<AST::ForStatement>(),
-                 TypeNameUtil::name_pretty<AST::ForStatement>()) {}
+    : ParserBase(TypeNameUtil::hash<AST::ForStmt>(),
+                 TypeNameUtil::name_pretty<AST::ForStmt>()) {}
 std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(TokenList& tokens,
                                                        SyntaxContext& context) {
     EnterLoop();  // enter loop
@@ -93,7 +93,7 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(TokenList& tokens,
         body = ParseBodyStatement(tokens, context, false);
         if (body == nullptr) return nullptr;
     } else {
-        DLOG(WARNING) << "for statement body is empty";
+        DLOG(WARNING) << "for stmt body is empty";
     }
 
     // leave scope
@@ -103,7 +103,7 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(TokenList& tokens,
     tokens.push(Lexical::Token(Lexical::TokenType::kSemiColon, -1, -1));
 
     ExitLoop();  // exit loop
-    return std::make_unique<AST::ForStatement>(
+    return std::make_unique<AST::ForStmt>(
         std::move(initializer), std::move(condition), std::move(increment),
         std::move(body), for_loc);
 }

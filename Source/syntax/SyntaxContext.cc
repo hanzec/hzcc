@@ -54,7 +54,7 @@ void SyntaxContext::enterScope(const std::string &name,
 
 /**
  * #############################################################
- * ###############    Type related Functions     ###############
+ * ###############    RetType related Functions     ###############
  * #############################################################
  */
 
@@ -132,7 +132,7 @@ SyntaxContext::TypePtr SyntaxContext::getArrayType(
     }
 
     if (base_type == nullptr || !hasType(base_type->GetName())) {
-        DLOG(ERROR) << "Type not found";
+        DLOG(ERROR) << "RetType not found";
         return nullptr;
     } else {
         SyntaxContext::TypePtr current_type = base_type;
@@ -168,7 +168,7 @@ std::shared_ptr<AST::StructType> SyntaxContext::addStructType(
             return nullptr;
         } else {
             DVLOG(AST_LOG_LEVEL)
-                << "Add new Struct Type [" << name << "] to global scope";
+                << "Add new Struct RetType [" << name << "] to global scope";
             auto new_type =
                 std::make_shared<AST::StructType>(struct_name, attr_types);
             _named_types.insert(std::make_pair(name, new_type));
@@ -182,11 +182,11 @@ std::shared_ptr<AST::StructType> SyntaxContext::addStructType(
         }
     } else {
         if (_current_context.lock()->hasType(name)) {
-            LOG(FATAL) << "Type " << name << " already exists";
+            LOG(FATAL) << "RetType " << name << " already exists";
             return nullptr;
         } else {
             DVLOG(AST_LOG_LEVEL)
-                << "Trying to add new Type [" << name << "] to local scope";
+                << "Trying to add new RetType [" << name << "] to local scope";
 
             // when leaving this function all attrs should be consumed
             DLOG_IF(FATAL, !attr_list.empty())
@@ -281,11 +281,11 @@ SyntaxContext::getFuncRetAndArgType(const std::basic_string<char> &name) {
         return {nullptr, {}, -1};
     }
 }
-void SyntaxContext::addDecl(std::unique_ptr<AST::DeclNode> type) {
+void SyntaxContext::addDecl(std::unique_ptr<AST::DeclStmt> type) {
     if (type->IsDeclNode() && !type->IsFuncDecl()) {
-        auto vartype = type->GetType();
-        _current_context.lock()->addVariable(type->GetLine(), type->GetName(),
-                                             vartype);
+        auto vartype = type->RetType();
+        _current_context.lock()->addVariable(type->Location().first,
+                                             type->GetName(), vartype);
     }
     _compilationUnit->addDecl(std::move(type));
 }

@@ -36,7 +36,7 @@ int foo(char c)
 
   if (y)
   {
-    /* Empty statement blocks are legal */
+    /* Empty stmt blocks are legal */
   }
   else
   {

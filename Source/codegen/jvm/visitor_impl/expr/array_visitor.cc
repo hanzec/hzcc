@@ -1,7 +1,7 @@
 //
 // Created by chen_ on 2022/5/4.
 //
-#include "AST/expr/array.h"
+#include "AST/expr/ArraySubscriptExpr.h"
 #include "codegen/jvm/JVMGenerator.h"
 namespace Hzcc::Codegen {
 Status JVMGenerator::visit(Hzcc::AST::ArraySubscriptExpr *p_expr) {
@@ -28,7 +28,7 @@ Status JVMGenerator::visit(Hzcc::AST::ArraySubscriptExpr *p_expr) {
 
     // generate load instr
     if (_generate_load || _under_compare) {
-        AddToCache(Utils::GetTypeName(p_expr->GetType()) + "aload");
+        AddToCache(Utils::GetTypeName(p_expr->RetType()) + "aload");
     }
 
     return Status::OkStatus();

@@ -1,4 +1,4 @@
-#include "AST/expr/literal.h"
+#include "AST/expr/LiteralExpr.h"
 #include "codegen/jvm/JVMGenerator.h"
 namespace Hzcc::Codegen {
 Status JVMGenerator::visit(Hzcc::AST::LiteralExpr *p_expr) {
@@ -20,7 +20,7 @@ Status JVMGenerator::visit(Hzcc::AST::LiteralExpr *p_expr) {
 
     // otherwise we're using push function
     else {
-        AddToCache(Utils::PushConstVal(p_expr->GetType()->GetName(),
+        AddToCache(Utils::PushConstVal(p_expr->RetType()->GetName(),
                                        p_expr->GetDeducedValue().value()));
     }
 

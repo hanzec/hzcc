@@ -60,7 +60,7 @@ Status GenerateAST(TokenList& tokens,
                 type_name.front().Type() == Lexical::kStruct) {
                 // parsing as function definition
                 tokens.insert_front(type_name.begin(), type_name.end());
-                auto new_node = ParserFactory::ParseAST<AST::StructDeclareNode>(
+                auto new_node = ParserFactory::ParseAST<AST::StructDeclStmt>(
                     tokens, context);
 
                 if (new_node != nullptr) {
@@ -79,7 +79,7 @@ Status GenerateAST(TokenList& tokens,
                      tokens.peek2().Type() == Lexical::kLParentheses) {
                 tokens.insert_front(type_name.begin(), type_name.end());
 
-                auto new_node = ParserFactory::ParseAST<AST::FunctionDeclNode>(
+                auto new_node = ParserFactory::ParseAST<AST::FuncDeclStmt>(
                     tokens, context);
 
                 if (new_node != nullptr) {
@@ -108,7 +108,7 @@ Status GenerateAST(TokenList& tokens,
                             "Failed to parse variable declaration"};
                 }
 
-                // statement will end with semicolon
+                // stmt will end with semicolon
                 if (tokens.peek().Type() == Lexical::kSemiColon) {
                     tokens.pop();
                 } else {

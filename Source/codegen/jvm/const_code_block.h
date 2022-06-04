@@ -2,8 +2,8 @@
 // Created by chen_ on 2022/4/10.
 //
 
-#ifndef MYCC_SOURCE_CODEGEN_JVM_CONST_CODE_BLOCK_H_
-#define MYCC_SOURCE_CODEGEN_JVM_CONST_CODE_BLOCK_H_
+#ifndef HZCC_CODEGEN_JVM_CONST_CODE_BLOCK_H
+#define HZCC_CODEGEN_JVM_CONST_CODE_BLOCK_H
 #include <string_view>
 namespace Hzcc::Codegen {
 constexpr std::string_view kConstSpecialMethod = R"(
@@ -33,4 +33,4 @@ constexpr std::string_view kConstSpecialMethod = R"(
 )";
 
 }
-#endif  // MYCC_SOURCE_CODEGEN_JVM_CONST_CODE_BLOCK_H_
+#endif  // HZCC_CODEGEN_JVM_CONST_CODE_BLOCK_H

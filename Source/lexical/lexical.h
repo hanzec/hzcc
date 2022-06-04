@@ -1,15 +1,13 @@
 //
 // Created by chen_ on 2022/1/26.
 //
-
-#ifndef MYCC_LEXICAL_H
-#define MYCC_LEXICAL_H
 #include <filesystem>
 #include <list>
 
 #include "utils/Status.h"
+#ifndef HZCC_LEXICAL_LEXICAL_H
+#define HZCC_LEXICAL_LEXICAL_H
 namespace Hzcc::Lexical {
-// forward declare of Token
 class Token;
 
 /**
@@ -33,4 +31,4 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokenStream);
 Status PreprocessSource(const std::filesystem::path& input,
                         std::ostream& output);
 }  // namespace Hzcc::Lexical
-#endif  // MYCC_LEXICAL_H
+#endif  // HZCC_LEXICAL_LEXICAL_H

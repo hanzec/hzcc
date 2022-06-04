@@ -7,15 +7,15 @@
 #include <cassert>
 
 #include "AST/CompilationUnit.h"
-#include "AST/statement/struct.h"
+#include "AST/stmt/StructDeclStmt.h"
 #include "syntax/utils/common_utils.h"
 #include "utils/type_name_utils.h"
 
 namespace Hzcc::Syntax::Parser {
 
 StructDeclare::StructDeclare() noexcept
-    : ParserBase(TypeNameUtil::hash<AST::StructDeclareNode>(),
-                 TypeNameUtil::name_pretty<AST::StructDeclareNode>()) {}
+    : ParserBase(TypeNameUtil::hash<AST::StructDeclStmt>(),
+                 TypeNameUtil::name_pretty<AST::StructDeclStmt>()) {}
 
 std::shared_ptr<AST::StructType> StructDeclare::parse_internal(
     TokenList& tokens, SyntaxContext& context) {
@@ -128,7 +128,7 @@ std::unique_ptr<AST::ASTNode> StructDeclare::parse_impl(
         return nullptr;
     }
 
-    return std::make_unique<AST::StructDeclareNode>(struct_node->GetName(), ref,
-                                                    struct_node);
+    return std::make_unique<AST::StructDeclStmt>(struct_node->GetName(),
+                                                 struct_node, ref.Location());
 }
 }  // namespace Hzcc::Syntax::Parser

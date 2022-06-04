@@ -32,7 +32,7 @@ bool SymbolTable::hasType(const std::string& name) {
 std::shared_ptr<AST::StructType> SymbolTable::addStructType(
     const std::string& name) {
     if (hasType("struct " + name)) {
-        LOG(FATAL) << "Type " << name << " has already been defined";
+        LOG(FATAL) << "RetType " << name << " has already been defined";
     } else {
         auto new_type = std::make_shared<AST::StructType>(
             name, std::list<Lexical::TokenType>());

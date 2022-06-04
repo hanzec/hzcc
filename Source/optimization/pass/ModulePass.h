@@ -2,11 +2,11 @@
 // Created by Hanze Chen on 4/11/22.
 //
 
-#ifndef MYCC_SOURCE_OPTMIZATION_PASS_MODULEPASS_H_
-#define MYCC_SOURCE_OPTMIZATION_PASS_MODULEPASS_H_
+#ifndef HZCC_OPTIMIZATION_PASS_MODULE_PASS_H
+#define HZCC_OPTIMIZATION_PASS_MODULE_PASS_H
 #include "PassBase.h"
 namespace Hzcc::Pass {
 class ModulePass {};
 
 }  // namespace Hzcc::Pass
-#endif  // MYCC_SOURCE_OPTMIZATION_PASS_MODULEPASS_H_
+#endif  // HZCC_OPTIMIZATION_PASS_MODULE_PASS_H

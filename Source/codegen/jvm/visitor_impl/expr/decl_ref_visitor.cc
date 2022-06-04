@@ -3,7 +3,7 @@
 //
 #include <algorithm>
 
-#include "AST/expr/decl_ref.h"
+#include "AST/expr/DeclRefExpr.h"
 #include "codegen/jvm/JVMGenerator.h"
 namespace Hzcc::Codegen {
 Status JVMGenerator::visit(Hzcc::AST::DeclRefExpr *p_expr) {
@@ -17,7 +17,7 @@ Status JVMGenerator::visit(Hzcc::AST::DeclRefExpr *p_expr) {
      *  ##################################################################### */
     // Generate push instruction if needed
     if (_generate_load || _under_compare) {
-        if (p_expr->GetType()->IsArray()) {
+        if (p_expr->RetType()->IsArray()) {
             auto var_name = p_expr->VarName();
             PushReturnStack(var_name);
             // Local variable have higher priority than global variable

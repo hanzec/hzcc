@@ -3,8 +3,8 @@
 //
 #include <sstream>
 #include <string>
-#ifndef MYCC_SOURCE_CODEGEN_INDENTWRITYER_H_
-#define MYCC_SOURCE_CODEGEN_INDENTWRITYER_H_
+#ifndef HZCC_SOURCE_CODEGEN_INDENT_WRITER_H
+#define HZCC_SOURCE_CODEGEN_INDENT_WRITER_H
 namespace Hzcc::Codegen {
 
 class IndentWriter {
@@ -23,4 +23,4 @@ class IndentWriter {
     constexpr static const char* _indent_str = "    ";
 };
 }  // namespace Hzcc::Codegen
-#endif  // MYCC_SOURCE_CODEGEN_INDENTWRITYER_H_
+#endif  // HZCC_SOURCE_CODEGEN_INDENT_WRITER_H

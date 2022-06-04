@@ -6,7 +6,7 @@
 #include <list>
 
 #include "AST/CompilationUnit.h"
-#include "AST/statement/compound.h"
+#include "AST/stmt/CompoundStmt.h"
 #include "lexical/Token.h"
 #include "syntax/Parser.h"
 #include "syntax/parser/base_parser.h"
@@ -33,12 +33,12 @@ std::unique_ptr<AST::ASTNode> CompoundStatement::parse_impl(
            tokens.peek().Type() != Lexical::TokenType::kRBrace) {
         if (!block_node->AddStatement(
                 ParserFactory::ParseAST<AST::ASTNode>(tokens, context))) {
-            DVLOG(SYNTAX_LOG_LEVEL) << "Parse block statement error";
+            DVLOG(SYNTAX_LOG_LEVEL) << "Parse block stmt error";
             return nullptr;
         }
 
         if (!block_node->GetLastStatement()->HasBody()) {
-            // statement need end with ';'
+            // stmt need end with ';'
             MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon,
                                             tokens);
         }

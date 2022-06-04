@@ -5,8 +5,8 @@
 
 #include "Type.h"
 #include "lexical/Token.h"
-#ifndef MYCC_SOURCE_AST_TYPE_STRUCT_TYPE_H_
-#define MYCC_SOURCE_AST_TYPE_STRUCT_TYPE_H_
+#ifndef HZCC_AST_TYPE_STRUCT_TYPE_H
+#define HZCC_AST_TYPE_STRUCT_TYPE_H
 namespace Hzcc::AST {
 class StructType : public Type {
   public:
@@ -61,4 +61,4 @@ class StructType : public Type {
 };
 
 }  // namespace Hzcc::AST
-#endif  // MYCC_SOURCE_AST_TYPE_STRUCT_TYPE_H_
+#endif  // HZCC_AST_TYPE_STRUCT_TYPE_H

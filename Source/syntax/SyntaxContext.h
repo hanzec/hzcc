@@ -4,10 +4,9 @@
 #include "AST/CompilationUnit.h"
 #include "AST/type/Type.h"
 #include "SymbolTable.h"
-#ifndef FACT_CLASS_SOURCE_SYNTAX_SYNTAXCONTEXT_H_
-#define FACT_CLASS_SOURCE_SYNTAX_SYNTAXCONTEXT_H_
+#ifndef HZCC_SYNTAX_SYNTAX_CONTEXT_H
+#define HZCC_SYNTAX_SYNTAX_CONTEXT_H
 namespace Hzcc::Syntax {
-
 class SyntaxContext {
   public:
     using TypePtr = AST::Type::TypePtr;
@@ -21,11 +20,11 @@ class SyntaxContext {
 
     void enterScope(const std::string& name, const TypePtr& return_type);
 
-    void addDecl(std::unique_ptr<AST::DeclNode> type);
+    void addDecl(std::unique_ptr<AST::DeclStmt> type);
 
     /**
      * #############################################################
-     * ###############    Type related Functions     ###############
+     * ###############    RetType related Functions     ###############
      * #############################################################
      */
     bool hasType(const std::string& basicString);
@@ -103,4 +102,4 @@ class SyntaxContext {
         _function_def_table;
 };
 }  // namespace Hzcc::Syntax
-#endif  // FACT_CLASS_SOURCE_SYNTAX_SYNTAXCONTEXT_H_
+#endif  // HZCC_SYNTAX_SYNTAX_CONTEXT_H

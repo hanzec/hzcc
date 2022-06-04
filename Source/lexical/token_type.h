@@ -1,7 +1,7 @@
 #include "macro.h"
 
-#ifndef MYCC_LEXICAL_TOEKN_TYPE_H
-#define MYCC_LEXICAL_TOEKN_TYPE_H
+#ifndef HZCC_LEXICAL_TOKEN_TYPE_H
+#define HZCC_LEXICAL_TOKEN_TYPE_H
 
 namespace Hzcc::Lexical {
 /**
@@ -132,4 +132,4 @@ enum PACKED TokenType {
 };
 
 }  // namespace Hzcc::Lexical
-#endif  // MYCC_LEXICAL_TOEKN_TYPE_H
+#endif  // HZCC_LEXICAL_TOKEN_TYPE_H

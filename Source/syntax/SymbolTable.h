@@ -5,8 +5,8 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-#ifndef MYCC_SOURCE_AST_SYMBOLTABLE_H_
-#define MYCC_SOURCE_AST_SYMBOLTABLE_H_
+#ifndef HZCC_SOURCE_AST_SYMBOL_TABLE_H
+#define HZCC_SOURCE_AST_SYMBOL_TABLE_H
 namespace Hzcc {
 namespace AST {
 class Type;
@@ -21,9 +21,7 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
 
     /**
      * @brief Return the parent of this symbol table.
-     *
      * @note If this symbol table is the global symbol table, return nullptr.
-     *
      * @return std::shared_ptr<SymbolTable> The parent of this symbol table.
      */
     std::shared_ptr<SymbolTable> getUpperScope();
@@ -86,7 +84,7 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
     /**
      * @brief Get the variable's shared_ptr with the given name.
      * @param name The name of the variable.
-     * @return std::shared_ptr<Type> The variable with the given name or nullptr
+     * @return std::shared_ptr<RetType> The variable with the given name or nullptr
      * if not found.
      */
     std::shared_ptr<AST::Type> getVariableType(const std::string& name);
@@ -126,4 +124,4 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
 };
 }  // namespace Syntax
 }  // namespace Hzcc
-#endif  // MYCC_SOURCE_AST_SYMBOLTABLE_H_
+#endif  // HZCC_SOURCE_AST_SYMBOL_TABLE_H

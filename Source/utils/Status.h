@@ -6,8 +6,8 @@
 
 #include "logging.h"
 #include "macro.h"
-#ifndef MYCC_STATUS_H
-#define MYCC_STATUS_H
+#ifndef HZCC_STATUS_H
+#define HZCC_STATUS_H
 namespace Hzcc {
 /** #########################################################################
  *  #### Useful Macros     ##################################################
@@ -142,4 +142,4 @@ class Status {
 };
 }  // namespace Hzcc
 
-#endif  // MYCC_STATUS_H
+#endif  // HZCC_STATUS_H

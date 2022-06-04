@@ -14,7 +14,7 @@ Type checking error in file assign3.c line 16
 	Assignment mismatch int[] += const int
 Type checking error in file assign3.c line 17
 	Assignment mismatch int[] -= const int
-Type checking error in file assign3.c line 18
+RetType checking error in file assign3.c line 18
 	Assignment mismatch int[] *= const int
 Type checking error in file assign3.c line 19
 	Assignment mismatch int[] /= const int

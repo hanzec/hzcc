@@ -3,9 +3,9 @@
 //
 // Created by chen_ on 2022/4/18.
 //
-#include "AST/statement/compound.h"
-#include "AST/statement/function_decl.h"
-#include "AST/statement/return.h"
+#include "AST/statement/CompoundStmt.h"
+#include "AST/statement/FuncDeclStmt.h"
+#include "AST/statement/ReturnStmt.h"
 #include "optimization/PassManagerImpl.h"
 #include "optimization/pass/FunctionPass.h"
 #include "utils/logging.h"
@@ -13,7 +13,7 @@ namespace Hzcc::Pass {
 class DeadCodeElimination : public FunctionPass {
   public:
     std::pair<bool, bool> RunOnFunction(
-        std::unique_ptr<AST::FunctionDeclNode>& F) override {
+        std::unique_ptr<AST::FuncDeclStmt>& F) override {
         if (!F->HasBody()) {
             VLOG(OPT_LOG_LEVEL)
                 << "Function " << F->GetName() << " has no body";
@@ -22,7 +22,7 @@ class DeadCodeElimination : public FunctionPass {
 
         bool modified = false;
         /**
-         * Case: delete all code after return statement
+         * Case: delete all code after return stmt
          */
         auto& body = F->Body();
         auto& stmts = body->GetBodyStatements();
