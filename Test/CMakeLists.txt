@@ -106,7 +106,7 @@ if (${E2E_DEPENDS_MET})
     add_lit_test_set(compiler_info "${CMAKE_CURRENT_LIST_DIR}/compiler_info")
 
     # add token_parsing test set
-    add_lit_test_set(token_parsing "${CMAKE_CURRENT_LIST_DIR}/lexical/")
+    add_lit_test_set(token_parsing "${CMAKE_CURRENT_LIST_DIR}/token_parsing/")
 
     # add part3 test set
     add_lit_test_set(lexical_part3 "${CMAKE_CURRENT_LIST_DIR}/syntax/part3")

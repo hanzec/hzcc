@@ -139,10 +139,19 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
                     // if not found '\'' then error
                     if (line[col] != '\'') {
                         have_error = true;
-                        Message::print_message(Message::kError,
-                                               "unclosed char literal", line,
-                                               std::make_pair(row, start - 1));
-                        col = line.length();
+                        if (line.find_first_of('\'', col) ==
+                            std::string::npos) {
+                            col = line.length();
+                            Message::print_message(
+                                Message::kError, "unclosed char literal", line,
+                                std::make_pair(row, start - 1));
+                        } else {
+                            col += 1;
+                            Message::print_message(
+                                Message::kError,
+                                "Multi-character character constant", line,
+                                std::make_pair(row, start - 1));
+                        }
                     } else {
                         // handling ASCII escape sequence
                         char new_char;
@@ -242,11 +251,19 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
                                 if (!std::regex_match(tmp_numbers,
                                                       kHex_number_regex)) {
                                     have_error = true;
+                                    // find error position
+                                    auto error_pos =
+                                        tmp_numbers.find_first_not_of(
+                                            "0123456789abcdefABCDEF", 2);
+
                                     Message::print_message(
                                         Message::kError,
-                                        "invalid hex number: [" + tmp_numbers +
-                                            "]",
-                                        line, std::make_pair(row, start));
+                                        "Invalid suffix '" +
+                                            line.substr(
+                                                error_pos,
+                                                line.length() - error_pos) +
+                                            "' on integer constant",
+                                        line, std::make_pair(row, error_pos));
                                 }
 
                                 // check range
@@ -343,10 +360,18 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
                             if (!std::regex_match(tmp_numbers,
                                                   kReal_number_regex)) {
                                 have_error = true;
+
+                                // find error position
+                                auto error_pos = tmp_numbers.find_first_not_of(
+                                    "0123456789.eE+-", 0);
+
                                 Message::print_message(
                                     Message::kError,
-                                    "invalid real number literal", line,
-                                    std::make_pair(row, start));
+                                    "Invalid suffix '" +
+                                        line.substr(error_pos,
+                                                    line.length() - error_pos) +
+                                        "' on integer constant",
+                                    line, std::make_pair(row, error_pos));
                             }
 
                             // check real number range

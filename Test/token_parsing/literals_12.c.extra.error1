@@ -1,0 +1,6 @@
+Lexer error in file literals_12.c line 2
+	Unclosed character literal
+Lexer error in file literals_12.c line 2
+	Illegal character (hex 0a) in character literal
+Lexer error in file literals_12.c line 2
+	Unclosed character literal

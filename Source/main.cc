@@ -32,7 +32,8 @@ int main(int argc, char* argv[]) {
     app.add_flag("--fno_color", Hzcc::Options::Global_disable_color,
                  "Disable print color");
     app.add_flag("--fsyntax_only", syntax_only, "Only syntax check");
-    app.add_flag("--flexical_only", lexical_only, "Only lexical analysis");
+    app.add_flag("--flexical_only", lexical_only,
+                 "Only token_parsing analysis");
 
     /** #####################################################################
      * Input and Output Flags                                               #
@@ -49,6 +50,9 @@ int main(int argc, char* argv[]) {
 
     // parse command line arguments
     CLI11_PARSE(app, argc, argv);
+
+    // replace all spaces in output_file with '_'
+    std::replace(output_file.begin(), output_file.end(), ' ', '_');
 
     /** #####################################################################
      * Executions Starts Here                                               #
@@ -71,17 +75,17 @@ int main(int argc, char* argv[]) {
         Hzcc::Message::set_current_file(input_files[0]);
 
         /** ##################################################################
-         * lexical analysis                                                 #
+         * token_parsing analysis #
          * ##################################################################*/
         std::list<Hzcc::Lexical::Token> tokens;
         std::ifstream infile(input_files[i]);
 
-        // run lexical analysis
+        // run token_parsing analysis
         if (!Hzcc::Lexical::ParseToToken(infile, tokens).Ok()) {
             return 0;
         }
 
-        // show lexical analysis result
+        // show token_parsing analysis result
         if (lexical_only) {
             if (output_file.empty()) {
                 for (auto& token : tokens) {
