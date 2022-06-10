@@ -38,17 +38,9 @@ void
 	// Bad symbols, lexer should complain
 
 	$ `
-
-	/*
-	 *	This is an unclosed comment.
-	 *	We should get an error message at the comment start.
-
 }
 
-//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
-//RUN: %mycc --flexical_only "%s" -o "%t" && cat "%t" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
-//RUN: %mycc --flexical_only "%s" -o "%t" 2>&1 | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules --check_prefix="CHECK_ERR"
-
+//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
 //CHECK:      File __FILE__ Line     4 Token 402 Text struct
 //CHECK-NEXT: File __FILE__ Line     4 Token 306 Text thing
@@ -124,11 +116,3 @@ void
 //CHECK-NEXT: File __FILE__ Line    33 Token 306 Text a
 //CHECK-NEXT: File __FILE__ Line    34 Token 301 Text void
 //CHECK-NEXT: File __FILE__ Line    36 Token 306 Text BYE
-
-
-//CHECK_ERR:      Lexer error in file __FILE__ line 40 near text $
-//CHECK_ERR-NEXT:         Unexpected symbol, ignoring.
-//CHECK_ERR-NEXT: Lexer error in file __FILE__ line 40 near text `
-//CHECK_ERR-NEXT:         Unexpected symbol, ignoring.
-//CHECK_ERR-NEXT: Lexer error in file __FILE__ line 42 near text /
-//CHECK_ERR-NEXT:         Unclosed comment

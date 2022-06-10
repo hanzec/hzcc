@@ -16,21 +16,19 @@
 #include "options.h"
 
 namespace Hzcc::Message {
-static std::filesystem::path current_filename = "NO_FILE_NAME_AVALIABLE";
+static std::string current_filename = "NO_FILE_NAME_AVALIABLE";
 
 constexpr const char* KEnableRed = "\033[1;31m";
 constexpr const char* KEnableGreen = "\033[1;32m";
 constexpr const char* KEnableYellow = "\033[1;33m";
 constexpr const char* KDisableColor = "\033[0m";
 
-std::string get_current_file() { return current_filename.string(); }
-
 static void ALWAYS_INLINE internal_print_nice_message(
     Level error_level, const std::string& message, const std::string& line,
-    std::pair<int, int> line_info) {
+    const std::pair<int, int>& line_info) {
     // print colored message header
     // we add 1 to line_info.first because in code we count from 0.
-    std::cout << current_filename.c_str() << ":" << (line_info.first + 1) << ":"
+    std::cout << current_filename.c_str() << ":" << line_info.first << ":"
               << line_info.second << ": ";
 
     if (Options::Global_disable_color) {
@@ -92,7 +90,7 @@ void print_message_internal(Level error_level, const std::string& message,
 }
 
 void print_message_internal(Level error_level, const std::string& message,
-                            std::pair<int, int> line_info) {
+                            const std::pair<int, int>& line_info) {
     if (FsUtils::is_readable(current_filename)) {
         std::fstream file(current_filename);
         file.seekg(std::ios::beg);

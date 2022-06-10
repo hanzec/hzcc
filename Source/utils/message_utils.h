@@ -18,12 +18,10 @@ enum Level {
     kInfo,
 };
 
-std::string get_current_file();
-
 void set_current_file(const std::filesystem::path& filename);
 
 void print_message_internal(Level error_level, const std::string& message,
-                            std::pair<int, int> line_info);
+                            const std::pair<int, int>& line_info);
 
 void print_message_internal(Level error_level, const std::string& message,
                             const std::string& line,

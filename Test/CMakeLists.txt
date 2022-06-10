@@ -79,18 +79,18 @@ add_dependencies(mycc_e2e_test FileCheck)
 ###############################################################################
 ## Testing Dependence #########################################################
 ###############################################################################
-find_package(Python3 COMPONENTS Interpreter)
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
 # check dependency of LLVM lit
 if (Python3_FOUND)
     message(STATUS "Python3 found at ${Python3_EXECUTABLE}")
     # looking for required python packages
-    execute_process(COMMAND Python3::Interpreter -c "import lit" RESULT_VARIABLE EXIT_CODE OUTPUT_QUIET)
-    if (EXIT_CODE AND NOT EXIT_CODE STREQUAL 0)
-        set(E2E_DEPENDS_MET true)
-    else ()
-        message(WARNING "Cannot find lit python package, will skip lit testing.")
+    execute_process(COMMAND Python3::Interpreter -c "import asd" RESULT_VARIABLE exit_code)
+    if (${exit_code} EQUAL 1)
+        message(FATAL_ERROR "Cannot find llvm lit python package.")
     endif ()
+else ()
+    message(FATAL_ERROR "Cannot find python3 interpreter.")
 endif ()
 
 ###############################################################################
@@ -99,15 +99,13 @@ endif ()
 # enable test target
 enable_testing()
 
-if (${E2E_DEPENDS_MET})
-    message(STATUS "E2E testing is enabled.")
+message(STATUS "E2E testing is enabled.")
 
-    # add compiler_info test set
-    add_lit_test_set(compiler_info "${CMAKE_CURRENT_LIST_DIR}/compiler_info")
+# add compiler_info test set
+add_lit_test_set(compiler_info "${CMAKE_CURRENT_LIST_DIR}/compiler_info")
 
-    # add token_parsing test set
-    add_lit_test_set(token_parsing "${CMAKE_CURRENT_LIST_DIR}/token_parsing/")
+# add token_parsing test set
+add_lit_test_set(token_parsing "${CMAKE_CURRENT_LIST_DIR}/token_parsing/")
 
-    # add part3 test set
-    add_lit_test_set(lexical_part3 "${CMAKE_CURRENT_LIST_DIR}/syntax/part3")
-endif ()
+# add part3 test set
+add_lit_test_set(lexical_part3 "${CMAKE_CURRENT_LIST_DIR}/syntax/part3")

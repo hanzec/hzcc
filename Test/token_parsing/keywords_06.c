@@ -7,7 +7,7 @@
   ifelse
   elseif
 
-//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
+//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
 //CHECK: File __FILE__ Line     2 Token 406 Text if
 //CHECK-NEXT: File __FILE__ Line     4 Token 407 Text else

@@ -5,7 +5,7 @@
 0xafb
 0x8C3
 
-//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
+//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
 //CHECK-NEXT: File __FILE__ Line     1 Token 303 Text 0X30
 //CHECK-NEXT: File __FILE__ Line     2 Token 303 Text 5

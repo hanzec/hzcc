@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
             if (output_file.empty()) {
                 for (auto& token : tokens) {
                     std::cout << "File " << input_files[i] << " Line "
-                              << std::setw(5) << token.Location().first + 1
+                              << std::setw(5) << token.Location().first
                               << std::setw(0) << " Token " << std::setw(3)
                               << token.Type() << std::setw(0) << " Text "
                               << token.Value(true) << std::endl;
@@ -99,7 +99,7 @@ int main(int argc, char* argv[]) {
                 std::fstream outfile(output_file, std::fstream::out);
                 for (auto& token : tokens) {
                     outfile << "File " << input_files[i] << " Line "
-                            << std::setw(5) << token.Location().first + 1
+                            << std::setw(5) << token.Location().first
                             << std::setw(0) << " Token " << std::setw(3)
                             << token.Type() << std::setw(0) << " Text "
                             << token.Value(true) << std::endl;

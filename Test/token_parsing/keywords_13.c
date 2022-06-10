@@ -3,7 +3,7 @@ int_x
 intab
 integer
 
-//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
+//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
 //CHECK: File __FILE__ Line     1 Token 301 Text int
 //CHECK-NEXT: File __FILE__ Line     2 Token 306 Text int_x

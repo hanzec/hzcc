@@ -6,7 +6,7 @@ casecase
 defaultcase
 switchdefaultcase
 
-//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
+//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
 //CHECK: File __FILE__ Line     1 Token 412 Text case
 //CHECK-NEXT: File __FILE__ Line     2 Token 413 Text default

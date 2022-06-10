@@ -10,9 +10,7 @@ int main()
   return printf("Hello, world!\n");
 }
 
-//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
-//RUN: %mycc --flexical_only "%s" -o "%t" && cat "%t" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
-//RUN: test $(%mycc -1 "%s" -o "%t" 2&>1 | wc -l) -eq 0
+//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
 //CHECK:      File __FILE__ Line     8 Token 301 Text int
 //CHECK-NEXT: File __FILE__ Line     8 Token 306 Text main

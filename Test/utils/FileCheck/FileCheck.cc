@@ -13,13 +13,9 @@
 /******************************************************************************/
 DEFINE_bool(fsymbol_replacement, false,
             "Replace symbol in the output");  // NOLINT
-DEFINE_bool(fsave_gen_test_rules, false,
-            "generate the actual test rules used");  // NOLINT
-
 DEFINE_string(test_rules, "", "Files containing test rules");   // NOLINT
 DEFINE_string(check_prefix, "CHECK", "Prefix of CHECK macro");  // NOLINT
-DEFINE_string(test_rules_generated, "",
-              "Replace symbol in the output");  // NOLINT
+
 
 /******************************************************************************/
 /** Program Entrypoint                                                       **/
@@ -43,32 +39,6 @@ int main(int argc, char* argv[]) {
 
     // set up debug output to file
     std::ofstream debug_output_file;
-    if (FLAGS_fsave_gen_test_rules) {
-        if (!gflags::GetCommandLineFlagInfoOrDie("test_rules_generated")
-                 .is_default) {
-            std::filesystem::path test_rules_generated_path(
-                FLAGS_test_rules_generated);
-            if (std::filesystem::is_directory(test_rules_path)) {
-                LOG(FATAL) << "--test_rules_generated must be a file";
-            } else {
-                debug_output_file.open(test_rules_generated_path,
-                                       std::fstream::out);
-                VLOG(0) << "Writing debug output to "
-                        << test_rules_generated_path;
-            }
-        } else {
-            std::filesystem::path gen_rules_path(FLAGS_test_rules +
-                                                 ".generated");
-            LOG(INFO)
-                << "--test_rules_generated is not set, will be generated to ["
-                << test_rules_path.string() << ".generated]";
-            debug_output_file.open(gen_rules_path, std::fstream::out);
-        }
-
-        if (!debug_output_file.is_open() && !debug_output_file.good()) {
-            LOG(FATAL) << "Failed to write debug output to file!";
-        }
-    }
 
     // read test rules
     std::ostringstream checks_stream;
@@ -92,15 +62,7 @@ int main(int argc, char* argv[]) {
                 checks_stream << line_buf.substr(2) << std::endl;
             }
         }
-        // output replaced line to file
-        if (FLAGS_fsave_gen_test_rules) {
-            debug_output_file << line_buf << std::endl;
-        }
-    }
 
-    // close debug output file
-    if (FLAGS_fsave_gen_test_rules) {
-        debug_output_file.close();
     }
 
     // check if read any rules

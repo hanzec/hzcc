@@ -8,3 +8,12 @@
 8.8
 9.9
 10.10
+
+//RUN: %mycc --flexical_only --fno_color "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
+//CHECK: __FILE__:4:0: warning: real number is greater than most possible significant digits, will truncating to 123454321.1234543212345432123
+//CHECK: File __FILE__ Line     2 Token 304 Text 2.2
+//CHECK-NEXT: File __FILE__ Line     4 Token 304 Text 123454321.1234543212345432123
+//CHECK-NEXT: File __FILE__ Line     7 Token 304 Text 7.7
+//CHECK-NEXT: File __FILE__ Line     8 Token 304 Text 8.8
+//CHECK-NEXT: File __FILE__ Line     9 Token 304 Text 9.9
+//CHECK-NEXT: File __FILE__ Line    10 Token 304 Text 10.10

@@ -14,7 +14,7 @@ const char* d = "To put \" in a string, escape it with \\";
 // Increase length as needed for your lexer
 int this_is_a_very_long_identifier_name_designed_to_exceed_the_lexeme_limit;
 
-//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
+//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
 //CHECK:      File __FILE__ Line     6 Token 301 Text char
 //CHECK-NEXT: File __FILE__ Line     6 Token 306 Text a

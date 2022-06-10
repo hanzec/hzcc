@@ -2,8 +2,6 @@
 1.05e6
 13.45e7e8
 
-//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
+//RUN: %mycc --flexical_only --fno_color "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
-//CHECK:  File __FILE__ Line     1 Token 304 Text 1.04
-//CHECK-NEXT: File __FILE__ Line     2 Token 304 Text 1.05e6
-//CHECK-NEXT: File __FILE__ Line     3 Token 304 Text 13.45e7e8
+//CHECK: __FILE__:3:0: error: Invalid string '13.45e7e8' for real constant

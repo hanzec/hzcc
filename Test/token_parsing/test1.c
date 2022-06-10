@@ -49,7 +49,7 @@ char_ident
 157
 12345
 123456789
-12345678901234567890
+12345678901
 
 1.0
 12.3
@@ -97,10 +97,7 @@ inf
 pif
 iffy
 
-//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
-//RUN: %mycc --flexical_only "%s" -o "%t" && cat "%t" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
-//RUN: %mycc --flexical_only "%s" -o "%t" 2>&1 | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules --check_prefix="CHECK_ERR"
-//RUN: %mycc --fno_color --flexical_only "%s" -o "%t" 2>&1 | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules --check_prefix="CHECK_ERR_NICE"
+//RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
 /**
  * Parser test
@@ -146,7 +143,7 @@ iffy
 //CHECK-NEXT: File __FILE__ Line    49 Token 303 Text 157
 //CHECK-NEXT: File __FILE__ Line    50 Token 303 Text 12345
 //CHECK-NEXT: File __FILE__ Line    51 Token 303 Text 123456789
-//CHECK-NEXT: File __FILE__ Line    52 Token 303 Text 12345678901234567890
+//CHECK-NEXT: File __FILE__ Line    52 Token 303 Text 12345678901
 //CHECK-NEXT: File __FILE__ Line    54 Token 304 Text 1.0
 //CHECK-NEXT: File __FILE__ Line    55 Token 304 Text 12.3
 //CHECK-NEXT: File __FILE__ Line    56 Token 304 Text 12.34567890
@@ -184,16 +181,3 @@ iffy
 //CHECK-NEXT: File __FILE__ Line    96 Token 306 Text inf
 //CHECK-NEXT: File __FILE__ Line    97 Token 306 Text pif
 //CHECK-NEXT: File __FILE__ Line    98 Token 306 Text iffy
-
-/**
-* Base error message
-*/
-//CHECK_ERR: Lexer error in file __FILE__ line 52 near text 1
-//CHECK_ERR-NEXT:         integer number out of range
-
-/**
-* Error checking for nice colored error messages
-*/
-//CHECK_ERR_NICE:      __FILE__:52:0: error: integer number out of range
-//CHECK_ERR_NICE-NEXT:            51|12345678901234567890
-//CHECK_ERR_NICE-NEXT:               ^
