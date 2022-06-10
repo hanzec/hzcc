@@ -4,6 +4,9 @@
       <w>decl</w>
       <w>hzcc</w>
       <w>iinc</w>
+      <w>makeindex</w>
+      <w>stopmode</w>
+      <w>texmfoutput</w>
     </words>
   </dictionary>
 </component>

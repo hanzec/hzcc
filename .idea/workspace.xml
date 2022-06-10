@@ -8,9 +8,7 @@
   </component>
   <component name="CMakeRunConfigurationManager">
     <generated>
-      <config projectName="mycc" targetName="latex-makeindex" />
       <config projectName="mycc" targetName="FileCheck" />
-      <config projectName="mycc" targetName="latex-prebuild" />
       <config projectName="mycc" targetName="doc_doxygen" />
       <config projectName="mycc" targetName="documentation" />
       <config projectName="mycc" targetName="hzcc_test" />
@@ -23,124 +21,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="Changes">
-      <change afterPath="$PROJECT_DIR$/.idea/hzcc.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/cmake.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cmake.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/chen_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/chen_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/hzcc.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hzcc.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/mycc.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/statistic.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/LexicalParser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/LexicalParser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/main.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/main.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/message_utils.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/message_utils.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/message_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/message_utils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/utils/type_name_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/type_name_utils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Test/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/extra.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/syntax/extra.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/array1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/syntax/part3/array1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/array2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/syntax/part3/array2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/comments_1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/comments_1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/comments_2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/comments_2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/comments_3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/comments_3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/comments_4.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/comments_4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/comments_5.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/comments_5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/comments_6.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/comments_6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_char1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_char1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_char2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_char2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_char3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_char3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_char4.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_char4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_char5.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_char5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_int1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_int1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_int2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_int2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_int3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_int3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_int4.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_int4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_real1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_real1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_real2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_real2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_real3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_real3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_real4.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_real4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_str1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_str1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_str2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_str2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_str3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_str3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_str4.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_str4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_str4.c.error1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_str4.c.extra.error1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_trunc1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc1.c.error1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc1.c.extra.error1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_trunc2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc2.c.error1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc2.c.extra.error1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_trunc3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc3.c.error1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc3.c.extra.error1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc4.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/ex_trunc4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc4.c.error1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc4.c.extra.error1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/extra.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/extra.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/hello.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/hello.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/invalid1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/dollar_sign.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/invalid1.c.error1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/invalid1.c.extra.error1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/invalid2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/invalid2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_01.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_01.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_02.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_02.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_03.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_03.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_04.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_04.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_05.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_05.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_06.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_06.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_07.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_07.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_08.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_08.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_09.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_09.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_10.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_10.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_11.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_11.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_12.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_12.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_13.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_13.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_14.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_14.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_15.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/keywords_15.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/lineno1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/lineno1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/lineno2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/lineno2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/lit.cfg.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/lit.cfg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_01.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/literals_01.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_02.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/literals_02.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_02.c.output1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_03.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/literals_03.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_04.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/literals_04.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_05.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/literals_05.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_06.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/literals_06.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_07.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/literals_07.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_08.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/literals_08.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_10.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/literals_10.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_11.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/literals_11.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/pi.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/pi.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_01.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_01.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_02.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_02.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_03.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_03.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_04.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_04.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_05.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_05.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_06.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_06.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_07.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_07.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_08.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_08.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_09.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_09.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_10.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_10.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_11.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_11.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_12.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_12.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_13.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_13.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_14.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_14.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_15.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/symbols_15.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/test1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/test1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/test2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/test2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/tricky.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/token_parsing/tricky.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/FileCheck/FileCheck.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Test/utils/FileCheck/FileCheck.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Documentation/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Documentation/CMakeLists.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -243,7 +135,7 @@
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source\AST\type" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake 应用程序.mycc_e2e_test">
+  <component name="RunManager" selected="CMake 应用程序.documentation">
     <configuration default="true" type="BIBTEX_RUN_CONFIGURATION" factoryName="LaTeX configuration factory">
       <texify-bibtex>
         <compiler />
@@ -304,13 +196,13 @@
         <option name="BeforeTestRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="hzcc_test" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="hzcc_test" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="hzcc_test" TEST_MODE="SUITE_TEST">
+    <configuration name="hzcc_test" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="hzcc_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="hzcc_test" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
         <option name="BeforeTestRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="FileCheck" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="FileCheck" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="FileCheck">
+    <configuration name="FileCheck" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="FileCheck" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="FileCheck">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -320,7 +212,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="doc_doxygen" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="doc_doxygen" CONFIG_NAME="Release">
+    <configuration name="doc_doxygen" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="doc_doxygen" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -330,7 +222,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="hzcc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="--fno_color --flexical_only /home/hanzech/hzcc/cmake-build-release/Test/token_parsing/unclosed_comment.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="hzcc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="hzcc">
+    <configuration name="hzcc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="--fno_color --flexical_only /home/hanzech/hzcc/cmake-build-release/Test/token_parsing/unclosed_comment.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="hzcc" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="hzcc">
       <envs>
         <env name="GLOG_v" value=" 5" />
       </envs>
@@ -338,17 +230,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="latex-makeindex" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="latex-makeindex" CONFIG_NAME="Release">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="latex-prebuild" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="latex-prebuild" CONFIG_NAME="Release">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="mycc_e2e_test" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_e2e_test" CONFIG_NAME="Release">
+    <configuration name="mycc_e2e_test" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="mycc_e2e_test" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -357,8 +239,6 @@
       <item itemvalue="CMake 应用程序.hzcc" />
       <item itemvalue="CMake 应用程序.doc_doxygen" />
       <item itemvalue="CMake 应用程序.documentation" />
-      <item itemvalue="CMake 应用程序.latex-makeindex" />
-      <item itemvalue="CMake 应用程序.latex-prebuild" />
       <item itemvalue="CMake 应用程序.mycc_e2e_test" />
       <item itemvalue="CMake 应用程序.FileCheck" />
       <item itemvalue="Google Test.hzcc_test" />
@@ -443,7 +323,7 @@
       <workItem from="1654573780901" duration="1900000" />
       <workItem from="1654724593477" duration="11050000" />
       <workItem from="1654795219615" duration="15312000" />
-      <workItem from="1654827105494" duration="1635000" />
+      <workItem from="1654827105494" duration="2864000" />
     </task>
     <servers />
   </component>
