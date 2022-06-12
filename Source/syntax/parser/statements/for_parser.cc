@@ -49,8 +49,7 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(TokenList& tokens,
         MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon, tokens);
     } else {
         // consume ';'
-        initializer =
-            std::make_unique<AST::EmptyStatement>(tokens.pop().Location());
+        initializer = std::make_unique<AST::EmptyStmt>();
     }
 
     // parse condition
@@ -66,8 +65,8 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(TokenList& tokens,
         MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon, tokens);
     } else {
         // consume ';'
-        condition =
-            std::make_unique<AST::EmptyStatement>(tokens.pop().Location());
+        tokens.pop();
+        condition = std::make_unique<AST::EmptyStmt>();
     }
 
     // parse increment
@@ -83,8 +82,8 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(TokenList& tokens,
                                         tokens);
     } else {
         // consume ')'
-        increment =
-            std::make_unique<AST::EmptyStatement>(tokens.pop().Location());
+        tokens.pop();
+        increment = std::make_unique<AST::EmptyStmt>();
     }
 
     // parse body and return
@@ -94,6 +93,7 @@ std::unique_ptr<AST::ASTNode> ForStatement::parse_impl(TokenList& tokens,
         if (body == nullptr) return nullptr;
     } else {
         DLOG(WARNING) << "for stmt body is empty";
+        body = std::make_unique<AST::EmptyStmt>();
     }
 
     // leave scope

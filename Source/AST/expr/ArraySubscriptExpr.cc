@@ -31,15 +31,11 @@ std::shared_ptr<Type> ArraySubscriptExpr::RetType() const {
         ->GetBaseType();
 }
 
-std::string ArraySubscriptExpr::PrintDetail(const std::string& ident) const {
-    std::string result = std::string();
-
-    result += RetType()->GetName() + "\n";
-
-    result += _array->Dump(ident + " |") + "\n";
-    result += _subscript->Dump(ident + " `");
-
-    return result;
+void ArraySubscriptExpr::PrintDetail(std::ostream& out,
+                                     const std::string& ident) const {
+    out << RetType()->GetName();
+    _array->Dump(out, ident + " |");
+    _subscript->Dump(out, ident + " `");
 }
 
 bool ArraySubscriptExpr::IsReturnLValue() const { return true; }

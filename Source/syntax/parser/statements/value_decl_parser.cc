@@ -5,6 +5,7 @@
 #include "value_decl_parser.h"
 
 #include "AST/CompilationUnit.h"
+#include "AST/stmt/EmptyStmt.h"
 #include "AST/stmt/VarDecl.h"
 #include "lexical/Token.h"
 #include "syntax/SyntaxContext.h"
@@ -73,7 +74,8 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
     }
 
     // add new variable
-    std::unique_ptr<AST::ASTNode> var_value{nullptr};
+    std::unique_ptr<AST::ASTNode> var_value =
+        std::make_unique<AST::EmptyStmt>();
     if (tokens.peek().Type() == Lexical::TokenType::kAssign) {
         // consume assign
         tokens.pop();

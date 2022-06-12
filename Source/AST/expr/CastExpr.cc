@@ -29,9 +29,10 @@ const char* AST::CastExpr::NodeName() const { return "CastExpr"; }
 bool CastExpr::IsReturnLValue() const { return _cast_expr->IsReturnLValue(); }
 std::shared_ptr<Type> CastExpr::RetType() const { return _cast_type; }
 
-std::string CastExpr::PrintDetail(const std::string& ident) const {
-    return "[" + _cast_expr->RetType()->GetName() + "]->[" +
-           _cast_type->GetName() + "]\n" + _cast_expr->Dump(ident + " `");
+void CastExpr::PrintDetail(std::ostream& out, const std::string& ident) const {
+    out << '[' << _cast_expr->RetType()->GetName() << "]->["
+        << _cast_type->GetName() << "]";
+    _cast_expr->Dump(out, ident + " `");
 }
 
 Status CastExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }

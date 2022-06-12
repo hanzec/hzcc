@@ -90,7 +90,7 @@ class ASTNode {
     [[nodiscard]] static std::unique_ptr<AST::ASTNode> CastTo(
         const std::shared_ptr<Type>& lhs_type, std::unique_ptr<ASTNode> rhs);
 
-    [[nodiscard]] virtual std::string Dump(const std::string& ident) const;
+    void Dump(std::ostream& out, const std::string& ident) const;
 
     [[nodiscard]] virtual std::optional<DeduceValue> GetDeducedValue() const;
 
@@ -104,6 +104,8 @@ class ASTNode {
      */
     [[nodiscard]] virtual const char* NodeName() const = 0;
 
+    std::ostream& operator<<(std::ostream& out) const;
+
   protected:
     /**
      * @brief An override function using print extra information when call
@@ -112,8 +114,7 @@ class ASTNode {
      * @param ident the current indentation level
      * @return std::string generated string
      */
-    [[nodiscard]] virtual std::string PrintDetail(
-        const std::string& ident) const;
+    virtual void PrintDetail(std::ostream& out, const std::string& ident) const;
 
   private:
     const uint64_t _id;

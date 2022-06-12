@@ -18,10 +18,10 @@ enum PACKED UnaryType {
     kUnaryType_ENUM_SIZE = 9
 };
 
-class UnaryExpr : public ASTNode {
+class UnaryOperator : public ASTNode {
   public:
-    UnaryExpr(const Position& location, const std::string_view& type,
-              std::unique_ptr<ASTNode> expr);  // NOLINT
+    UnaryOperator(const Position& location, const std::string_view& type,
+                  std::unique_ptr<ASTNode> expr);  // NOLINT
 
     /**
      * @brief AST Visitor acceptor
@@ -39,7 +39,7 @@ class UnaryExpr : public ASTNode {
   protected:
     /**
      * @brief Get Name of the node
-     * @return will always return "UnaryExpr"
+     * @return will always return "UnaryOperator"
      */
     [[nodiscard]] const char* NodeName() const override;
 
@@ -48,10 +48,9 @@ class UnaryExpr : public ASTNode {
      * ASTNode->Dump()
      *     // TODO add details of printed information
      * @param ident the current indentation level
-     * @return std::string generated string
      */
-    [[nodiscard]] std::string PrintDetail(
-        const std::string& ident) const override;
+    void PrintDetail(std::ostream& out,
+                     const std::string& ident) const override;
 
   private:
     UnaryType _type;

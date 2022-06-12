@@ -30,18 +30,15 @@ std::shared_ptr<Type> TernaryExpr::RetType() const {
     return _true_expr->RetType();
 }
 Status TernaryExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
-std::string TernaryExpr::PrintDetail(const std::string& ident) const {
-    std::stringstream ss;
-
+void TernaryExpr::PrintDetail(std::ostream& out,
+                              const std::string& ident) const {
     // type
-    ss << RetType()->GetName() << std::endl;
+    out << RetType()->GetName();
 
     // node
-    ss << _cond->Dump(ident + " |") << std::endl;
-    ss << _true_expr->Dump(ident + " |") << std::endl;
-    ss << _false_expr->Dump(ident + " `") << std::endl;
-
-    return ss.str();
+    _cond->Dump(out, ident + " |");
+    _true_expr->Dump(out, ident + " |");
+    _false_expr->Dump(out, ident + " `");
 }
 std::unique_ptr<ASTNode>& TernaryExpr::GetContStmt() { return _cond; }
 std::unique_ptr<ASTNode>& TernaryExpr::GetTrueExpr() { return _true_expr; }

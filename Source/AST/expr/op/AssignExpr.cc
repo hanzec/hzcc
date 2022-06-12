@@ -66,56 +66,52 @@ AssignExpr::AssignExpr(const Position& location, const std::string_view& type,
 
 const char* AST::AssignExpr::NodeName() const { return "AssignExpr"; }
 
-std::string AssignExpr::PrintDetail(const std::string& ident) const {
-    std::string string;
-
-    // print lhs type
-    string += GetLHS()->RetType()->GetName();
+void AssignExpr::PrintDetail(std::ostream& out,
+                             const std::string& ident) const {
+    out << GetLHS()->RetType()->GetName();
 
     // print symbol
     switch (_type) {
         case kAssignType_Assign:
-            string += " = ";
+            out << " = ";
             break;
         case kAssignType_AddAssign:
-            string += " += ";
+            out << " += ";
             break;
         case kAssignType_SubAssign:
-            string += " -= ";
+            out << " -= ";
             break;
         case kAssignType_MulAssign:
-            string += " *= ";
+            out << " *= ";
             break;
         case kAssignType_DivAssign:
-            string += " /= ";
+            out << " /= ";
             break;
         case kAssignType_ModAssign:
-            string += " %= ";
+            out << " %= ";
             break;
         case kAssignType_LShiftAssign:
-            string += " <<= ";
+            out << " <<= ";
             break;
         case kAssignType_RShiftAssign:
-            string += " >>= ";
+            out << " >>= ";
             break;
         case kAssignType_AndAssign:
-            string += " &= ";
+            out << " &= ";
             break;
         case kAssignType_OrAssign:
-            string += " |= ";
+            out << " |= ";
             break;
         case kAssignType_XorAssign:
-            string += " ^= ";
+            out << " ^= ";
             break;
         default:
             DLOG(FATAL) << "Unknown assign op: " << _type;
     }
 
     // print LHS and RHS
-    string += "\n";
-    string += GetLHS()->Dump(ident + " |") + "\n";
-    string += GetRHS()->Dump(ident + " `");
-    return string;
+    GetLHS()->Dump(out, ident + " |");
+    GetRHS()->Dump(out, ident + " `");
 }
 Status AssignExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 AssignType AssignExpr::GetAssignType() const { return _type; }

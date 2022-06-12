@@ -40,18 +40,16 @@ std::shared_ptr<Type> LogicalExpr::RetType() const {
 Status LogicalExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 LogicalType LogicalExpr::GetLogicalType() const { return _type; }
 
-std::string LogicalExpr::PrintDetail(const std::string& ident) const {
-    std::stringstream ss;
-
+void LogicalExpr::PrintDetail(std::ostream& out,
+                              const std::string& ident) const {
     // print logical type
-    ss << (_type == kLogicalType_And ? "&&" : "||") << std::endl;
+    out << (_type == kLogicalType_And ? "&&" : "||");
 
     // print lhs
-    ss << GetLHS()->Dump(ident + " |") << std::endl;
+    GetLHS()->Dump(out, ident + " |");
 
     // print rhs
-    ss << GetLHS()->Dump(ident + " `");
-    return ss.str();
+    GetLHS()->Dump(out, ident + " `");
 };
 
 }  // namespace Hzcc::AST

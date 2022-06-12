@@ -23,7 +23,7 @@ class CompilationUnit {
 
     ~CompilationUnit();
 
-    [[nodiscard]] std::string Dump() const;
+    void Dump(std::ostream& out) const;
 
     [[nodiscard]] std::string GetFileName() const;
 

@@ -5,15 +5,13 @@
 
 #include "AST/type/Type.h"
 namespace Hzcc::AST {
-EmptyStatement::EmptyStatement(const Position& loc) : ASTNode(loc) {}
+EmptyStmt::EmptyStmt() : ASTNode({0, 0}) {}
 
-const char* AST::EmptyStatement::NodeName() const { return "EmptyStatement"; }
-std::shared_ptr<Type> EmptyStatement::RetType() const {
+const char* AST::EmptyStmt::NodeName() const { return "EmptyStmt"; }
+std::shared_ptr<Type> EmptyStmt::RetType() const {
     return Type::GetTypeOf("void", {Lexical::TokenType::kConst});
 }
-Status EmptyStatement::visit(ASTVisitor& visitor) {
-    return visitor.visit(this);
-}
+Status EmptyStmt::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 
-bool EmptyStatement::IsEmptyStmt() const { return true; }
+bool EmptyStmt::IsEmptyStmt() const { return true; }
 }  // namespace Hzcc::AST

@@ -92,10 +92,8 @@ class ParserFactoryReporter {
         DVLOG(SYNTAX_LOG_LEVEL)
             << "\nRequest Parser From: [" << _caller << "] " << _file << ":"
             << _line << "\n"
-            << "\tParseAST: " << TypeNameUtil::name_pretty<name>() << "\n"
+            << "\tAST: " << TypeNameUtil::name_pretty<name>() << "\n"
             << "\tToken: " << HZCC_PRETTY_PRINT_TOKEN(tokens.peek()) << "\n"
-            << "\tattributes: []"
-            << "\n"
             << "\tUsingParser: " << std::hex << TypeNameUtil::hash<name>();
         return ParserFactory::ParseAST<name>(tokens, context);
     }

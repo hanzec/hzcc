@@ -24,17 +24,12 @@ std::list<std::unique_ptr<ASTNode>>& CompoundStmt::GetBodyStatements() {
 }
 
 Status CompoundStmt::visit(ASTVisitor& visitor) { return visitor.visit(this); }
-std::string CompoundStmt::PrintDetail(const std::string& ident) const {
-    std::stringstream ret;
-
-    ret << "\n";
+void CompoundStmt::PrintDetail(std::ostream& out,
+                               const std::string& ident) const {
     for (const auto& statement : statements_) {
-        ret << statement->Dump(
-                   ident + (statement == statements_.back() ? "  `" : "  |")) +
-                   (statement == statements_.back() ? "" : "\n");
+        statement->Dump(
+            out, ident + (statement == statements_.back() ? "  `" : "  |"));
     }
-
-    return ret.str();
 }
 
 }  // namespace Hzcc::AST

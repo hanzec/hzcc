@@ -29,40 +29,37 @@ bool FuncDeclStmt::set_body(std::unique_ptr<AST::CompoundStmt> declaration) {
     return true;
 }
 
-std::string FuncDeclStmt::PrintDetail(const std::string& ident) const {
-    std::stringstream result;
-    result << RetType()->GetName() + " " + GetName();
+void FuncDeclStmt::PrintDetail(std::ostream& out,
+                               const std::string& ident) const {
+    out << RetType()->GetName() + " " + GetName();
 
     // print its arguments
-    result << " (";
+    out << " (";
     for (const auto& arg : _function_param) {
-        result << arg->RetType()->Dump();
+        out << arg->RetType()->Dump();
 
         if (arg != _function_param.back()) {
-            result << ",";
+            out << ",";
         }
     }
-    result << ")";
+    out << ")";
 
     // print argument node
     if (!_function_param.empty()) {
-        result << "\n";
         for (const auto& arg : _function_param) {
-            result << arg->Dump(ident + (arg == _function_param.back() &&
-                                                 _function_body == nullptr
-                                             ? " `"
-                                             : " |")) +
-                          (arg == _function_param.back() ? "" : "\n");
+            arg->Dump(out, ident + (arg == _function_param.back() &&
+                                            _function_body == nullptr
+                                        ? " `"
+                                        : " |"));
         }
     }
 
     // print its body
     if (_function_body != nullptr) {
-        result << "\n" + _function_body->Dump(ident + " `");
+        _function_body->Dump(out, ident + " `");
     } else {
-        result << ")";
+        out << ")";
     }
-    return result.str();
 }
 bool FuncDeclStmt::AddFunctionArgument(
     std::unique_ptr<ParamVarDecl> param_var_decl) {

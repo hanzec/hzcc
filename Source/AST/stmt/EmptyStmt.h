@@ -6,13 +6,12 @@
 #ifndef MYCC_SOURCE_AST_STATEMENT_EMPTY_H_
 #define MYCC_SOURCE_AST_STATEMENT_EMPTY_H_
 namespace Hzcc::AST {
-class EmptyStatement : public ASTNode {
+class EmptyStmt : public ASTNode {
   public:
     /**
-     * @brief Constructor of EmptyStatement
-     * @param loc location of the empty statement
+     * @brief Constructor of EmptyStmt
      */
-    explicit EmptyStatement(const Position& loc);
+    EmptyStmt();
 
     /**
      * @brief AST Visitor acceptor
@@ -23,7 +22,7 @@ class EmptyStatement : public ASTNode {
 
     /**
      * @brief Get Name of the node
-     * @return will always return "EmptyStatement"
+     * @return will always return "EmptyStmt"
      */
     [[nodiscard]] const char* NodeName() const override;
 

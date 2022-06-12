@@ -59,7 +59,7 @@ class JVMGenerator : public Generator,
      **#######################################################**/
     Status visit(Hzcc::AST::VarDecl* p_expr) override;
     Status visit(Hzcc::AST::CastExpr* p_expr) override;
-    Status visit(Hzcc::AST::UnaryExpr* p_expr) override;
+    Status visit(Hzcc::AST::UnaryOperator* p_expr) override;
     Status visit(Hzcc::AST::ReturnStmt* p_expr) override;
     Status visit(Hzcc::AST::AssignExpr* p_expr) override;
     Status visit(Hzcc::AST::LogicalExpr* p_expr) override;
@@ -71,7 +71,7 @@ class JVMGenerator : public Generator,
     Status visit(Hzcc::AST::ForStmt* p_expr) override;
     Status visit(Hzcc::AST::CompoundStmt* p_expr) override;
     Status visit(Hzcc::AST::RelationalExpr* p_expr) override;
-    Status visit(Hzcc::AST::EmptyStatement* p_expr) override;
+    Status visit(Hzcc::AST::EmptyStmt* p_expr) override;
     Status visit(Hzcc::AST::ArithmeticExpr* p_expr) override;
     Status visit(Hzcc::AST::WhileStmt* p_expr) override;
     Status visit(Hzcc::AST::BreakStmt* p_expr) override;

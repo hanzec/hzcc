@@ -86,19 +86,16 @@ Status ArithmeticExpr::visit(ASTVisitor& visitor) {
 
 ArithmeticType ArithmeticExpr::GetOpType() const { return _type; }
 
-std::string ArithmeticExpr::PrintDetail(const std::string& ident) const {
-    std::stringstream ss;
-
+void ArithmeticExpr::PrintDetail(std::ostream& out,
+                                 const std::string& ident) const {
     // print node info
-    ss << kArithmeticStr[_type] << ' ' << GetLHS()->RetType()->GetName();
+    out << kArithmeticStr[_type] << ' ' << GetLHS()->RetType()->GetName();
 
     // print LHS and RHS info
     std::string new_ident(ident);
     std::replace(new_ident.begin(), new_ident.end(), '`', ' ');
-    ss << std::endl << GetLHS()->Dump(new_ident + " |");
-    ss << std::endl << GetRHS()->Dump(new_ident + " `");
-
-    return ss.str();
+    GetLHS()->Dump(out, new_ident + " |");
+    GetRHS()->Dump(out, new_ident + " `");
 };
 
 }  // namespace Hzcc::AST

@@ -104,8 +104,8 @@ message(STATUS "E2E testing is enabled.")
 # add compiler_info test set
 add_lit_test_set(compiler_info "${CMAKE_CURRENT_LIST_DIR}/compiler_info")
 
-# add token_parsing test set
-add_lit_test_set(token_parsing "${CMAKE_CURRENT_LIST_DIR}/token_parsing/")
+# add lexical test set
+add_lit_test_set(lexical "${CMAKE_CURRENT_LIST_DIR}/lexical/")
 
-# add part3 test set
-add_lit_test_set(lexical_part3 "${CMAKE_CURRENT_LIST_DIR}/syntax/part3")
+# add test_set_0 test set
+add_lit_test_set(lexical_part3 "${CMAKE_CURRENT_LIST_DIR}/syntax/test_set_0")

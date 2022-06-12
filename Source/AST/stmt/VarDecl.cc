@@ -21,14 +21,9 @@ VarDecl::VarDecl(const Position& loc, std::shared_ptr<Type> type,
 
 const char* VarDecl::NodeName() const { return "VarDecl"; }
 
-std::string VarDecl::PrintDetail(const std::string& ident) const {
-    std::stringstream ss;
-    // base information
-    ss << GetName() << " " << RetType()->GetName();
-
-    if (HasInitExpr()) ss << std::endl << _init_expr->Dump(ident + " `");
-
-    return ss.str();
+void VarDecl::PrintDetail(std::ostream& out, const std::string& ident) const {
+    out << GetName() << " " << RetType()->GetName();
+    if (HasInitExpr()) _init_expr->Dump(out, ident + " `");
 }
 Status VarDecl::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 

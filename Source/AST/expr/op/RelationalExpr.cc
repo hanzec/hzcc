@@ -49,42 +49,40 @@ RelationalExpr::RelationalExpr(const Position& loc,
 
 const char* AST::RelationalExpr::NodeName() const { return "RelationalExpr"; }
 
-std::string RelationalExpr::PrintDetail(const std::string& ident) const {
-    std::stringstream ret;
-
+void RelationalExpr::PrintDetail(std::ostream& out,
+                                 const std::string& ident) const {
     // lhs type
-    ret << " " + GetLHS()->RetType()->GetName();
+    out << " " + GetLHS()->RetType()->GetName();
 
     // symbol type
     switch (_type) {
         case RelationalType::kRelationalType_Equal:
-            ret << " == ";
+            out << " == ";
             break;
         case RelationalType::kRelationalType_NEqual:
-            ret << " != ";
+            out << " != ";
             break;
         case RelationalType::kRelationalType_Less:
-            ret << " < ";
+            out << " < ";
             break;
         case RelationalType::kRelationalType_LessEqual:
-            ret << " <= ";
+            out << " <= ";
             break;
         case RelationalType::kRelationalType_Greater:
-            ret << " > ";
+            out << " > ";
             break;
         case RelationalType::kRelationalType_GreaterEqual:
-            ret << " >= ";
+            out << " >= ";
             break;
         default:
             DLOG(FATAL) << "Unknown relational op: " << _type;
     }
 
     // dump rhs
-    ret << "\n" + GetLHS()->Dump(ident + " |") + "\n" +
-               GetRHS()->Dump(ident + " `");
-
-    return ret.str();
+    GetLHS()->Dump(out, ident + " |");
+    GetRHS()->Dump(out, ident + " `");
 }
+
 std::shared_ptr<Type> RelationalExpr::RetType() const {
     return Type::GetTypeOf("char", {});
 }

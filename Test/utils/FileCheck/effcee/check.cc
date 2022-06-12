@@ -40,7 +40,7 @@ const std::vector<std::pair<StringPiece, Type>>& TypeStringTable() {
     return type_str_table;
 }
 
-// Returns the Check::RetType value matching the suffix part3 of a check rule
+// Returns the Check::RetType value matching the suffix test_set_0 of a check rule
 // prefix.  Assumes |suffix| is valid.
 Type TypeForSuffix(StringPiece suffix) {
     const auto& type_str_table = TypeStringTable();

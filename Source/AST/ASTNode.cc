@@ -18,20 +18,25 @@ ASTNode::ASTNode(Position loc)
         << "location invalid (should be greater than 0)";
 }
 
-std::string ASTNode::Dump(const std::string& ident) const {
+void ASTNode::Dump(std::ostream& out, const std::string& ident) const {
     auto new_ident = ident;
     std::replace(new_ident.begin(), new_ident.end(), '`', ' ');
-    return ident + "-" + NodeName() + " [" + std::to_string(Id()) + "] " +
-           "<line:" + std::to_string(_node_location.first) +
-           ", col:" + std::to_string(_node_location.second) + ">" + " " +
-           PrintDetail(new_ident);
+
+    // print node info
+    out << std::endl
+        << ident << '-' << NodeName() << " [" << std::to_string(Id()) << "] "
+        << "<line:" << std::to_string(_node_location.first)
+        << ", col:" << std::to_string(_node_location.second) << "> ";
+
+    // print additional info
+    PrintDetail(out, new_ident);
 }
 
 const Position& ASTNode::Location() const { return _node_location; }
 
 uint64_t ASTNode::Id() const { return _id; }
 
-std::string ASTNode::PrintDetail(const std::string& ident) const { return {}; }
+void ASTNode::PrintDetail(std::ostream& out, const std::string& ident) const {}
 ASTNode::~ASTNode() {}
 std::optional<DeduceValue> ASTNode::GetDeducedValue() const {
     return std::nullopt;
@@ -40,6 +45,7 @@ std::shared_ptr<Type> ASTNode::RetType() const {
     DLOG(FATAL) << "RetType() is not implemented for " << NodeName();
     return nullptr;
 }
+
 std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
     const std::shared_ptr<Type>& lhs_type, std::unique_ptr<ASTNode> rhs) {
     bool modified = false;
@@ -60,7 +66,7 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
                 rhs = std::make_unique<AST::CastExpr>(loc, lhs_type,
                                                       std::move(rhs));
                 DVLOG(SYNTAX_LOG_LEVEL)
-                    << "Cast DeducedValue:" << rhs->Dump("");
+                    << "Cast DeducedValue:" << HZCC_NODE_DEBUG_PRINT(rhs);
             }
 
             // [int = char] cast is allowed
@@ -70,7 +76,7 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
                 rhs = std::make_unique<AST::CastExpr>(loc, lhs_type,
                                                       std::move(rhs));
                 DVLOG(SYNTAX_LOG_LEVEL)
-                    << "Cast DeducedValue:" << rhs->Dump("");
+                    << "Cast DeducedValue:" << HZCC_NODE_DEBUG_PRINT(rhs);
             }
         }
 
@@ -84,7 +90,8 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
                     loc,
                     Type::GetTypeOf("float", rhs->RetType()->GetAttributes()),
                     std::move(rhs));
-                DVLOG(SYNTAX_LOG_LEVEL) << "Using CastExpr:" << rhs->Dump("");
+                DVLOG(SYNTAX_LOG_LEVEL)
+                    << "Using CastExpr:" << HZCC_NODE_DEBUG_PRINT(rhs);
             }
         }
 
@@ -104,7 +111,8 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
                     loc,
                     Type::GetTypeOf("float", rhs->RetType()->GetAttributes()),
                     std::move(rhs));
-                DVLOG(SYNTAX_LOG_LEVEL) << "Using CastExpr:" << rhs->Dump("");
+                DVLOG(SYNTAX_LOG_LEVEL)
+                    << "Using CastExpr:" << HZCC_NODE_DEBUG_PRINT(rhs);
             } else {
                 return nullptr;
             }
@@ -119,7 +127,8 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
                     loc,
                     Type::GetTypeOf("double", rhs->RetType()->GetAttributes()),
                     std::move(rhs));
-                DVLOG(SYNTAX_LOG_LEVEL) << "Using CastExpr:" << rhs->Dump("");
+                DVLOG(SYNTAX_LOG_LEVEL)
+                    << "Using CastExpr:" << HZCC_NODE_DEBUG_PRINT(rhs);
             } else {
                 return nullptr;
             }
@@ -134,7 +143,8 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
                     loc,
                     Type::GetTypeOf("int", rhs->RetType()->GetAttributes()),
                     std::move(rhs));
-                DVLOG(SYNTAX_LOG_LEVEL) << "Using CastExpr:" << rhs->Dump("");
+                DVLOG(SYNTAX_LOG_LEVEL)
+                    << "Using CastExpr:" << HZCC_NODE_DEBUG_PRINT(rhs);
             } else if (lhs_type->IsFloat()) {
                 modified = true;
                 auto loc = rhs->Location();
@@ -144,7 +154,8 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
                     std::make_unique<AST::CastExpr>(
                         loc, Type::GetTypeOf("float", rhs_attr),
                         std::move(rhs)));
-                DVLOG(SYNTAX_LOG_LEVEL) << "Using CastExpr:" << rhs->Dump("");
+                DVLOG(SYNTAX_LOG_LEVEL)
+                    << "Using CastExpr:" << HZCC_NODE_DEBUG_PRINT(rhs);
             }
             break;
         } else {
@@ -159,5 +170,9 @@ std::unique_ptr<AST::ASTNode> ASTNode::CastTo(
     }
 
     return std::move(rhs);
+}
+std::ostream& ASTNode::operator<<(std::ostream& out) const {
+    Dump(out, "");
+    return out;
 }
 }  // namespace Hzcc::AST

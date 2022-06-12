@@ -26,14 +26,13 @@ int main(int argc, char* argv[]) {
     /** #####################################################################
      * Feature Flags                                                        #
      * #################################################################### */
-    bool show_version = false, show_help = false, syntax_only = false,
-         lexical_only = false;
+    bool show_version = false, syntax_only = false, lexical_only = false;
+    app.add_flag("--fsyntax_only", syntax_only, "Only syntax check");
+    app.add_flag("--flexical_only", lexical_only, "Only lexical analysis");
     app.add_flag("-v,--version", show_version, "version information");
+
     app.add_flag("--fno_color", Hzcc::Options::Global_disable_color,
                  "Disable print color");
-    app.add_flag("--fsyntax_only", syntax_only, "Only syntax check");
-    app.add_flag("--flexical_only", lexical_only,
-                 "Only token_parsing analysis");
 
     /** #####################################################################
      * Input and Output Flags                                               #
@@ -53,6 +52,14 @@ int main(int argc, char* argv[]) {
 
     // replace all spaces in output_file with '_'
     std::replace(output_file.begin(), output_file.end(), ' ', '_');
+
+    /** #####################################################################
+     * Input and Output Flags Check                                         #
+     * #################################################################### */
+    if (syntax_only && lexical_only) {
+        std::cout << "--fsyntax_only and --flexical_only cannot be used "
+                  << "at the same time";
+    }
 
     /** #####################################################################
      * Executions Starts Here                                               #
@@ -75,17 +82,17 @@ int main(int argc, char* argv[]) {
         Hzcc::Message::set_current_file(input_files[0]);
 
         /** ##################################################################
-         * token_parsing analysis #
+         * lexical analysis #
          * ##################################################################*/
         std::list<Hzcc::Lexical::Token> tokens;
         std::ifstream infile(input_files[i]);
 
-        // run token_parsing analysis
+        // run lexical analysis
         if (!Hzcc::Lexical::ParseToToken(infile, tokens).Ok()) {
-            return 0;
+            return -1;
         }
 
-        // show token_parsing analysis result
+        // show lexical analysis result
         if (lexical_only) {
             if (output_file.empty()) {
                 for (auto& token : tokens) {
@@ -118,9 +125,20 @@ int main(int argc, char* argv[]) {
 
         // run Syntax analysis
         if (!Hzcc::Syntax::GenerateAST(token_list, compilation_unit).Ok()) {
-            return 0;
-        } else {
             return -1;
+        }
+
+        // print syntax analysis result
+        if (syntax_only) {
+            if (output_file.empty()) {
+                compilation_unit->Dump(std::cout);
+            } else {
+                std::fstream outfile(output_file, std::fstream::out);
+                compilation_unit->Dump(outfile);
+                outfile.close();
+            }
+
+            return 0;
         }
 
         compilation_units.push_back(std::move(compilation_unit));

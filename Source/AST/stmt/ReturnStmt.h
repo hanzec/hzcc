@@ -13,8 +13,7 @@ class ReturnStmt : public ASTNode {
      * @param expr expression of the return statement
      * @param loc location of the return statement
      */
-    ReturnStmt(std::unique_ptr<ASTNode> expr,  // NOLINT
-               const Position& loc);           // NOLINT
+    ReturnStmt(const Position& loc, std::unique_ptr<ASTNode> expr);
 
     /**
      * @brief AST Visitor acceptor
@@ -28,6 +27,13 @@ class ReturnStmt : public ASTNode {
      * @return will always return "ReturnStmt"
      */
     [[nodiscard]] const char* NodeName() const override;
+
+    /**
+     * @brief Get the return value of the return statement
+     * @return return value of the return statement
+     * @note an empty return statement will have a type of void
+     */
+    [[nodiscard]] std::shared_ptr<Type> RetType() const override;
 
     /**
      * @brief Get the returned expression
@@ -49,8 +55,8 @@ class ReturnStmt : public ASTNode {
      * @param ident the current indentation level
      * @return std::string generated string
      */
-    [[nodiscard]] std::string PrintDetail(
-        const std::string& ident) const override;
+    void PrintDetail(std::ostream& out,
+                     const std::string& ident) const override;
 
   private:
     std::unique_ptr<ASTNode> _return_val;

@@ -1,7 +1,7 @@
 //
 // Created by chen_ on 2022/3/29.
 //
-#include "UnaryExpr.h"
+#include "UnaryOperator.h"
 
 #include <algorithm>
 
@@ -11,8 +11,9 @@ namespace Hzcc::AST {
 constexpr static std::array<const char*, kUnaryType_ENUM_SIZE> kUnaryOpSTR = {
     "-", "++(Pre)", "--(Pre)", "++(Post)", "--(Post)", "&", "*", "!", "~"};
 
-UnaryExpr::UnaryExpr(const Position& location, const std::string_view& type,
-                     std::unique_ptr<ASTNode> expr)
+UnaryOperator::UnaryOperator(const Position& location,
+                             const std::string_view& type,
+                             std::unique_ptr<ASTNode> expr)
     : ASTNode(location), _expr(std::move(expr)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
@@ -64,29 +65,22 @@ UnaryExpr::UnaryExpr(const Position& location, const std::string_view& type,
     }
 }
 
-const char* UnaryExpr::NodeName() const { return "UnaryExpr"; }
+const char* UnaryOperator::NodeName() const { return "UnaryOperator"; }
 
-std::shared_ptr<Type> UnaryExpr::RetType() const {
+std::shared_ptr<Type> UnaryOperator::RetType() const {
     if (_type == kUnaryType_LogicalNot)
         return Type::GetTypeOf("char", {Lexical::TokenType::kConst});
     else
         return _expr->RetType();
 }
-Status UnaryExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+Status UnaryOperator::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 
-std::string UnaryExpr::PrintDetail(const std::string& ident) const {
-    std::stringstream ss;
-
-    // unary op info
-    ss << kUnaryOpSTR[_type] << " " << _expr->RetType()->GetName();
-
-    // sub expr info
-    std::string new_ident(ident);
-    std::replace(new_ident.begin(), new_ident.end(), '`', ' ');
-    ss << std::endl << _expr->Dump(new_ident + "`");
-
-    return ss.str();
+void UnaryOperator::PrintDetail(std::ostream& out,
+                                const std::string& ident) const {
+    out << kUnaryOpSTR[_type] << " " << _expr->RetType()->GetName();
+    _expr->Dump(out, ident + "`");
 }
-std::unique_ptr<ASTNode>& UnaryExpr::GetExpr() { return _expr; }
-UnaryType UnaryExpr::GetUnaryType() const { return _type; }
+
+std::unique_ptr<ASTNode>& UnaryOperator::GetExpr() { return _expr; }
+UnaryType UnaryOperator::GetUnaryType() const { return _type; }
 }  // namespace Hzcc::AST

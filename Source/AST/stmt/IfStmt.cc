@@ -50,33 +50,27 @@ std::vector<std::pair<std::unique_ptr<ASTNode>, std::unique_ptr<ASTNode>>>
     &IfStmt::ElseIfStmt() {
     return _elseIfs;
 }
-std::string IfStmt::PrintDetail(const std::string &ident) const {
-    std::stringstream ss;
-
+void IfStmt::PrintDetail(std::ostream &out, const std::string &ident) const {
     // print condition
-    ss << std::endl << _condition->Dump(ident + " |");
+    _condition->Dump(out, ident + " |");
 
     // print body
-    ss << std::endl
-       << _if_body_statement->Dump(
-              ident +
-              (_elseIfs.empty() && _else_statement_ == nullptr ? " `" : " |"));
+    _if_body_statement->Dump(
+        out, ident + (_elseIfs.empty() && _else_statement_ == nullptr ? " `"
+                                                                      : " |"));
 
     // print else if
     for (auto &else_if : _elseIfs) {
-        ss << std::endl
-           << else_if.first->Dump(ident + (else_if == _elseIfs.back() &&
-                                                   _else_statement_ == nullptr
-                                               ? " `"
-                                               : " |"));
+        else_if.first->Dump(out, ident + (else_if == _elseIfs.back() &&
+                                                  _else_statement_ == nullptr
+                                              ? " `"
+                                              : " |"));
     }
 
     // print else
     if (_else_statement_ != nullptr) {
-        ss << std::endl << _else_statement_->Dump(ident + " `");
+        _else_statement_->Dump(out, ident + " `");
     }
-
-    return ss.str();
 }
 std::unique_ptr<ASTNode> &IfStmt::ElseStmt() { return _else_statement_; }
 }  // namespace Hzcc::AST

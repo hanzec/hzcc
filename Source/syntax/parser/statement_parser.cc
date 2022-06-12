@@ -12,7 +12,7 @@
 #include "AST/expr/LiteralExpr.h"
 #include "AST/expr/SizeofExpr.h"
 #include "AST/expr/TernaryExpr.h"
-#include "AST/expr/UnaryExpr.h"
+#include "AST/expr/UnaryOperator.h"
 #include "AST/expr/op/ArithmeticExpr.h"
 #include "AST/expr/op/AssignExpr.h"
 #include "AST/expr/op/BitwiseExpr.h"
@@ -30,6 +30,7 @@
 #include "AST/stmt/StructDeclStmt.h"
 #include "AST/stmt/VarDecl.h"
 #include "AST/type/ArrayType.h"
+#include "AST/utils/macro.h"
 #include "lexical/Token.h"
 #include "lexical/token_type.h"
 #include "syntax/Parser.h"
@@ -46,8 +47,7 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(TokenList& tokens,
     std::unique_ptr<AST::ASTNode> node{nullptr};
     switch (tokens.peek().Type()) {
         case Lexical::TokenType::kSemiColon:
-            node =
-                std::make_unique<AST::EmptyStatement>(tokens.peek().Location());
+            node = std::make_unique<AST::EmptyStmt>();
             break;
         case Lexical::TokenType::kStruct:
             if (tokens.peek3().Type() == Lexical::TokenType::kLBrace) {
@@ -83,7 +83,7 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(TokenList& tokens,
                     }
 
                     node = std::make_unique<AST::ReturnStmt>(
-                        std::move(ret_expr), token.Location());
+                        token.Location(), std::move(ret_expr));
                 } else {
                     VLOG(SYNTAX_LOG_LEVEL) << "parse return stmt error";
                     return nullptr;
@@ -91,8 +91,7 @@ std::unique_ptr<AST::ASTNode> Statement::parse_impl(TokenList& tokens,
             } else {
                 DLOG(INFO) << "ignore ';' since return stmt is empty";
                 node = std::make_unique<AST::ReturnStmt>(
-                    std::make_unique<AST::EmptyStatement>(token.Location()),
-                    token.Location());
+                    token.Location(), std::make_unique<AST::EmptyStmt>());
             }
             break;
         }
@@ -215,7 +214,9 @@ std::unique_ptr<AST::ASTNode> Statement::ParseAssignExpr(SyntaxContext& context,
 
         // LHS cannot be const variable
         if (lhs->RetType()->IsConst()) {
-            VLOG(SYNTAX_LOG_LEVEL) << "LHS：" << lhs->Dump("");
+            VLOG(SYNTAX_LOG_LEVEL)
+                << "Left hand side [" << HZCC_NODE_DEBUG_PRINT(lhs)
+                << "is not assignable";
             MYCC_PrintTokenError_ReturnNull(assign_type,
                                             "Left hand side is not assignable")
         }
@@ -899,8 +900,8 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(SyntaxContext& context,
             return nullptr;
         }
 
-        return std::make_unique<AST::UnaryExpr>(type.Location(), type.Value(),
-                                                std::move(rhs));
+        return std::make_unique<AST::UnaryOperator>(
+            type.Location(), type.Value(), std::move(rhs));
     }
 
     // for cast expression, we should parse the next expression
@@ -1003,7 +1004,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(SyntaxContext& context,
                     type, "cannot set value to const variable");
             }
 
-            return std::make_unique<AST::UnaryExpr>(
+            return std::make_unique<AST::UnaryOperator>(
                 type.Location(), type.Value(), std::move(rhs));
         } else {
             auto lhs = ParseAccessExpr(context, tokens);
@@ -1028,7 +1029,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(SyntaxContext& context,
                 }
 
                 auto type = tokens.pop();
-                return std::make_unique<AST::UnaryExpr>(
+                return std::make_unique<AST::UnaryOperator>(
                     type.Location(), type.Value(), std::move(lhs));
             } else if (tokens.peek().Type() ==
                        Lexical::TokenType::kSelfDecrement) {
@@ -1044,7 +1045,7 @@ std::unique_ptr<AST::ASTNode> Statement::ParseUnaryExpr(SyntaxContext& context,
                         tokens, "cannot set value to const variable");
                 }
                 auto type = tokens.pop();
-                return std::make_unique<AST::UnaryExpr>(
+                return std::make_unique<AST::UnaryOperator>(
                     type.Location(), type.Value(), std::move(lhs));
             } else {
                 return std::move(lhs);

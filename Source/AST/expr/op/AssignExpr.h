@@ -69,10 +69,9 @@ class AssignExpr : public OperatorBase {
      * ASTNode->Dump()
      *     // TODO add details of printed information
      * @param ident the current indentation level
-     * @return std::string generated string
      */
-    [[nodiscard]] std::string PrintDetail(
-        const std::string& ident) const override;
+    void PrintDetail(std::ostream& out,
+                     const std::string& ident) const override;
 
     /**
      * @brief Get Name of the node

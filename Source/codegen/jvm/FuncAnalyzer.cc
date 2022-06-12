@@ -10,7 +10,7 @@
 #include "AST/expr/CastExpr.h"
 #include "AST/expr/DeclRefExpr.h"
 #include "AST/expr/SizeofExpr.h"
-#include "AST/expr/UnaryExpr.h"
+#include "AST/expr/UnaryOperator.h"
 #include "AST/expr/operator/RelationalExpr.h"
 #include "AST/expr/operator/arithmetic.h"
 #include "AST/expr/operator/assign.h"

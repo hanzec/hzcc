@@ -72,8 +72,8 @@ class ArithmeticExpr : public OperatorBase {
      * @param ident the current indentation level
      * @return std::string generated string
      */
-    [[nodiscard]] std::string PrintDetail(
-        const std::string& ident) const override;
+    void PrintDetail(std::ostream& out,
+                     const std::string& ident) const override;
 
   private:
     ArithmeticType _type;

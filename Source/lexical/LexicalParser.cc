@@ -225,15 +225,15 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
                         }
 
                         // numbers are ended by a special Symbol or a space,
-                        // correctness will be checked in syntax part3. Here we
-                        // want to escape Dot(.) because it could be part3 of
-                        // real number
+                        // correctness will be checked in syntax test_set_0.
+                        // Here we want to escape Dot(.) because it could be
+                        // test_set_0 of real number
                         while (col <= line.length() &&
                                (line[col] == '.' ||
                                 (!std::isspace(line[col]) &&
                                  !SymbolUtils::IsOperator(line[col])))) {
                             // we want to escape Minus(-) directly after [E]
-                            // because it could be part3 of real number
+                            // because it could be test_set_0 of real number
                             // (e.g. 1.0E-2)
                             if (std::tolower(line[col]) == 'e' &&
                                 (line[col + 1] == '-' ||

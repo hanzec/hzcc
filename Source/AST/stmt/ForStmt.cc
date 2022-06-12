@@ -34,20 +34,17 @@ const std::unique_ptr<ASTNode>& ForStmt::InitStmt() { return _init; }
 const std::unique_ptr<ASTNode>& ForStmt::CondStmt() { return _cond; }
 const std::unique_ptr<ASTNode>& ForStmt::StepStmt() { return _step; }
 const std::unique_ptr<ASTNode>& ForStmt::BodyStmt() { return _body; }
-std::string ForStmt::PrintDetail(const std::string& ident) const {
-    std::stringstream ss;
-
+void ForStmt::PrintDetail(std::ostream& out, const std::string& ident) const {
     // print init
-    ss << std::endl << _init->Dump(ident + " |");
+    _init->Dump(out, ident + " |");
 
     // print condition
-    ss << std::endl << _cond->Dump(ident + " |");
+    _cond->Dump(out, ident + " |");
 
     // print step
-    ss << std::endl << _step->Dump(ident + " |");
+    _step->Dump(out, ident + " |");
 
     // print body
-    ss << std::endl << _body->Dump(ident + " `");
-    return ss.str();
+    _body->Dump(out, ident + " `");
 }
 }  // namespace Hzcc::AST

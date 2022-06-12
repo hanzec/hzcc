@@ -59,20 +59,24 @@ std::optional<DeduceValue> LiteralExpr::GetDeducedValue() const {
     return std::nullopt;
 }
 
-std::string LiteralExpr::PrintDetail(const std::string& ident) const {
+void LiteralExpr::PrintDetail(std::ostream& out,
+                              const std::string& ident) const {
     switch (_type) {
         case LiteralType::kLiteralType_Char:
-            return "char \'" + _value + "\'";
+            out << "char \'" << _value << "\'";
+            break;
         case LiteralType::kLiteralType_Real_number:
-            return "real_number " + _value;
+            out << "real_number " << _value;
+            break;
         case LiteralType::kLiteralType_String:
-            return "string \"" + _value + "\"";
+            out << "string \"" << _value << "\"";
+            break;
         case LiteralType::kLiteralType_Integer:
-            return "int " + _value;
+            out << "int " << _value;
+            break;
         case kLiteralType_Max:
             DLOG_ASSERT(false) << "unexpected literal type [kLiteralType_Max]";
     }
-    return "";
 }
 
 std::shared_ptr<Type> LiteralExpr::RetType() const {

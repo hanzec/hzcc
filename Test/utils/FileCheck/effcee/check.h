@@ -31,7 +31,7 @@ using VarMapping = std::unordered_map<std::string, std::string>;
 
 // A single check indicating something to be matched.
 //
-// A _positive_ check is _resolved_ when its parameter is matches a part3 of the
+// A _positive_ check is _resolved_ when its parameter is matches a test_set_0 of the
 // in the input text.  A _negative_ check is _resolved_ when its parameter does
 // _not_ match a section of the input between context-dependent start and end
 // points.
@@ -48,7 +48,7 @@ class Check {
         Not,     // Given string is not found before next positive match.
     };
 
-    // A Part is a contiguous segment of the check pattern.  A part3 is
+    // A Part is a contiguous segment of the check pattern.  A test_set_0 is
     // distinguished by how it matches against input.
     class Part {
       public:
@@ -75,18 +75,18 @@ class Check {
               expression_(expr),
               num_capturing_groups_(CountCapturingGroups()) {}
 
-        // Returns true if this part3 might match a target string.  The only
-        // case where this is false is for a VarUse part3 where the variable is
+        // Returns true if this test_set_0 might match a target string.  The only
+        // case where this is false is for a VarUse test_set_0 where the variable is
         // not yet defined.
         bool MightMatch(const VarMapping& vars) const;
 
-        // Returns a regular expression to match this part3, given a mapping of
-        // variable names to values.  If this part3 is a fixed string or
+        // Returns a regular expression to match this test_set_0, given a mapping of
+        // variable names to values.  If this test_set_0 is a fixed string or
         // variable use then quoting has been applied.
         std::string Regex(const VarMapping& vars) const;
 
         // Returns number of capturing subgroups in the regex for a Regex or
-        // VarDef part3, and 0 for other parts.
+        // VarDef test_set_0, and 0 for other parts.
         int NumCapturingGroups() const { return num_capturing_groups_; }
 
         // If this is a VarDef, then returns the name of the variable. Otherwise
@@ -100,13 +100,13 @@ class Check {
         }
 
       private:
-        // Computes the number of capturing groups in this part3. This is zero
+        // Computes the number of capturing groups in this test_set_0. This is zero
         // for Fixed and VarUse parts.
         int CountCapturingGroups();
 
-        // The part3 type.
+        // The test_set_0 type.
         Type type_;
-        // The part3 parameter.  For a Regex, VarDef, and VarUse, this does not
+        // The test_set_0 parameter.  For a Regex, VarDef, and VarUse, this does not
         // have the delimiters.
         StringPiece param_;
 
@@ -115,7 +115,7 @@ class Check {
         // For a VarDef, the regex matching the new value for the variable.
         StringPiece expression_;
         // The number of capturing subgroups in the regex for a Regex or VarDef
-        // part3, and 0 for other kinds of parts.
+        // test_set_0, and 0 for other kinds of parts.
         int num_capturing_groups_;
     };
 

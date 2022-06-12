@@ -22,13 +22,13 @@ class TernaryExpr;
 class DeclRefExpr;
 class LiteralExpr;
 class SizeofExpr;
-class UnaryExpr;
+class UnaryOperator;
 class BreakStmt;
 class CompoundStmt;
 class ContinueStmt;
 class DeclStmt;
 class DoStatement;
-class EmptyStatement;
+class EmptyStmt;
 class ForStmt;
 class FuncCallStmt;
 class FuncDeclStmt;
@@ -114,9 +114,9 @@ class ASTVisitor {
                       << " not implemented!";
         return Status::OkStatus();
     };
-    virtual Status visit(Hzcc::AST::UnaryExpr* p_expr) {
+    virtual Status visit(Hzcc::AST::UnaryOperator* p_expr) {
         DLOG(WARNING) << "AST Visitor for Node " << __FUNCTION__
-                      << " Hzcc::AST::UnaryExpr"
+                      << " Hzcc::AST::UnaryOperator"
                       << " not implemented!";
         return Status::OkStatus();
     };
@@ -144,9 +144,9 @@ class ASTVisitor {
                       << " not implemented!";
         return Status::OkStatus();
     };
-    virtual Status visit(Hzcc::AST::EmptyStatement* p_expr) {
+    virtual Status visit(Hzcc::AST::EmptyStmt* p_expr) {
         DLOG(WARNING) << "AST Visitor for Node " << __FUNCTION__
-                      << " Hzcc::AST::EmptyStatement"
+                      << " Hzcc::AST::EmptyStmt"
                       << " not implemented!";
         return Status::OkStatus();
     };

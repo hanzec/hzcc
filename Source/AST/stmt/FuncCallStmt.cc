@@ -35,17 +35,14 @@ const char* FuncCallStmt::NodeName() const { return "FuncCallStmt"; }
 
 std::shared_ptr<Type> FuncCallStmt::RetType() const { return _return_type; }
 
-std::string FuncCallStmt::PrintDetail(const std::string& ident) const {
-    std::stringstream info;
-    info << _name;
-
+void FuncCallStmt::PrintDetail(std::ostream& out,
+                               const std::string& ident) const {
+    out << _name;
     if (!_args.empty()) {
         for (auto& arg : _args) {
-            info << "\n" +
-                        arg->Dump(ident + (arg == _args.back() ? " `" : " |"));
+            arg->Dump(out, ident + (arg == _args.back() ? " `" : " |"));
         }
     }
-    return info.str();
 }
 Status FuncCallStmt::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 const std::list<std::unique_ptr<ASTNode>>& FuncCallStmt::GetArgsNode() {

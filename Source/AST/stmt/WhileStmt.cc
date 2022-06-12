@@ -22,14 +22,11 @@ const char* Hzcc::AST::WhileStmt::NodeName() const { return "WhileStmt"; }
 Status WhileStmt::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 std::unique_ptr<ASTNode>& WhileStmt::CondStmt() { return _cond; }
 std::unique_ptr<ASTNode>& WhileStmt::BodyStmt() { return _body; }
-std::string WhileStmt::PrintDetail(const std::string& ident) const {
-    std::stringstream ss;
-
+void WhileStmt::PrintDetail(std::ostream& out, const std::string& ident) const {
     // print condition
-    ss << std::endl << _cond->Dump(ident + " |");
+    _cond->Dump(out, ident + " |");
 
     // print body
-    ss << std::endl << _body->Dump(ident + " `");
-    return ss.str();
+    _body->Dump(out, ident + " `");
 }
 }  // namespace Hzcc::AST

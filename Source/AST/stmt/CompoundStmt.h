@@ -40,10 +40,9 @@ class CompoundStmt : public ASTNode {
      * ASTNode->Dump()
      *     // TODO add details of printed information
      * @param ident the current indentation level
-     * @return std::string generated string
      */
-    [[nodiscard]] std::string PrintDetail(
-        const std::string& ident) const override;
+    void PrintDetail(std::ostream& out,
+                     const std::string& ident) const override;
 
   private:
     std::list<std::unique_ptr<ASTNode>> statements_{};

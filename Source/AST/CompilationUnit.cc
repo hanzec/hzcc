@@ -41,58 +41,14 @@ void CompilationUnit::addDecl(std::unique_ptr<DeclStmt> node) {
     }
 }
 
-std::string CompilationUnit::Dump() const {
-    std::stringstream ret;
-#ifndef NDEBUG
-    std::string indent;
-
-    // Dump the function declarations
-    indent = "|";
-    ret << "Compilation Unit: " << _file_name << std::endl;
+void CompilationUnit::Dump(std::ostream &out) const {
+    std::string indent = "|";
+    out << "Compilation Unit [" << _file_name << "]";
     for (auto &func : _global_decl) {
-        ret << func.second->Dump(indent) +
-                   (func == _global_decl.back() ? "" : "\n");
+        func.second->Dump(out, (func == _global_decl.back() ? "`" : indent));
     }
-
-    return ret.str();
-#else
-    // Dump the function declarations
-    for (auto &func : _global_decl) {
-        if (func.second->IsFuncDecl()) {
-            if (func.second->HasBody()) {
-                ret << "Line " << std::setw(3)
-                    << std::to_string(func.second->Location().first + 1)
-                    << std::setw(0)
-                    << ": function " + func.second->RetType()->GetName() + " " +
-                           func.second->GetName() + "\n";
-                ret << func.second->Dump("\t");
-            }
-        } else {
-            auto type_name = func.second->RetType()->GetName();
-            if (type_name.find('[') != std::string::npos) {
-                ret << "Line " << std::setw(3)
-                    << std::to_string(func.second->Location().first + 1)
-                    << std::setw(0)
-                    << ": global " +
-                           func.second->RetType()->GetName().substr(
-                               0, type_name.find_first_of('[')) +
-                           " " + func.first +
-                           func.second->RetType()->GetName().substr(
-                               type_name.find_first_of('['),
-                               type_name.find_last_of(']')) +
-                           "\n";
-            } else {
-                ret << "Line " << std::setw(3)
-                    << std::to_string(func.second->Location().first + 1)
-                    << std::setw(0)
-                    << ": global " + func.second->RetType()->GetName() + " " +
-                           func.first + "\n";
-            }
-        }
-    }
-#endif
-    return ret.str();
 }
+
 CompilationUnit::~CompilationUnit() = default;
 CompilationUnit::CompilationUnit(std::string file_name)
     : _file_name(std::move(file_name)) {}
@@ -102,5 +58,4 @@ std::list<std::pair<std::string, std::unique_ptr<AST::DeclStmt>>>
     &CompilationUnit::GetDecls() {
     return _global_decl;
 }
-
 }  // namespace Hzcc::AST

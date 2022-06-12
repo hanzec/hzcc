@@ -1,7 +1,7 @@
 /*
  *	The usual hello world program, but without
  *	#include <stdio.h> because the preprocessor
- *	is optional (see part3 2).
+ *	is optional (see test_set_0 2).
  *
  */
 

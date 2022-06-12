@@ -40,8 +40,8 @@ class TernaryExpr : public ASTNode {
      * @param ident the current indentation level
      * @return std::string generated string
      */
-    [[nodiscard]] std::string PrintDetail(
-        const std::string& ident) const override;
+    void PrintDetail(std::ostream& out,
+                     const std::string& ident) const override;
 
   private:
     std::unique_ptr<ASTNode> _cond;
