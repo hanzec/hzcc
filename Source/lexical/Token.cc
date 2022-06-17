@@ -11,6 +11,7 @@
 #include <utility>
 
 #include "lexical/utils/symbol_utils.h"
+#include "utils/keywords_utils.h"
 #include "utils/logging.h"
 
 namespace Hzcc::Lexical {
@@ -138,7 +139,7 @@ TokenType Token::Type() const noexcept { return _token_type; }
 
 std::string Token::Value(bool escape) const noexcept {
     if (_token_val_ref == nullptr) {
-        return SymbolUtils::TokenTypeToString(_token_type);
+        return KeywordsUtils::TokenTypeToString(_token_type);
     } else {
         if (escape) {
             std::stringstream ss;
@@ -146,7 +147,7 @@ std::string Token::Value(bool escape) const noexcept {
             if (_token_type == TokenType::kString) ss << "\"";
             for (auto& c : *_token_val_ref) {
                 if (std::iscntrl(c)) {
-                    ss << SymbolUtils::ASCIIControlCodeToString(c);
+                    ss << KeywordsUtils::ASCIIControlCodeToString(c);
                 } else {
                     ss << c;
                 }

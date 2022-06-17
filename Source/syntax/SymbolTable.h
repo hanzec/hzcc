@@ -76,7 +76,7 @@ class SymbolTable : public std::enable_shared_from_this<SymbolTable> {
      * @return false if variable name is existed as other variable or as
      * registered type identifier.
      */
-    void addVariable(int line_no, const std::string& name,
+    void addVariable(uint64_t line_no, const std::string& name,
                      std::shared_ptr<AST::Type>& token_types);
 
     int getVariableDeclLine(const std::string& name);

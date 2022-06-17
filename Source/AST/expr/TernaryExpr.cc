@@ -18,11 +18,11 @@ TernaryExpr::TernaryExpr(const Position& location,
      * ### Runtime Assertion                                             ###
      * ##################################################################### */
     HZCC_RUNTIME_CHECK(_cond != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("cond is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("cond is nullptr", this);
     HZCC_RUNTIME_CHECK(_true_expr != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("true_expr is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("true_expr is nullptr", this);
     HZCC_RUNTIME_CHECK(_false_expr != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("false_expr is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("false_expr is nullptr", this);
 }
 
 const char* AST::TernaryExpr::NodeName() const { return "TernaryExpr"; }
@@ -33,7 +33,7 @@ Status TernaryExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 void TernaryExpr::PrintDetail(std::ostream& out,
                               const std::string& ident) const {
     // type
-    out << RetType()->GetName();
+    out << RetType()->Name();
 
     // node
     _cond->Dump(out, ident + " |");

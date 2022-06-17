@@ -22,9 +22,9 @@ ArithmeticExpr::ArithmeticExpr(const Position& location,
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(!type.empty())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type string empty", this);
+        << HZCC_AST_PRINT_NODE_INFO("type string empty", this);
     HZCC_RUNTIME_CHECK(type.length() == 1)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type len mismatch", this);
+        << HZCC_AST_PRINT_NODE_INFO("type len mismatch", this);
 
     /** #####################################################################
      *  ### Class initialization                                          ###
@@ -46,7 +46,7 @@ ArithmeticExpr::ArithmeticExpr(const Position& location,
             this->_type = ArithmeticType::kArithmeticType_Mod;
             break;
         default:
-            HZCC_RUNTIME_CHECK(false) << HZCC_AST_PRINT_CHECK_ERROR_INFO(
+            HZCC_RUNTIME_CHECK(false) << HZCC_AST_PRINT_NODE_INFO(
                 "type: [" + std::string(type) + "] not supported", this);
     }
 }
@@ -89,7 +89,7 @@ ArithmeticType ArithmeticExpr::GetOpType() const { return _type; }
 void ArithmeticExpr::PrintDetail(std::ostream& out,
                                  const std::string& ident) const {
     // print node info
-    out << kArithmeticStr[_type] << ' ' << GetLHS()->RetType()->GetName();
+    out << kArithmeticStr[_type] << ' ' << GetLHS()->RetType()->Name();
 
     // print LHS and RHS info
     std::string new_ident(ident);

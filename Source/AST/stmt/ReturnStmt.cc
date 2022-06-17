@@ -14,14 +14,14 @@ ReturnStmt::ReturnStmt(const Position& loc,            // NOLINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(_return_val != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("return statement is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("return statement is nullptr", this);
 }
 
 const char* ReturnStmt::NodeName() const { return "ReturnStmt"; }
 
 void ReturnStmt::PrintDetail(std::ostream& out,
                              const std::string& ident) const {
-    out << _return_val->RetType()->GetName();
+    out << _return_val->RetType()->Name();
 
     // print node if available
     if (_return_val) {

@@ -7,7 +7,7 @@
 #include <memory>
 #include <string>
 
-#include "lexical/utils/symbol_utils.h"
+#include "keywords.h"
 #include "syntax/SyntaxContext.h"
 #include "syntax/TokenList.h"
 namespace Hzcc {
@@ -39,26 +39,25 @@ std::tuple<std::shared_ptr<AST::Type>, Lexical::Token> ParseTypeDecl(
 std::tuple<Lexical::Token, std::list<std::unique_ptr<AST::ASTNode>>>
 ParseVariable(SyntaxContext& context, TokenList& tokens);
 
-#define MYCC_CheckAndConsume_ReturnNull(except, tokens)                       \
-    {                                                                         \
-        static_assert(                                                        \
-            std::is_same_v<Lexical::TokenType, decltype(except)>,             \
-            "Macro type mismatch, need Lexical::Token for 1st variable");     \
-        static_assert(                                                        \
-            std::is_same_v<Syntax::TokenList&, decltype(tokens)> ||           \
-                std::is_same_v<const Syntax::TokenList&, decltype(tokens)>,   \
-            "Macro type mismatch, need Syntax::TokenList& for 2nd variable"); \
-        if ((tokens).empty() || (tokens).peek().Type() != (except)) {         \
-            MYCC_PrintFirstTokenError_ReturnNull(                             \
-                tokens, "Expected '" +                                        \
-                            Lexical::SymbolUtils::TokenTypeToString(except) + \
-                            "', but got '" +                                  \
-                            Lexical::SymbolUtils::TokenTypeToString(          \
-                                (tokens).peek().Type()) +                     \
-                            "'");                                             \
-        } else {                                                              \
-            (tokens).pop();                                                   \
-        }                                                                     \
+#define MYCC_CheckAndConsume_ReturnNull(except, tokens)                        \
+    {                                                                          \
+        static_assert(                                                         \
+            std::is_same_v<TokenType, decltype(except)>,                       \
+            "Macro type mismatch, need Lexical::Token for 1st variable");      \
+        static_assert(                                                         \
+            std::is_same_v<Syntax::TokenList&, decltype(tokens)> ||            \
+                std::is_same_v<const Syntax::TokenList&, decltype(tokens)>,    \
+            "Macro type mismatch, need Syntax::TokenList& for 2nd variable");  \
+        if ((tokens).empty() || (tokens).peek().Type() != (except)) {          \
+            MYCC_PrintFirstTokenError_ReturnNull(                              \
+                tokens,                                                        \
+                "Expected '" + KeywordsUtils::TokenTypeToString(except) +      \
+                    "', but got '" +                                           \
+                    KeywordsUtils::TokenTypeToString((tokens).peek().Type()) + \
+                    "'");                                                      \
+        } else {                                                               \
+            (tokens).pop();                                                    \
+        }                                                                      \
     }
 
 #define MYCC_PrintTokenError(token, message)                               \
@@ -99,9 +98,8 @@ ParseVariable(SyntaxContext& context, TokenList& tokens);
             "Macro type mismatch, need  Syntax::TokenList& for 1st "         \
             "variable");                                                     \
         const auto& error_token =                                            \
-            (tokens).empty()                                                 \
-                ? Lexical::Token(Lexical::TokenType::kUnknown, -1, -1)       \
-                : (tokens).peek();                                           \
+            (tokens).empty() ? Lexical::Token(TokenType::kUnknown, -1, -1)   \
+                             : (tokens).peek();                              \
         MYCC_PrintTokenError_ReturnNull(error_token, message)                \
     }  // namespace Syntax::Parser
 

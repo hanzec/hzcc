@@ -9,6 +9,7 @@
 #include "ASTVisitor.h"
 #include "macro.h"
 #include "utils/logging.h"
+#include "AST/type/Type.h"
 #ifndef HZCC_AST_AST_NODE_H
 #define HZCC_AST_AST_NODE_H
 namespace Hzcc::AST {
@@ -17,15 +18,15 @@ class CastExpr;
 class DeduceValue;
 class ASTNode {
   public:
-    virtual ~ASTNode();
-
     explicit ASTNode(Position loc);
+
+    virtual ~ASTNode() = default;
 
     /**
      * @brief The unique id of the node.
      * @return The unique id of the node.
      */
-    [[nodiscard]] uint64_t Id() const;
+    [[nodiscard]] uintptr_t Id() const;
 
     /**
      * @brief Get the location of this ASTNode in the source code. The location
@@ -87,14 +88,11 @@ class ASTNode {
      */
     [[nodiscard]] virtual bool IsReturn() const { return false; }
 
-    [[nodiscard]] static std::unique_ptr<AST::ASTNode> CastTo(
-        const std::shared_ptr<Type>& lhs_type, std::unique_ptr<ASTNode> rhs);
-
     void Dump(std::ostream& out, const std::string& ident) const;
 
     [[nodiscard]] virtual std::optional<DeduceValue> GetDeducedValue() const;
 
-    [[nodiscard]] virtual std::shared_ptr<Type> RetType() const;
+    [[nodiscard]] virtual std::shared_ptr<Type> RetType() const = 0;
 
     virtual Status visit(ASTVisitor& visitor) = 0;
 
@@ -116,10 +114,15 @@ class ASTNode {
      */
     virtual void PrintDetail(std::ostream& out, const std::string& ident) const;
 
+    static std::shared_ptr<Type> GetCharType() ;
+
+    static std::shared_ptr<Type> GetIntType() ;
+
+    static std::shared_ptr<Type> GetFloatType() ;
+
+    static std::shared_ptr<Type> GetVoidType() ;
   private:
-    const uint64_t _id;
     const Position _node_location;
-    inline static uint64_t _counter_ = 0;
 };
 
 }  // namespace Hzcc::AST

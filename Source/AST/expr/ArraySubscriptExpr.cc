@@ -16,11 +16,11 @@ ArraySubscriptExpr::ArraySubscriptExpr(
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(_array != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("array is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("array is nullptr", this);
     HZCC_RUNTIME_CHECK(_subscript != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("subscript is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("subscript is nullptr", this);
     HZCC_RUNTIME_CHECK(_array->RetType()->IsArray())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("not accessing array", this);
+        << HZCC_AST_PRINT_NODE_INFO("not accessing array", this);
 }
 
 const char* AST::ArraySubscriptExpr::NodeName() const {
@@ -33,7 +33,7 @@ std::shared_ptr<Type> ArraySubscriptExpr::RetType() const {
 
 void ArraySubscriptExpr::PrintDetail(std::ostream& out,
                                      const std::string& ident) const {
-    out << RetType()->GetName();
+    out << RetType()->Name();
     _array->Dump(out, ident + " |");
     _subscript->Dump(out, ident + " `");
 }

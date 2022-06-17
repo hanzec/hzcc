@@ -8,14 +8,14 @@
 #include <utility>
 
 #include "AST/CompilationUnit.h"
-#include "PassManager.h"
+#include "IPassManager.h"
 #include "utils/Status.h"
 #include "utils/logging.h"
 
 #ifndef HZCC_OPTIMIZATION_PASSMANAGER_IMPL_H
 #define HZCC_OPTIMIZATION_PASSMANAGER_IMPL_H
 namespace Hzcc::Pass {
-class PassManagerImpl : public PassManager {
+class PassManagerImpl : public IPassManager {
   public:
     /**
      * Delete the default constructor and copy constructor to prevent the class

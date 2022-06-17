@@ -137,7 +137,7 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
 
                         // handle escape character
                         if (line[col] == '\\') {
-                            if ((new_char = SymbolUtils::ToASCIIControlCode(
+                            if ((new_char = KeywordsUtils::ToASCIIControlCode(
                                      line[col + 1])) != (char)0xFF) {
                                 col++;
                                 tmp_string += new_char;
@@ -191,7 +191,7 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
                         auto tmp_string = line.substr(start, col - start);
                         for (int i = 0; i < tmp_string.length(); ++i) {
                             if (tmp_string[i] == '\\' &&
-                                (new_char = SymbolUtils::ToASCIIControlCode(
+                                (new_char = KeywordsUtils::ToASCIIControlCode(
                                      tmp_string[i + 1])) != (char)0xFF) {
                                 tmp_string.replace(i, 2, 1, new_char);
                             }
@@ -395,7 +395,7 @@ Status ParseToToken(std::istream& source, std::list<Token>& tokens) {
                             tokens.emplace_back(type, row, start, line);
                         }
                         // splitting primitive type
-                        else if (SymbolUtils::IsPrimitiveType(word.c_str())) {
+                        else if (KeywordsUtils::IsPrimitiveType(word.c_str())) {
                             tokens.emplace_back(word, TokenType::kType, row,
                                                 start, line);
                         }

@@ -10,53 +10,42 @@
 namespace Hzcc::AST {
 class StructType : public Type {
   public:
-    StructType(const std::string &name,
-               const std::list<Lexical::TokenType> &attr_list)
-        : Type(Type::GetBaseType("struct " + name), attr_list) {}
+    StructType(const std::string &name,                      // NOLINT
+               const std::list<TokenType> &attr_list = {});  // NOLINT
 
-    [[nodiscard]] bool IsStruct() const override { return true; }
+    /**
+     * @brief Check if the type is a Struct.
+     * @return True if the type is a Struct, false otherwise.
+     */
+    [[nodiscard]] bool IsStruct() const override;
 
-    bool AddChild(const std::shared_ptr<StructType> &type) {
-        if (type == nullptr) {
-            return false;
-        }
-        _localTypeList.emplace_back(type->GetName(), type,
-                                    std::list<Lexical::TokenType>());
-        return true;
-    }
+    /**
+     * @brief Get the declare name of the type.
+     * @param without_attr If true, the attribute will not be included in the
+     * name.
+     * @return std::string The declare name of the type.
+     */
+    [[nodiscard]] std::string Name() const override;
 
-    bool AddChild(const std::string &name, std::shared_ptr<Type> type,
-                  std::list<Lexical::Token> &attr_list) {
-        if (type == nullptr) {
-            return false;
-        }
-        // convert attr_list to TokenType
-        std::list<Lexical::TokenType> attr_list_type;
-        for (auto &attr : attr_list) {
-            attr_list_type.emplace_back(attr.Type());
-        }
+    bool AddChild(const std::shared_ptr<StructType> &type);
 
-        _localTypeList.emplace_back(name, std::move(type),
-                                    std::move(attr_list_type));
-        return true;
-    }
+    bool AddChild(const std::string &name,                           // NOLINT
+                  const std::shared_ptr<Type> &type,                 // NOLINT
+                  const std::list<Lexical::Token> &attr_list = {});  // NOLINT
 
-    std::shared_ptr<Type> GetChild(const std::string &name) {
-        for (auto &item : _localTypeList) {
-            if (std::get<0>(item) == name) {
-                return std::get<1>(item);
-            }
-        }
-        return nullptr;
-    }
+    std::shared_ptr<Type> ChildType(const std::string &name);
 
   protected:
-    friend class CompilationUnit;
-    friend class SymbolTable;
+    /**
+     * @brief Check if the type is the same as another type.
+     * @return True if the type is the same as another type, false otherwise.
+     */
+    [[nodiscard]] bool IsSame(const Type& rhs) const override;
 
   private:
-    std::list<std::tuple<std::string, std::shared_ptr<Type>,
-                         std::list<Lexical::TokenType>>>
+    const std::string _name;
+    std::list<
+        std::tuple<std::string, std::shared_ptr<Type>, std::list<TokenType>>>
         _localTypeList;
 };
 

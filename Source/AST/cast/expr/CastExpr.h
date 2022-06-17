@@ -9,14 +9,14 @@ namespace Hzcc::AST {
 class CastExpr : public ASTNode {
   public:
     /**
-     * @brief CastExpr constructor. Will cast expression to the given type. If
-     * runtime assert is enabled, will trigger an error if the given type is
-     * same as the expression's type.
+     * @brief CastExpr constructor. Will cast expression to the given
+     * type. If runtime assert is enabled, will trigger an error if the given
+     * type is same as the expression's type.
      * @param type the type to cast to
      * @param expr the expression to cast
      * @param location location of the cast operator
      */
-    CastExpr(const Position& location, std::shared_ptr<Type> type,
+    CastExpr(const Position& location,        // NOLINT
              std::unique_ptr<ASTNode> expr);  // NOLINT
 
     /**
@@ -43,13 +43,7 @@ class CastExpr : public ASTNode {
      * @brief return the expression that is being casted
      * @return the expression that is being casted
      */
-    [[nodiscard]] std::unique_ptr<ASTNode>& GetCastExpr();
-
-    /**
-     * @brief return the type that is being casted to
-     * @return the type that is being casted to
-     */
-    [[nodiscard]] std::shared_ptr<Type> RetType() const override;
+    [[nodiscard]] const std::unique_ptr<ASTNode>& GetCastExpr() const;
 
   protected:
     /**
@@ -58,18 +52,8 @@ class CastExpr : public ASTNode {
      */
     [[nodiscard]] const char* NodeName() const override;
 
-    /**
-     * @brief An override function using print extra information when call
-     * ASTNode->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
-
   private:
-    std::shared_ptr<Type> _cast_type;
-    std::unique_ptr<ASTNode> _cast_expr;
+    const std::unique_ptr<ASTNode> _cast_expr;
 };
 }  // namespace Hzcc::AST
 #endif  // HZCC_AST_EXPR_CAST_EXPR_H

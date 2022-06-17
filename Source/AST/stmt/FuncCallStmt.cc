@@ -16,15 +16,15 @@ FuncCallStmt::FuncCallStmt(const Position& location, std::shared_ptr<Type> type,
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(_name.empty())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("name is empty", this);
+        << HZCC_AST_PRINT_NODE_INFO("name is empty", this);
     HZCC_RUNTIME_CHECK(_return_type != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("return type is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("return type is nullptr", this);
 
     {
         uint_fast32_t args_count = 0;
         for (auto& arg : _args) {
             HZCC_RUNTIME_CHECK(arg != nullptr)
-                << HZCC_AST_PRINT_CHECK_ERROR_INFO(
+                << HZCC_AST_PRINT_NODE_INFO(
                        "argument " + std::to_string(args_count) + " is nullptr",
                        this);
         }

@@ -49,8 +49,8 @@
             (expr_r) = AST::ASTNode::CastTo(expr_l_type, std::move((expr_r))); \
             if ((expr_r) == nullptr) {                                         \
                 MYCC_PrintTokenError_ReturnNull(                               \
-                    (token), "Expect type " + (expr_l)->GetType()->GetName() + \
-                                 " but get " + expr_l_type->GetName());        \
+                    (token), "Expect type " + (expr_l)->GetType()->Name() + \
+                                 " but get " + expr_l_type->Name());        \
             }                                                                  \
         }                                                                      \
     }

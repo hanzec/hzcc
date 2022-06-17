@@ -4,49 +4,17 @@
 #include "ArrayType.h"
 
 #include <cassert>
+#include <utility>
 
 #include "AST/ASTNode.h"
 #include "AST/DeduceValue.h"
 namespace Hzcc::AST {
-std::shared_ptr<Type> ArrayType::GetArrayOfBasicType(
-    const std::shared_ptr<Type>& type, std::unique_ptr<ASTNode> size,
-    const std::list<Lexical::TokenType>& attrs) {
-    // shared helper function
-    struct make_shared_enabler : public ArrayType {
-        explicit make_shared_enabler(const std::shared_ptr<Type>& base_type,
-                                     std::unique_ptr<ASTNode> array_size,
-                                     const std::list<Lexical::TokenType>& attrs)
-            : ArrayType(base_type, std::move(array_size), attrs) {}
-    };
-
-    auto final_type =
-        std::make_shared<make_shared_enabler>(type, std::move(size), attrs);
-
-    if (_cached_types.find(final_type->GetName()) != _cached_types.end()) {
-        return _cached_types[final_type->GetName()];
-    } else {
-        _cached_types[final_type->GetName()] = final_type;
-        return final_type;
-    }
-}
-
-ArrayType::ArrayType(const std::shared_ptr<Type>& base_type,
+ArrayType::ArrayType(std::shared_ptr<Type> base_type,
                      std::unique_ptr<ASTNode> array_size,
-                     const std::list<Lexical::TokenType>& attrs)
-    : Type(Type::GetBaseType(
-               base_type->GetName() +
-               (array_size == nullptr
-                    ? "[]"
-                    : (array_size->GetDeducedValue().has_value()
-                           ? "[" +
-                                 std::to_string(array_size->GetDeducedValue()
-                                                    .value()
-                                                    .AsInt()) +
-                                 "]"
-                           : "[VLA]"))),
-           {}),
+                     const std::list<TokenType>& attrs)
+    : Type(attrs),
       _size_node(std::move(array_size)),
-      _base_type(base_type) {}
+      _base_type(std::move(base_type)) {}
 
 uint64_t ArrayType::GetSize() const {
     return _size_node->GetDeducedValue().has_value()
@@ -70,8 +38,21 @@ bool ArrayType::IsSame(const Type& type) const {
         return false;
     }
 }
-std::unique_ptr<AST::ASTNode>& ArrayType::GetArraySizeNode() {
+const std::unique_ptr<AST::ASTNode>& ArrayType::GetArraySizeNode() const {
     return _size_node;
 }
+std::string ArrayType::Name() const {
+    return _base_type->Name() +
+           (_size_node->IsEmptyStmt()
+                ? "[]"
+                : (_size_node->GetDeducedValue().has_value()
+                       ? "[" +
+                             std::to_string(_size_node->GetDeducedValue()
+                                                .value()
+                                                .AsInt()) +
+                             "]"
+                       : "[VLA]"));
+}
+bool ArrayType::IsArray() const { return true; }
 
 }  // namespace Hzcc::AST

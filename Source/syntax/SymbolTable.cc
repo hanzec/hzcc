@@ -35,7 +35,7 @@ std::shared_ptr<AST::StructType> SymbolTable::addStructType(
         LOG(FATAL) << "RetType " << name << " has already been defined";
     } else {
         auto new_type = std::make_shared<AST::StructType>(
-            name, std::list<Lexical::TokenType>());
+            name);
 
         _named_types.insert(std::make_pair("struct " + name, new_type));
         return new_type;
@@ -68,7 +68,7 @@ bool SymbolTable::hasVariable(const std::string& name, bool current_scope) {
     }
 }
 
-void SymbolTable::addVariable(int line_no, const std::string& name,
+void SymbolTable::addVariable(uint64_t line_no, const std::string& name,
                               std::shared_ptr<AST::Type>& token_types) {
     DLOG_ASSERT(!hasType(name) || name.find("struct ") != std::string::npos)
         << " Variable " << name << " is already defined as a type";

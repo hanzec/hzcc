@@ -5,6 +5,7 @@
 
 #include "AST/stmt/CompoundStmt.h"
 #include "AST/utils/macro.h"
+#include "options.h"
 
 namespace Hzcc::AST {
 
@@ -31,18 +32,26 @@ bool FuncDeclStmt::set_body(std::unique_ptr<AST::CompoundStmt> declaration) {
 
 void FuncDeclStmt::PrintDetail(std::ostream& out,
                                const std::string& ident) const {
-    out << RetType()->GetName() + " " + GetName();
-
-    // print its arguments
-    out << " (";
-    for (const auto& arg : _function_param) {
-        out << arg->RetType()->Dump();
-
-        if (arg != _function_param.back()) {
-            out << ",";
+    if (Options::Global_disable_color) {
+        out << '\'' << GetName() << '\'' << RetType()->Name() << " (";
+        for (const auto& arg : _function_param) {
+            out << arg->RetType()->Dump();
+            if (arg != _function_param.back()) {
+                out << ",";
+            }
         }
+        out << ")\'";
+    } else {
+        out << KEnableBrightCyan << '\'' << GetName() << "\' " << KEnableGreen
+            << '\'' << RetType()->Name() << " (";
+        for (const auto& arg : _function_param) {
+            out << arg->RetType()->Dump();
+            if (arg != _function_param.back()) {
+                out << ",";
+            }
+        }
+        out << ")\'" << KDisableColor;
     }
-    out << ")";
 
     // print argument node
     if (!_function_param.empty()) {

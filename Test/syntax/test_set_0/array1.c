@@ -3,7 +3,9 @@ int A[50];
 
 int foo(int i)
 {
-  A[3] = i;
+  const int j = i;
+
+  A[3] = (char) i;
 
   A[i]++;
 

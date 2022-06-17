@@ -18,11 +18,6 @@
 namespace Hzcc::Message {
 static std::string current_filename = "NO_FILE_NAME_AVALIABLE";
 
-constexpr const char* KEnableRed = "\033[1;31m";
-constexpr const char* KEnableGreen = "\033[1;32m";
-constexpr const char* KEnableYellow = "\033[1;33m";
-constexpr const char* KDisableColor = "\033[0m";
-
 static void ALWAYS_INLINE internal_print_nice_message(
     Level error_level, const std::string& message, const std::string& line,
     const std::pair<int, int>& line_info) {

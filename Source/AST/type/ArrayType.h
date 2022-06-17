@@ -7,7 +7,11 @@
 namespace Hzcc::AST {
 class ArrayType : public Type {
   public:
-    [[nodiscard]] bool IsArray() const override { return true; }
+    ArrayType(std::shared_ptr<Type> base_type,
+              std::unique_ptr<ASTNode> array_size,
+              const std::list<TokenType>& attrs = {});
+
+    [[nodiscard]] bool IsArray() const override;
 
     [[nodiscard]] std::shared_ptr<AST::Type> GetBaseType() const {
         return _base_type;
@@ -17,27 +21,21 @@ class ArrayType : public Type {
 
     [[nodiscard]] uint64_t GetSize() const;
 
-    [[nodiscard]] std::unique_ptr<AST::ASTNode>& GetArraySizeNode();
+    [[nodiscard]] const std::unique_ptr<AST::ASTNode>& GetArraySizeNode() const;
 
     [[nodiscard]] bool IsSame(const Type& type) const override;
 
     /**
-     * @brief Get the basic type from its name.
-     * @param name The name of the basic type.
-     * @param attrs The attributes of the basic type.
+     * @brief Get the declare name of the type.
+     * @param without_attr If true, the attribute will not be included in the
+     * name.
+     * @return std::string The declare name of the type.
      */
-    static std::shared_ptr<Type> GetArrayOfBasicType(
-        const std::shared_ptr<Type>& type, std::unique_ptr<ASTNode> size,
-        const std::list<Lexical::TokenType>& attrs);
-
-  protected:
-    ArrayType(const std::shared_ptr<Type>& base_type,
-              std::unique_ptr<AST::ASTNode>,
-              const std::list<Lexical::TokenType>& attrs);
+    [[nodiscard]] std::string Name() const override;
 
   private:
-    std::shared_ptr<AST::Type> _base_type;
-    std::unique_ptr<AST::ASTNode> _size_node{nullptr};
+    const std::shared_ptr<AST::Type> _base_type;
+    const std::unique_ptr<AST::ASTNode> _size_node;
 };
 
 }  // namespace Hzcc::AST

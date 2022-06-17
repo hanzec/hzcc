@@ -3,6 +3,7 @@
 //
 #include <list>
 
+#include "AST/stmt/EmptyStmt.h"
 #include "AST/type/Type.h"
 #include "DeclStmt.h"
 #ifndef HZCC_AST_STATEMENTS_VAR_DECL_H
@@ -20,9 +21,11 @@ class VarDecl : public DeclStmt {
      * @param decl_name The name of the variable
      * @param init The initial value of the variable (optional)
      */
-    VarDecl(const Position& loc, std::shared_ptr<Type> type,
-            const std::string_view& name,
-            std::unique_ptr<ASTNode> init);  // NOLINT
+    VarDecl(const Position& loc,           // NOLINT
+            std::shared_ptr<Type> type,    // NOLINT
+            const std::string_view& name,  // NOLINT
+            std::unique_ptr<ASTNode> init =
+                std::make_unique<EmptyStmt>());  // NOLINT
 
     /**
      * @brief visitor for AST

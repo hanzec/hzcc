@@ -28,7 +28,7 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(TokenList& tokens,
     }
 
     auto return_type =
-        context.getNamedType(TokenListToString(return_type_name_str), {});
+        std::make_shared<AST::Type>(TokenListToString(return_type_name_str));
 
     auto func_name = tokens.pop();
 
@@ -136,9 +136,9 @@ std::unique_ptr<AST::ASTNode> Function::parse_impl(TokenList& tokens,
         // compare return type
         if (!(*func_type == *return_type)) {
             MYCC_PrintTokenError_ReturnNull(
-                func_name, "Function " + return_type->GetName() + " " +
+                func_name, "Function " + return_type->Name() + " " +
                                func_name.Value() + " already defined with " +
-                               func_type->GetName() + " return type in line " +
+                               func_type->Name() + " return type in line " +
                                std::to_string(line_no));
         }
 

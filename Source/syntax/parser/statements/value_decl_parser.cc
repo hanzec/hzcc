@@ -5,6 +5,7 @@
 #include "value_decl_parser.h"
 
 #include "AST/CompilationUnit.h"
+#include "AST/cast/CastApplier.h"
 #include "AST/stmt/EmptyStmt.h"
 #include "AST/stmt/VarDecl.h"
 #include "lexical/Token.h"
@@ -53,14 +54,14 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
     }
 
     // variable cannot be defined as void
-    if (type->GetName(true) == "void") {
+    if (type->Name() == "void") {
         MYCC_PrintFirstTokenError_ReturnNull(
             tokens, "Variable '" + name.Value() + "' has type void");
     }
 
     // for a function definition, we only allow one per line.
     if (type->IsFuncPtr()) {
-        if (tokens.peek().Type() != Lexical::TokenType::kSemiColon) {
+        if (tokens.peek().Type() != TokenType::kSemiColon) {
             DLOG(ERROR) << "Expect \";\" after function pointer";
             MYCC_PrintFirstTokenError_ReturnNull(
                 tokens, "Expect \";\" after function pointer");
@@ -68,7 +69,7 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
     }
 
     // check if current stmt is a function definition
-    if (tokens.peek().Type() == Lexical::TokenType::kLParentheses) {
+    if (tokens.peek().Type() == TokenType::kLParentheses) {
         MYCC_PrintFirstTokenError_ReturnNull(
             tokens, "Function definition not allowed here");
     }
@@ -76,7 +77,7 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
     // add new variable
     std::unique_ptr<AST::ASTNode> var_value =
         std::make_unique<AST::EmptyStmt>();
-    if (tokens.peek().Type() == Lexical::TokenType::kAssign) {
+    if (tokens.peek().Type() == TokenType::kAssign) {
         // consume assign
         tokens.pop();
 
@@ -96,13 +97,12 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
         // type should be compatible
         if (*type == *value->RetType()) {
             auto orig_type = value->RetType();
-            value = AST::ASTNode::CastTo(type, std::move(value));
+            value = AST::CastApplier::ApplyRules(true, std::move(value), type);
             if (value == nullptr) {
                 MYCC_PrintTokenError_ReturnNull(
-                    value_node,
-                    "Initialization for ' " + name.Value() +
-                        "' has wrong type: " + orig_type->GetName() +
-                        " expected: " + type->GetName());
+                    value_node, "Initialization for ' " + name.Value() +
+                                    "' has wrong type: " + orig_type->Name() +
+                                    " expected: " + type->Name());
             }
         }
         var_value = std::move(value);
@@ -110,7 +110,7 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
 
     // if define multiple value, we will add type back to tokens and parse in
     // next parser call
-    if (tokens.peek().Type() == Lexical::TokenType::kComma) {
+    if (tokens.peek().Type() == TokenType::kComma) {
         tokens.pop();  // consume ',' since we don't need it
         _is_fist_declare = false;
 
@@ -118,7 +118,7 @@ std::unique_ptr<AST::ASTNode> ValueDeclare::parse_impl(
         attribute_size_ = attrs.size();
         tokens.insert_front(attrs.begin(), attrs.end());
         tokens.insert_front(type_name.begin(), type_name.end());
-        tokens.push(Lexical::Token(Lexical::TokenType::kSemiColon, -1, -1));
+        tokens.push(Lexical::Token(TokenType::kSemiColon, -1, -1));
     } else {
         attribute_size_ = 0;
         _is_fist_declare = true;

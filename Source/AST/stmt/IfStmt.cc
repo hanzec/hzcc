@@ -16,9 +16,9 @@ IfStmt::IfStmt(const Position &location, std::unique_ptr<ASTNode> cond,
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(body != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("body is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("body is nullptr", this);
     HZCC_RUNTIME_CHECK(cond != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("condition is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("condition is nullptr", this);
 };
 
 const char *IfStmt::NodeName() const { return "IfStmt"; }
@@ -73,4 +73,7 @@ void IfStmt::PrintDetail(std::ostream &out, const std::string &ident) const {
     }
 }
 std::unique_ptr<ASTNode> &IfStmt::ElseStmt() { return _else_statement_; }
+
+// return nullptr for return type
+std::shared_ptr<Type> IfStmt::RetType() const { return nullptr; }
 }  // namespace Hzcc::AST

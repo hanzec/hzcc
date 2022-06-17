@@ -17,13 +17,13 @@ ForStmt::ForStmt(const Position& location, std::unique_ptr<ASTNode> init,
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(_body != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("body is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("body is nullptr", this);
     HZCC_RUNTIME_CHECK(_step != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("step is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("step is nullptr", this);
     HZCC_RUNTIME_CHECK(_init != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("init is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("init is nullptr", this);
     HZCC_RUNTIME_CHECK(_cond != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("condition is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("condition is nullptr", this);
 }
 
 const char* ForStmt::NodeName() const { return "ForStmt"; }

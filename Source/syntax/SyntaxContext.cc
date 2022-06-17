@@ -65,7 +65,7 @@ bool SyntaxContext::hasType(const std::string &basicString) {
 
     // looking for the raw type
     std::string name(basicString);
-    for (const auto &type : Lexical::Keywords::kKeyword) {
+    for (const auto &type : Keywords::kKeywordTable) {
         if (name.find(type) != std::string::npos &&
             strcmp(type, "struct") != 0 && strcmp(type, "union") != 0) {
             replaceAll(name, type, "");
@@ -76,7 +76,7 @@ bool SyntaxContext::hasType(const std::string &basicString) {
     name = ltrim(rtrim(name));
 
     // directly return true if the type is PrimitiveType
-    if (Lexical::SymbolUtils::IsPrimitiveType(name.c_str())) {
+    if (KeywordsUtils::IsPrimitiveType(name.c_str())) {
         return true;
     } else {
         // we fist check our global scope
@@ -94,69 +94,12 @@ bool SyntaxContext::hasType(const std::string &basicString) {
     };
 }
 
-SyntaxContext::TypePtr SyntaxContext::getNamedType(
-    const std::string &name, const std::list<Lexical::Token> &attr_list) {
-    std::list<Lexical::TokenType> attr_types;
-    for (const auto &type : attr_list) {
-        attr_types.emplace_back(type.Type());
-    }
-
-    if (_current_context.lock() != nullptr &&
-        _current_context.lock()->hasType(name)) {
-        return _current_context.lock()->getType(name);
-    } else {
-        if (_named_types.find(name) != _named_types.end()) {
-            if (attr_list.empty()) {
-                return _named_types[name];
-            } else {
-                return AST::Type::GetTypeOf(_named_types[name], attr_types);
-            }
-        } else {
-            if (Lexical::SymbolUtils::IsPrimitiveType(name.c_str())) {
-                return AST::Type::GetTypeOf(name, attr_types);
-            } else {
-                return nullptr;
-            }
-        }
-    }
-}
-
-SyntaxContext::TypePtr SyntaxContext::getArrayType(
-    const SyntaxContext::TypePtr &base_type,
-    const std::list<Lexical::Token> &attr_list,
-    std::list<std::unique_ptr<AST::ASTNode>> &shape) {
-    // convert the shape to a list of TokenType
-    std::list<Lexical::TokenType> attr_types;
-    for (const auto &type : attr_list) {
-        attr_types.emplace_back(type.Type());
-    }
-
-    if (base_type == nullptr || !hasType(base_type->GetName())) {
-        DLOG(ERROR) << "RetType not found";
-        return nullptr;
-    } else {
-        SyntaxContext::TypePtr current_type = base_type;
-        while (!shape.empty()) {
-            auto shape_node = std::move(shape.front());
-            shape.pop_front();
-            current_type = AST::ArrayType::GetArrayOfBasicType(
-                current_type, std::move(shape_node), attr_types);
-        }
-
-        return current_type;
-    }
-}
-
-SyntaxContext::TypePtr SyntaxContext::getFuncPtrType(const std::string &name) {
-    return AST::FuncPtrType::GetTypeOf(name, std::list<Lexical::TokenType>());
-}
-
 std::shared_ptr<AST::StructType> SyntaxContext::addStructType(
     const std::string &struct_name, std::list<Lexical::Token> &attr_list) {
     auto name = "struct " + struct_name;
 
     // convert the shape to a list of TokenType
-    std::list<Lexical::TokenType> attr_types;
+    std::list<TokenType> attr_types;
     for (const auto &type : attr_list) {
         attr_types.emplace_back(type.Type());
     }
@@ -227,7 +170,7 @@ std::pair<bool, int> SyntaxContext::getVariableInfo(
     }
 }
 
-void SyntaxContext::addVariable(int line_no, const std::string &name,
+void SyntaxContext::addVariable(uint64_t line_no, const std::string &name,
                                 SyntaxContext::TypePtr &variable_type) {
     DLOG_ASSERT(_current_context.lock() != nullptr)
         << " should never call addVariable when in root context";
@@ -253,7 +196,7 @@ bool SyntaxContext::hasFunctionBody(const std::string &name) {
 }
 
 bool SyntaxContext::addFunction(
-    int line_no, const std::string &name, SyntaxContext::TypePtr &output,
+    uint64_t line_no, const std::string &name, SyntaxContext::TypePtr &output,
     const std::list<SyntaxContext::TypePtr> &argument_list) {
     if (output == nullptr) {
         DLOG(FATAL) << "Output type is nullptr for function " << name;

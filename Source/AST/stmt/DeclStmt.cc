@@ -13,9 +13,9 @@ DeclStmt::DeclStmt(std::shared_ptr<Type> type,    // NOLINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(_type != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("type is nullptr", this);
     HZCC_RUNTIME_CHECK(!_decl_name.empty())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("decl name is empty", this);
+        << HZCC_AST_PRINT_NODE_INFO("decl name is empty", this);
 }
 bool DeclStmt::HasInitExpr() const { return false; }
 bool DeclStmt::IsDeclNode() const { return true; }

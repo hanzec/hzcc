@@ -15,9 +15,9 @@ RelationalExpr::RelationalExpr(const Position& loc,
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(!type.empty())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type string empty", this);
+        << HZCC_AST_PRINT_NODE_INFO("type string empty", this);
     HZCC_RUNTIME_CHECK(type.length() == 2)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type len mismatch", this);
+        << HZCC_AST_PRINT_NODE_INFO("type len mismatch", this);
 
     /** #####################################################################
      *  ### Class initialization                                          ###
@@ -42,7 +42,7 @@ RelationalExpr::RelationalExpr(const Position& loc,
                 this->_type = RelationalType::kRelationalType_Greater;
             break;
         default:
-            HZCC_RUNTIME_CHECK(false) << HZCC_AST_PRINT_CHECK_ERROR_INFO(
+            HZCC_RUNTIME_CHECK(false) << HZCC_AST_PRINT_NODE_INFO(
                 "type: [" + std::string(type) + "] not supported", this);
     }
 }
@@ -52,7 +52,7 @@ const char* AST::RelationalExpr::NodeName() const { return "RelationalExpr"; }
 void RelationalExpr::PrintDetail(std::ostream& out,
                                  const std::string& ident) const {
     // lhs type
-    out << " " + GetLHS()->RetType()->GetName();
+    out << " " + GetLHS()->RetType()->Name();
 
     // symbol type
     switch (_type) {
@@ -84,7 +84,7 @@ void RelationalExpr::PrintDetail(std::ostream& out,
 }
 
 std::shared_ptr<Type> RelationalExpr::RetType() const {
-    return Type::GetTypeOf("char", {});
+    return GetCharType();
 }
 Status RelationalExpr::visit(ASTVisitor& visitor) {
     return visitor.visit(this);

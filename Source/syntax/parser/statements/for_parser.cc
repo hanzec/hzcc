@@ -12,10 +12,10 @@
 #include "AST/stmt/CompoundStmt.h"
 #include "AST/stmt/EmptyStmt.h"
 #include "AST/stmt/ForStmt.h"
-#include "lexical/token_type.h"
 #include "syntax/Parser.h"
 #include "syntax/parser/base_parser.h"
 #include "syntax/utils/common_utils.h"
+#include "token_type.h"
 #include "utils/message_utils.h"
 
 namespace Hzcc::Syntax::Parser {

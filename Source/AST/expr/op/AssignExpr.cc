@@ -14,12 +14,12 @@ AssignExpr::AssignExpr(const Position& location, const std::string_view& type,
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(!type.empty())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type string empty", this);
+        << HZCC_AST_PRINT_NODE_INFO("type string empty", this);
     HZCC_RUNTIME_CHECK(
         (type.length() == 2 && type[0] != '=') ||
         (type.length() == 1 && type[0] == '=') ||
         (type.length() == 3 && (type[0] == '<' || type[0] == '>')))
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type len mismatch", this);
+        << HZCC_AST_PRINT_NODE_INFO("type len mismatch", this);
 
     /** #####################################################################
      *  ### Class initialization                                          ###
@@ -59,7 +59,7 @@ AssignExpr::AssignExpr(const Position& location, const std::string_view& type,
             this->_type = AssignType::kAssignType_XorAssign;
             break;
         default:
-            HZCC_RUNTIME_CHECK(false) << HZCC_AST_PRINT_CHECK_ERROR_INFO(
+            HZCC_RUNTIME_CHECK(false) << HZCC_AST_PRINT_NODE_INFO(
                 "type: [" + std::string(type) + "] not supported", this);
     }
 };
@@ -68,7 +68,7 @@ const char* AST::AssignExpr::NodeName() const { return "AssignExpr"; }
 
 void AssignExpr::PrintDetail(std::ostream& out,
                              const std::string& ident) const {
-    out << GetLHS()->RetType()->GetName();
+    out << GetLHS()->RetType()->Name();
 
     // print symbol
     switch (_type) {

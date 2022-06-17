@@ -2,13 +2,11 @@
 // Created by chen_ on 2022/5/11.
 //
 #include "TokenList.h"
-
-#include "syntax/utils/token_utils.h"
 namespace Hzcc::Syntax {
 bool TokenList::empty() { return list::empty(); }
 Lexical::Token TokenList::pop() {
     auto token = front();
-    while (TokenUtils::IsAttribute(token.Type())) {
+    while (KeywordsUtils::IsAttribute(token.Type())) {
         DVLOG(SYNTAX_LOG_LEVEL)
             << "cached attribute: " << HZCC_PRETTY_PRINT_TOKEN(token);
         pop_front();
@@ -26,7 +24,7 @@ void TokenList::push(const Lexical::Token& token) {
 }
 
 Lexical::Token TokenList::peek() {
-    while (TokenUtils::IsAttribute(front().Type())) {
+    while (KeywordsUtils::IsAttribute(front().Type())) {
         DVLOG(SYNTAX_LOG_LEVEL)
             << "cached attribute: " << HZCC_PRETTY_PRINT_TOKEN(front());
         auto token = front();

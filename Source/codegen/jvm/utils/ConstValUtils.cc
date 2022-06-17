@@ -6,7 +6,7 @@
 #include <array>
 #include <cstring>
 
-#include "lexical/keywords.h"
+#include "keywords.h"
 #include "utils/logging.h"
 namespace Hzcc::Codegen::Utils {
 

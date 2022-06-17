@@ -3,7 +3,7 @@
 #ifndef HZCC_LEXICAL_TOKEN_TYPE_H
 #define HZCC_LEXICAL_TOKEN_TYPE_H
 
-namespace Hzcc::Lexical {
+namespace Hzcc {
 /**
  * @brief The TokenType enum
  * @details The token type enum of the following tokens:
@@ -131,5 +131,5 @@ enum PACKED TokenType {
     kUnknown = 999
 };
 
-}  // namespace Hzcc::Lexical
+}  // namespace Hzcc
 #endif  // HZCC_LEXICAL_TOKEN_TYPE_H

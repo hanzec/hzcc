@@ -29,15 +29,6 @@ class SyntaxContext {
      */
     bool hasType(const std::string& basicString);
 
-    TypePtr getNamedType(const std::string& name,
-                         const std::list<Lexical::Token>& attr_list);
-
-    TypePtr getArrayType(const TypePtr& base_type,
-                         const std::list<Lexical::Token>& attr_list,
-                         std::list<std::unique_ptr<AST::ASTNode>>& shape);
-
-    TypePtr getFuncPtrType(const std::string& name);
-
     std::shared_ptr<AST::StructType> addStructType(
         const std::string& name, std::list<Lexical::Token>& attr_list);
 
@@ -48,7 +39,7 @@ class SyntaxContext {
      */
     bool hasVariable(const std::string& name, bool current_scope);
 
-    void addVariable(int line_no, const std::string& name,  // NOLINT
+    void addVariable(uint64_t line_no, const std::string& name,  // NOLINT
                      TypePtr& variable_type);               // NOLINT
 
     std::pair<bool, int> getVariableInfo(const std::basic_string<char>& name);
@@ -62,7 +53,7 @@ class SyntaxContext {
      */
     bool hasFunction(const std::string& name);
 
-    bool addFunction(int line_no, const std::string& name, TypePtr& output,
+    bool addFunction(uint64_t line_no, const std::string& name, TypePtr& output,
                      const std::list<TypePtr>& argument_list);
 
     bool hasFunctionBody(const std::string& name);
@@ -81,7 +72,7 @@ class SyntaxContext {
     }
 
   private:
-    std::list<Lexical::TokenType> _attributes;
+    std::list<TokenType> _attributes;
     std::shared_ptr<AST::CompilationUnit> _compilationUnit;
 
     std::weak_ptr<SymbolTable> _current_context;

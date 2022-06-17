@@ -15,7 +15,8 @@ class IfStmt : public ASTNode {
      * @param body body of the if statement
      * @param location location of the if statement
      */
-    IfStmt(const Position& location, std::unique_ptr<ASTNode> cond,
+    IfStmt(const Position& location,        // NOLINT
+           std::unique_ptr<ASTNode> cond,   // NOLINT
            std::unique_ptr<ASTNode> body);  // NOLINT
 
     /**
@@ -60,6 +61,12 @@ class IfStmt : public ASTNode {
      */
     [[nodiscard]] const char* NodeName() const override;
 
+    /**
+     * @brief return the type that is being casted to
+     * @return the type that is being casted to
+     */
+    [[nodiscard]] std::shared_ptr<Type> RetType() const override;
+
   protected:
     /**
      * @brief An override function using print extra information when call
@@ -70,6 +77,7 @@ class IfStmt : public ASTNode {
      */
     void PrintDetail(std::ostream& out,
                      const std::string& ident) const override;
+
 
   private:
     const std::unique_ptr<ASTNode> _condition;

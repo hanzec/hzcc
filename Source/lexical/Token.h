@@ -1,8 +1,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "lexical/token_type.h"
 #include "macro.h"
+#include "token_type.h"
 
 #ifndef HZCC_LEXICAL_LEXICAL_TOKEN_H
 #define HZCC_LEXICAL_LEXICAL_TOKEN_H

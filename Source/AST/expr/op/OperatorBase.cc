@@ -14,13 +14,13 @@ OperatorBase::OperatorBase(const Position& loc, std::unique_ptr<ASTNode> lhs,
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(_lhs != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("lhs is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("lhs is nullptr", this);
     HZCC_RUNTIME_CHECK(_rhs != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("rhs is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("rhs is nullptr", this);
     HZCC_RUNTIME_CHECK(!_lhs->RetType()->IsArray())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("lhs could not be array", this);
+        << HZCC_AST_PRINT_NODE_INFO("lhs could not be array", this);
     HZCC_RUNTIME_CHECK(!_rhs->RetType()->IsArray())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("rhs could not be array", this);
+        << HZCC_AST_PRINT_NODE_INFO("rhs could not be array", this);
 }
 
 const char* OperatorBase::NodeName() const { return "OperatorBase"; }

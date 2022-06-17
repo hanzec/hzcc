@@ -21,329 +21,105 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3421a123-f6bb-43d4-8433-449294d1bd62" name="Changes" comment="Changes">
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/array1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/array2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/array3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/array4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/array5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/assign1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/assign2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/assign3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/assign4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/assign5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/call1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/call2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/call3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/call4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/call5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/exprs1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/exprs2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/exprs3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/exprs4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/exprs5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/exprs6.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/exprs7.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/exprs8.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/exprs9.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/exprsA.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/funcbody1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/funcbody2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/funcbody3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/funcbody4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/funcbody5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/funcproto1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/funcproto2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/funcproto3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/funcproto4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/funcproto5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/global1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/global2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/global3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/global4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/global5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/ite1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/ite2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/ite3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/ite4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/ite5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/lit.cfg.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/loop1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/loop2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/loop3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/loop4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/loop5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/loop6.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/loop7.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/loop8.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/loop9.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/loopA.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/stmt1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/stmt2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/stmt3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/stmt4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/stmt5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_const1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_const2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_const3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_const4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_const5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_init1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_init2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_init3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_init4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_init5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_member1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_member2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_member3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_member4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_member5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_struct1.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_struct2.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_struct3.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_struct4.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_struct5.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_struct6.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_struct7.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_struct8.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_struct9.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/xc_structA.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hzcc.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hzcc.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/CastApplier.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/CastApplier.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/ICastRule.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/expr/ExplicitCastExpr.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/expr/ExplicitCastExpr.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/expr/implicit_cast/ArrayToPointerDecayCast.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/expr/implicit_cast/ArrayToPointerDecayCast.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/expr/implicit_cast/IntegralCast.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/expr/implicit_cast/IntegralCast.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/expr/implicit_cast/LvalueToRvalueCast.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/expr/implicit_cast/LvalueToRvalueCast.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/rule/.clang-format" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/rule/ArrayToPointerDecay.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/cast/rule/WiderTypeCast.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/type/BuiltinType.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/type/BuiltinType.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/type/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/type/PointerType.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/type/PointerType.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/AST/type/test/BuiltinType_test.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/utils/keywords_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.clang-format" beforeDir="false" afterPath="$PROJECT_DIR$/.clang-format" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/chen_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/chen_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/ASTNode.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTNode.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/ASTNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/ASTVisitor.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/ASTVisitor.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/CompilationUnit.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/CompilationUnit.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/CompilationUnit.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/CompilationUnit.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/AccessExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/AccessExpr.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/expr/ArraySubscriptExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/ArraySubscriptExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/ArraySubscriptExpr.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/ArraySubscriptExpr.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/CastExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/CastExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/CastExpr.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/CastExpr.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/CastExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/cast/expr/CastExpr.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/CastExpr.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/cast/expr/CastExpr.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/expr/DeclRefExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/DeclRefExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/DeclRefExpr.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/DeclRefExpr.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/expr/LiteralExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/LiteralExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/LiteralExpr.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/LiteralExpr.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/SizeofExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/SizeofExpr.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/expr/TernaryExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/TernaryExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/TernaryExpr.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/TernaryExpr.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/UnaryExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/UnaryOperator.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/UnaryExpr.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/UnaryOperator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/UnaryOperator.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/UnaryOperator.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/expr/op/ArithmeticExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/op/ArithmeticExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/op/ArithmeticExpr.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/op/ArithmeticExpr.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/expr/op/AssignExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/op/AssignExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/op/AssignExpr.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/op/AssignExpr.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/op/BitwiseExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/op/BitwiseExpr.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/expr/op/LogicalExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/op/LogicalExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/op/LogicalExpr.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/op/LogicalExpr.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/expr/op/OperatorBase.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/op/OperatorBase.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/expr/op/RelationalExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/op/RelationalExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/expr/op/RelationalExpr.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/expr/op/RelationalExpr.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/stmt/CompoundStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/CompoundStmt.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/stmt/CompoundStmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/CompoundStmt.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/stmt/DeclStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/DeclStmt.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/stmt/DoStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/DoStmt.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/stmt/DoStmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/DoStmt.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/stmt/EmptyStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/EmptyStmt.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/stmt/EmptyStmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/EmptyStmt.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/stmt/ForStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/ForStmt.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/stmt/ForStmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/ForStmt.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/stmt/FuncCallStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/FuncCallStmt.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/stmt/FuncCallStmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/FuncCallStmt.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/stmt/FuncDeclStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/FuncDeclStmt.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/stmt/FuncDeclStmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/FuncDeclStmt.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/stmt/IfStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/IfStmt.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/stmt/IfStmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/IfStmt.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/stmt/ParamVarDecl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/ParamVarDecl.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/stmt/ReturnStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/ReturnStmt.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/stmt/ReturnStmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/ReturnStmt.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/stmt/VarDecl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/VarDecl.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/stmt/VarDecl.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/VarDecl.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AST/stmt/WhileStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/WhileStmt.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AST/stmt/WhileStmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/stmt/WhileStmt.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/ArrayType.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/ArrayType.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/ArrayType.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/ArrayType.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/BaseType.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/BaseType.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/FuncPtrType.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/FuncPtrType.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/StructType.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/StructType.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/StructType.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/StructType.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/Type.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/Type.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/type/Type.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/type/Type.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AST/utils/macro.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AST/utils/macro.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/FuncAnalyzer.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/FuncAnalyzer.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/unary_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/unary_visitor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/utils/ConstValUtils.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/utils/ConstValUtils.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/utils/TypeUtils.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/utils/TypeUtils.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/cast_visitor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/cast_visitor.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/lexical/LexicalParser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/LexicalParser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/lexical/Preprocessor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/Preprocessor.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/main.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/main.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/syntax/Parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/Parser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/lexical/Token.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/Token.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/lexical/Token.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/Token.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/lexical/keywords.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/keywords.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/lexical/token_type.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/token_type.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/lexical/utils/symbol_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/lexical/utils/symbol_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/macro.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/macro.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/optimization/PassManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optimization/IPassManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/optimization/PassManagerImpl.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/optimization/PassManagerImpl.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/SymbolTable.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/SymbolTable.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/SymbolTable.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/SymbolTable.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/SyntaxContext.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/SyntaxContext.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/SyntaxContext.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/SyntaxContext.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/TokenList.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/TokenList.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/function_parser.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statement_parser.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/for_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/for_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/if_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/if_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/struct_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/struct_parser.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/value_decl_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/value_decl_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/statements/while_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/statements/while_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/parser/utils/macros.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/parser/utils/macros.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/utils/common_utils.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/utils/common_utils.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/utils/common_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/syntax/utils/common_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/syntax/utils/token_utils.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/utils/logging.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/logging.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Test/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/array1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/array2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/array3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/array4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/array5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/assign1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/assign2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/assign3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/assign4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/assign5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/call1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/call2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/call3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/call4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/call5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/exprs1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/exprs2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/exprs3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/exprs4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/exprs5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/exprs6.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/exprs7.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/exprs8.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/exprs9.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/exprsA.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/funcbody1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/funcbody2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/funcbody3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/funcbody4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/funcbody5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/funcproto1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/funcproto2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/funcproto3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/funcproto4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/funcproto5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/global1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/global2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/global3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/global4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/global5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/ite1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/ite2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/ite3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/ite4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/ite5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/lit.cfg.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/loop1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/loop2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/loop3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/loop4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/loop5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/loop6.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/loop7.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/loop8.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/loop9.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/loopA.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/stmt1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/stmt2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/stmt3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/stmt4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/stmt5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_const1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_const2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_const3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_const4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_const5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_init1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_init2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_init3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_init4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_init5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_member1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_member2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_member3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_member4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_member5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_struct1.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_struct2.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_struct3.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_struct4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_struct5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_struct6.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_struct7.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_struct8.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_struct9.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/syntax/part3/xc_structA.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/comments_1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/comments_1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/comments_2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/comments_2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/comments_3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/comments_3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/comments_4.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/comments_4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/comments_5.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/comments_5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/comments_6.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/comments_6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/dollar_sign.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/dollar_sign.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_char1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_char1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_char2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_char2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_char3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_char3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_char4.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_char4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_char5.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_char5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_int1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_int1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_int2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_int2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_int3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_int3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_int4.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_int4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_real1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_real1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_real2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_real2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_real3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_real3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_real4.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_real4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_str1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_str1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_str2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_str2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_str3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_str3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_str4.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_str4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_trunc1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_trunc2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc3.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_trunc3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/ex_trunc4.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/ex_trunc4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/extra.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/extra.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/hello.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/hello.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/invalid1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/invalid1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/invalid2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/invalid2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/invalid2.c.error1" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/invalid2.c.error1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/invalid2.c.extra.error1" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/invalid2.c.extra.error1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_01.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_01.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_02.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_02.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_03.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_03.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_04.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_04.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_05.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_05.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_06.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_06.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_07.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_07.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_08.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_08.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_09.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_09.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_10.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_10.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_11.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_11.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_12.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_12.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_13.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_13.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_14.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_14.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/keywords_15.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/keywords_15.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/lineno1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/lineno1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/lineno2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/lineno2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/lit.cfg.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/lit.cfg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_01.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_01.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_02.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_02.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_03.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_03.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_04.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_04.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_05.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_05.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_06.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_06.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_07.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_07.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_08.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_08.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_09.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_09.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_09.c.error1" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_09.c.error1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_09.c.extra.error1" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_09.c.extra.error1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_10.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_10.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_11.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_11.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_12.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_12.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_12.c.error1" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_12.c.error1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/literals_12.c.extra.error1" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/literals_12.c.extra.error1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/pi.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/pi.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_01.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_01.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_02.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_02.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_03.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_03.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_04.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_04.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_05.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_05.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_06.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_06.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_07.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_07.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_08.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_08.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_09.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_09.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_10.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_10.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_11.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_11.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_12.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_12.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_13.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_13.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_14.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_14.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/symbols_15.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/symbols_15.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/test1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/test1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/test2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/test2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/tricky.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/tricky.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/token_parsing/unclosed_comment.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/lexical/unclosed_comment.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/FileCheck/effcee/check.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Test/utils/FileCheck/effcee/check.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/utils/FileCheck/effcee/check.h" beforeDir="false" afterPath="$PROJECT_DIR$/Test/utils/FileCheck/effcee/check.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/utils/message_utils.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/message_utils.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/utils/type_name_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/utils/type_name_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/syntax/test_set_0/array1.c" beforeDir="false" afterPath="$PROJECT_DIR$/Test/syntax/test_set_0/array1.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -354,8 +130,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="CMakeLists.txt" />
         <option value="Python Script" />
+        <option value="package.json" />
+        <option value="CMakeLists.txt" />
       </list>
     </option>
   </component>
@@ -371,12 +148,22 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/.clang-format" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/AST/cast/CastApplier.cc" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/AST/cast/rule/.clang-format" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/AST/cast/rule/ArrayToPointerDecay.cc" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/AST/cast/rule/WiderTypeCast.cc" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/AST/expr/UnaryOperator.cc" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/AST/stmt/ParamVarDecl.cc" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/AST/stmt/ParamVarDecl.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/AST/stmt/StructDeclStmt.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/AST/type/BaseType.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/AST/type/ArrayType.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/AST/type/BuiltinType.cc" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/AST/type/BuiltinType.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/AST/type/StructType.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/AST/type/Type.cc" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/AST/type/Type.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/AST/type/test/BuiltinType_test.cc" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/codegen/jvm/JVMClass.cc" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/codegen/jvm/JVMClass.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/codegen/jvm/JVMGenerator.cc" root0="FORCE_HIGHLIGHTING" />
@@ -388,14 +175,19 @@
     <setting file="file://$PROJECT_DIR$/Source/codegen/jvm/jvm_instr/Instruction.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/codegen/jvm/utils/TypeUtils.cc" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/codegen/jvm/visitor_impl/expr/array_visitor.cc" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/keywords.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/lexical/Token.cc" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/main.cc" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/utils/test/status_test.cc" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/utils/type_name_utils.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Test/.clang-format" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Test/lexical/comments_1.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Test/lexical/comments_2.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Test/lexical/comments_3.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Test/lexical/extra.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Test/lexical/test1.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Test/syntax/extra.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/AppData/Local/Temp/Temp1_Lab_ Parallel Arrays - Exam Scores 1.zip/main.cpp" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -427,30 +219,30 @@
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;cmake.loaded.for.project&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/hanzech/hzcc/Test/token_parsing&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/hanzech/hzcc/Source/AST/cast/rule&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;copyright.profiles&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source\AST\cast\rule" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Test\token_parsing" />
       <recent name="$PROJECT_DIR$/Test/token_parsing" />
       <recent name="$PROJECT_DIR$/Test/lexical" />
       <recent name="$PROJECT_DIR$/Test/syntax" />
-      <recent name="$PROJECT_DIR$/Source/codegen/jvm/jvm_instr" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source\AST\cast\expr" />
+      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source\AST\cast\expr\implicit_cast" />
+      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source" />
+      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source\AST\expr\cast" />
       <recent name="$PROJECT_DIR$/Test/lexical" />
-      <recent name="$PROJECT_DIR$/Test" />
-      <recent name="$PROJECT_DIR$/Source/codegen/jvm" />
-      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Test\syntactic" />
-      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source\AST\type" />
     </key>
   </component>
   <component name="RunManager" selected="CMake 应用程序.hzcc">
@@ -535,7 +327,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="hzcc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="--fno_color --fsyntax_only /home/hanzech/hzcc/Test/syntax/test_set_0/array1.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="hzcc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="hzcc">
+    <configuration name="hzcc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="--fsyntax_only /home/hanzech/hzcc/Test/syntax/test_set_0/array1.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mycc" TARGET_NAME="hzcc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="mycc" RUN_TARGET_NAME="hzcc">
       <envs>
         <env name="GLOG_v" value=" 5" />
       </envs>
@@ -641,6 +433,12 @@
       <workItem from="1654881006733" duration="3724000" />
       <workItem from="1654992548916" duration="179000" />
       <workItem from="1654992738681" duration="1000" />
+      <workItem from="1655051788385" duration="9964000" />
+      <workItem from="1655082964998" duration="25858000" />
+      <workItem from="1655167878727" duration="391000" />
+      <workItem from="1655168779040" duration="19666000" />
+      <workItem from="1655311472292" duration="17838000" />
+      <workItem from="1655483441671" duration="2000" />
     </task>
     <servers />
   </component>
@@ -678,7 +476,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/AST/stmt/FuncDeclStmt.cc</url>
-          <line>85</line>
+          <line>94</line>
           <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">

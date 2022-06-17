@@ -13,11 +13,11 @@ BitwiseExpr::BitwiseExpr(const Position& loc, const std::string_view& type,
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(!type.empty())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type string empty", this);
+        << HZCC_AST_PRINT_NODE_INFO("type string empty", this);
     HZCC_RUNTIME_CHECK(
         type.length() == 1 ||
         (type.length() == 2 && (type[0] == '<' || type[0] == '>')))
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type len mismatch", this);
+        << HZCC_AST_PRINT_NODE_INFO("type len mismatch", this);
 
     /** #####################################################################
      *  ### Class initialization                                          ###
@@ -39,7 +39,7 @@ BitwiseExpr::BitwiseExpr(const Position& loc, const std::string_view& type,
             this->_type = BitwiseType::kBitwiseType_RSHIFT;
             break;
         default:
-            HZCC_RUNTIME_CHECK(false) << HZCC_AST_PRINT_CHECK_ERROR_INFO(
+            HZCC_RUNTIME_CHECK(false) << HZCC_AST_PRINT_NODE_INFO(
                 "type: [" + std::string(type) + "] not supported", this);
     }
 }

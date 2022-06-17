@@ -19,9 +19,9 @@ UnaryOperator::UnaryOperator(const Position& location,
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(_expr != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("expr is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("expr is nullptr", this);
     HZCC_RUNTIME_CHECK(!type.empty())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type is empty string", this);
+        << HZCC_AST_PRINT_NODE_INFO("type is empty string", this);
 
     /** #####################################################################
      *  ### Class initialization                                          ###
@@ -60,7 +60,7 @@ UnaryOperator::UnaryOperator(const Position& location,
             _type = kUnaryType_BitwiseNot;
             break;
         default:
-            HZCC_RUNTIME_CHECK(false) << HZCC_AST_PRINT_CHECK_ERROR_INFO(
+            HZCC_RUNTIME_CHECK(false) << HZCC_AST_PRINT_NODE_INFO(
                 "RetType: [" + std::string(type) + "] not supported ", this);
     }
 }
@@ -69,7 +69,7 @@ const char* UnaryOperator::NodeName() const { return "UnaryOperator"; }
 
 std::shared_ptr<Type> UnaryOperator::RetType() const {
     if (_type == kUnaryType_LogicalNot)
-        return Type::GetTypeOf("char", {Lexical::TokenType::kConst});
+        return GetCharType();
     else
         return _expr->RetType();
 }
@@ -77,7 +77,7 @@ Status UnaryOperator::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 
 void UnaryOperator::PrintDetail(std::ostream& out,
                                 const std::string& ident) const {
-    out << kUnaryOpSTR[_type] << " " << _expr->RetType()->GetName();
+    out << kUnaryOpSTR[_type] << " " << _expr->RetType()->Name();
     _expr->Dump(out, ident + "`");
 }
 

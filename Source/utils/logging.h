@@ -2,7 +2,9 @@
 
 #include <iomanip>
 
-#include "lexical/utils/symbol_utils.h"
+#include "macro.h"
+#include "options.h"
+#include "utils/keywords_utils.h"
 #ifndef HZCC_UTILS_LOGGING_H_
 #define HZCC_UTILS_LOGGING_H_
 namespace Hzcc {
@@ -16,16 +18,25 @@ void initLogging(char argv[]);
 #define LEXICAL_LOG_LEVEL 5
 #define MESSAGE_ERROR_TRACING 6
 
-#define HZCC_RUNTIME_CHECK(cond)                                    \
-    static_assert(std::is_convertible<decltype(cond), bool>::value, \
-                  "Macro type mismatch, need bool for cond");       \
-    LOG_IF(FATAL, !(cond)) << "\033[1;31m[Internal]\033[0m: "
+#define HZCC_RUNTIME_CHECK(cond)                                             \
+    static_assert(std::is_convertible<decltype(cond), bool>::value,          \
+                  "Macro type mismatch, need bool for cond");                \
+    LOG_IF(FATAL, !(cond))                                                   \
+        << (Options::Global_disable_color ? "" : KEnableRed) << "[Internal]" \
+        << (Options::Global_disable_color ? "" : KDisableColor) << ": "
+
+#define HZCC_RUNTIME_WARNING(cond)                                           \
+    static_assert(std::is_convertible<decltype(cond), bool>::value,          \
+                  "Macro type mismatch, need bool for cond");                \
+    DLOG_IF(FATAL, !(cond))                                                  \
+        << (Options::Global_disable_color ? "" : KEnableRed) << "[Internal]" \
+        << (Options::Global_disable_color ? "" : KDisableColor) << ": "
 
 #define HZCC_PRETTY_PRINT_TOKEN(token)                                        \
     std::setfill(' ') << "\033[0;33m[" << std::setw(8) << std::right          \
                       << ((int)(token).Type() <= 0xFF                         \
                               ? "Symbol"                                      \
-                              : "" + Lexical::SymbolUtils::TokenTypeToString( \
+                              : "" + KeywordsUtils::TokenTypeToString(        \
                                          (token).Type()))                     \
                       << "]<" << std::setw(3) << (token).Location().first + 1 \
                       << "," << std::setw(3) << (token).Location().second     \

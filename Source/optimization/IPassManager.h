@@ -9,7 +9,7 @@ namespace Hzcc::Pass {
 class ModulePass;
 class FunctionPass;
 class ImmutablePass;
-class PassManager {
+class IPassManager {
   public:
     /**
      * @brief Run all function passes in the current pass manager.

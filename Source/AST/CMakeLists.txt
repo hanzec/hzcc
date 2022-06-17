@@ -10,20 +10,12 @@ target_sources(hzcc PRIVATE ${hzcc_ast_hdrs} ${hzcc_ast_srcs})
 ###############################################################################
 ## AST Cast ###################################################################
 ###############################################################################
-file(GLOB hzcc_ast_cast_hdrs expr/cast/*.h)
-file(GLOB hzcc_ast_cast_srcs expr/cast/*.cc)
-
-# project sources
-target_sources(hzcc PRIVATE ${hzcc_ast_cast_hdrs} ${hzcc_ast_cast_srcs})
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/cast)
 
 ###############################################################################
-## AST RetType ###################################################################
+## AST Type ###################################################################
 ###############################################################################
-file(GLOB hzcc_ast_type_hdrs ${CMAKE_CURRENT_LIST_DIR}/type/*.h)
-file(GLOB hzcc_ast_type_srcs ${CMAKE_CURRENT_LIST_DIR}/type/*.cc)
-
-# project sources
-target_sources(hzcc PRIVATE ${hzcc_ast_type_hdrs} ${hzcc_ast_type_srcs})
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/type)
 
 ###############################################################################
 ## AST Utils ##################################################################

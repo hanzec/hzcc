@@ -6,6 +6,19 @@
 #define HZCC_MACRO_H
 
 /** #########################################################################
+ *  #### Colors Def   #######################################################
+ *  ######################################################################### */
+constexpr const char* KEnableRed = "\033[1;31m";
+constexpr const char* KEnableBlue = "\033[1;34m";
+constexpr const char* KEnableCyan = "\033[1;36m";
+constexpr const char* KEnableGreen = "\033[1;32m";
+constexpr const char* KEnableYellow = "\033[1;33m";
+constexpr const char* KEnableMagenta = "\033[1;35m";
+constexpr const char* KEnableBrightBlue = "\033[1;94m";
+constexpr const char* KEnableBrightCyan = "\033[1;96m";
+constexpr const char* KDisableColor = "\033[0m";
+
+/** #########################################################################
  *  #### Useful Typedefs   ##################################################
  *  ######################################################################### */
 namespace Hzcc {

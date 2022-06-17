@@ -12,9 +12,9 @@ WhileStmt::WhileStmt(const Position& loc, std::unique_ptr<ASTNode> cond,
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(_body != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("body is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("body is nullptr", this);
     HZCC_RUNTIME_CHECK(_cond != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("condition is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("condition is nullptr", this);
 }
 
 const char* Hzcc::AST::WhileStmt::NodeName() const { return "WhileStmt"; }

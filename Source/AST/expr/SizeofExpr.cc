@@ -13,13 +13,11 @@ SizeofExpr::SizeofExpr(std::unique_ptr<ASTNode> expr, const Position& location)
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(_expr != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("expr is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("expr is nullptr", this);
 }
 const char* AST::SizeofExpr::NodeName() const { return "SizeofExpr"; }
 
-std::shared_ptr<Type> SizeofExpr::RetType() const {
-    return Type::GetTypeOf("int", {Lexical::TokenType::kConst});
-}
+std::shared_ptr<Type> SizeofExpr::RetType() const { return GetIntType(); }
 Status SizeofExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
 
 }  // namespace Hzcc::AST

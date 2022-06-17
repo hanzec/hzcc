@@ -24,7 +24,7 @@ LiteralExpr::LiteralExpr(LiteralType type,                     // NO_LINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(!value.empty())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("value is empty string", this);
+        << HZCC_AST_PRINT_NODE_INFO("value is empty string", this);
 }
 
 const char* LiteralExpr::NodeName() const {
@@ -80,19 +80,20 @@ void LiteralExpr::PrintDetail(std::ostream& out,
 }
 
 std::shared_ptr<Type> LiteralExpr::RetType() const {
-    static std::list<std::string> const_type_list = {"const"};
+    const static std::shared_ptr<Type> kCharArrType =
+        std::make_shared<ArrayType>(
+            GetCharType(),
+            std::make_unique<LiteralExpr>(_value.size() + 1, Location()));
+
     switch (_type) {
         case LiteralType::kLiteralType_Char:
-            return Type::GetTypeOf("char", {});
+            return GetCharType();
         case LiteralType::kLiteralType_Real_number:
-            return Type::GetTypeOf("float", {});
+            return GetFloatType();
         case LiteralType::kLiteralType_String:
-            return ArrayType::GetArrayOfBasicType(
-                Type::GetTypeOf("char", {}),
-                std::make_unique<LiteralExpr>(_value.size() + 1, Location()),
-                {Lexical::TokenType::kConst});
+            return kCharArrType;
         case LiteralType::kLiteralType_Integer:
-            return Type::GetTypeOf("int", {});
+            return GetIntType();
         default:
             DLOG_ASSERT(false) << "unexpected literal type";
     }

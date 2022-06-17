@@ -27,7 +27,7 @@ std::unique_ptr<AST::ASTNode> WhileStatement::parse_impl(
 
     // check if the next token is [while]
     auto while_loc = tokens.peek().Location();
-    MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kWhile, tokens);
+    MYCC_CheckAndConsume_ReturnNull(TokenType::kWhile, tokens);
 
     // parse condition
     auto condition = ParseCondition(tokens, context);
@@ -38,7 +38,7 @@ std::unique_ptr<AST::ASTNode> WhileStatement::parse_impl(
     if (body == nullptr) return nullptr;
 
     // push a semicolon for easier parsing
-    tokens.push(Lexical::Token(Lexical::TokenType::kSemiColon, -1, -1));
+    tokens.push(Lexical::Token(TokenType::kSemiColon, -1, -1));
 
     ExitLoop();  // exit loop
     return std::make_unique<AST::WhileStmt>(while_loc, std::move(condition),

@@ -5,6 +5,7 @@
 
 #include "AST/type/Type.h"
 #include "AST/utils/macro.h"
+#include "options.h"
 
 namespace Hzcc::AST {
 DeclRefExpr::DeclRefExpr(const Position& loc,           // NO_LINT
@@ -15,9 +16,9 @@ DeclRefExpr::DeclRefExpr(const Position& loc,           // NO_LINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(_type != nullptr)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type is nullptr", this);
+        << HZCC_AST_PRINT_NODE_INFO("type is nullptr", this);
     HZCC_RUNTIME_CHECK(!_name.empty())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("name is empty string", this);
+        << HZCC_AST_PRINT_NODE_INFO("name is empty string", this);
 }
 
 const char* DeclRefExpr::NodeName() const { return "DeclRefExpr"; }
@@ -26,7 +27,12 @@ std::shared_ptr<Type> DeclRefExpr::RetType() const { return _type; }
 
 void DeclRefExpr::PrintDetail(std::ostream& out,
                               const std::string& ident) const {
-    out << _name << " " << _type->GetName();
+    if (Options::Global_disable_color) {
+        out << '\'' << _name << "\' \'" << _type->Name() << '\'';
+    } else {
+        out << KEnableBrightCyan << '\'' << _name << "\' " << KEnableGreen
+            << '\'' << _type->Name() << '\'' << KDisableColor;
+    }
 }
 bool DeclRefExpr::IsReturnLValue() const { return true; }
 Status DeclRefExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }

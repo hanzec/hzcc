@@ -25,7 +25,7 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
 
     // check first if
     auto if_loc = tokens.peek().Location();
-    MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kIf, tokens);
+    MYCC_CheckAndConsume_ReturnNull(TokenType::kIf, tokens);
 
     // parsing condition
     auto cond_token = tokens.peek();
@@ -51,10 +51,10 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
         std::make_unique<AST::IfStmt>(if_loc, std::move(cond), std::move(body));
 
     // parsing [else] and [else if] stmt
-    while (tokens.peek().Type() == Lexical::TokenType::kElse) {
+    while (tokens.peek().Type() == TokenType::kElse) {
         auto prev_else = tokens.pop();  // consume else;
         // if this is single else stmt
-        if (tokens.peek().Type() == Lexical::TokenType::kLBrace) {
+        if (tokens.peek().Type() == TokenType::kLBrace) {
             if (ifNode->HasElse()) {
                 MYCC_PrintTokenError_ReturnNull(
                     prev_else, "If stmt cannot have multiple else statements")
@@ -74,10 +74,9 @@ std::unique_ptr<AST::ASTNode> IfStatement::parse_impl(TokenList& tokens,
         }
 
         // else-if statements
-        else if (tokens.peek().Type() == Lexical::TokenType::kIf) {
+        else if (tokens.peek().Type() == TokenType::kIf) {
             tokens.pop();  // consume if
-            MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLParentheses,
-                                            tokens);
+            MYCC_CheckAndConsume_ReturnNull(TokenType::kLParentheses, tokens);
 
             auto else_if_token = tokens.peek();
             auto else_if_condition = ParseCondition(tokens, context);

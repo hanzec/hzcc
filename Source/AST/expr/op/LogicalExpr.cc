@@ -3,6 +3,7 @@
 //
 #include "LogicalExpr.h"
 
+#include "AST/type/BuiltinType.h"
 #include "AST/type/Type.h"
 #include "AST/utils/macro.h"
 namespace Hzcc::AST {
@@ -15,9 +16,9 @@ LogicalExpr::LogicalExpr(const std::string_view& type,  // NOLINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK(!type.empty())
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type string empty", this);
+        << HZCC_AST_PRINT_NODE_INFO("type string empty", this);
     HZCC_RUNTIME_CHECK(type.length() == 2)
-        << HZCC_AST_PRINT_CHECK_ERROR_INFO("type len mismatch", this);
+        << HZCC_AST_PRINT_NODE_INFO("type len mismatch", this);
 
     /** #####################################################################
      *  ### Class initialization                                          ###
@@ -27,7 +28,7 @@ LogicalExpr::LogicalExpr(const std::string_view& type,  // NOLINT
     } else if (type[0] == '|') {
         this->_type = kLogicalType_Or;
     } else {
-        HZCC_RUNTIME_CHECK(false) << HZCC_AST_PRINT_CHECK_ERROR_INFO(
+        HZCC_RUNTIME_CHECK(false) << HZCC_AST_PRINT_NODE_INFO(
             "type: [" + std::string(type) + "] not supported", this);
     }
 }
@@ -35,9 +36,13 @@ LogicalExpr::LogicalExpr(const std::string_view& type,  // NOLINT
 const char* AST::LogicalExpr::NodeName() const { return "LogicalExpr"; }
 
 std::shared_ptr<Type> LogicalExpr::RetType() const {
-    return Type::GetTypeOf("char", {});
+    const static auto ret_type =
+        std::make_shared<BuiltinType>(kPrimitiveType_char);
+    return ret_type;
 }
+
 Status LogicalExpr::visit(ASTVisitor& visitor) { return visitor.visit(this); }
+
 LogicalType LogicalExpr::GetLogicalType() const { return _type; }
 
 void LogicalExpr::PrintDetail(std::ostream& out,

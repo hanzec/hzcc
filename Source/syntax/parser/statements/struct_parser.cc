@@ -8,6 +8,7 @@
 
 #include "AST/CompilationUnit.h"
 #include "AST/stmt/StructDeclStmt.h"
+#include "AST/type/ArrayType.h"
 #include "syntax/utils/common_utils.h"
 #include "utils/type_name_utils.h"
 
@@ -19,11 +20,11 @@ StructDeclare::StructDeclare() noexcept
 
 std::shared_ptr<AST::StructType> StructDeclare::parse_internal(
     TokenList& tokens, SyntaxContext& context) {
-    // consume struc
-    MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kStruct, tokens);
+    // consume struct keyword
+    MYCC_CheckAndConsume_ReturnNull(TokenType::kStruct, tokens);
 
     // consume struct_name
-    if (tokens.peek().Type() != Lexical::TokenType::kIdentity) {
+    if (tokens.peek().Type() != TokenType::kIdentity) {
         MYCC_PrintFirstTokenError_ReturnNull(tokens,
                                              "struct struct_name expected");
     }
@@ -31,15 +32,15 @@ std::shared_ptr<AST::StructType> StructDeclare::parse_internal(
     auto struct_name = tokens.pop().Value();
 
     // consume {
-    MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kLBrace, tokens);
+    MYCC_CheckAndConsume_ReturnNull(TokenType::kLBrace, tokens);
 
     // parse struct body
     std::list<Lexical::Token> current_attr_token =
         tokens.LoadCachedAttributes();
     auto struct_node = context.addStructType(struct_name, current_attr_token);
-    while (tokens.peek().Type() != Lexical::TokenType::kRBrace) {
-        if (tokens.peek().Type() == Lexical::TokenType::kStruct &&
-            tokens.peek3().Type() == Lexical::TokenType::kLBrace) {
+    while (tokens.peek().Type() != TokenType::kRBrace) {
+        if (tokens.peek().Type() == TokenType::kStruct &&
+            tokens.peek3().Type() == TokenType::kLBrace) {
             if (!struct_node->AddChild(parse_internal(tokens, context))) {
                 DLOG(ERROR)
                     << "parse sub-struct in [" << struct_name << "] failed";
@@ -67,12 +68,12 @@ std::shared_ptr<AST::StructType> StructDeclare::parse_internal(
             }
 
             // if define multiple value, we need to consume ','
-            if (tokens.peek().Type() == Lexical::TokenType::kComma) {
-                while (tokens.peek().Type() == Lexical::TokenType::kComma) {
+            if (tokens.peek().Type() == TokenType::kComma) {
+                while (tokens.peek().Type() ==TokenType::kComma) {
                     tokens.pop();
 
                     // next token should be identifier (not one of type)
-                    if (tokens.peek().Type() != Lexical::TokenType::kIdentity ||
+                    if (tokens.peek().Type() != TokenType::kIdentity ||
                         context.hasType(tokens.peek().Value())) {
                         MYCC_PrintFirstTokenError_ReturnNull(
                             tokens, "need an identifier here");
@@ -95,8 +96,8 @@ std::shared_ptr<AST::StructType> StructDeclare::parse_internal(
                             return nullptr;
                         }
                     } else {
-                        auto array_type = context.getArrayType(
-                            type, inner_struct_attributes, array_shape);
+                        auto array_type = std::make_shared<AST::ArrayType>(
+                            inner_struct_attributes, type, array_shape);
                         if (!struct_node->AddChild(variable.Value(), array_type,
                                                    inner_struct_attributes)) {
                             return nullptr;
@@ -106,13 +107,13 @@ std::shared_ptr<AST::StructType> StructDeclare::parse_internal(
             }
 
             // consume ;
-            MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kSemiColon,
+            MYCC_CheckAndConsume_ReturnNull(TokenType::kSemiColon,
                                             tokens);
         }
     }
 
     // consume }
-    MYCC_CheckAndConsume_ReturnNull(Lexical::TokenType::kRBrace, tokens);
+    MYCC_CheckAndConsume_ReturnNull(TokenType::kRBrace, tokens);
 
     return std::move(struct_node);
 }
@@ -129,6 +130,6 @@ std::unique_ptr<AST::ASTNode> StructDeclare::parse_impl(
     }
 
     return std::make_unique<AST::StructDeclStmt>(
-        ref.Location(), struct_node->GetName(), struct_node);
+        ref.Location(), struct_node->Name(), struct_node);
 }
 }  // namespace Hzcc::Syntax::Parser
