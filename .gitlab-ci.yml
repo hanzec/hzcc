@@ -189,7 +189,9 @@ test_gcc_10_3_debug:
     when: always
     reports:
       junit: $CI_PROJECT_DIR/gtest_report.xml
-      cobertura: $CI_PROJECT_DIR/build/ccov/mycc_test.xml
+      coverage_report:  
+        coverage_format: cobertura
+        path: $CI_PROJECT_DIR/build/ccov/mycc_test.xml
   needs:
     - build_gcc_10_3_ninja_debug
   cache:
@@ -222,7 +224,9 @@ test_llvm_latest_debug:
     when: always
     reports:
       junit: $CI_PROJECT_DIR/gtest_report.xml
-      cobertura: $CI_PROJECT_DIR/build/ccov/mycc_test.xml
+      coverage_report:  
+        coverage_format: cobertura
+        path: $CI_PROJECT_DIR/build/ccov/mycc_test.xml
   needs:
     - build_llvm_latest_ninja_debug
   cache:
@@ -255,7 +259,9 @@ test_gcc_10_3_release:
     when: always
     reports:
       junit: $CI_PROJECT_DIR/gtest_report.xml
-      cobertura: $CI_PROJECT_DIR/build/ccov/mycc_test.xml
+      coverage_report:  
+        coverage_format: cobertura
+        path: $CI_PROJECT_DIR/build/ccov/mycc_test.xml
   needs:
     - build_gcc_10_3_ninja_debug
   cache:
@@ -288,7 +294,9 @@ test_llvm_latest_release:
     when: always
     reports:
       junit: $CI_PROJECT_DIR/gtest_report.xml
-      cobertura: $CI_PROJECT_DIR/build/ccov/mycc_test.xml
+      coverage_report: 
+        coverage_format: cobertura
+        path: $CI_PROJECT_DIR/build/ccov/mycc_test.xml
   needs:
     - build_llvm_latest_ninja_debug
   cache:
