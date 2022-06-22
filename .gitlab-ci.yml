@@ -124,7 +124,7 @@ build_gcc_10_3_ninja_debug:
       -DCMAKE_BUILD_TYPE=Debug
       -D CMAKE_C_COMPILER=gcc
       -D CMAKE_CXX_COMPILER=g++
-    - cd ./build && ninja -j$(nproc) mycc
+    - cd ./build && ninja -j$(nproc) hzcc
   needs:
     - job: push_gcc_10_latest
       optional: true
@@ -150,7 +150,7 @@ build_llvm_latest_ninja_debug:
       -DCMAKE_BUILD_TYPE=Debug
       -D CMAKE_C_COMPILER=clang
       -D CMAKE_CXX_COMPILER=clang++
-    - cd ./build && ninja -j$(nproc) mycc
+    - cd ./build && ninja -j$(nproc) hzcc
   needs:
     - job: push_llvm_latest
       optional: true
