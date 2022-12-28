@@ -3,11 +3,11 @@ repos:
     rev: v2.3.0
     hooks:
       - id: end-of-file-fixer
-        exclude: '^Test\/.+$'
+        exclude: '^test\/.+$'
       - id: trailing-whitespace
-        exclude: '^Test\/.+$'
+        exclude: '^test\/.+$'
   - repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v13.0.0
     hooks:
       - id: clang-format
-        exclude: '(^Test\/.+)|(.+\.java$)|(.+\.json$)$'
+        exclude: '(^test\/.+)|(.+\.java$)|(.+\.json$)$'

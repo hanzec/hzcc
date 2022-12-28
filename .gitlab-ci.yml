@@ -108,7 +108,7 @@ push_gcc_10_latest:
     - build_gcc_10_3_latest
 
 #####################################################################################################
-## Binary Build Test                                                                         ########
+## Binary Build test                                                                         ########
 #####################################################################################################
 build_gcc_10_3_ninja_debug:
   stage: build
@@ -163,7 +163,7 @@ build_llvm_latest_ninja_debug:
         - "$CI_PROJECT_DIR/build/vcpkg_installed"
 
 #####################################################################################################
-## Binary Unit Test                                                                          ########
+## Binary Unit test                                                                          ########
 #####################################################################################################
 test_gcc_10_3_debug:
   image: $CI_REGISTRY_IMAGE/gcc_10_3:latest
@@ -325,7 +325,7 @@ e2e_test_gcc_10_3_release:
   artifacts:
     when: always
     reports:
-      junit: $CI_PROJECT_DIR/build/Test/test_output/*.xunit.xml
+      junit: $CI_PROJECT_DIR/build/test/test_output/*.xunit.xml
   needs:
     - test_gcc_10_3_debug
     - test_gcc_10_3_release
@@ -352,7 +352,7 @@ e2e_test_llvm_latest_release:
   artifacts:
     when: always
     reports:
-      junit: $CI_PROJECT_DIR/build/Test/test_output/*.xunit.xml
+      junit: $CI_PROJECT_DIR/build/test/test_output/*.xunit.xml
   needs:
     - test_llvm_latest_debug
     - test_llvm_latest_release
@@ -363,7 +363,7 @@ e2e_test_llvm_latest_release:
         - "$CI_PROJECT_DIR/build/vcpkg_installed"
 
 #####################################################################################################
-## Documentation                                                                             ########
+## doc                                                                             ########
 #####################################################################################################
 build_latex_documentation:
   image: $CI_REGISTRY_IMAGE/llvm_latest:latest
@@ -375,14 +375,14 @@ build_latex_documentation:
   script:
     - cd $CI_PROJECT_DIR
     - cmake . -B./build/ -DCMAKE_BUILD_TYPE=Release -G Ninja && cd ./build && ninja -j$(nproc) documentation
-    - mv $CI_PROJECT_DIR/build/Documentation/developers.pdf $CI_PROJECT_DIR/developers.pdf
+    - mv $CI_PROJECT_DIR/build/doc/developers.pdf $CI_PROJECT_DIR/developers.pdf
   artifacts:
     when: always
     paths:
       - $CI_PROJECT_DIR/developers.pdf
-      - $CI_PROJECT_DIR/build/Documentation/pdflatex.log
-      - $CI_PROJECT_DIR/build/Documentation/makeindex.log
-      - $CI_PROJECT_DIR/build/Documentation/latex_prebuild.log
+      - $CI_PROJECT_DIR/build/doc/pdflatex.log
+      - $CI_PROJECT_DIR/build/doc/makeindex.log
+      - $CI_PROJECT_DIR/build/doc/latex_prebuild.log
   needs:
     - e2e_test_gcc_10_3_release
     - e2e_test_llvm_latest_release

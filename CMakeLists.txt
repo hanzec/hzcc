@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.20.0) # we need unzip files
 if (NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     if (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
         message(FATAL_ERROR "Building in source is not supported,
-                             consider build with -B/path/to/my/build/folder")
+                             consider build with -B /path/to/my/build/folder")
     endif ()
 endif ()
 
@@ -29,14 +29,11 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # target build options
-option(ENABLE_ASAN "Enable Address Sanitizer" OFF)
-option(ENABLE_TSAN "Enable Thread Sanitizer" OFF)
-option(ENABLE_UBSAN "Enable Undefined Behavior Sanitizer" OFF)
-option(ENABLE_MSAN "Enable Memory Sanitizer" OFF)
-option(ENABLE_COVERAGE "Enable Code Coverage" OFF)
-option(ENABLE_TESTING "Enable unit Tests" OFF)
-option(ENABLE_E2E_TESTING "Enable End to END Tests" OFF)
-option(ENABLE_DOCUMENTATION "Enable Documentation Build" ON)
+option(ENABLE_ANTLR "Enable ANTLR" OFF)
+option(E2E_TESTING "Enable End to END Tests" OFF)
+option(UNIT_TESTING "Enable unit Tests" ON)
+option(RUNTIME_CHECK "Enable runtime checks" ON)
+option(GENERATE_DOCUMENTATION "Enable Documentation Build" OFF)
 
 ###############################################################################
 ## Compile Config #############################################################
@@ -55,8 +52,13 @@ elseif (MACOSX)
     add_compile_definitions(MACOSX)
 endif ()
 
+# add enable runtime checks macro if needed
+if (RUNTIME_CHECK MATCHES "ON")
+    add_compile_definitions(HZCC_ENABLE_RUNTIME_CHECK)
+endif ()
+
 ###############################################################################
-## Prepare Third-party Dependency #############################################
+## Prepare VCPKG ##############################################################
 ###############################################################################
 # Fetch VCPKG and make it available
 message(STATUS "Fetching VCPKG...")
@@ -74,7 +76,7 @@ list(APPEND CMAKE_MODULE_PATH "${vcpkg_SOURCE_DIR}/scripts/cmake")
 include_directories("${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/include/")
 
 ###############################################################################
-## Setup vcpkg ################################################################
+## VCPKG Managed Dependency ###################################################
 ###############################################################################
 # run vcpkg bootstrap
 if ((EXISTS "${vcpkg_SOURCE_DIR}/vcpkg") OR (EXISTS "${vcpkg_SOURCE_DIR}/vcpkg.exe"))
@@ -141,47 +143,19 @@ cmake_host_system_information(RESULT MACHINE_HOST_NAME QUERY HOSTNAME)
 ###############################################################################
 ## Project Config #############################################################
 ###############################################################################
-project(mycc VERSION 0.1.0)
+project(hzcc VERSION 0.1.0)
 
 ###############################################################################
-## Compiler Targets ###########################################################
+## Project hzcc #############################################################
 ###############################################################################
-# hzcc target
-add_executable(hzcc)
-
-# testing target
-if (ENABLE_TESTING MATCHES "ON")
-    message(STATUS "Enable testing...")
-    add_executable(hzcc_test)
-endif ()
+add_subdirectory(hzcc)
 
 ###############################################################################
-## Project Source #############################################################
-###############################################################################
-add_subdirectory(Source)
-
-###############################################################################
-## Documentation Source #######################################################
+## Documentation ##############################################################
 ###############################################################################
 if (ENABLE_DOCUMENTATION MATCHES "ON")
     message(STATUS "Enable documentation")
-    add_subdirectory(Documentation)
-endif ()
-
-###############################################################################
-## Documentation Source #######################################################
-###############################################################################
-if (ENABLE_E2E_TESTING MATCHES "ON")
-    message(STATUS "Enable E2E testing")
-    add_subdirectory(Test)
-endif ()
-
-###############################################################################
-## Testing ####################################################################
-###############################################################################
-if (ENABLE_TESTING MATCHES "ON")
-    include(GoogleTest)
-    gtest_discover_tests(hzcc_test)
+    add_subdirectory(doc)
 endif ()
 
 ###############################################################################

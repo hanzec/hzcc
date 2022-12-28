@@ -1,6 +1,6 @@
 # mycc
 
-[![pipeline status](https://gitlab.hanzec.com/personalproject/hzcc/badges/main/pipeline.svg)](https://gitlab.hanzec.com/personalproject/hzcc/-/commits/main)
+[![pipeline Status](https://gitlab.hanzec.com/personalproject/hzcc/badges/main/pipeline.svg)](https://gitlab.hanzec.com/personalproject/hzcc/-/commits/main)
 [![coverage report](https://gitlab.hanzec.com/personalproject/hzcc/badges/main/coverage.svg)](https://gitlab.hanzec.com/personalproject/hzcc/-/commits/main)
 [![Latest Release](https://gitlab.hanzec.com/personalproject/hzcc/-/badges/release.svg)](https://gitlab.hanzec.com/personalproject/hzcc/-/releases)
 
@@ -136,12 +136,12 @@ Both of executable target `mycc_test` and `mycc_e2e_test` will be located in `./
 Unit testing is done by `gtest` with following command in git root directory:
 
 ```bash
- cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug && cd ./build && make mycc_test -j$(nproc) && ./Source/mycc_test
+ cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug && cd ./build && make mycc_test -j$(nproc) && ./hzcc/mycc_test
  ```
 
-### Code Coverage
+### StatusCode Coverage
 
-Code coverage is supported both llvm-cov and gcov, currently code coverage is only supported for `mycc_test` target. For
+StatusCode coverage is supported both llvm-cov and gcov, currently code coverage is only supported for `mycc_test` target. For
 building with llvm, you need to install `llvm-cov`, for building with gcc, you need to install `gcovr`
 
 For summary report to stdout, Run:
@@ -176,19 +176,19 @@ Then you could run the test by following command in git root directory:
 
 ## Usage
 
-### VLOG Level
+### VLOG CompileErrorLevel
 
-- **0**: only internal warning and error will be printed
-- **1**: used for print current status
+- **0**: only internal_status warning and error will be printed
+- **1**: used for print current Status
 - **2**: print debug information
 - **3**: print all information including pass output/input
 
 ### supported arguments
 
-- **-c**: specify input file name.
+- **-c**: specify input file RetClass.
 - **-h,--help**: print usage information and exit.
 - **-v,--version**: print version information and exit.
 - **--fno_color**: disable color output.
 - **--fnice_error**: print error message in nice format.
-- **-o,--output**: specify output file name.
+- **-o,--output**: specify output file RetClass.
 - **-I,--include**: specify include path.(not support yet)

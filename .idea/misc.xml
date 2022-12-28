@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
+  <component name="CidrRootsConfiguration">
+    <excludeRoots>
+      <file path="$PROJECT_DIR$/hzcc/test/codegen" />
+      <file path="$PROJECT_DIR$/hzcc/test/compiler_info" />
+      <file path="$PROJECT_DIR$/hzcc/test/lexical" />
+      <file path="$PROJECT_DIR$/hzcc/test/syntax" />
+    </excludeRoots>
+  </component>
 </project>

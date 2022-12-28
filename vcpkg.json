@@ -6,6 +6,14 @@
     "glog",
     "gtest",
     "cli11",
-    "re2"
+    "re2",
+    "antlr4",
+    "magic-enum",
+    {
+      "name": "abseil",
+      "features": [
+        "cxx17"
+      ]
+    }
   ]
 }
