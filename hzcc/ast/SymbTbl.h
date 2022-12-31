@@ -9,13 +9,10 @@
 #include "macro.h"
 #ifndef HZCC_SOURCE_AST_SYMBOL_TABLE_H
 #define HZCC_SOURCE_AST_SYMBOL_TABLE_H
-namespace hzcc {
-namespace ast {
+namespace hzcc::ast {
 class Type;
 class StructType;
-}  // namespace ast
 
-namespace syntax {
 class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
   public:
     SymbTbl(std::shared_ptr<ast::Type> return_type,
@@ -67,7 +64,7 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
      * @return true if variable is existed.
      * @return false if variable is not existed.
      */
-    bool hasVariable(const std::string& name, bool current_scope);
+    bool hasVariable(std::string_view name, bool current_scope);
 
     /**
      * @brief Register a variable to the symbol table.
@@ -79,7 +76,7 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
      * registered type identifier.
      */
     void addVariable(std::pair<uint_fast32_t, uint_fast32_t> pos,
-                     const std::string& name,
+                     std::string_view name,
                      std::shared_ptr<ast::Type>& token_types);
 
     int getVariableDeclLine(const std::string& name);
@@ -127,6 +124,5 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
         _named_types;
     std::list<std::shared_ptr<SymbTbl>> _scoped_contexts;
 };
-}  // namespace syntax
-}  // namespace hzcc
+}  // namespace hzcc::ast
 #endif  // HZCC_SOURCE_AST_SYMBOL_TABLE_H

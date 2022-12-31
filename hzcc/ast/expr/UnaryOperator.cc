@@ -3,13 +3,11 @@
 //
 #include <algorithm>
 
-#include "ast/type/Type.h"
 #include "Expr.h"
+#include "ast/type/Type.h"
 namespace hzcc::ast {
-constexpr static std::array<const char*, kUnaryType_ENUM_SIZE> kUnaryOpSTR = {
-    "-", "++(Pre)", "--(Pre)", "++(Post)", "--(Post)", "&", "*", "!", "~"};
-
-UnaryOperator::UnaryOperator(const Position& loc, std::string_view type,
+UnaryOperator::UnaryOperator(const Position& loc,    // NOLINT
+                             std::string_view type,  // NOLINT
                              std::unique_ptr<Expr> expr)
     : Expr(loc, "UnaryOperator"), _expr(std::move(expr)) {
     /** #####################################################################
@@ -28,35 +26,35 @@ UnaryOperator::UnaryOperator(const Position& loc, std::string_view type,
     switch (type[0]) {
         case '-':
             if (type.size() == 1) {
-                _type = kUnaryType_UnaryMinus;
+                _type = UnaryType::kUnaryMinus;
             } else {
-                if (loc.first < _expr->Location().first ||
-                    loc.second < _expr->Location().second) {
-                    _type = kUnaryType_PreDec;
+                if (loc.first < _expr->loc().first ||
+                    loc.second < _expr->loc().second) {
+                    _type = UnaryType::kPreDec;
                 } else {
-                    _type = kUnaryType_PostDec;
+                    _type = UnaryType::kPostDec;
                 }
             }
             break;
         case '+':
-            if (loc.first < _expr->Location().first ||
-                loc.second < _expr->Location().second) {
-                _type = kUnaryType_PreInc;
+            if (loc.first < _expr->loc().first ||
+                loc.second < _expr->loc().second) {
+                _type = UnaryType::kPreInc;
             } else {
-                _type = kUnaryType_PostInc;
+                _type = UnaryType::kPostInc;
             }
             break;
         case '&':
-            _type = kUnaryType_Reference;
+            _type = UnaryType::kReference;
             break;
         case '*':
-            _type = kUnaryType_Dereference;
+            _type = UnaryType::kDereference;
             break;
         case '!':
-            _type = kUnaryType_LogicalNot;
+            _type = UnaryType::kLogicalNot;
             break;
         case '~':
-            _type = kUnaryType_BitwiseNot;
+            _type = UnaryType::kBitwiseNot;
             break;
         default:
             INTERNAL_LOG(FATAL)
@@ -67,12 +65,6 @@ UnaryOperator::UnaryOperator(const Position& loc, std::string_view type,
 
 Status UnaryOperator::visit(Visitor& visitor) { return visitor.visit(this); }
 
-void UnaryOperator::PrintDetail(std::ostream& out,
-                                const std::string& ident) const {
-    out << kUnaryOpSTR[_type] << " " << _expr->retType()->Name();
-    _expr->Dump(out, ident + "`");
-}
-
-std::unique_ptr<Expr>& UnaryOperator::GetExpr() { return _expr; }
+std::unique_ptr<Expr>& UnaryOperator::expr() { return _expr; }
 UnaryType UnaryOperator::GetUnaryType() const { return _type; }
 }  // namespace hzcc::ast

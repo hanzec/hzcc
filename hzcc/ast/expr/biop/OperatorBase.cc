@@ -1,9 +1,8 @@
 //
 // Created by chen_ on 2022/3/29.
 //
-#include "OperatorBase.h"
-
 #include "ast/DeduceValue.h"
+#include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
 namespace hzcc::ast {
 OperatorBase::OperatorBase(const Position& loc,        // NOLINT
@@ -24,8 +23,8 @@ OperatorBase::OperatorBase(const Position& loc,        // NOLINT
 #endif
 }
 
-const std::unique_ptr<Expr>& OperatorBase::GetLHS() const { return _lhs; }
-const std::unique_ptr<Expr>& OperatorBase::GetRHS() const { return _rhs; }
+std::unique_ptr<Expr>& OperatorBase::lhs()  { return _lhs; }
+std::unique_ptr<Expr>& OperatorBase::rhs()  { return _rhs; }
 
 std::shared_ptr<Type> OperatorBase::retType() const {
     if (!_lhs->GetDeducedValue().has_value() &&

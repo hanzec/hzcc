@@ -1,7 +1,7 @@
 //
 // Created by Hanze Chen on 2022/3/29.
 //
-#include "OperatorBase.h"
+#include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
 namespace hzcc::ast {
 RelationalExpr::RelationalExpr(const Position& loc, std::string_view type,
@@ -47,43 +47,9 @@ RelationalExpr::RelationalExpr(const Position& loc, std::string_view type,
     }
 }
 
-void RelationalExpr::PrintDetail(std::ostream& out,
-                                 const std::string& ident) const {
-    // lhs type
-    out << " " + GetLHS()->retType()->Name();
-
-    // symbol type
-    switch (_type) {
-        case RelationalType::kRelationalType_Equal:
-            out << " == ";
-            break;
-        case RelationalType::kRelationalType_NEqual:
-            out << " != ";
-            break;
-        case RelationalType::kRelationalType_Less:
-            out << " < ";
-            break;
-        case RelationalType::kRelationalType_LessEqual:
-            out << " <= ";
-            break;
-        case RelationalType::kRelationalType_Greater:
-            out << " > ";
-            break;
-        case RelationalType::kRelationalType_GreaterEqual:
-            out << " >= ";
-            break;
-        default:
-            DLOG(FATAL) << "Unknown relational biop: " << _type;
-    }
-
-    // dump rhs
-    GetLHS()->Dump(out, ident + " |");
-    GetRHS()->Dump(out, ident + " `");
-}
-
 std::shared_ptr<Type> RelationalExpr::retType() const {
     return GetNumericalTypeOf<PrimitiveType::kChar>();
 }
 Status RelationalExpr::visit(Visitor& visitor) { return visitor.visit(this); }
-RelationalType RelationalExpr::OpType() const { return _type; }
+RelationalType RelationalExpr::op_type() const { return _type; }
 }  // namespace hzcc::ast

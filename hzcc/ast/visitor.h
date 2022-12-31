@@ -3,8 +3,6 @@
 //
 #include "utils/logging.h"
 #include "utils/status/status.h"
-#include "utils/type_name_utils.h"
-
 #ifndef HZCC_AST_AST_VISITOR_H
 #define HZCC_AST_AST_VISITOR_H
 namespace hzcc::ast {
@@ -16,17 +14,19 @@ class BitwiseExpr;
 class CommaExpr;
 class LogicalExpr;
 class RelationalExpr;
-class AccessExpr;
+class MemberExpr;
 class ArraySubscriptExpr;
 class TernaryExpr;
 class DeclRefExpr;
 class LiteralExpr;
 class SizeofExpr;
 class UnaryOperator;
+class TypeProxyExpr;
 class BreakStmt;
 class CompoundStmt;
 class ContinueStmt;
 class IDeclStmt;
+class DeclStmt;
 class DoStmt;
 class EmptyStmt;
 class ForStmt;
@@ -37,6 +37,10 @@ class ParamVarDecl;
 class ReturnStmt;
 class RecordDecl;
 class WhileStmt;
+class VarDecl;
+class ExplicitCastExpr;
+class ImplicitCastExpr;
+class CompilationUnit;
 
 class Visitor {
   public:
@@ -83,7 +87,7 @@ class Visitor {
                       << " not implemented!";
         return NoError();
     };
-    virtual Status visit(hzcc::ast::AccessExpr* p_expr) {
+    virtual Status visit(hzcc::ast::MemberExpr* p_expr) {
         DLOG(WARNING) << "ast Visitor for Node " << __FUNCTION__
                       << " hzcc::ast::AccessExpr"
                       << " not implemented!";
@@ -97,7 +101,7 @@ class Visitor {
     };
     virtual Status visit(hzcc::ast::TernaryExpr* p_expr) {
         DLOG(WARNING) << "ast Visitor for Node " << __FUNCTION__
-                      << " hzcc::ast::ConditionalExpr"
+                      << " hzcc::ast::TernaryExpr"
                       << " not implemented!";
         return NoError();
     };
@@ -179,6 +183,13 @@ class Visitor {
                       << " not implemented!";
         return NoError();
     };
+    virtual Status visit(hzcc::ast::VarDecl* p_expr) {
+        DLOG(WARNING) << "ast Visitor for Node " << __FUNCTION__
+                      << " hzcc::ast::ParamVarDecl"
+                      << " not implemented!";
+        return NoError();
+    };
+
     virtual Status visit(hzcc::ast::ParamVarDecl* p_expr) {
         DLOG(WARNING) << "ast Visitor for Node " << __FUNCTION__
                       << " hzcc::ast::ParamVarDecl"
@@ -200,6 +211,41 @@ class Visitor {
     virtual Status visit(hzcc::ast::LiteralExpr* p_expr) {
         DLOG(WARNING) << "ast Visitor for Node " << __FUNCTION__
                       << " hzcc::ast::LiteralExpr"
+                      << " not implemented!";
+        return NoError();
+    };
+
+    virtual Status visit(hzcc::ast::TypeProxyExpr* p_expr) {
+        DLOG(WARNING) << "ast Visitor for Node " << __FUNCTION__
+                      << " hzcc::ast::LiteralExpr"
+                      << " not implemented!";
+        return NoError();
+    };
+
+    virtual Status visit(hzcc::ast::DeclStmt* p_expr) {
+        DLOG(WARNING) << "ast Visitor for Node " << __FUNCTION__
+                      << " hzcc::ast::LiteralExpr"
+                      << " not implemented!";
+        return NoError();
+    };
+
+    virtual Status visit(hzcc::ast::ExplicitCastExpr* p_expr) {
+        DLOG(WARNING) << "ast Visitor for Node " << __FUNCTION__
+                      << " hzcc::ast::ExplicitCastExpr"
+                      << " not implemented!";
+        return NoError();
+    };
+
+    virtual Status visit(hzcc::ast::ImplicitCastExpr* p_expr) {
+        DLOG(WARNING) << "ast Visitor for Node " << __FUNCTION__
+                      << " hzcc::ast::ExplicitCastExpr"
+                      << " not implemented!";
+        return NoError();
+    };
+
+    virtual Status visit(hzcc::ast::CompilationUnit* p_expr) {
+        DLOG(WARNING) << "ast Visitor for Node " << __FUNCTION__
+                      << " hzcc::ast::ExplicitCastExpr"
                       << " not implemented!";
         return NoError();
     };

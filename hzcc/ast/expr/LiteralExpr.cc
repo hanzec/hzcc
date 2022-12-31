@@ -59,26 +59,6 @@ std::optional<DeduceValue> LiteralExpr::GetDeducedValue() const {
     return std::nullopt;
 }
 
-void LiteralExpr::PrintDetail(std::ostream& out,
-                              const std::string& ident) const {
-    switch (_type) {
-        case LiteralType::kLiteralType_Char:
-            out << "char \'" << _value << "\'";
-            break;
-        case LiteralType::kLiteralType_Real_number:
-            out << "real_number " << _value;
-            break;
-        case LiteralType::kLiteralType_String:
-            out << "string \"" << _value << "\"";
-            break;
-        case LiteralType::kLiteralType_Integer:
-            out << "int " << _value;
-            break;
-        case kLiteralType_Max:
-            DLOG_ASSERT(false) << "unexpected literal type [kLiteralType_Max]";
-    }
-}
-
 std::shared_ptr<Type> LiteralExpr::retType() const {
     switch (_type) {
         case LiteralType::kLiteralType_Char:
@@ -88,7 +68,7 @@ std::shared_ptr<Type> LiteralExpr::retType() const {
         case LiteralType::kLiteralType_String:
             return std::make_shared<ArrayType>(
                 GetNumericalTypeOf<PrimitiveType::kChar>(),
-                std::make_unique<LiteralExpr>(_value.size() + 1, Location()));
+                std::make_unique<LiteralExpr>(_value.size() + 1, loc()));
         case LiteralType::kLiteralType_Integer:
             return GetNumericalTypeOf<PrimitiveType::kInt>();
         default:
@@ -99,8 +79,8 @@ std::shared_ptr<Type> LiteralExpr::retType() const {
 
 bool LiteralExpr::IsReturnLValue() const { return false; }
 Status LiteralExpr::visit(Visitor& visitor) { return visitor.visit(this); }
-LiteralType LiteralExpr::GetLiteralType() const { return _type; }
+LiteralType LiteralExpr::literal_type() const { return _type; }
 bool LiteralExpr::IsLiteral() const { return true; }
-const std::string& LiteralExpr::GetValue() const { return _value; }
+std::string_view LiteralExpr::get_literal_val() const { return _value; }
 
 }  // namespace hzcc::ast

@@ -96,20 +96,20 @@ int main(int argc, char* argv[]) {
             if (output_file.empty()) {
                 for (const auto& token : tokens.value()) {
                     std::cout << "File " << input_files[i] << " Line "
-                              << std::setw(5) << token.Location().first
+                              << std::setw(5) << token.loc().first
                               << std::setw(0) << " Token " << std::setw(3)
                               << magic_enum::enum_integer(token.Type())
-                              << std::setw(0) << " Text " << token.Value(true)
+                              << std::setw(0) << " Text " << token.val(true)
                               << std::endl;
                 }
             } else {
                 std::fstream outfile(output_file, std::fstream::out);
                 for (const auto& token : tokens.value()) {
                     outfile << "File " << input_files[i] << " Line "
-                            << std::setw(5) << token.Location().first
+                            << std::setw(5) << token.loc().first
                             << std::setw(0) << " Token " << std::setw(3)
                             << magic_enum::enum_integer(token.Type())
-                            << std::setw(0) << " Text " << token.Value(true)
+                            << std::setw(0) << " Text " << token.val(true)
                             << std::endl;
                 }
                 outfile.close();
@@ -131,10 +131,10 @@ int main(int argc, char* argv[]) {
         // print syntax analysis result
         if (syntax_only) {
             if (output_file.empty()) {
-                compilation_unit->Dump(std::cout);
+//                compilation_unit->Dump(std::cout);
             } else {
                 std::fstream outfile(output_file, std::fstream::out);
-                compilation_unit->Dump(outfile);
+//                compilation_unit->Dump(outfile);
                 outfile.close();
             }
 

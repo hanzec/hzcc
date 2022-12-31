@@ -7,8 +7,8 @@
 #include "ast/type/Type.h"
 namespace hzcc::ast {
 VarDecl::VarDecl(const Position& loc, std::string_view name,
-                 std::shared_ptr<Type> type,
-                 std::unique_ptr<Expr> init)  // NOLINT
+                 std::unique_ptr<Expr> init,
+                 std::unique_ptr<TypeProxyExpr> type)  // NOLINT
     : IDeclStmt("VarDecl",name, loc),
       _type(std::move(type)),
       _init_expr(std::move(init)) {
@@ -21,16 +21,11 @@ VarDecl::VarDecl(const Position& loc, std::string_view name,
             << UniqueName() << "init expression is nullptr";
     })
 }
-
-void VarDecl::PrintDetail(std::ostream& out, const std::string& ident) const {
-    out << DeclName() << " " << declType()->Name();
-    if (HasInitExpr()) _init_expr->Dump(out, ident + " `");
-}
 Status VarDecl::visit(Visitor& visitor) { return visitor.visit(this); }
 
-bool VarDecl::HasInitExpr() const { return _init_expr != nullptr; }
+bool VarDecl::has_init() const { return _init_expr != nullptr; }
 
-std::unique_ptr<Expr>& VarDecl::GetInitExpr() {
+std::unique_ptr<Expr>& VarDecl::init_expr() {
     DLOG_ASSERT(_init_expr != nullptr) << "init cast is nullptr";
     return _init_expr;
 }

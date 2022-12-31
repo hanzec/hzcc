@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.20.0) # we need unzip files
-
 ###############################################################################
 ## CMake Settings #############################################################
 ###############################################################################
@@ -57,6 +56,8 @@ if (RUNTIME_CHECK MATCHES "ON")
     add_compile_definitions(HZCC_ENABLE_RUNTIME_CHECK)
 endif ()
 
+# fix include path for windows
+
 ###############################################################################
 ## Prepare VCPKG ##############################################################
 ###############################################################################
@@ -65,58 +66,34 @@ message(STATUS "Fetching VCPKG...")
 include(FetchContent)
 FetchContent_Declare(
         vcpkg
-        GIT_TAG master
+        GIT_TAG 2022.11.14
         GIT_REPOSITORY https://github.com/microsoft/vcpkg.git)
 FetchContent_MakeAvailable(vcpkg)
 
-# setup vcpkg
-list(APPEND CMAKE_MODULE_PATH "${vcpkg_SOURCE_DIR}/scripts/cmake")
+# Add VCPKG to CMake
+set(CMAKE_TOOLCHAIN_FILE ${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake
+        CACHE STRING "CMake toolchain file")
 
 # setup include directories
 include_directories("${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/include/")
 
 ###############################################################################
-## VCPKG Managed Dependency ###################################################
+## Project Config #############################################################
 ###############################################################################
-# run vcpkg bootstrap
-if ((EXISTS "${vcpkg_SOURCE_DIR}/vcpkg") OR (EXISTS "${vcpkg_SOURCE_DIR}/vcpkg.exe"))
-    message(VERBOSE "Found builded vcpkg at ${vcpkg_SOURCE_DIR}")
-else ()
-    message(STATUS "Not Found builded vcpkg, bootstrap vcpkg now...")
-    if (WIN32)
-        execute_process(
-                COMMAND "${vcpkg_SOURCE_DIR}/bootstrap-vcpkg.bat" -disableMetrics
-                RESULT_VARIABLE VCPKG_STATUS
-                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-        execute_process(
-                COMMAND "${vcpkg_SOURCE_DIR}/vcpkg.exe" integrate install
-                RESULT_VARIABLE VCPKG_STATUS
-                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-    else ()
-        execute_process(
-                COMMAND bash "${vcpkg_SOURCE_DIR}/bootstrap-vcpkg.sh" -disableMetrics
-                RESULT_VARIABLE VCPKG_STATUS
-                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-    endif ()
-    if (VCPKG_STATUS AND NOT VCPKG_STATUS EQUAL 0)
-        message(FATAL_ERROR "VCPKG bootstrap failed, can't build VCPKG !")
-    else ()
-        message(STATUS "Building VCPKG success!")
-    endif ()
-endif ()
+project(hzcc VERSION 0.1.0)
 
-# set vcpkg to cmake toolchain file (has to before declaration of project)
-if (NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-    if (EXISTS "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake")
-        message(VERBOSE "Found cmake scripts at ${vcpkg_SOURCE_DIR}")
-        set(CMAKE_TOOLCHAIN_FILE "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake" CACHE PATH "toolchain file")
-    else ()
-        message(FATAL_ERROR "Not Found VCPKG cmake scripts at
-                             Source/third_party/scripts/buildsystems/vcpkg.cmake")
-    endif ()
-else ()
-    message(VERBOSE "CMAKE_TOOLCHAIN_FILE is already define as ${CMAKE_TOOLCHAIN_FILE}")
-endif ()
+###############################################################################
+## Prepare LLVM ###############################################################
+###############################################################################
+find_package(LLVM REQUIRED CONFIG)
+
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+
+###############################################################################
+## Third-Party ###############################################################
+###############################################################################
+add_subdirectory(third_party)
 
 ###############################################################################
 ## System Information  ########################################################
@@ -139,11 +116,6 @@ endif ()
 
 # get hostname
 cmake_host_system_information(RESULT MACHINE_HOST_NAME QUERY HOSTNAME)
-
-###############################################################################
-## Project Config #############################################################
-###############################################################################
-project(hzcc VERSION 0.1.0)
 
 ###############################################################################
 ## Project hzcc #############################################################

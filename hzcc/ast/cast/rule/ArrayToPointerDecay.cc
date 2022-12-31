@@ -2,7 +2,7 @@
 // Created by chen_ on 2022/6/13.
 //
 #include "ast/Stmt.h"
-#include "ast/cast/CastTool.h"
+#include "ast/cast/Cast.h"
 #include "ast/cast/ICastRule.h"
 namespace hzcc::ast {
 class ArrayToPointerDecay : public ICastRule {
@@ -19,7 +19,7 @@ public:
 
   StatusOr<std::unique_ptr<CastExpr>> Apply(std::unique_ptr<Expr> node,
                                             const std::shared_ptr<Type> &to) override {
-    return std::make_unique<ArrayToPointerDecayCast>(node->Location(), std::move(node));
+    return std::make_unique<ArrayToPointerDecayCast>(node->loc(), std::move(node));
   }
 };
 

@@ -23,47 +23,28 @@ IfStmt::IfStmt(const Position &location, std::unique_ptr<Stmt> cond,
 };
 
 Status IfStmt::visit(Visitor &visitor) { return visitor.visit(this); }
-bool IfStmt::set_else(std::unique_ptr<Stmt> Else) {
-    return (_else_statement_ = std::move(Else)) != nullptr;
+void IfStmt::set_else(std::unique_ptr<Stmt> else_body) {
+    HZCC_RUNTIME_CHECK_BLOCK({
+        INTERNAL_LOG_IF(FATAL, else_body == nullptr)
+            << UniqueName() << "else is nullptr";
+    })
+    _else_statement_ = std::move(else_body);
 }
 
 void IfStmt::addElseIf(std::unique_ptr<Stmt> Cond, std::unique_ptr<Stmt> Body) {
     HZCC_RUNTIME_CHECK_BLOCK({
-        LOG_IF(FATAL, Cond == nullptr || Body == nullptr)
-            << UniqueName() << "Cond or Body is nullptr";
+        INTERNAL_LOG_IF(FATAL, Cond == nullptr || Body == nullptr)
+            << UniqueName() << "Cond or body is nullptr";
     })
-
     _elseIfs.emplace_back(std::move(Cond), std::move(Body));
 }
 bool IfStmt::HasElse() const { return _else_statement_ != nullptr; }
-bool IfStmt::HasBody() const { return true; }
-const std::unique_ptr<Stmt> &IfStmt::CondStmt() { return _condition; }
-const std::unique_ptr<Stmt> &IfStmt::BodyStmt() { return _if_body_statement; }
+bool IfStmt::has_body() const { return true; }
+std::unique_ptr<Stmt> &IfStmt::cond_stmt() { return _condition; }
+std::unique_ptr<Stmt> &IfStmt::body_stmt() { return _if_body_statement; }
 std::vector<std::pair<std::unique_ptr<Stmt>, std::unique_ptr<Stmt>>>
-    &IfStmt::ElseIfStmt() {
+    &IfStmt::else_if_stmts() {
     return _elseIfs;
 }
-void IfStmt::PrintDetail(std::ostream &out, const std::string &ident) const {
-    // print condition
-    _condition->Dump(out, ident + " |");
-
-    // print body
-    _if_body_statement->Dump(
-        out, ident + (_elseIfs.empty() && _else_statement_ == nullptr ? " `"
-                                                                      : " |"));
-
-    // print else if
-    for (auto &else_if : _elseIfs) {
-        else_if.first->Dump(out, ident + (else_if == _elseIfs.back() &&
-                                                  _else_statement_ == nullptr
-                                              ? " `"
-                                              : " |"));
-    }
-
-    // print else
-    if (_else_statement_ != nullptr) {
-        _else_statement_->Dump(out, ident + " `");
-    }
-}
-std::unique_ptr<Stmt> &IfStmt::ElseStmt() { return _else_statement_; }
+std::unique_ptr<Stmt> &IfStmt::else_stmt() { return _else_statement_; }
 }  // namespace hzcc::ast

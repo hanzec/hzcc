@@ -29,13 +29,6 @@ std::shared_ptr<Type> ArraySubscriptExpr::retType() const {
         ->GetBaseType();
 }
 
-void ArraySubscriptExpr::PrintDetail(std::ostream& out,
-                                     const std::string& ident) const {
-    out << retType()->Name();
-    _array->Dump(out, ident + " |");
-    _subscript->Dump(out, ident + " `");
-}
-
 bool ArraySubscriptExpr::IsReturnLValue() const { return true; }
 
 Status ArraySubscriptExpr::visit(Visitor& visitor) {
@@ -43,6 +36,6 @@ Status ArraySubscriptExpr::visit(Visitor& visitor) {
 }
 
 bool ArraySubscriptExpr::IsDereference() const { return true; }
-std::unique_ptr<Expr>& ArraySubscriptExpr::GetArrayBase() { return _array; }
-std::unique_ptr<Expr>& ArraySubscriptExpr::GetSubscript() { return _subscript; }
+std::unique_ptr<Expr>& ArraySubscriptExpr::base_expr() { return _array; }
+std::unique_ptr<Expr>& ArraySubscriptExpr::subscript_expr() { return _subscript; }
 }  // namespace hzcc::ast

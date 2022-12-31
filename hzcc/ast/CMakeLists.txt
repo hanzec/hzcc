@@ -18,35 +18,18 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/cast)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/type)
 
 ###############################################################################
-## ast Utils ##################################################################
+## ast Expr ##################################################################
+###############################################################################
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/expr)
+
+###############################################################################
+## ast utils ##################################################################
 ###############################################################################
 file(GLOB hzcc_ast_utils_hdrs ${CMAKE_CURRENT_LIST_DIR}/utils/*.h)
 file(GLOB hzcc_ast_utils_srcs ${CMAKE_CURRENT_LIST_DIR}/utils/*.cc)
 
 # project sources
 target_sources(hzcc PRIVATE ${hzcc_ast_utils_hdrs} ${hzcc_ast_utils_srcs})
-
-###############################################################################
-## ast Value ##################################################################
-###############################################################################
-file(GLOB hzcc_ast_value_hdrs ${CMAKE_CURRENT_LIST_DIR}/value/*.h)
-file(GLOB hzcc_ast_value_srcs ${CMAKE_CURRENT_LIST_DIR}/value/*.cc)
-
-# project sources
-target_sources(hzcc PRIVATE ${hzcc_ast_value_hdrs} ${hzcc_ast_value_srcs})
-
-###############################################################################
-## ast Operator #############################################################
-###############################################################################
-file(GLOB hzcc_ast_expression_hdrs ${CMAKE_CURRENT_LIST_DIR}/expr/*.h)
-file(GLOB hzcc_ast_expression_srcs ${CMAKE_CURRENT_LIST_DIR}/expr/*.cc)
-file(GLOB hzcc_ast_expression_op_hdrs ${CMAKE_CURRENT_LIST_DIR}/expr/biop/*.h)
-file(GLOB hzcc_ast_expression_op_srcs ${CMAKE_CURRENT_LIST_DIR}/expr/biop/*.cc)
-
-# project sources
-target_sources(hzcc PRIVATE
-        ${hzcc_ast_expression_hdrs} ${hzcc_ast_expression_srcs}
-        ${hzcc_ast_expression_op_hdrs} ${hzcc_ast_expression_op_srcs})
 
 ###############################################################################
 ## ast Statement #############################################################
@@ -73,6 +56,7 @@ if (UNIT_TESTING MATCHES "ON")
             ${hzcc_ast_type_hdrs} ${hzcc_ast_type_srcs}
             ${hzcc_ast_utils_hdrs} ${hzcc_ast_utils_srcs}
             ${hzcc_ast_value_hdrs} ${hzcc_ast_value_srcs}
+            ${hzcc_ast_utils_hdrs} ${hzcc_ast_utils_srcs}
             ${hzcc_ast_statements_hdrs} ${hzcc_ast_statements_srcs}
             ${hzcc_ast_expression_hdrs} ${hzcc_ast_expression_srcs}
             ${hzcc_ast_expression_op_hdrs} ${hzcc_ast_expression_op_srcs})

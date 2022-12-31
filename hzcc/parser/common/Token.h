@@ -68,7 +68,7 @@ class Token {
      * @return std::pair<int, int> the location of the token in the
      *         source file which is a three tuple variable (row, column)
      */
-    [[nodiscard]] Position Location() const noexcept;
+    [[nodiscard]] Position loc() const noexcept;
 
     /**
      * @brief Get the human readable string of the token
@@ -78,7 +78,7 @@ class Token {
      * string
      * @return std::string the human readable string value of the token
      */
-    [[nodiscard]] std::string Value(bool escape = false) const noexcept;
+    [[nodiscard]] std::string val(bool escape = false) const noexcept;
 
   private:
     Position _location;
@@ -92,7 +92,7 @@ class Token {
 };
 
 inline bool operator==(const Token& lhs, const Token& rhs) {
-    return lhs.Type() == rhs.Type() && lhs.Location() == rhs.Location();
+    return lhs.Type() == rhs.Type() && lhs.loc() == rhs.loc();
 }
 
 }  // namespace hzcc

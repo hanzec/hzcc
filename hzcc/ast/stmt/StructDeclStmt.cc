@@ -6,7 +6,7 @@
 namespace hzcc::ast {
 RecordDecl::RecordDecl(const Position& loc,
                        std::string_view decl_name,
-                               std::shared_ptr<StructType> type)  // NO_LINT
+                       std::unique_ptr<TypeProxyExpr> type)  // NO_LINT
     : IDeclStmt("StructDeclStmt",decl_name, loc),
       _type(std::move(type)) {}
 

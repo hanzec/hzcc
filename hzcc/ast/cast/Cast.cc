@@ -1,12 +1,12 @@
 //
 // Created by chen_ on 2022/6/13.
 //
-#include "CastTool.h"
+#include "Cast.h"
+
 #include "ast/expr/Expr.h"
-#include "ast/expr/cast/CastExpr.h"
 #include "utils/logging.h"
 namespace hzcc::ast {
-StatusOr<std::unique_ptr<Expr>> CastTool::apply(
+StatusOr<std::unique_ptr<Expr>> Cast::apply(
     bool require_rvalue,                      // NOLINT
     std::unique_ptr<Expr> rhs,                // NOLINT
     const std::shared_ptr<Type>& lhs_type) {  // NOLINT
@@ -20,7 +20,7 @@ StatusOr<std::unique_ptr<Expr>> CastTool::apply(
                "is already an rvalue.";
         if (ret->IsReturnLValue()) {
             VLOG(SYNTAX_LOG_LEVEL) << "Applying <LvalueToRvalueCast>cast";
-            ret = std::make_unique<LvalueToRvalueCast>(ret->Location(),
+            ret = std::make_unique<LvalueToRvalueCast>(ret->loc(),
                                                        std::move(ret));
         }
     }
@@ -88,6 +88,10 @@ StatusOr<std::unique_ptr<Expr>> CastTool::apply(
         << "Failed rhs resolve Cast Rule lhs: " << ret->UniqueName() << "("
         << ret->retType()->Name() << ") rhs type: "
         << "(" << lhs_type->Name() << ")";
+
+    if(ret == nullptr || ret->retType() != lhs_type) {
+        return Status(StatusCode::kCastStage, "Failed rhs resolve Cast Rule");
+    }
     return std::move(ret);
 }
 }  // namespace hzcc::ast

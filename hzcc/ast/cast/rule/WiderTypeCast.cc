@@ -1,7 +1,7 @@
 //
 // Created by chen_ on 2022/6/13.
 //
-#include "ast/cast/CastTool.h"
+#include "ast/cast/Cast.h"
 #include "ast/cast/ICastRule.h"
 #include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
@@ -45,7 +45,7 @@ public:
                                             const std::shared_ptr<Type> &to) override {
     auto rhs_type = std::dynamic_pointer_cast<NumericalType>(node->retType());
     if (rhs_type->GetTypeId() < magic_enum::enum_integer(PrimitiveType::kFloat)) {
-      return std::make_unique<IntegralCast>(node->Location(), to, std::move(node));
+      return std::make_unique<IntegralCast>(node->loc(), to, std::move(node));
     } else {
       LOG(WARNING) << "WiderTypeCast: " << rhs_type->Name() << " to " << to->Name() << " is not impl.";
       return nullptr;

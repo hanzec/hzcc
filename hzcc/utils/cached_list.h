@@ -43,7 +43,7 @@ class CachedList : protected std::list<T> {
     template <class... Args,
               std::enable_if_t<std::is_constructible_v<T, Args&&...>, int> = 0>
     void push(Args... args) {
-        emplace_front(args...);
+        this->emplace_front(args...);
     }
 
     /**

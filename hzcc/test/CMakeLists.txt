@@ -10,7 +10,7 @@ if (NOT EXISTS "${TEST_OUTPUT_FOLDER}")
 endif ()
 
 # llvm-lit executable
-set(LLVM_LIT_EXECUTABLE "utils/llvm_lit.py")
+set(LLVM_LIT_EXECUTABLE "../../third_party/llvm_lit.py")
 
 ###############################################################################
 ## Helper Function ############################################################
@@ -56,19 +56,9 @@ endfunction()
 ###############################################################################
 ## FileCheckTool ##############################################################
 ###############################################################################
-add_subdirectory(utils/FileCheck)
-
 # testing target required this target
 add_dependencies(hzcc_e2e_test FileCheck)
 
-###############################################################################
-## FileCheckTool ##############################################################
-###############################################################################
-#add_subdirectory(utils/Jexpr)
-#
-## testing target required this target
-#add_dependencies(hzcc_e2e_test jexpr)
-#
 
 ###############################################################################
 ## Testing Dependence #########################################################
@@ -95,11 +85,11 @@ enable_testing()
 
 message(STATUS "E2E testing is enabled.")
 
-# add compiler_info test set
-add_lit_test_set(compiler_info ${CMAKE_CURRENT_SOURCE_DIR}/compiler_info)
-
-# add lexical test set
-add_lit_test_set(lexical ${CMAKE_CURRENT_SOURCE_DIR}/lexical)
-
-# add test_set_0 test set
-add_lit_test_set(lexical_part3 ${CMAKE_CURRENT_SOURCE_DIR}/syntax/test_set_0)
+## add compiler_info test set
+#add_lit_test_set(compiler_info compiler_info)
+#
+## add lexical test set
+#add_lit_test_set(lexical lexical)
+#
+## add test_set_0 test set
+#add_lit_test_set(lexical_part3 syntax/test_set_0)

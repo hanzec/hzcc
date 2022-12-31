@@ -5,7 +5,7 @@
 namespace hzcc::ast {
 FieldDecl::FieldDecl(const Position& loc,         // NOLINT
                      std::string_view name,       // NOLINT
-                     std::shared_ptr<Type> type)  // NOLINT
+                     std::unique_ptr<TypeProxyExpr> type)  // NOLINT
     : IDeclStmt("FieldDecl",name, loc), _type(std::move(type)) {
     HZCC_RUNTIME_CHECK_BLOCK({
         INTERNAL_LOG_IF(FATAL, _type != nullptr)

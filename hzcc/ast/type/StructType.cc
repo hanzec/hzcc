@@ -3,6 +3,7 @@
 //
 
 #include "ast/type/Type.h"
+#include "utils/logging.h"
 namespace hzcc::ast {
 StructType::StructType(const std::string &name,
                        const std::list<Attribute> &attr_list)
@@ -41,7 +42,7 @@ bool StructType::AddChild(const std::string &name,              // NOLINT
     _localTypeList.emplace_back(name, type);
     return true;
 }
-std::shared_ptr<Type> StructType::ChildType(const std::string &name) {
+std::shared_ptr<Type> StructType::field_type(std::string_view name) {
     for (auto &item : _localTypeList) {
         if (std::get<0>(item) == name) {
             return std::get<1>(item);

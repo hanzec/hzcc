@@ -1,3 +1,6 @@
 [submodule "Test/utils/Krakatau"]
 	path = Test/utils/Krakatau
 	url = https://github.com/Storyyeller/Krakatau.git
+[submodule "third_party/Krakatau"]
+	path = third_party/Krakatau
+	url = https://github.com/Storyyeller/Krakatau.git

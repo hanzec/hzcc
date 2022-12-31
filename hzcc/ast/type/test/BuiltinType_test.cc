@@ -1,13 +1,11 @@
 //
 // Created by chen_ on 2022/6/13.
 //
-#include "AST/type/BuiltinType.h"
-
 #include <gtest/gtest.h>
 
 namespace hzcc::ast {
 TEST(AST_TYPE, builtin_type_void) {
-    BuiltinType void_type(kPrimitiveType_void);
+    BuiltinType void_type(PrimitiveType::kvoid);
 
     EXPECT_EQ(void_type.Name(), "void");
     EXPECT_TRUE(void_type.is());
@@ -22,7 +20,7 @@ TEST(AST_TYPE, builtin_type_void) {
 }
 
 TEST(AST_TYPE, builtin_type_char) {
-    BuiltinType char_type(kPrimitiveType_char);
+    BuiltinType char_type(PrimitiveType::kchar);
 
     EXPECT_EQ(char_type.Name(), "char");
     EXPECT_TRUE(char_type.IsChar());
@@ -37,7 +35,7 @@ TEST(AST_TYPE, builtin_type_char) {
 }
 
 TEST(AST_TYPE, builtin_type_short) {
-    BuiltinType int_type(kPrimitiveType_short);
+    BuiltinType int_type(PrimitiveType::kshort);
 
     EXPECT_EQ(int_type.Name(), "short");
     EXPECT_FALSE(int_type.IsChar());
@@ -52,7 +50,7 @@ TEST(AST_TYPE, builtin_type_short) {
 }
 
 TEST(AST_TYPE, builtin_type_int) {
-    BuiltinType int_type(kPrimitiveType_int);
+    BuiltinType int_type(PrimitiveType::kint);
 
     EXPECT_EQ(int_type.Name(), "int");
     EXPECT_FALSE(int_type.IsChar());
@@ -67,7 +65,7 @@ TEST(AST_TYPE, builtin_type_int) {
 }
 
 TEST(AST_TYPE, builtin_type_long) {
-    BuiltinType long_type(kPrimitiveType_long);
+    BuiltinType long_type(PrimitiveType::klong);
 
     EXPECT_EQ(long_type.Name(), "long");
     EXPECT_FALSE(long_type.IsChar());
@@ -82,7 +80,7 @@ TEST(AST_TYPE, builtin_type_long) {
 }
 
 TEST(AST_TYPE, builtin_type_long_long) {
-    BuiltinType longlong_type(kPrimitiveType_longlong);
+    BuiltinType longlong_type(PrimitiveType::klonglong);
 
     EXPECT_EQ(longlong_type.Name(), "long long");
     EXPECT_FALSE(longlong_type.IsChar());
@@ -97,7 +95,7 @@ TEST(AST_TYPE, builtin_type_long_long) {
 }
 
 TEST(AST_TYPE, builtin_type_float) {
-    BuiltinType float_type(kPrimitiveType_float);
+    BuiltinType float_type(PrimitiveType::kfloat);
 
     EXPECT_EQ(float_type.Name(), "float");
     EXPECT_FALSE(float_type.IsChar());
@@ -112,7 +110,7 @@ TEST(AST_TYPE, builtin_type_float) {
 }
 
 TEST(AST_TYPE, builtin_type_double) {
-    hzcc::ast::BuiltinType double_type(kPrimitiveType_double);
+    hzcc::ast::BuiltinType double_type(PrimitiveType::kdouble);
 
     EXPECT_EQ(double_type.Name(), "double");
     EXPECT_FALSE(double_type.IsChar());
@@ -127,7 +125,7 @@ TEST(AST_TYPE, builtin_type_double) {
 }
 
 TEST(AST_TYPE, builtin_type_long_double) {
-    hzcc::ast::BuiltinType bool_type(kPrimitiveType_long_double);
+    hzcc::ast::BuiltinType bool_type(PrimitiveType::klong_double);
 
     EXPECT_EQ(bool_type.Name(), "long double");
     EXPECT_FALSE(bool_type.IsChar());
@@ -142,7 +140,7 @@ TEST(AST_TYPE, builtin_type_long_double) {
 }
 
 TEST(AST_TYPE, builtin_type_bool) {
-    hzcc::ast::BuiltinType bool_type(kPrimitiveType_bool);
+    hzcc::ast::BuiltinType bool_type(PrimitiveType::kbool);
 
     EXPECT_EQ(bool_type.Name(), "bool");
     EXPECT_FALSE(bool_type.IsChar());
@@ -157,7 +155,7 @@ TEST(AST_TYPE, builtin_type_bool) {
 }
 
 TEST(AST_TYPE, builtin_type_complex) {
-    hzcc::ast::BuiltinType complex_type(kPrimitiveType_complex);
+    hzcc::ast::BuiltinType complex_type(PrimitiveType::kcomplex);
 
     EXPECT_EQ(complex_type.Name(), "complex");
     EXPECT_FALSE(complex_type.IsChar());
@@ -172,7 +170,7 @@ TEST(AST_TYPE, builtin_type_complex) {
 }
 
 TEST(AST_TYPE, builtin_type_imaginary) {
-    hzcc::ast::BuiltinType imaginary_type(kPrimitiveType_imaginary);
+    hzcc::ast::BuiltinType imaginary_type(PrimitiveType::kimaginary);
 
     EXPECT_EQ(imaginary_type.Name(), "imaginary");
     EXPECT_FALSE(imaginary_type.IsChar());

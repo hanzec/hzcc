@@ -2,6 +2,7 @@
 // Created by chen_ on 2022/6/13.
 //
 #include "ast/type/Type.h"
+#include "utils/constexpr_utils.h"
 
 namespace hzcc::ast {
 

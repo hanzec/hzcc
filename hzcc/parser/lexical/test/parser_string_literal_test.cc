@@ -21,7 +21,7 @@ TEST(LEXICAL_PARSER, string_iteral_1) {
     ASSERT_TRUE(result.Ok());
     EXPECT_EQ(token_stream.size(), 1);
     EXPECT_EQ(token_stream.front().Type(), kString);
-    EXPECT_EQ(token_stream.front().Value(), "Hello, World!");
+    EXPECT_EQ(token_stream.front().val(), "Hello, World!");
 }
 
 TEST(LEXICAL_PARSER, string_iteral_2) {
@@ -34,7 +34,7 @@ TEST(LEXICAL_PARSER, string_iteral_2) {
     ASSERT_TRUE(result.Ok());
     EXPECT_EQ(token_stream.size(), 1);
     EXPECT_EQ(token_stream.front().Type(), kString);
-    EXPECT_EQ(token_stream.front().Value(), "Hello, world!\n");
+    EXPECT_EQ(token_stream.front().val(), "Hello, world!\n");
 }
 
 TEST(LEXICAL_PARSER, string_iteral_3) {
@@ -47,7 +47,7 @@ TEST(LEXICAL_PARSER, string_iteral_3) {
     ASSERT_TRUE(result.Ok());
     EXPECT_EQ(token_stream.size(), 1);
     EXPECT_EQ(token_stream.front().Type(), kString);
-    EXPECT_EQ(token_stream.front().Value(), "I said, \\\"Hello, world!\\\"");
+    EXPECT_EQ(token_stream.front().val(), "I said, \\\"Hello, world!\\\"");
 }
 
 TEST(LEXICAL_PARSER, string_iteral_4) {
@@ -60,7 +60,7 @@ TEST(LEXICAL_PARSER, string_iteral_4) {
     ASSERT_TRUE(result.Ok());
     EXPECT_EQ(token_stream.size(), 1);
     EXPECT_EQ(token_stream.front().Type(), kString);
-    EXPECT_EQ(token_stream.front().Value(), "This is evil \\\\");
+    EXPECT_EQ(token_stream.front().val(), "This is evil \\\\");
 }
 
 TEST(LEXICAL_PARSER, string_iteral_5) {
@@ -73,7 +73,7 @@ TEST(LEXICAL_PARSER, string_iteral_5) {
     ASSERT_FALSE(result.Ok());
     EXPECT_EQ(token_stream.size(), 1);
     EXPECT_EQ(token_stream.front().Type(), kString);
-    EXPECT_EQ(token_stream.front().Value(), "This is evil \\\\");
+    EXPECT_EQ(token_stream.front().val(), "This is evil \\\\");
 }
 
 }  // namespace hzcc::lexical

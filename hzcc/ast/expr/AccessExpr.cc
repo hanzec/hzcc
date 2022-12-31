@@ -4,7 +4,7 @@
 #include "Expr.h"
 #include "ast/type/Type.h"
 namespace hzcc::ast {
-AccessExpr::AccessExpr(bool isPtr,                  // NOLINT
+MemberExpr::MemberExpr(bool isPtr,                  // NOLINT
                        const Position& loc,         // NOLINT
                        std::string_view field,      // NOLINT
                        std::unique_ptr<Expr> expr)  // NOLINT
@@ -25,11 +25,11 @@ AccessExpr::AccessExpr(bool isPtr,                  // NOLINT
 #endif
 }
 
-bool AccessExpr::IsReturnLValue() const { return true; }
+bool MemberExpr::IsReturnLValue() const { return true; }
 
-std::shared_ptr<Type> AccessExpr::retType() const {
+std::shared_ptr<Type> MemberExpr::retType() const {
     return dynamic_cast<StructType*>(_varaible->retType().get())
-        ->ChildType(_field);
+        ->field_type(_field);
 }
-Status AccessExpr::visit(Visitor& visitor) { return visitor.visit(this); }
+Status MemberExpr::visit(Visitor& visitor) { return visitor.visit(this); }
 }  // namespace hzcc::ast

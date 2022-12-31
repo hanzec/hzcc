@@ -6,29 +6,29 @@
 //
 #include <list>
 
+#include "parser/syntax/common_utils.h"
 #include "parser/syntax/parser/syntax_parser.h"
-#include "parser/syntax/utils/common_utils.h"
 #include "utils/type_name_utils.h"
 
 namespace hzcc::syntax::parser {
 WhileStatement::WhileStatement() noexcept
     : ParserBase(TypeNameUtil::hash<ast::WhileStmt>(),
                  TypeNameUtil::name_pretty<ast::WhileStmt>()) {}
-StatusOr<ast::StmtPtr> WhileStatement::parse_impl(TokenList& tokens,
-                                                  Ctx& context) {
+StatusOr<ast::StmtPtr> WhileStatement::parse_impl(SyntaxCtx context,
+                                                  TokenList& tokens) {
     EnterLoop();  // enter loop
 
     // check if the next token is [while]
-    auto while_loc = tokens.peek().Location();
+    auto while_loc = tokens.peek().loc();
     HZCC_CheckAndConsume_ReturnErr(TokenType::kWhile, tokens);
 
     // parse condition
     HZCC_CHECK_OR_ASSIGN(condition,  // NOLINT
-                         utils::ParseCondition(tokens, context));
+                         utils::ParseCondition(context, tokens));
 
     // parse body stmt
     HZCC_CHECK_OR_ASSIGN(body,  // NOLINT
-                         utils::ParseBodyStatement(tokens, context, false));
+                         utils::ParseBodyStatement(context, false, tokens));
 
     // push a semicolon for easier parsing
     tokens.push(TokenType::kSemiColon, -1, -1);

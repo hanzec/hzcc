@@ -1,7 +1,7 @@
 //
 // Created by Hanze Chen on 2022/3/29.
 //
-#include "OperatorBase.h"
+#include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
 namespace hzcc::ast {
 LogicalExpr::LogicalExpr(const Position& loc,        // NOLINT
@@ -40,18 +40,6 @@ std::shared_ptr<Type> LogicalExpr::retType() const {
     return GetNumericalTypeOf<PrimitiveType::kChar>();
 }
 Status LogicalExpr::visit(Visitor& visitor) { return visitor.visit(this); }
-LogicalType LogicalExpr::GetLogicalType() const { return _type; }
-
-void LogicalExpr::PrintDetail(std::ostream& out,
-                              const std::string& ident) const {
-    // print logical type
-    out << (_type == kLogicalType_And ? "&&" : "||");
-
-    // print lhs
-    GetLHS()->Dump(out, ident + " |");
-
-    // print rhs
-    GetLHS()->Dump(out, ident + " `");
-};
+LogicalType LogicalExpr::op_type() const { return _type; }
 
 }  // namespace hzcc::ast

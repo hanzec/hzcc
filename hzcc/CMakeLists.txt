@@ -143,7 +143,7 @@ endif ()
 ###############################################################################
 target_sources(hzcc
         PRIVATE
-        "macro.h" "main.cc" "options.cc" "options.h" "const_msg.h")
+        "macro.h" "main.cc" "options.cc" "options.h" "const_msg.h" "enums.h")
 
 ###############################################################################
 ## StatusCode Generation ############################################################

@@ -2,15 +2,10 @@
 // Created by Hanze Chen on 2022/3/29.
 //
 #include <algorithm>
-
-#include "OperatorBase.h"
 #include "ast/DeduceValue.h"
+#include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
 namespace hzcc::ast {
-constexpr static std::array<const char*,
-                            ArithmeticType::kArithmeticType_ENUM_SIZE>
-    kArithmeticStr = {"add", "sub", "mul", "div", "mod"};
-
 ArithmeticExpr::ArithmeticExpr(const Position& loc,        // NOLINT
                                std::string_view type,      // NOLINT
                                std::unique_ptr<Expr> lhs,  // NOLINT
@@ -56,27 +51,27 @@ ArithmeticExpr::ArithmeticExpr(const Position& loc,        // NOLINT
 }
 
 std::optional<DeduceValue> ArithmeticExpr::GetDeducedValue() const {
-    if (!(GetLHS()->GetDeducedValue().has_value() &&
-          GetRHS()->GetDeducedValue().has_value())) {
+    if (!(lhs_c()->GetDeducedValue().has_value() &&
+          rhs_c()->GetDeducedValue().has_value())) {
         return std::nullopt;
     }
 
     switch (this->_type) {
         case ArithmeticType::kArithmeticType_Add:
-            return GetLHS()->GetDeducedValue().value() +
-                   GetRHS()->GetDeducedValue().value();
+            return lhs_c()->GetDeducedValue().value() +
+                   rhs_c()->GetDeducedValue().value();
         case ArithmeticType::kArithmeticType_Sub:
-            return GetLHS()->GetDeducedValue().value() -
-                   GetRHS()->GetDeducedValue().value();
+            return lhs_c()->GetDeducedValue().value() -
+                   rhs_c()->GetDeducedValue().value();
         case ArithmeticType::kArithmeticType_Mul:
-            return GetLHS()->GetDeducedValue().value() *
-                   GetRHS()->GetDeducedValue().value();
+            return lhs_c()->GetDeducedValue().value() *
+                   rhs_c()->GetDeducedValue().value();
         case ArithmeticType::kArithmeticType_Div:
-            return GetLHS()->GetDeducedValue().value() /
-                   GetRHS()->GetDeducedValue().value();
+            return lhs_c()->GetDeducedValue().value() /
+                   rhs_c()->GetDeducedValue().value();
         case ArithmeticType::kArithmeticType_Mod:
-            return GetLHS()->GetDeducedValue().value() %
-                   GetRHS()->GetDeducedValue().value();
+            return lhs_c()->GetDeducedValue().value() %
+                   rhs_c()->GetDeducedValue().value();
         default:
             return std::nullopt;
     }
@@ -84,18 +79,6 @@ std::optional<DeduceValue> ArithmeticExpr::GetDeducedValue() const {
 
 Status ArithmeticExpr::visit(Visitor& visitor) { return visitor.visit(this); }
 
-ArithmeticType ArithmeticExpr::GetOpType() const { return _type; }
-
-void ArithmeticExpr::PrintDetail(std::ostream& out,
-                                 const std::string& ident) const {
-    // print node info
-    out << kArithmeticStr[_type] << ' ' << GetLHS()->retType()->Name();
-
-    // print LHS and RHS info
-    std::string new_ident(ident);
-    std::replace(new_ident.begin(), new_ident.end(), '`', ' ');
-    GetLHS()->Dump(out, new_ident + " |");
-    GetRHS()->Dump(out, new_ident + " `");
-};
+ArithmeticType ArithmeticExpr::op_type() const { return _type; }
 
 }  // namespace hzcc::ast

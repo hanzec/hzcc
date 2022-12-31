@@ -1,15 +1,14 @@
 //
-// Created by chen_ on 2022/5/11.
+// Created by chen_ on 2022/12/29.
 //
-#ifndef HZCC_SYNTAX_SYNTAX_CONTEXT_H
-#define HZCC_SYNTAX_SYNTAX_CONTEXT_H
+
+#ifndef HZCC_SEMANTIC_H
+#define HZCC_SEMANTIC_H
 #include <absl/container/flat_hash_map.h>
 
-#include "SymbTbl.h"
 #include "ast/CompilationUnit.h"
-#include "ast/type/Type.h"
-#include "parser/common/Token.h"
-namespace hzcc::syntax {
+#include "ast/visitor.h"
+namespace hzcc::semantic {
 class Ctx {
   public:
     using TypePtr = std::shared_ptr<ast::Type>;
@@ -21,9 +20,11 @@ class Ctx {
 
     void enter_scope();
 
-    void enterScope(const std::string& name, const TypePtr& return_type);
+    bool at_root() const;
 
-    void addDecl(std::unique_ptr<ast::IDeclStmt> type);
+    void enter_scope(std::string_view name);
+
+    std::shared_ptr<ast::Type> scope_ret_type() const;
 
     // ################################################################
     // ###############    RetType related Functions     ###############
@@ -53,8 +54,8 @@ class Ctx {
      * @param attr_list
      * @return
      */
-    TypePtr get_type(const std::string& name,      // NOLINT
-                     const TokenList& attr_list);  // NOLINT
+    TypePtr get_type(const std::string& name,                 // NOLINT
+                     const std::list<Attribute>& attr_list);  // NOLINT
 
     TypePtr getArrayType(const TypePtr& base_type,         // NOLINT
                          const TokenList& attr_list,       // NOLINT
@@ -70,13 +71,13 @@ class Ctx {
      * ###############   Variable related Functions  ##################
      * ################################################################
      */
-    bool hasVariable(const std::string& name, bool current_scope);
+    bool has_var(const std::string_view& name, bool current_scope);
 
-    void addVariable(Position pos,             // NOLINT
-                     const std::string& name,  // NOLINT
-                     TypePtr& variable_type);  // NOLINT
+    void add_var(Position pos,            // NOLINT
+                 TypePtr variable_type,   // NOLINT
+                 std::string_view name);  // NOLINT
 
-    std::pair<bool, int> getVariableInfo(const std::basic_string<char>& name);
+    std::pair<bool, Position> get_var_info(const std::string_view& name);
 
     TypePtr getVariableType(const std::basic_string<char>& name);
 
@@ -85,25 +86,15 @@ class Ctx {
      * ###############   Function related Functions  ###############
      * #############################################################
      */
-    bool hasFunction(const std::string& name);
+    bool has_func(std::string_view name);
 
-    bool addFunction(Position line_no, const std::string& name, TypePtr& output,
-                     const std::list<TypePtr>& argument_list);
+    bool has_func_body(std::string_view name);
 
-    bool hasFunctionBody(const std::string& name);
+    bool add_func(Position line_no, std::string_view name, TypePtr output,
+                  const std::list<TypePtr>& argument_list);
 
-    std::tuple<TypePtr, std::list<TypePtr>, Position> getFuncRetAndArgType(
-        const std::basic_string<char>& name);
-
-    bool isRoot() {
-        return _current_context.lock()->getUpperScope() == nullptr;
-    }
-
-    TypePtr GetReturnType() {
-        DLOG_ASSERT(_current_context.lock() != nullptr)
-            << " should never call GetReturnType when in root context";
-        return _current_context.lock()->GetReturnType();
-    }
+    std::tuple<TypePtr, std::list<TypePtr>, Position> func_def_info(
+        std::string_view name);
 
   protected:
     /**
@@ -125,15 +116,6 @@ class Ctx {
     std::list<TokenType> _attributes;
     std::shared_ptr<ast::CompilationUnit> _compilationUnit;
 
-    std::weak_ptr<SymbTbl> _current_context;
-
-    /**
-     * Global Types table
-     */
-    absl::flat_hash_map<std::string, TypePtr> _named_types;
-    absl::flat_hash_map<std::string, std::shared_ptr<SymbTbl>>
-        _scoped_symbol_table;
-
     /**
      * Function table:
      *  [name, [output_type, [argument_type, ...], line_no]]
@@ -142,5 +124,43 @@ class Ctx {
                         std::tuple<TypePtr, std::list<TypePtr>, Position>>
         _function_def_table;
 };
-}  // namespace hzcc::syntax
-#endif  // HZCC_SYNTAX_SYNTAX_CONTEXT_H
+
+class analyzer : public ast::Visitor {
+  public:
+    Status visit(hzcc::ast::VarDecl* p_expr) override;
+
+    Status visit(hzcc::ast::ReturnStmt* p_expr) override;
+
+    Status visit(hzcc::ast::AssignExpr* p_expr) override;
+
+    Status visit(hzcc::ast::TernaryExpr* p_expr) override;
+
+    Status visit(hzcc::ast::LogicalExpr* p_expr) override;
+
+    Status visit(hzcc::ast::BitwiseExpr* p_expr) override;
+
+    Status visit(hzcc::ast::UnaryOperator* p_expr) override;
+
+    Status visit(hzcc::ast::ArithmeticExpr* p_expr) override;
+
+    Status visit(hzcc::ast::RelationalExpr* p_expr) override;
+
+    Status visit(hzcc::ast::ArraySubscriptExpr* p_expr) override;
+
+    Status visit(hzcc::ast::MemberExpr* p_expr) override;
+
+    Status visit(hzcc::ast::FuncCallStmt* p_expr) override;
+    Status visit(hzcc::ast::DeclStmt* p_expr) override;
+
+    Status visit(hzcc::ast::FuncDeclStmt* p_expr) override;
+
+    Status visit(hzcc::ast::ParamVarDecl* p_expr) override;
+
+  private:
+    Ctx _ctx;
+};
+
+Status analyze(std::shared_ptr<ast::CompilationUnit> p_unit);
+
+}  // namespace hzcc::semantic
+#endif  // HZCC_SEMANTIC_H

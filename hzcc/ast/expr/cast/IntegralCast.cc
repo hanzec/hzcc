@@ -2,7 +2,7 @@
 // Created by chen_ on 2022/6/15.
 //
 
-#include "CastExpr.h"
+#include "ast/expr/Expr.h"
 
 namespace hzcc::ast {
 
@@ -17,10 +17,10 @@ IntegralCast::IntegralCast(const Position& location,    // NOLINT
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
     INTERNAL_LOG_IF(FATAL, _type != nullptr)
         << UniqueName() << "cast type is nullptr";
-    INTERNAL_LOG_IF(WARNING, (*GetCastExpr()->retType()) != *_type)
+    INTERNAL_LOG_IF(WARNING, (*cast_expr()->retType()) != *_type)
         << UniqueName() << "cast type is not equal to cast cast type";
     INTERNAL_LOG_IF(WARNING, (_type->IsNumericalType() ||
-                              GetCastExpr()->retType()->IsNumericalType()))
+                              cast_expr()->retType()->IsNumericalType()))
         << UniqueName() << "cast type or expression type is not builtin type";
 #endif
 }

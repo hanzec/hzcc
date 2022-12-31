@@ -60,6 +60,8 @@
 #include <string>
 #include <utility>
 
+#include "macro.h"
+#include "utils/logging.h"
 #include "utils/status/internal/status_internal.h"
 namespace hzcc {
 #define HZCC_CHECK_OK_OR_RETURN(expr) \
@@ -210,7 +212,7 @@ enum class StatusCode : int {
     //      fails because the directory is non-empty, `kFailedPrecondition`
     //      should be returned since the client should not retry unless
     //      the files are deleted from the directory.
-    kFailedPrecondition = 9,
+    kCompileError = 9,
 
     // StatusCode::kAborted
     //
@@ -692,6 +694,12 @@ std::ostream& operator<<(std::ostream& os, const Status& x);
 [[nodiscard]] bool IsUnavailable(const Status& status);
 [[nodiscard]] bool IsUnimplemented(const Status& status);
 [[nodiscard]] bool IsUnknown(const Status& status);
+
+ALWAYS_INLINE Status CompileError(Position pos,            // NOLINT
+                                  std::string_view msg) {  // NOLINT
+    message::print_message(kCompileErrorLevel_Error, msg, pos);
+    return {StatusCode::kCompileError, msg};
+}
 
 // AbortedError()
 // AlreadyExistsError()

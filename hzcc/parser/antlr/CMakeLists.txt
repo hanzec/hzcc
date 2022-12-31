@@ -36,7 +36,7 @@ target_link_libraries(hzcc antlr4-runtime)
 
 # generate antlr4 lexical and syntax
 antlr_target(antlr4_parser
-        ${CMAKE_CURRENT_SOURCE_DIR}/c11.g4
+        c11.g4
         VISITOR
         PACKAGE hzcc::parser
         OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/antlr_parser

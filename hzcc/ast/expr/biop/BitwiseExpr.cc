@@ -1,27 +1,28 @@
 //
 // Created by Hanze Chen on 2022/3/29.
 //
-#include "OperatorBase.h"
-
 #include <cstring>
 
+#include "ast/expr/Expr.h"
+
 namespace hzcc::ast {
-BitwiseExpr::BitwiseExpr(const char* type, const Position& loc,
-                         std::unique_ptr<Expr> left_expr,
+BitwiseExpr::BitwiseExpr(const Position& loc,               // NOLINT
+                         std::string_view type,             // NOLINT
+                         std::unique_ptr<Expr> left_expr,   // NOLINT
                          std::unique_ptr<Expr> right_expr)  // NOLINT
     : OperatorBase(loc, "BitwiseExpr", std::move(right_expr),
                    std::move(left_expr)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
-#ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, type != nullptr || strlen(type) != 0)
-        << UniqueName() << "type string empty";
-    INTERNAL_LOG_IF(
-        FATAL, strlen(type) == 1 ||
-                   (strlen(type) == 2 && (type[0] == '<' || type[0] == '>')))
-        << UniqueName() << "type len mismatch";
-#endif
+    HZCC_RUNTIME_CHECK_BLOCK({
+        INTERNAL_LOG_IF(FATAL, type.length() != 0)
+            << UniqueName() << "type string empty";
+        INTERNAL_LOG_IF(
+            FATAL, type.length() == 1 || (type.length() == 2 &&
+                                          (type[0] == '<' || type[0] == '>')))
+            << UniqueName() << "type len mismatch";
+    })
 
     /** #####################################################################
      *  ### Class initialization                                          ###

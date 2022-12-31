@@ -15,17 +15,10 @@ const std::unique_ptr<Stmt>& CompoundStmt::GetLastStatement() const {
     return statements_.back();
 }
 
-std::list<std::unique_ptr<Stmt>>& CompoundStmt::GetBodyStatements() {
+std::list<std::unique_ptr<Stmt>>& CompoundStmt::get_body_stmts() {
     return statements_;
 }
 
 Status CompoundStmt::visit(Visitor& visitor) { return visitor.visit(this); }
-void CompoundStmt::PrintDetail(std::ostream& out,
-                               const std::string& ident) const {
-    for (const auto& statement : statements_) {
-        statement->Dump(
-            out, ident + (statement == statements_.back() ? "  `" : "  |"));
-    }
-}
 
 }  // namespace hzcc::ast

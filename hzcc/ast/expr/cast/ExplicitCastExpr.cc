@@ -2,13 +2,13 @@
 // Created by chen_ on 2022/6/13.
 //
 
-#include "CastExpr.h"
+#include "ast/expr/Expr.h"
 
 namespace hzcc::ast {
-ExplicitCastExpr::ExplicitCastExpr(const Position& location,    // NOLINT
-                                   std::shared_ptr<Type> type,  // NOLINT
-                                   std::unique_ptr<Expr> expr)  // NOLINT
-    : CastExpr("ExplicitCastExpr", location, std::move(expr)),
+ExplicitCastExpr::ExplicitCastExpr(
+    const Position& loc, std::unique_ptr<Expr> expr,
+    std::unique_ptr<TypeProxyExpr> type)  // NOLINT
+    : CastExpr("ExplicitCastExpr", loc, std::move(expr)),
       _cast_type(std::move(type)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
@@ -16,16 +16,9 @@ ExplicitCastExpr::ExplicitCastExpr(const Position& location,    // NOLINT
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
     INTERNAL_LOG_IF(FATAL, _cast_type != nullptr)
         << UniqueName() << "cast type is nullptr";
-    INTERNAL_LOG_IF(WARNING, (*GetCastExpr()->retType()) != *_cast_type)
+    INTERNAL_LOG_IF(WARNING, cast_expr()->retType() != _cast_type->retType())
         << UniqueName() << "cast type is not equal to cast cast type";
 #endif
-}
-
-void ExplicitCastExpr::PrintDetail(std::ostream& out,
-                                   const std::string& ident) const {
-    out << '[' << GetCastExpr()->retType()->Name() << "]->["
-        << retType()->Name() << "]";
-    GetCastExpr()->Dump(out, ident + " `");
 }
 
 }  // namespace hzcc::ast

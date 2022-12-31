@@ -4,7 +4,7 @@
 #include "ast/Stmt.h"
 namespace hzcc::ast {
 ParamVarDecl::ParamVarDecl(const Position& loc, std::string_view decl_name,
-                           std::shared_ptr<Type> type)  // NO_LINT
+                           std::unique_ptr<TypeProxyExpr> type)  // NO_LINT
     : IDeclStmt("ParamVarDecl",decl_name, loc),
       _type(std::move(type)){
           /** ############################################################

@@ -29,18 +29,9 @@ std::shared_ptr<Type> TernaryExpr::retType() const {
     return _true_expr->retType();
 }
 Status TernaryExpr::visit(Visitor& visitor) { return visitor.visit(this); }
-void TernaryExpr::PrintDetail(std::ostream& out,
-                              const std::string& ident) const {
-    // type
-    out << retType()->Name();
 
-    // node
-    _cond->Dump(out, ident + " |");
-    _true_expr->Dump(out, ident + " |");
-    _false_expr->Dump(out, ident + " `");
-}
-std::unique_ptr<Expr>& TernaryExpr::GetContStmt() { return _cond; }
-std::unique_ptr<Expr>& TernaryExpr::GetTrueExpr() { return _true_expr; }
-std::unique_ptr<Expr>& TernaryExpr::GetFalseExpr() { return _false_expr; }
+std::unique_ptr<Expr>& TernaryExpr::cond_expr() { return _cond; }
+std::unique_ptr<Expr>& TernaryExpr::true_expr() { return _true_expr; }
+std::unique_ptr<Expr>& TernaryExpr::false_expr() { return _false_expr; }
 
 }  // namespace hzcc::ast

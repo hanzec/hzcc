@@ -13,13 +13,6 @@
 namespace hzcc::ast {
 Type::Type(TypeCategory typeCategory, const std::list<Attribute>& attrs)
     : _typeCategory(typeCategory) {
-    // check attrs
-    for (const auto& attr : attrs) {
-        // the attribute should also be a valid attribute
-        DLOG_ASSERT(parser_common::IsAttribute(attr))
-            << " invalid attribute id: " << magic_enum::enum_integer(attr);
-    }
-
     // setting attrs
     for (auto attr : attrs) {
         _attrs[magic_enum::enum_integer(attr)] = true;
@@ -38,7 +31,7 @@ std::string Type::Dump() { return Name(); }
 
 std::list<Attribute> Type::GetAttributes() {
     std::list<Attribute> ret;
-    for (size_t i = 0; i < parser_common::kAttributeTableSize; ++i) {
+    for (size_t i = 0; i < magic_enum::enum_count<Attribute>(); ++i) {
         if (_attrs[i]) {
             ret.push_back(static_cast<Attribute>(i));
         }

@@ -37,13 +37,13 @@ class Stmt {
      * have the form of (line, column).
      * @return The location of this Stmt
      */
-    [[nodiscard]] const Position& Location() const;
+    [[nodiscard]] const Position& loc() const;
 
     /**
      * @brief Determine whether the node have a body or not
      * @return true if the node have a body, false otherwise
      */
-    [[nodiscard]] virtual bool HasBody() const { return false; }
+    [[nodiscard]] virtual bool has_body() const { return false; }
 
     /**
      * @brief Determine whether the node is a literal node or not
@@ -89,24 +89,10 @@ class Stmt {
     [[nodiscard]] virtual std::string UniqueName() const;
 
     /**
-     * @brief Print the debug information of the node will have same behavior as
-     * Dump function but treat indent as empty string
-     * @param out the output stream
-     */
-    std::ostream& operator<<(std::ostream& out) const;
-
-    /**
      * @brief Get Name of the node
      * @return the name of the node
      */
-    [[nodiscard]] const std::string_view& NodeName() const;
-
-    /**
-     * @brief Print the debug information of the node to the output stream
-     * @param out the output stream
-     * @param indent the indent of the node
-     */
-    void Dump(std::ostream& out, const std::string& ident) const;
+    [[nodiscard]] std::string_view NodeName() const;
 
     /**
      * @brief Interface for Visitor pattern
@@ -116,16 +102,7 @@ class Stmt {
     [[nodiscard]] virtual Status visit(Visitor& visitor) = 0;
 
   protected:
-    Stmt(Position loc, const std::string& name);
-
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     * @param ident the current indentation level
-     * @return std::ostream& the output stream
-     */
-    virtual void PrintDetail(std::ostream& out,
-                             const std::string& ident) const = 0;
+    Stmt(Position loc, std::string_view name);
 
   private:
     const uint64_t _id;
@@ -134,6 +111,79 @@ class Stmt {
 
     inline static uint64_t s_id_counter = 0;
 };
+
+class Expr : public Stmt {
+  public:
+    /**
+     * @brief determine whether the node will return a location value (LValue)
+     * or auto_factory value (RValue)
+     * @return true if the node will return a LValue, false otherwise
+     */
+
+    [[nodiscard]] virtual bool IsReturnLValue() const { return false; }
+
+    [[nodiscard]] virtual std::optional<DeduceValue> GetDeducedValue()
+        const = 0;
+
+    /**
+     * @brief Determine whether the node is used to access element in array or
+     * not.
+     * @return
+     */
+
+    [[nodiscard]] virtual bool IsDereference() const { return false; }
+
+    /**
+     * @brief Get the return type of current node
+     * @return the type of the node if the node have a return type, otherwise
+     * return an void type. Return nullptr if has internal_status error.
+     */
+    [[nodiscard]] virtual std::shared_ptr<Type> retType() const = 0;
+
+  protected:
+    Expr(const Position& loc, std::string_view name) : Stmt(loc, name) {}
+};
+
+class TypeProxyExpr : public Expr {
+  public:
+    /**
+     * @brief Construct a new TypeProxyExpr object. The TypeProxyExpr is
+     * used to carry the type information. The type information is used to
+     * determine the type of the expression.
+     * @param type the type of the expression
+     * @param expr the expression
+     * @param loc location of the expression
+     */
+    TypeProxyExpr(const Position& loc,          // NO_LINT
+                  std::shared_ptr<Type> type);  // NO_LINT
+
+    /**
+     * @brief ast Visitor acceptor
+     * @param visitor Visitor object
+     * @return return object of hzcc::Status with content of visit result
+     */
+    Status visit(Visitor& visitor) override;
+
+    /**
+     * @brief determine whether the node will return a location value (LValue)
+     * or auto_factory value (RValue)
+     * @return true if the node will return a LValue, false otherwise
+     */
+    [[nodiscard]] bool IsReturnLValue() const override;
+
+    /**
+     * @brief Get the type of the expression.
+     * @return the type of the expression.
+     */
+    [[nodiscard]] std::shared_ptr<Type> retType() const override;
+
+    [[nodiscard]] std::optional<DeduceValue> GetDeducedValue() const override;
+  private:
+    std::shared_ptr<Type> _type;
+};
+
+using TypeProxyExprPtr = std::unique_ptr<TypeProxyExpr>;
+
 
 class BreakStmt : public Stmt {
   public:
@@ -149,16 +199,6 @@ class BreakStmt : public Stmt {
      * @return return object of hzcc::Status with content of visit result
      */
     Status visit(Visitor& visitor) override;
-
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
 };
 
 class CompoundStmt : public Stmt {
@@ -180,18 +220,7 @@ class CompoundStmt : public Stmt {
 
     [[nodiscard]] const std::unique_ptr<Stmt>& GetLastStatement() const;
 
-    [[nodiscard]] std::list<std::unique_ptr<Stmt>>& GetBodyStatements();
-
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
-
+    [[nodiscard]] std::list<std::unique_ptr<Stmt>>& get_body_stmts();
   private:
     std::list<std::unique_ptr<Stmt>> statements_{};
 };
@@ -210,16 +239,6 @@ class ContinueStmt : public Stmt {
      * @return return object of hzcc::Status with content of visit result
      */
     Status visit(Visitor& visitor) override;
-
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
 };
 
 class IDeclStmt : public Stmt {
@@ -233,9 +252,9 @@ class IDeclStmt : public Stmt {
 
     [[nodiscard]] virtual bool IsFuncDecl() const;
 
-    [[nodiscard]] std::string_view DeclName() const;
+    [[nodiscard]] std::string_view decl_name() const;
 
-    [[nodiscard]] virtual bool HasInitExpr() const;
+    [[nodiscard]] virtual bool has_init() const;
 
     [[nodiscard]] virtual std::shared_ptr<Type> declType() const = 0;
 
@@ -262,9 +281,9 @@ class DoStmt : public Stmt {
      * @param body body of the do statement
      * @param pos location of the do statement
      */
-    DoStmt(std::unique_ptr<Stmt> cond,  // NOLINT
-           std::unique_ptr<Stmt> body,  // NOLINT
-           const Position& pos);        // NOLINT
+    DoStmt(const Position& pos,          // NOLINT
+           std::unique_ptr<Stmt> cond,   // NOLINT
+           std::unique_ptr<Stmt> body);  // NOLINT
 
     /**
      * @brief ast Visitor acceptor
@@ -277,21 +296,11 @@ class DoStmt : public Stmt {
      * @brief Determine whether the node have a body or not
      * @return true if the node have a body, false otherwise
      */
-    [[nodiscard]] bool HasBody() const override { return true; }
+    [[nodiscard]] bool has_body() const override { return true; }
 
-    [[nodiscard]] std::unique_ptr<Stmt>& CondStmt();
+    [[nodiscard]] std::unique_ptr<Stmt>& cond_stmt();
 
-    [[nodiscard]] std::unique_ptr<Stmt>& BodyStmt();
-
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
+    [[nodiscard]] std::unique_ptr<Stmt>& body_stmt();
 
   protected:
     std::unique_ptr<Stmt> _cond;
@@ -313,16 +322,6 @@ class EmptyStmt : public Stmt {
     Status visit(Visitor& visitor) override;
 
     [[nodiscard]] bool IsEmptyStmt() const override;
-
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     * @param ident the current indentation level
-     * @return std::ostream& the output stream
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
 };
 
 class ForStmt : public Stmt {
@@ -335,9 +334,7 @@ class ForStmt : public Stmt {
      * @param body body of the for loop
      * @param location location of the for loop
      */
-    ForStmt(const Position& location, std::unique_ptr<Stmt> init,
-            std::unique_ptr<Stmt> cond, std::unique_ptr<Stmt> step,
-            std::unique_ptr<Stmt> body);  // NOLINT
+    ForStmt(const Position& location);  // NOLINT
 
     /**
      * @brief ast Visitor acceptor
@@ -350,48 +347,43 @@ class ForStmt : public Stmt {
      * @brief Determine whether the node have a body or not
      * @return true if the node have a body, false otherwise
      */
-    [[nodiscard]] bool HasBody() const override { return true; }
+    [[nodiscard]] bool has_body() const override { return true; }
+
+    void set_init(std::unique_ptr<Stmt> init);
+    void set_cond(std::unique_ptr<Stmt> cond);
+    void set_step(std::unique_ptr<Stmt> step);
+    void set_body(std::unique_ptr<Stmt> body);
+    void set_incr(std::unique_ptr<Stmt> incr);
 
     /**
      * @brief Get the init stmt.
      * @return The init stmt.
      */
-    [[nodiscard]] const std::unique_ptr<Stmt>& InitStmt();
+    [[nodiscard]] const std::unique_ptr<Stmt>& init_stmt();
 
     /**
      * @brief Get the condition stmt.
      * @return The condition stmt.
      */
-    [[nodiscard]] const std::unique_ptr<Stmt>& CondStmt();
+    [[nodiscard]] const std::unique_ptr<Stmt>& cond_stmt();
 
     /**
      * @brief Get the step expression.
      * @return  The step expression.
      */
-    [[nodiscard]] const std::unique_ptr<Stmt>& StepStmt();
+    [[nodiscard]] const std::unique_ptr<Stmt>& step_stmt();
 
     /**
      * @brief Get the body of the for stmt
      * @return  The body of the for stmt
      */
-    [[nodiscard]] const std::unique_ptr<Stmt>& BodyStmt();
-
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     * @return std::string generated string
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
+    [[nodiscard]] const std::unique_ptr<Stmt>& body_stmt();
 
   private:
-    const std::unique_ptr<Stmt> _init;
-    const std::unique_ptr<Stmt> _cond;
-    const std::unique_ptr<Stmt> _step;
-    const std::unique_ptr<Stmt> _body;
+    const std::unique_ptr<Stmt> _init = std::make_unique<ast::EmptyStmt>();
+    const std::unique_ptr<Stmt> _cond = std::make_unique<ast::EmptyStmt>();
+    const std::unique_ptr<Stmt> _step = std::make_unique<ast::EmptyStmt>();
+    const std::unique_ptr<Stmt> _body = std::make_unique<ast::EmptyStmt>();
 };
 
 class IfStmt : public Stmt {
@@ -413,13 +405,16 @@ class IfStmt : public Stmt {
      */
     Status visit(Visitor& visitor) override;
 
-    bool set_else(std::unique_ptr<Stmt> Else);
+    void set_else(std::unique_ptr<Stmt> else_body);
 
-    [[nodiscard]] const std::unique_ptr<Stmt>& CondStmt();
+    [[nodiscard]] std::unique_ptr<Stmt>& cond_stmt();
 
-    [[nodiscard]] const std::unique_ptr<Stmt>& BodyStmt();
+    [[nodiscard]] std::unique_ptr<Stmt>& body_stmt();
 
-    [[nodiscard]] std::unique_ptr<Stmt>& ElseStmt();
+    bool has_else() const;
+    bool has_else_if() const;
+
+    [[nodiscard]] std::unique_ptr<Stmt>& else_stmt();
 
     /**
      * @brief Get the list of else-if stmt. The return format is a vector
@@ -429,7 +424,7 @@ class IfStmt : public Stmt {
      */
     [[nodiscard]] std::vector<
         std::pair<std::unique_ptr<Stmt>, std::unique_ptr<Stmt>>>&
-    ElseIfStmt();
+    else_if_stmts();
 
     void addElseIf(std::unique_ptr<Stmt> Cond, std::unique_ptr<Stmt> Body);
 
@@ -439,22 +434,11 @@ class IfStmt : public Stmt {
      * @brief Determine whether the node have a body or not
      * @return true if the node have a body, false otherwise
      */
-    [[nodiscard]] bool HasBody() const override;
-
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     * @return std::string generated string
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
+    [[nodiscard]] bool has_body() const override;
 
   private:
-    const std::unique_ptr<Stmt> _condition;
-    const std::unique_ptr<Stmt> _if_body_statement;
+    std::unique_ptr<Stmt> _condition;
+    std::unique_ptr<Stmt> _if_body_statement;
     std::unique_ptr<Stmt> _else_statement_{nullptr};
     std::vector<std::pair<std::unique_ptr<Stmt>, std::unique_ptr<Stmt>>>
         _elseIfs;
@@ -481,7 +465,7 @@ class ReturnStmt : public Stmt {
      * @brief Get the returned expression
      * @return The returned expression
      */
-    std::unique_ptr<Expr>& GetReturnVal();
+    std::unique_ptr<Expr>& ret_expr();
 
     /**
      * @brief Determine whether the node is a return statement or not
@@ -489,19 +473,8 @@ class ReturnStmt : public Stmt {
      */
     [[nodiscard]] bool IsReturn() const override { return true; }
 
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     * @return std::string generated string
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
-
   private:
-    std::unique_ptr<Expr> _return_val;
+    std::unique_ptr<Expr> _ret_expr;
 };
 
 class WhileStmt : public Stmt {
@@ -512,7 +485,8 @@ class WhileStmt : public Stmt {
      * @param body body of the while
      * @param loc location of the while
      */
-    WhileStmt(const Position& loc, std::unique_ptr<Stmt> cond,
+    WhileStmt(const Position& loc,          // NOLINT
+              std::unique_ptr<Stmt> cond,   // NOLINT
               std::unique_ptr<Stmt> body);  // NOLINT
 
     /**
@@ -526,22 +500,11 @@ class WhileStmt : public Stmt {
      * @brief Determine whether the node have a body or not
      * @return true if the node have a body, false otherwise
      */
-    [[nodiscard]] bool HasBody() const override { return true; }
+    [[nodiscard]] bool has_body() const override { return true; }
 
-    [[nodiscard]] std::unique_ptr<Stmt>& CondStmt();
+    [[nodiscard]] std::unique_ptr<Stmt>& cond_stmt();
 
-    [[nodiscard]] std::unique_ptr<Stmt>& BodyStmt();
-
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     * @return std::string generated string
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
+    [[nodiscard]] std::unique_ptr<Stmt>& body_stmt();
 
   protected:
     std::unique_ptr<Stmt> _cond;
@@ -556,9 +519,9 @@ class ParamVarDecl : public IDeclStmt {
      * @param loc location of the parameter
      * @param type type of the parameter
      */
-    ParamVarDecl(const Position& loc,          // NOLINT
-                 std::string_view decl_name,   // NOLINT
-                 std::shared_ptr<Type> type);  // NOLINT
+    ParamVarDecl(const Position& loc,                   // NOLINT
+                 std::string_view decl_name,            // NOLINT
+                 std::unique_ptr<TypeProxyExpr> type);  // NOLINT
 
     /**
      * @brief ast Visitor acceptor
@@ -567,19 +530,12 @@ class ParamVarDecl : public IDeclStmt {
      */
     Status visit(Visitor& visitor) override;
 
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     * @return std::string generated string
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
+
+    [[nodiscard]] std::unique_ptr<TypeProxyExpr>& type_expr();
+    [[nodiscard]] std::shared_ptr<Type> declType() const override;
 
   private:
-    const std::shared_ptr<Type> _type;
+    std::unique_ptr<TypeProxyExpr> _type;
 };
 class FieldDecl : public IDeclStmt {
   public:
@@ -591,9 +547,9 @@ class FieldDecl : public IDeclStmt {
      * @param attrs The attributes of the variable
      * @param name The name of the variable
      */
-    FieldDecl(const Position& loc,          // NOLINT
-              std::string_view name,        // NOLINT
-              std::shared_ptr<Type> type);  // NOLINT
+    FieldDecl(const Position& loc,                   // NOLINT
+              std::string_view name,                 // NOLINT
+              std::unique_ptr<TypeProxyExpr> type);  // NOLINT
 
     /**
      * @brief Visitor for ast
@@ -602,18 +558,10 @@ class FieldDecl : public IDeclStmt {
      */
     Status visit(Visitor& visitor) override;
 
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
+    [[nodiscard]] std::shared_ptr<Type> declType() const override;
 
   private:
-    const std::shared_ptr<Type> _type;
+    std::unique_ptr<TypeProxyExpr> _type;
 };
 
 class RecordDecl : public IDeclStmt {
@@ -626,8 +574,9 @@ class RecordDecl : public IDeclStmt {
      */
     RecordDecl(const Position& loc,  // NOLINT
                std::string_view decl_name,
-               std::shared_ptr<StructType> type);  // NOLINT
+               std::unique_ptr<TypeProxyExpr> type);  // NOLINT
 
+    // todo sync to struct type
     void add_field(std::unique_ptr<IDeclStmt> field);
     /**
      * @brief ast Visitor acceptor
@@ -636,22 +585,15 @@ class RecordDecl : public IDeclStmt {
      */
     Status visit(Visitor& visitor) override;
 
+    [[nodiscard]] std::shared_ptr<Type> declType() const override;
+
     [[nodiscard]] bool IsStructDecl() const override { return true; }
-
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
-
   private:
-    std::shared_ptr<StructType> _type;
+    std::unique_ptr<TypeProxyExpr> _type;
     std::list<std::unique_ptr<IDeclStmt>> _fields;
 };
+
+using RecordDEclPtr = std::unique_ptr<ast::RecordDecl>;
 
 class VarDecl : public IDeclStmt {
   public:
@@ -664,10 +606,10 @@ class VarDecl : public IDeclStmt {
      * @param name The name of the variable
      * @param init The initial value of the variable (optional)
      */
-    VarDecl(const Position& loc,          // NOLINT
-            std::string_view name,        // NOLINT
-            std::shared_ptr<Type> type,   // NOLINT
-            std::unique_ptr<Expr> init);  // NOLINT
+    VarDecl(const Position& loc,                   // NOLINT
+            std::string_view name,                 // NOLINT
+            std::unique_ptr<Expr> init,            // NOLINT
+            std::unique_ptr<TypeProxyExpr> type);  // NOLINT
 
     /**
      * @brief Visitor for ast
@@ -680,7 +622,7 @@ class VarDecl : public IDeclStmt {
      * @brief Inquire if current VarDecl contains init value or not
      * @return true if contains init value, false otherwise
      */
-    [[nodiscard]] bool HasInitExpr() const override;
+    [[nodiscard]] bool has_init() const override;
 
     /**
      * @brief Get the init ast Node of current VarDecl Node
@@ -688,21 +630,15 @@ class VarDecl : public IDeclStmt {
      * compile as DEBUG mode
      * @return the init ast Node of current VarDecl Node
      */
-    [[nodiscard]] std::unique_ptr<Expr>& GetInitExpr();
+    [[nodiscard]] std::unique_ptr<Expr>& init_expr();
 
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
+    [[nodiscard]] std::shared_ptr<Type> declType() const override;
+
+    [[nodiscard]] std::unique_ptr<TypeProxyExpr> type_expr() ;
 
   private:
     std::unique_ptr<Expr> _init_expr;
-    const std::shared_ptr<Type> _type;
+    std::unique_ptr<TypeProxyExpr> _type;
 };
 
 class DeclStmt : public IDeclStmt {
@@ -712,16 +648,11 @@ class DeclStmt : public IDeclStmt {
 
     Status visit(Visitor& visitor) override;
 
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     * @return std::string generated string
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
+    [[nodiscard]] const std::list<std::unique_ptr<VarDecl>>& decl_list() {
+        return _decl_list;
+    }
+
+    [[nodiscard]] std::shared_ptr<Type> declType() const override;
 
   private:
     const std::shared_ptr<Type> _type;
@@ -733,6 +664,8 @@ using ArgumentList =
 
 class FuncDeclStmt : public IDeclStmt {
   public:
+    friend class Visitor;
+
     /**
      * @brief Construct a new Function Prototype For Function Node
      *
@@ -742,7 +675,7 @@ class FuncDeclStmt : public IDeclStmt {
      */
     FuncDeclStmt(const Position& loc,                 // NOLINT
                  std::string_view name,               // NOLINT
-                 std::shared_ptr<Type> return_type);  // NOLINT
+                 std::unique_ptr<TypeProxyExpr> return_type);  // NOLINT
 
     /**
      * @brief ast Visitor acceptor
@@ -753,9 +686,9 @@ class FuncDeclStmt : public IDeclStmt {
 
     bool set_body(std::unique_ptr<ast::CompoundStmt> declaration);
 
-    std::unique_ptr<ast::CompoundStmt>& Body();
+    std::unique_ptr<ast::CompoundStmt>& body_stmt();
 
-    std::list<std::unique_ptr<ParamVarDecl>>& GetParams();
+    std::list<std::unique_ptr<ParamVarDecl>>& params();
 
     ArgumentList getArguments();
 
@@ -763,26 +696,19 @@ class FuncDeclStmt : public IDeclStmt {
      * @brief Determine whether the node have a body or not
      * @return true if the node have a body, false otherwise
      */
-    [[nodiscard]] bool HasBody() const override;
+    [[nodiscard]] bool has_body() const override;
 
     [[nodiscard]] bool IsFuncDecl() const override;
 
     bool AddFunctionArgument(std::unique_ptr<ParamVarDecl> type);
 
-  protected:
-    /**
-     * @brief An override function using print extra information when call
-     * Stmt->Dump()
-     *     // TODO add details of printed information
-     * @param ident the current indentation level
-     */
-    void PrintDetail(std::ostream& out,
-                     const std::string& ident) const override;
+    [[nodiscard]] std::shared_ptr<Type> declType() const override;
 
+    [[nodiscard]] std::unique_ptr<TypeProxyExpr> type_expr() ;
   private:
-    std::shared_ptr<Type> _return_type;
-    std::unique_ptr<CompoundStmt> _function_body;
-    std::list<std::unique_ptr<ParamVarDecl>> _function_param;
+    std::unique_ptr<CompoundStmt> _func_body;
+    std::unique_ptr<TypeProxyExpr> _ret_type;
+    std::list<std::unique_ptr<ParamVarDecl>> _func_param;
 };
 
 }  // namespace hzcc::ast

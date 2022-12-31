@@ -42,8 +42,8 @@ std::string StatusCodeToString(StatusCode code) {
             return "UNAUTHENTICATED";
         case StatusCode::kSyntaxStageError:
             return "RESOURCE_EXHAUSTED";
-        case StatusCode::kFailedPrecondition:
-            return "FAILED_PRECONDITION";
+        case StatusCode::kCompileError:
+            return "COMPILE_ERROR";
         case StatusCode::kInvalidArguments:
             return "ABORTED";
         case StatusCode::kOutOfRange:
@@ -77,7 +77,7 @@ hzcc::StatusCode MapToLocalCode(int value) {
         case hzcc::StatusCode::kAlreadyExists:
         case hzcc::StatusCode::kSyntaxStageErr:
         case hzcc::StatusCode::kSyntaxStageError:
-        case hzcc::StatusCode::kFailedPrecondition:
+        case hzcc::StatusCode::kCompileError:
         case hzcc::StatusCode::kInvalidArguments:
         case hzcc::StatusCode::kOutOfRange:
         case hzcc::StatusCode::kUnimplemented:
@@ -192,9 +192,6 @@ Status DataLossError(std::string_view message) {
     return Status(hzcc::StatusCode::kDataLoss, message);
 }
 
-Status FailedPreconditionError(std::string_view message) {
-    return Status(hzcc::StatusCode::kFailedPrecondition, message);
-}
 
 Status InternalError(std::string_view message) {
     return Status(hzcc::StatusCode::kInternal, message);
@@ -225,10 +222,6 @@ Status UnknownError(std::string_view message) {
 
 bool IsDataLoss(const Status& status) {
     return status.code() == hzcc::StatusCode::kDataLoss;
-}
-
-bool IsFailedPrecondition(const Status& status) {
-    return status.code() == hzcc::StatusCode::kFailedPrecondition;
 }
 
 bool IsInternal(const Status& status) {

@@ -4,7 +4,7 @@
 #include "Expr.h"
 #include "ast/type/Type.h"
 namespace hzcc::ast {
-SizeofExpr::SizeofExpr(std::unique_ptr<Stmt> expr, const Position& location)
+SizeofExpr::SizeofExpr(const Position& location, std::unique_ptr<Stmt> expr)
     : Expr(location, "SizeofExpr"), _expr(std::move(expr)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

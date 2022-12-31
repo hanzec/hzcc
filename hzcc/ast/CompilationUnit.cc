@@ -14,8 +14,8 @@ void CompilationUnit::addDecl(std::unique_ptr<IDeclStmt> node) {
     if (node->IsDeclNode()) {
         std::unique_ptr<IDeclStmt> derivedPointer(
             dynamic_cast<IDeclStmt *>(node.release()));
-        auto fuc_name = std::string(derivedPointer->DeclName()) +
-                        (derivedPointer->HasBody() ? "_decl" : "");
+        auto fuc_name = std::string(derivedPointer->decl_name()) +
+                        (derivedPointer->has_body() ? "_decl" : "");
 
         // if we already have the
         auto node_ptr = std::find_if(
@@ -36,15 +36,6 @@ void CompilationUnit::addDecl(std::unique_ptr<IDeclStmt> node) {
         DLOG(FATAL) << "Unsupported Stmt type, only support decl node";
     }
 }
-
-void CompilationUnit::Dump(std::ostream &out) const {
-    std::string indent = "|";
-    out << "Compilation Unit [" << _file_name << "]";
-    for (auto &func : _global_decl) {
-        func.second->Dump(out, (func == _global_decl.back() ? "`" : indent));
-    }
-}
-
 CompilationUnit::~CompilationUnit() = default;
 CompilationUnit::CompilationUnit(std::string file_name)
     : _file_name(std::move(file_name)) {}

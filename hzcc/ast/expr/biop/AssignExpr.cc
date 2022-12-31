@@ -1,7 +1,7 @@
 //
 // Created by Hanze Chen on 2022/3/29.
 //
-#include "OperatorBase.h"
+#include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
 namespace hzcc::ast {
 AssignExpr::AssignExpr(const Position& loc,        // NO_LINT
@@ -67,54 +67,7 @@ AssignExpr::AssignExpr(const Position& loc,        // NO_LINT
     }
 };
 
-void AssignExpr::PrintDetail(std::ostream& out,
-                             const std::string& ident) const {
-    out << GetLHS()->retType()->Name();
-
-    // print symbol
-    switch (_type) {
-        case kAssignType_Assign:
-            out << " = ";
-            break;
-        case kAssignType_AddAssign:
-            out << " += ";
-            break;
-        case kAssignType_SubAssign:
-            out << " -= ";
-            break;
-        case kAssignType_MulAssign:
-            out << " *= ";
-            break;
-        case kAssignType_DivAssign:
-            out << " /= ";
-            break;
-        case kAssignType_ModAssign:
-            out << " %= ";
-            break;
-        case kAssignType_LShiftAssign:
-            out << " <<= ";
-            break;
-        case kAssignType_RShiftAssign:
-            out << " >>= ";
-            break;
-        case kAssignType_AndAssign:
-            out << " &= ";
-            break;
-        case kAssignType_OrAssign:
-            out << " |= ";
-            break;
-        case kAssignType_XorAssign:
-            out << " ^= ";
-            break;
-        default:
-            DLOG(FATAL) << "Unknown assign biop: " << _type;
-    }
-
-    // print LHS and RHS
-    GetLHS()->Dump(out, ident + " |");
-    GetRHS()->Dump(out, ident + " `");
-}
 Status AssignExpr::visit(Visitor& visitor) { return visitor.visit(this); }
-AssignType AssignExpr::GetAssignType() const { return _type; }
+AssignType AssignExpr::op_type() const { return _type; }
 
 }  // namespace hzcc::ast

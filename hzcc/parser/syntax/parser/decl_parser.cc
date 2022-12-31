@@ -4,47 +4,16 @@
 #include <list>
 
 #include "ast/CompilationUnit.h"
-#include "ast/cast/CastTool.h"
+#include "ast/cast/Cast.h"
 #include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
-#include "parser/syntax/parser_factory.h"
-#include "parser/syntax/utils/common_utils.h"
+#include "parser/syntax/common_utils.h"
+#include "parser_factory.h"
 #include "syntax_parser.h"
-
 namespace hzcc::syntax::parser {
 DeclStatement::DeclStatement() noexcept
     : ParserBase(TypeNameUtil::hash<ast::IDeclStmt>(),
                  TypeNameUtil::name_pretty<ast::IDeclStmt>()) {}
-
-ALWAYS_INLINE StatusOr<TypeNamePair> get_base_type(TokenList& tokens,
-                                                   hzcc::syntax::Ctx& context) {
-    auto fist_token = tokens.pop();
-    if (fist_token.Type() == TokenType::kEnum ||
-        fist_token.Type() == TokenType::kUnion ||
-        fist_token.Type() == TokenType::kStruct) {
-        // next token should be an identifier
-        if (tokens.peek().Type() != TokenType::kIdentity) {
-            return hzcc::syntax::utils::TokenErr(tokens.peek(),
-                                                 "except a identifier");
-        } else {
-            if (context.hasType("struct " + tokens.peek().Value())) {
-                return hzcc::syntax::utils::TokenErr(
-                    tokens.peek(),
-                    "struct " + tokens.peek().Value() + " has been defined");
-            } else {
-                return std::make_pair(fist_token.Type(), tokens.pop());
-            }
-        }
-    } else {
-        if (context.hasType(fist_token.Value())) {
-            return std::make_pair(fist_token.Type(), fist_token);
-        } else {
-            return hzcc::syntax::utils::TokenErr(
-                fist_token,
-                "type " + fist_token.Value() + " has not been defined");
-        }
-    }
-}
 
 template <typename T_LIST = std::list<Token>>
 static StatusOr<T_LIST> check_duplicate(const T_LIST& tokens) {
@@ -52,7 +21,7 @@ static StatusOr<T_LIST> check_duplicate(const T_LIST& tokens) {
     for (auto& token : tokens) {
         if (std::find(ret.begin(), ret.end(), token) != ret.end()) {
             return hzcc::syntax::utils::TokenErr(
-                token, "duplicate identifier " + token.Value());
+                token, "duplicate identifier " + token.val());
         } else {
             ret.push_back(token);
         }
@@ -60,10 +29,9 @@ static StatusOr<T_LIST> check_duplicate(const T_LIST& tokens) {
     return ret;
 }
 
-template <typename VarPack = std::pair<ast::TypePtr, Token>>
-static StatusOr<VarPack> parse_type(TokenList& tokens,             // NOLINT
-                                    ast::TypePtr& base_type,       // NOLINT
-                                    hzcc::syntax::Ctx& context) {  // NOLINT
+StatusOr<VarPack> DeclStatement::parse_type(TokenList& tokens,
+                                            SyntaxCtx& context,
+                                            ast::TypePtr& base_type) {
     // for *
     while (tokens.peek().Type() == TokenType::kMul) {
         if (base_type->is_ptr()) {
@@ -81,20 +49,12 @@ static StatusOr<VarPack> parse_type(TokenList& tokens,             // NOLINT
     }
     auto decl_name = tokens.pop();
 
-    // test if decl name is already defined
-    if (context.hasVariable(decl_name.Value(), true) ||
-        (!Options::Global_allow_same_name_for_func_val &&
-         context.hasVariable(decl_name.Value(), true))) {
-        return syntax::utils::TokenErr(
-            decl_name, "var " + decl_name.Value() + " has been defined");
-    }
-
     // for []
     if (tokens.peek().Type() == TokenType::kLBracket) {
         tokens.pop();
         if (tokens.peek().Type() != TokenType::kRBracket) {
             HZCC_CHECK_OR_ASSIGN(size_expr,
-                                 Parser::Parse<ast::Expr>(tokens, context))
+                                 Parser::Parse<ast::Expr>(context, tokens))
 
             // check match ]
             if (tokens.peek().Type() != TokenType::kRBracket) {
@@ -102,8 +62,8 @@ static StatusOr<VarPack> parse_type(TokenList& tokens,             // NOLINT
             }
 
             // global scope does not allow vla
-            if (context.isRoot() &&
-                !size_expr->retType()->is<ast::Attribute::kCONST>()) {
+            if (context->at_root() &&
+                !size_expr->retType()->is<Attribute::kCONST>()) {
                 return syntax::utils::TokenErr(
                     tokens.peek(),
                     "Variable length array declaration not allowed at file "
@@ -119,8 +79,8 @@ static StatusOr<VarPack> parse_type(TokenList& tokens,             // NOLINT
     return std::make_pair(base_type, decl_name);
 }
 
-StatusOr<ast::StmtPtr> DeclStatement::parse_impl(TokenList& tokens,
-                                                 hzcc::syntax::Ctx& context) {
+StatusOr<ast::StmtPtr> DeclStatement::parse_impl(SyntaxCtx context,
+                                                 TokenList& tokens) {
     // handle the case enum/struct/union since they don't include * or & on
     // their declaration
     if (tokens.peek3().Type() == TokenType::kLBrace) {
@@ -130,24 +90,31 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_impl(TokenList& tokens,
                 tokens, hzcc::to_string(tokens.peek().Type()) +
                             " definition are not supported yet!");
         } else if (tokens.peek().Type() == TokenType::kStruct) {
-            return parse_struct(tokens, context);
+            return parse_struct(context, tokens);
         }
     }
 
     // get base type
     HZCC_CHECK_OR_ASSIGN(raw_base_type,  // NOLINT
-                         get_base_type(tokens, context))
+                         utils::get_base_type(tokens, context))
 
     // check base type is valid
     auto base_type_str = hzcc::to_string(raw_base_type);
-    if (!context.hasType(base_type_str)) {
+    if (!context->has_type(base_type_str)) {
         return syntax::utils::TokenErr(raw_base_type.second,
                                        "Unknown type: " + base_type_str);
     }
 
+    // convert all token type to Attr
+    auto base_type_list = tokens.cache_attr_list();
+    std::list<Attribute> ret_attr_list;
+    for (auto& attr : base_type_list) {
+        ret_attr_list.emplace_back(to_attr(attr.Type()));
+    }
+
     // for vardecl and funcdecl, we need to consume the *
     std::shared_ptr<ast::Type> base_type =
-        context.get_type(base_type_str, tokens.cache_attr_list());
+        context->get_type(base_type_str)->type_of(ret_attr_list);
     std::shared_ptr<ast::Type> final_type(base_type);
     while (tokens.peek().Type() == TokenType::kMul) {
         if (base_type->is_ptr()) {
@@ -162,59 +129,24 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_impl(TokenList& tokens,
     // parse rest of the declaration
     if (tokens.peek2().Type() == TokenType::kLParentheses) {
         // function declaration
-        return parse_func(tokens, final_type, context);
+        return parse_func(tokens, context, final_type);
     } else {
         // variable declaration
         HZCC_CHECK_OR_ASSIGN(new_node,
-                             Parser::Parse<ast::VarDecl>(tokens, context))
+                             Parser::Parse<ast::VarDecl>(context, tokens))
         return new_node;
     }
 }
 
 StatusOr<ast::StmtPtr> DeclStatement::parse_var(TokenList& tokens,
+                                                SyntaxCtx& context,
                                                 ast::TypePtr base_type,
-                                                ast::TypePtr curr_type,
-                                                hzcc::syntax::Ctx& context) {
+                                                ast::TypePtr curr_type) {
     if (tokens.peek().Type() != TokenType::kIdentity) {
         return syntax::utils::TokenErr(tokens.peek(), "except a identifier");
     }
 
-    auto decl_name = tokens.pop();
-
-    // check duplicate variable, here we only check if the variable is
-    // already defined in the current scope. since we can mask the
-    // definition of the variable in the parent scope.
-    if (context.hasVariable(decl_name.Value(), true)) {
-        auto [is_global, line_no] = context.getVariableInfo(decl_name.Value());
-        return syntax::utils::TokenErr(
-            tokens,
-            (context.isRoot() ? "Global variable '" : "Local variable '") +
-                decl_name.Value() +
-                (is_global ? "' duplicates global variable declared in\n"
-                           : "' duplicates local variable declared in\n") +
-                " line " + std::to_string(line_no));
-    }
-
-    // variable cannot be defined as void
-    if (curr_type->is<ast::TypeCategory::kNumerical>() &&
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
-        static_cast<ast::NumericalType*>(curr_type.get())
-            ->is<ast::PrimitiveType::kVoid>()) {
-        return syntax::utils::TokenErr(
-            tokens, "Variable '" + decl_name.Value() + "' has type void");
-    }
-
-    // for a function definition, we only allow one per line.
-    if (curr_type->is<ast::TypeCategory::kFuncPtr>()) {
-        if (tokens.peek().Type() != TokenType::kSemiColon) {
-            DLOG(ERROR) << "Expect \";\" after function pointer";
-            return syntax::utils::TokenErr(
-                tokens, "Expect \";\" after function pointer");
-        }
-    }
-
-    // add current variable to the context
-    context.addVariable(decl_name.Location(), decl_name.Value(), curr_type);
+    auto name = tokens.pop();
 
     // check if current variable has initializer
     std::list<std::unique_ptr<ast::VarDecl>> var_list;
@@ -222,105 +154,51 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_var(TokenList& tokens,
         tokens.pop();
         // parse initializer
         HZCC_CHECK_OR_ASSIGN(init_expr,
-                             Parser::Parse<ast::Expr>(tokens, context))
-
-        // check if type is match
-        auto init_type = init_expr->retType();
-        if (init_expr->retType() != curr_type) {
-            // here we're trying to cast the type to the correct type, since
-            // initializer always at right side, we always need rval for this
-            // cast
-            auto cast_ret =
-                ast::CastTool::apply(true, std::move(init_expr), curr_type);
-
-            if (!cast_ret.ok()) {
-                return syntax::utils::TokenErr(
-                    tokens, "Cannot cast from " + init_type->Name() + " to " +
-                                curr_type->Name() + "since :" +
-                                std::string(cast_ret.status().message()));
-            }
-
-            init_expr = std::move(cast_ret.value());
-        }
+                             Parser::Parse<ast::Expr>(context, tokens))
 
         var_list.emplace_back(std::make_unique<ast::VarDecl>(
-            decl_name.Location(), decl_name.Value(), curr_type,
-            std::move(init_expr)));
+            name.loc(), name.val(), std::move(init_expr),
+            std::make_unique<ast::TypeProxyExpr>(init_expr->loc(), curr_type)));
     } else {
         var_list.emplace_back(std::make_unique<ast::VarDecl>(
-            decl_name.Location(), decl_name.Value(), curr_type,
-            std::make_unique<ast::EmptyExpr>()));
+            name.loc(), name.val(), std::make_unique<ast::EmptyExpr>(),
+            std::make_unique<ast::TypeProxyExpr>(name.loc(), curr_type)));
     }
 
     // add all new variable to the current scope
     while (tokens.peek().Type() == TokenType::kComma) {
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(var_pack,  // NOLINT
-                             parse_type(tokens, base_type, context))
-
-        // check duplicate variable, here we only check if the variable is
-        // already defined in the current scope. since we can mask the
-        // definition of the variable in the parent scope.
-        if (context.hasVariable(var_pack.second.Value(), true)) {
-            auto [is_global, line_no] =
-                context.getVariableInfo(var_pack.second.Value());
-            return syntax::utils::TokenErr(
-                tokens,
-                (context.isRoot() ? "Global variable '" : "Local variable '") +
-                    var_pack.second.Value() +
-                    (is_global ? "' duplicates global variable declared in\n"
-                               : "' duplicates local variable declared in\n") +
-                    " line " + std::to_string(line_no));
-        }
+                             parse_type(tokens, context, base_type))
 
         // try parse initializer
         if (tokens.peek().Type() == TokenType::kAssign) {
             tokens.pop();
             // parse initializer
             HZCC_CHECK_OR_ASSIGN(init_expr,
-                                 Parser::Parse<ast::Expr>(tokens, context))
-
-            // check if type is match
-            auto init_type = init_expr->retType();
-            if (init_expr->retType() != curr_type) {
-                // here we're trying to cast the type to the correct type, since
-                // initializer always at right side, we always need rval for
-                // this cast
-                auto cast_ret = ast::CastTool::apply(
-                    true, std::move(init_expr), curr_type);
-
-                if (!cast_ret.ok()) {
-                    return syntax::utils::TokenErr(
-                        tokens, "Cannot cast from " + init_type->Name() +
-                                    " to " + curr_type->Name() + "since :" +
-                                    std::string(cast_ret.status().message()));
-                }
-
-                init_expr = std::move(cast_ret.value());
-            }
+                                 Parser::Parse<ast::Expr>(context, tokens))
 
             var_list.emplace_back(std::make_unique<ast::VarDecl>(
-                decl_name.Location(), decl_name.Value(), curr_type,
-                std::move(init_expr)));
+                name.loc(), name.val(), std::move(init_expr),
+                std::make_unique<ast::TypeProxyExpr>(name.loc(), curr_type)));
         } else {
             var_list.emplace_back(std::make_unique<ast::VarDecl>(
-                decl_name.Location(), decl_name.Value(), curr_type,
-                std::make_unique<ast::EmptyExpr>()));
+                name.loc(), name.val(), std::make_unique<ast::EmptyExpr>(),
+                std::make_unique<ast::TypeProxyExpr>(name.loc(), curr_type)));
         }
     }
 
-    return std::make_unique<ast::DeclStmt>(decl_name.Location(),
-                                           std::move(var_list));
+    return std::make_unique<ast::DeclStmt>(name.loc(), std::move(var_list));
 }
 
 StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
-                                                 ast::TypePtr return_type,
-                                                 hzcc::syntax::Ctx& context) {
+                                                 SyntaxCtx& context,
+                                                 ast::TypePtr return_type) {
     // get function name
     auto func_name = tokens.pop();
 
     // function can only be defined in global scope
-    if (!context.isRoot()) {
+    if (!context->at_root()) {
         return syntax::utils::TokenErr(
             func_name, "function can only be defined in global scope");
     }
@@ -336,17 +214,10 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
         return syntax::utils::TokenErr(tokens, "Expected type name");
     }
 
-    // function name cannot duplicate with any other variable name
-    if (!Options::Global_allow_same_name_for_func_val &&
-        context.hasVariable(func_name.Value(), true)) {
-        return syntax::utils::TokenErr(
-            func_name, "Function '" + func_name.Value() +
-                           "' already defined as global variable");
-    }
-
     // actual function node
     auto func_node = std::make_unique<ast::FuncDeclStmt>(
-        func_name.Location(), func_name.Value(), return_type);
+        func_name.loc(), func_name.val(),
+        std::make_unique<ast::TypeProxyExpr>(func_name.loc(), return_type));
 
     // parse argument list
     bool first = false;
@@ -366,93 +237,54 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
 
         // get base argument_type
         HZCC_CHECK_OR_ASSIGN(raw_base_type,  // NOLINT
-                             get_base_type(tokens, context))
+                             utils::get_base_type(tokens, context))
 
         // check base type is valid
         auto base_type_str = hzcc::to_string(raw_base_type);
-        if (!context.hasType(base_type_str)) {
+        if (!context->has_type(base_type_str)) {
             return syntax::utils::TokenErr(raw_base_type.second,
                                            "Unknown type: " + base_type_str);
         }
 
+        // convert all token type to Attr
+        auto base_type_list = tokens.cache_attr_list();
+        std::list<Attribute> ret_attr_list;
+        for (auto& attr : base_type_list) {
+            ret_attr_list.emplace_back(to_attr(attr.Type()));
+        }
+
         // for vardecl and funcdecl, we need to consume the *
         std::shared_ptr<ast::Type> base_type =
-            context.get_type(base_type_str, tokens.cache_attr_list());
+            context->get_type(base_type_str)->type_of(ret_attr_list);
 
         HZCC_CHECK_OR_ASSIGN(var_pack,                                // NOLINT
-                             parse_type(tokens, base_type, context))  // NOLINT
+                             parse_type(tokens, context, base_type))  // NOLINT
 
         first = true;
         arg_type_list.emplace_back(var_pack.first);
         func_node->AddFunctionArgument(std::make_unique<ast::ParamVarDecl>(
-            var_pack.second.Location(), var_pack.second.Value(),
-            var_pack.first));
+            var_pack.second.loc(), var_pack.second.val(),
+            std::make_unique<ast::TypeProxyExpr>(var_pack.second.loc(),
+                                                 var_pack.first)));
     } while (!tokens.empty() &&
              tokens.peek().Type() != TokenType::kRParentheses);
 
     // check ')'  and consume
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens)
-
-        // function with same name must match previous definition
-        if (context.hasFunction(func_name.Value())) {
-        auto [func_type, func_type_attributes, line_no] =
-            context.getFuncRetAndArgType(func_name.Value());
-
-        // compare argument number
-        if (func_type_attributes.size() != arg_type_list.size()) {
-            return syntax::utils::TokenErr(
-                func_name, "Function '" + func_name.Value() +
-                               "' already defined with different argument "
-                               "number from previous definition in line" +
-                               std::to_string(line_no.first));
-        }
-
-        // compare return type
-        if (!(*func_type == *return_type)) {
-            return syntax::utils::TokenErr(
-                func_name, "Function " + return_type->Name() + " " +
-                               func_name.Value() + " already defined with " +
-                               func_type->Name() + " return type in line " +
-                               std::to_string(line_no.first));
-        }
-
-        // compare all argument type
-        for (const auto& type : arg_type_list) {
-            if (!(*type == *func_type_attributes.front())) {
-                return syntax::utils::TokenErr(
-                    func_name, "Function " + func_name.Value() +
-                                   " already defined with different argument "
-                                   "type in line " +
-                                   std::to_string(line_no.first));
-            }
-            func_type_attributes.pop_front();
-        }
-    }
-
-    // add function definition to context
-    context.addFunction(func_name.Location(), func_name.Value(), return_type,
-                        arg_type_list);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
 
     // trying to parse the function body if it exists
     if (tokens.peek().Type() == TokenType::kLBrace) {
         // create a new named scope
-        context.enterScope(func_name.Value(), return_type);
-
-        // add all arguments to the scope
-        for (auto& arg : func_node->getArguments()) {
-            context.addVariable(std::get<2>(arg), std::get<0>(arg),
-                                std::get<1>(arg));
-        }
+        context->new_scope(func_name.val(), return_type);
 
         // trying to syntax the function body
-        HZCC_CHECK_OR_ASSIGN(
-            func_body,
-            ParserFactory::ParseAST<ast::CompoundStmt>(tokens, context))
+        HZCC_CHECK_OR_ASSIGN(func_body,
+                             Parser::Parse<ast::CompoundStmt>(context, tokens))
 
         // if function body is syntax correct, then add it to the function
         // node and back to current the scope
         func_node->set_body(std::move(func_body));
-        context.leave_scope();
+        context->leave_scope();
     }
 
     // if the function body is not exits, then we need to check the ";"
@@ -465,43 +297,42 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
         return syntax::utils::TokenErr(
             tokens, "Except an \";\" after function declaration");
     }
-
-    // check function name is redefinition or not only when the function body is
-    // exits
-    if (func_node->HasBody() && context.hasFunction(func_name.Value()) &&
-        context.hasFunctionBody(func_name.Value())) {
-        return syntax::utils::TokenErr(
-            func_name, "Function '" + func_name.Value() + "' already defined");
-    }
-
     return std::move(func_node);
 }
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
-StatusOr<DeclStatement::RecordPtr> DeclStatement::parse_struct(
-    TokenList& tokens, hzcc::syntax::Ctx& context) {
+StatusOr<ast::RecordDEclPtr> DeclStatement::parse_struct(SyntaxCtx& context,
+                                                         TokenList& tokens) {
     // consume struct
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kStruct, tokens)
+    HZCC_CheckAndConsume_ReturnErr(TokenType::kStruct, tokens);
 
-        // consume struct_name
-        if (tokens.peek().Type() != TokenType::kIdentity) {
+    // consume struct_name
+    if (tokens.peek().Type() != TokenType::kIdentity) {
         return syntax::utils::TokenErr(tokens, "struct struct_name expected");
     }
 
     auto struct_name = tokens.pop();
 
     // consume {
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kLBrace, tokens)
+    HZCC_CheckAndConsume_ReturnErr(TokenType::kLBrace, tokens);
 
-        // add struct to context first to avoid recursive struct definition
-        auto current_attr_token = tokens.cache_attr_list();
+    // add struct to context first to avoid recursive struct definition
+    // convert all token type to Attr
+    auto base_type_list = tokens.cache_attr_list();
+    std::list<Attribute> ret_attr_list;
+    for (auto& attr : base_type_list) {
+        ret_attr_list.emplace_back(to_attr(attr.Type()));
+    }
+
+    // for vardecl and funcdecl, we need to consume the *
     auto struct_type =
-        context.addStructType(struct_name.Value(), current_attr_token);
+        context->add_struct_type(struct_name.val(), ret_attr_list);
 
     // construct struct node
-    auto struct_node = std::make_unique<ast::RecordDecl>(struct_name.Location(),
-                                                         struct_name.Value());
+    auto struct_node = std::make_unique<ast::RecordDecl>(
+        struct_name.loc(), struct_name.val(),
+        std::make_unique<ast::TypeProxyExpr>(struct_name.loc(), struct_type));
 
     // parse struct body
     while (tokens.peek().Type() != TokenType::kRBrace) {
@@ -509,38 +340,46 @@ StatusOr<DeclStatement::RecordPtr> DeclStatement::parse_struct(
             tokens.peek3().Type() == TokenType::kLBrace) {
             // parse nested struct
             HZCC_CHECK_OR_ASSIGN(inner_struct,                   // NOLINT
-                                 parse_struct(tokens, context))  // NOLINT;
+                                 parse_struct(context, tokens))  // NOLINT;
             struct_node->add_field(std::move(inner_struct));
         }
 
         // consume type
         else {
             auto start = tokens.peek();
-            HZCC_CHECK_OR_ASSIGN(                // NOLINT
-                raw_base_type,                   // NOLINT
-                get_base_type(tokens, context))  // NOLINT
+            HZCC_CHECK_OR_ASSIGN(                       // NOLINT
+                raw_base_type,                          // NOLINT
+                utils::get_base_type(tokens, context))  // NOLINT
 
             // check base type is valid
             auto base_type_str = hzcc::to_string(raw_base_type);
-            if (!context.hasType(base_type_str)) {
+            if (!context->has_type(base_type_str)) {
                 return syntax::utils::TokenErr(
                     raw_base_type.second, "Unknown type: " + base_type_str);
             }
 
-            // get actual base type
+            // add struct to context first to avoid recursive struct definition
+            // convert all token type to Attr
+            ret_attr_list.clear();
+            base_type_list = tokens.cache_attr_list();
+            for (auto& attr : base_type_list) {
+                ret_attr_list.emplace_back(to_attr(attr.Type()));
+            }
+
+            // for vardecl and funcdecl, we need to consume the *
             std::shared_ptr<ast::Type> base_type =
-                context.get_type(base_type_str, tokens.cache_attr_list());
+                context->get_type(base_type_str)->type_of(ret_attr_list);
 
             // parse variable declaration
             HZCC_CHECK_OR_ASSIGN(                        // NOLINT
                 var_decl,                                // NOLINT
-                parse_type(tokens, base_type, context))  // NOLINT
+                parse_type(tokens, context, base_type))  // NOLINT
 
-            // add variable to struct type and struct node
-            struct_type->AddChild(var_decl.second.Value(), var_decl.first);
+            // add variable to struct node
             struct_node->add_field(std::make_unique<ast::FieldDecl>(  // NOLINT
-                var_decl.second.Location(), var_decl.second.Value(),
-                var_decl.first));
+                var_decl.second.loc(), var_decl.second.val(),
+                std::make_unique<ast::TypeProxyExpr>(var_decl.second.loc(),
+                                                     var_decl.first)));
 
             // struct cannot have initializer
             if (tokens.peek().Type() == TokenType::kAssign) {
@@ -552,34 +391,46 @@ StatusOr<DeclStatement::RecordPtr> DeclStatement::parse_struct(
             while (tokens.peek().Type() == TokenType::kComma) {
                 tokens.pop();
 
-                HZCC_CHECK_OR_ASSIGN(                // NOLINT
-                    raw_base_type_inner,             // NOLINT
-                    get_base_type(tokens, context))  // NOLINT
+                HZCC_CHECK_OR_ASSIGN(                       // NOLINT
+                    raw_base_type_inner,                    // NOLINT
+                    utils::get_base_type(tokens, context))  // NOLINT
 
                 // check base type is valid
                 auto base_type_str_inner = hzcc::to_string(raw_base_type_inner);
-                if (!context.hasType(base_type_str_inner)) {
+                if (!context->has_type(base_type_str_inner)) {
                     return syntax::utils::TokenErr(
                         raw_base_type_inner.second,
                         "Unknown type: " + base_type_str_inner);
                 }
 
+                // add struct to context first to avoid recursive struct
+                // definition convert all token type to Attr
+                ret_attr_list.clear();
+                base_type_list = tokens.cache_attr_list();
+                for (auto& attr : base_type_list) {
+                    ret_attr_list.emplace_back(to_attr(attr.Type()));
+                }
+
                 // get actual base type
-                std::shared_ptr<ast::Type> base_type_inner = context.get_type(
-                    base_type_str_inner, tokens.cache_attr_list());
+                auto base_type_inner =
+                    context->get_struct_type(base_type_str_inner)
+                        ->type_of(ret_attr_list);
 
                 // parse variable declaration
                 HZCC_CHECK_OR_ASSIGN(                              // NOLINT
                     var_decl_inner,                                // NOLINT
-                    parse_type(tokens, base_type_inner, context))  // NOLINT
+                    parse_type(tokens, context, base_type_inner))  // NOLINT
 
                 // add variable to struct type and struct node
-                struct_type->AddChild(var_decl_inner.second.Value(),
+                struct_type->AddChild(var_decl_inner.second.val(),
                                       var_decl_inner.first);
                 struct_node->add_field(
                     std::make_unique<ast::FieldDecl>(  // NOLINT
-                        var_decl_inner.second.Location(),
-                        var_decl_inner.second.Value(), var_decl_inner.first));
+                        var_decl_inner.second.loc(),
+                        var_decl_inner.second.val(),
+                        std::make_unique<ast::TypeProxyExpr>(
+                            var_decl_inner.second.loc(),
+                            var_decl_inner.first)));
 
                 // struct cannot have initializer
                 if (tokens.peek().Type() == TokenType::kAssign) {

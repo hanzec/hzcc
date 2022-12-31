@@ -7,24 +7,17 @@
 namespace hzcc::ast {
 ReturnStmt::ReturnStmt(const Position& loc,         // NOLINT
                        std::unique_ptr<Expr> expr)  // NOLINT
-    : Stmt(loc, "ReturnStmt"), _return_val(std::move(expr)) {
+    : Stmt(loc, "ReturnStmt"), _ret_expr(std::move(expr)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, _return_val != nullptr)
+    INTERNAL_LOG_IF(FATAL, _ret_expr != nullptr)
         << UniqueName() << "return statement is nullptr";
 #endif
 }
 
-void ReturnStmt::PrintDetail(std::ostream& out,
-                             const std::string& ident) const {
-    // print node if available
-    if (_return_val) {
-        _return_val->Dump(out, ident + " `");
-    }
-}
 Status ReturnStmt::visit(Visitor& visitor) { return visitor.visit(this); }
-std::unique_ptr<Expr>& ReturnStmt::GetReturnVal() { return _return_val; }
+std::unique_ptr<Expr>& ReturnStmt::ret_expr() { return _ret_expr; }
 
 }  // namespace hzcc::ast

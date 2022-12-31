@@ -1,12 +1,9 @@
 //
 // Created by chen_ on 2022/3/29.
 //
-#include "CastExpr.h"
-
-#include <algorithm>
-
-#include "ast/type/Type.h"
 #include "ast/DeduceValue.h"
+#include "ast/expr/Expr.h"
+#include "ast/type/Type.h"
 namespace hzcc::ast {
 CastExpr::CastExpr(const char* node_name,       // NOLINT
                    const Position& location,    // NOLINT
@@ -23,7 +20,7 @@ CastExpr::CastExpr(const char* node_name,       // NOLINT
 
 bool CastExpr::IsReturnLValue() const { return _expr->IsReturnLValue(); }
 Status CastExpr::visit(Visitor& visitor) { return visitor.visit(this); }
-const std::unique_ptr<Expr>& CastExpr::GetCastExpr() const { return _expr; }
+const std::unique_ptr<Expr>& CastExpr::cast_expr() const { return _expr; }
 bool CastExpr::IsLiteral() const { return _expr->IsLiteral(); }
 std::optional<DeduceValue> CastExpr::GetDeducedValue() const {
     return {_expr->GetDeducedValue()};

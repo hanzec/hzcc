@@ -9,18 +9,18 @@
 #include "utils/factory.h"
 #include "utils/status/statusor.h"
 namespace hzcc::ast {
-class CastTool : public utils::AutoRegFactory<ICastRule, std::string> {
+class Cast : public utils::AutoRegFactory<ICastRule, std::string> {
   public:
     /**
      * Delete the default constructor and copy constructor to prevent the class
      * to be copied.
      */
-    CastTool() = default;
-    ~CastTool() = default;
-    CastTool(CastTool&) = delete;
-    CastTool(CastTool&&) = delete;
-    CastTool& operator=(CastTool&) = delete;
-    CastTool& operator=(CastTool&&) = delete;
+    Cast() = default;
+    ~Cast() = default;
+    Cast(Cast&) = delete;
+    Cast(Cast&&) = delete;
+    Cast& operator=(Cast&) = delete;
+    Cast& operator=(Cast&&) = delete;
 
     /**
      * Apply the cast rule rhs the given cast expression.
@@ -41,7 +41,7 @@ class CastTool : public utils::AutoRegFactory<ICastRule, std::string> {
 };
 
 #define HZCC_REG_CAST_RULE(Product, name, desc) \
-    HZCC_REGI_PRODUCT_INTERNAL(Product, ::hzcc::ast::CastTool, name, desc)
+    HZCC_REGI_PRODUCT_INTERNAL(Product, ::hzcc::ast::Cast, name, desc)
 
 }  // namespace hzcc::ast
 #endif  // MYCC_SOURCE_AST_CAST_CASTAPPLIER_H_

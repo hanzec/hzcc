@@ -6,6 +6,7 @@
 #include <string>
 
 #include "const_msg.h"
+#include "enums.h"
 #include "parser/common/keywords.h"
 
 #ifndef HZCC_SYMBOL_UTILS_H
@@ -82,8 +83,7 @@ ALWAYS_INLINE bool IsOperator(const char str) {
  * @return true if the char is the special symbol, false otherwise.
  */
 ALWAYS_INLINE bool IsPrimitiveType(const char *str) {
-    return Iserch_table<const char *,
-                        ::hzcc::parser_common::KPermittedTypeTableSize>(
+    return Iserch_table<const char *, parser_common::KPermittedTypeTableSize>(
                ::hzcc::parser_common::kPrimitiveTypeTable, str) != -1;
 }
 

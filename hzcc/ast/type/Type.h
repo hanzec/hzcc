@@ -1,59 +1,13 @@
-#include <bitset>
-#include <list>
-#include <memory>
-#include <string>
-#include <unordered_map>
-#include <utility>
-
-#include "const_msg.h"
-#include "parser/common/keywords.h"
-#include "utils/logging.h"
 #ifndef HZCC_AST_TYPE_TYPE_H
 #define HZCC_AST_TYPE_TYPE_H
+#include <bitset>
+#include <list>
+#include <magic_enum.hpp>
+#include <memory>
+
+#include "enums.h"
 namespace hzcc::ast {
 class Expr;
-
-enum class PrimitiveType {
-    kInt = 0,
-    kChar,
-    kFloat,
-    kDouble,
-    kVoid,
-    kLong,
-    kShort,
-    kBool,
-    kComplex,
-    kImaginary,
-    kLonglong,
-    kLong_double,
-    kPrimitiveType_ENUM_SIZE,  // must be the last one
-};
-
-enum class TypeCategory {
-    kNumerical,
-    kPointer,
-    kArray,
-    kStruct,
-    kFuncPtr,
-    kEnum,
-    kBuiltin,
-    kUnknown,
-};
-
-enum class PACKED Attribute {
-    kSTART = 0,
-    kCONST,
-    kEXTERN,
-    kSTATIC,
-    kAUTO,
-    kVOLATILE,
-    kINLINE,
-    kRESTRICT,
-    kSIGNED,
-    kUNSIGNED,
-    kREGISTER,
-    kEND
-};
 
 /**
  * @class Type
@@ -64,6 +18,8 @@ class Type : public std::enable_shared_from_this<Type> {
     using TypePtr = std::shared_ptr<Type>;
 
     virtual ~Type() = default;
+
+    std::shared_ptr<Type> type_of(std::list<Attribute> attr) const;
 
     /**
      * @brief The unique id of the node.
@@ -157,7 +113,7 @@ class Type : public std::enable_shared_from_this<Type> {
 
   private:
     TypeCategory _typeCategory;
-    std::bitset<parser_common::kAttributeTableSize> _attrs;
+    std::bitset<magic_enum::enum_count<Attribute>()> _attrs;
 };
 
 using TypePtr = std::shared_ptr<Type>;
@@ -174,10 +130,6 @@ class NumericalType : public Type {
 
     [[nodiscard]] uint8_t GetTypeId() const;
 
-    template <PrimitiveType type>
-    [[nodiscard]] bool is() const {
-        return _type == type;
-    }
     /**
      * @brief Get the declare name of the type.
      * @param without_attr If true, the attribute will not be included in the
@@ -203,6 +155,10 @@ template <PrimitiveType type>
 static TypePtr GetNumericalTypeOf() {
     const static TypePtr char_type = std::make_shared<NumericalType>(type);
     return char_type;
+}
+template <PrimitiveType T>
+static bool IsTypeOf(const ast::TypePtr& type) {
+    return type == GetNumericalTypeOf<T>();
 }
 
 static TypePtr GetNumericalTypeOf(PrimitiveType type);
@@ -306,7 +262,7 @@ class StructType : public Type {
     bool AddChild(const std::string& name,             // NOLINT
                   const std::shared_ptr<Type>& type);  // NOLINT
 
-    std::shared_ptr<Type> ChildType(const std::string& name);
+    std::shared_ptr<Type> field_type(std::string_view name);
 
   protected:
     /**

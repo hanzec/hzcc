@@ -9,7 +9,7 @@
 
 #include "ast/type/Type.h"
 #include "utils/logging.h"
-namespace hzcc::syntax {
+namespace hzcc::ast {
 SymbTbl::SymbTbl(std::shared_ptr<ast::Type> return_type,
                  std::weak_ptr<SymbTbl> parent)
     : _upper_scope_table(std::move(parent)),
@@ -58,7 +58,7 @@ std::shared_ptr<ast::Type> SymbTbl::getType(std::string_view name) {
 }
 
 // NOLINTNEXTLINE(misc-no-recursion)
-bool SymbTbl::hasVariable(const std::string& name, bool current_scope) {
+bool SymbTbl::hasVariable(std::string_view name, bool current_scope) {
     if (_variable_lookup_table.find(name) != _variable_lookup_table.end()) {
         return true;
     } else if (!current_scope) {
@@ -73,7 +73,7 @@ bool SymbTbl::hasVariable(const std::string& name, bool current_scope) {
 }
 
 void SymbTbl::addVariable(Position pos,                               // NOLINT
-                          const std::string& name,                    // NOLINT
+                          std::string_view name,                      // NOLINT
                           std::shared_ptr<ast::Type>& token_types) {  // NOLINT
     DLOG_ASSERT(!hasType(name) || name.find("struct ") != std::string::npos)
         << " Variable " << name << " is already defined as a type";
@@ -124,4 +124,4 @@ int SymbTbl::getVariableDeclLine(const std::string& name) {
 }
 std::shared_ptr<ast::Type> SymbTbl::GetReturnType() { return _return_type; }
 
-}  // namespace hzcc::syntax
+}  // namespace hzcc::ast

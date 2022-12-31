@@ -19,13 +19,6 @@ WhileStmt::WhileStmt(const Position& loc, std::unique_ptr<Stmt> cond,
 }
 
 Status WhileStmt::visit(Visitor& visitor) { return visitor.visit(this); }
-std::unique_ptr<Stmt>& WhileStmt::CondStmt() { return _cond; }
-std::unique_ptr<Stmt>& WhileStmt::BodyStmt() { return _body; }
-void WhileStmt::PrintDetail(std::ostream& out, const std::string& ident) const {
-    // print condition
-    _cond->Dump(out, ident + " |");
-
-    // print body
-    _body->Dump(out, ident + " `");
-}
+std::unique_ptr<Stmt>& WhileStmt::cond_stmt() { return _cond; }
+std::unique_ptr<Stmt>& WhileStmt::body_stmt() { return _body; }
 }  // namespace hzcc::ast

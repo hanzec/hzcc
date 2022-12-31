@@ -3,9 +3,8 @@
 //
 #include "ast/Stmt.h"
 namespace hzcc::ast {
-DoStmt::DoStmt(std::unique_ptr<Stmt> cond,  // NOLINT
-               std::unique_ptr<Stmt> body,  // NOLINT
-               const Position& pos)         // NOLINT
+DoStmt::DoStmt(const Position& pos, std::unique_ptr<Stmt> cond,
+               std::unique_ptr<Stmt> body)  // NOLINT
     : Stmt(pos, "DoStmt"), _cond(std::move(cond)), _body(std::move(body)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
@@ -19,10 +18,6 @@ DoStmt::DoStmt(std::unique_ptr<Stmt> cond,  // NOLINT
 }
 
 Status DoStmt::visit(Visitor& visitor) { return visitor.visit(this); }
-std::unique_ptr<Stmt>& DoStmt::CondStmt() { return _cond; }
-std::unique_ptr<Stmt>& DoStmt::BodyStmt() { return _body; }
-void DoStmt::PrintDetail(std::ostream& out, const std::string& ident) const {
-    _cond->Dump(out, ident + " |");
-    _body->Dump(out, ident + " `");
-}
+std::unique_ptr<Stmt>& DoStmt::cond_stmt() { return _cond; }
+std::unique_ptr<Stmt>& DoStmt::body_stmt() { return _body; }
 }  // namespace hzcc::ast

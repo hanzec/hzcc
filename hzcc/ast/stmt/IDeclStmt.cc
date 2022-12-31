@@ -16,9 +16,9 @@ IDeclStmt::IDeclStmt(const char* node_name,     // NOLINT
     })
 }
 
-bool IDeclStmt::HasInitExpr() const { return false; }
+bool IDeclStmt::has_init() const { return false; }
 bool IDeclStmt::IsDeclNode() const { return true; }
-std::string_view IDeclStmt::DeclName() const { return _decl_name; }
+std::string_view IDeclStmt::decl_name() const { return _decl_name; }
 bool IDeclStmt::IsFuncDecl() const { return false; }
 
 }  // namespace hzcc::ast

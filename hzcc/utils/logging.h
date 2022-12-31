@@ -27,10 +27,10 @@ void initLogging(char argv[]);
                       << ((int)(token).Type() <= 0xFF                         \
                               ? "Symbol"                                      \
                               : "" + ::hzcc::to_string((token).Type()))       \
-                      << "]<" << std::setw(3) << (token).Location().first + 1 \
-                      << "," << std::setw(3) << (token).Location().second     \
+                      << "]<" << std::setw(3) << (token).loc().first + 1 \
+                      << "," << std::setw(3) << (token).loc().second     \
                       << ">" << std::setw(-1) << ":@ " << std::left           \
-                      << std::setw(10) << (token).Value(true) << " @\033[0m"  \
+                      << std::setw(10) << (token).val(true) << " @\033[0m"  \
                       << std::setw(-1)
 
 #define HZCC_INTERNAL_STATUS_MACROS_IMPL_CONCAT_NAME_INNER(x, y) x##y
@@ -65,6 +65,7 @@ enum PACKED CompileErrorLevel {
     kCompileErrorLevel_Info = 2,
     kCompileErrorLevel_SIZE,
 };
+
 
 namespace message {
 

@@ -3,27 +3,23 @@
 //
 #ifndef HZCC_COMMON_KEYWORDS_H
 #define HZCC_COMMON_KEYWORDS_H
-
 #include <array>
+#include <magic_enum.hpp>
 
 #include "macro.h"
 #include "token_type.h"
-
 namespace hzcc::parser_common {
-constexpr const int kKeywordTableSize = 17;
-constexpr const int kAttributeTableSize = 10;
+constexpr const int kKeywordTableSize = 27;
 constexpr const int KPermittedTypeTableSize = 5;
 /**
  * Special Keyword's table.
  */
 static constexpr std::array<const char *, kKeywordTableSize> kKeywordTable{
-    "struct", "for",      "while",  "do",   "if",      "else",
-    "break",  "continue", "switch", "case", "default", "typedef",
-    "goto",   "sizeof",   "union",  "enum", "return"};
-
-constexpr const std::array<const char *, kAttributeTableSize> kAttributeTable{
-    "const",  "extern",   "static", "auto",     "volatile",
-    "inline", "restrict", "signed", "unsigned", "register"};
+    "struct", "for",      "while",   "do",       "if",      "else",
+    "break",  "continue", "switch",  "case",     "default", "typedef",
+    "goto",   "sizeof",   "union",   "enum",     "return",  "const",
+    "extern", "static",   "auto",    "volatile", "inline",  "restrict",
+    "signed", "unsigned", "register"};
 
 constexpr const std::array<const char *, KPermittedTypeTableSize>
     kPrimitiveTypeTable{"char", "int", "float", "double", "void"};
@@ -65,11 +61,12 @@ constexpr std::array<TokenType, kKeywordTableSize> kReversedKeywordTable{
     TokenType::kGoto,   TokenType::kSizeOf,   TokenType::kUnion,
     TokenType::kEnum,   TokenType::kReturn};
 
-constexpr std::array<TokenType, kAttributeTableSize> kReversedAttributeTable{
-    TokenType::kConst,    TokenType::kExtern,   TokenType::kStatic,
-    TokenType::kAuto,     TokenType::kVolatile, TokenType::kInline,
-    TokenType::kRestrict, TokenType::kSigned,   TokenType::kUnsigned,
-    TokenType::kRegister};
+constexpr std::array<TokenType, 10>
+    kReversedAttributeTable{TokenType::kConst,    TokenType::kExtern,
+                            TokenType::kStatic,   TokenType::kAuto,
+                            TokenType::kVolatile, TokenType::kInline,
+                            TokenType::kRestrict, TokenType::kSigned,
+                            TokenType::kUnsigned, TokenType::kRegister};
 }  // namespace hzcc::parser_common
 
 #endif  // HZCC_COMMON_KEYWORDS_H

@@ -1,12 +1,13 @@
 //
 // Created by hanzech on 12/19/22.
 //
-#include <array>
-#include <cstddef>
-
-#include "macro.h"
 #ifndef HZCC_CONSTEXPR_UTILS_H
 #define HZCC_CONSTEXPR_UTILS_H
+#include <array>
+#include <cstring>
+#include <initializer_list>
+
+#include "macro.h"
 namespace hzcc::utils {
 /**
  * @Brief: internal_status constexpr wrap for searching an std::array with
@@ -53,5 +54,26 @@ constexpr auto as_integer(Enumeration const value) ->
     return static_cast<typename std::underlying_type<Enumeration>::type>(value);
 }
 
+
+// we cannot return a char array from a function, therefore we need a wrapper
+template <unsigned N>
+struct String {
+    char c[N];
+};
+
+template<unsigned ...Len>
+constexpr auto concat(const char (&...strings)[Len]) {
+    constexpr unsigned N = (... + Len) - sizeof...(Len);
+    String<N + 1> result = {};
+    result.c[N] = '\0';
+
+    char* dst = result.c;
+    for (const char* src : {strings...}) {
+        for (; *src != '\0'; src++, dst++) {
+            *dst = *src;
+        }
+    }
+    return result;
+}
 }  // namespace hzcc::utils
 #endif  // HZCC_CONSTEXPR_UTILS_H
