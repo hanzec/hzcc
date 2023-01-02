@@ -4,9 +4,10 @@
 
 #include "DeduceValue.h"
 
+#include <glog/logging.h>
 #include <cstring>
+#include <ostream>
 
-#include "utils/logging.h"
 namespace hzcc::ast {
 
 DeduceValue::DeduceValue(char value) : _type(kDeduceValueType_Char) {

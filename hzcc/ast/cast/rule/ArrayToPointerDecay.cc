@@ -1,9 +1,22 @@
 //
 // Created by chen_ on 2022/6/13.
 //
+#include <string.h>
+#include <exception>
+#include <memory>
+#include <string>
+#include <string_view>
+#include <unordered_map>
+#include <utility>
+
 #include "ast/Stmt.h"
 #include "ast/cast/Cast.h"
 #include "ast/cast/ICastRule.h"
+#include "ast/expr/Expr.h"
+#include "ast/type/Type.h"
+#include "utils/factory.h"
+#include "utils/status/statusor.h"
+
 namespace hzcc::ast {
 class ArrayToPointerDecay : public ICastRule {
 public:

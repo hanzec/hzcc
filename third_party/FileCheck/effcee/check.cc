@@ -14,6 +14,7 @@
 
 #include "check.h"
 
+#include <re2/re2.h>
 #include <algorithm>
 #include <cassert>
 #include <memory>

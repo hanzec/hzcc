@@ -5,13 +5,18 @@
 #include "Token.h"
 
 #include <glog/logging.h>
-
-#include <optional>
+#include <magic_enum.hpp>
 #include <string>
 #include <utility>
+#include <cctype>
+#include <ostream>
 
 #include "parser/lexical/utils/symbol_utils.h"
 #include "utils/logging.h"
+#include "enums.h"
+#include "parser/common/keywords.h"
+#include "parser/common/token_type.h"
+#include "utils/constexpr_utils.h"
 
 #define HZCC_INSERT_TO_CACHE(NEW_CACHE, ASSIGN_TO)                         \
     {                                                                      \

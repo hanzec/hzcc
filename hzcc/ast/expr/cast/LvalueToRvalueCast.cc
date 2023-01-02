@@ -1,8 +1,23 @@
 //
 // Created by chen_ on 2022/6/15.
 //
+#include <glog/logging.h>
+#include <memory>
+#include <ostream>
+#include <string>
+#include <utility>
+
 #include "ast/expr/Expr.h"
-#include "ast/type/Type.h"
+#include "ast/Stmt.h"
+#include "macro.h"
+#include "utils/logging.h"
+
+namespace hzcc {
+namespace ast {
+class Type;
+}  // namespace ast
+}  // namespace hzcc
+
 namespace hzcc::ast {
 LvalueToRvalueCast::LvalueToRvalueCast(const Position& location,
                                        std::unique_ptr<Expr> expr)

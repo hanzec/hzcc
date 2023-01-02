@@ -2,8 +2,19 @@
 // Created by chen_ on 2022/4/9.
 //
 
+#include <glog/logging.h>
+#include <list>
+#include <memory>
+#include <ostream>
+#include <string>
+#include <string_view>
+#include <tuple>
+#include <utility>
+
 #include "ast/type/Type.h"
 #include "utils/logging.h"
+#include "enums.h"
+
 namespace hzcc::ast {
 StructType::StructType(const std::string &name,
                        const std::list<Attribute> &attr_list)

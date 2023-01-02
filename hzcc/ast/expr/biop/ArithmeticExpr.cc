@@ -1,10 +1,23 @@
 //
 // Created by Hanze Chen on 2022/3/29.
 //
-#include <algorithm>
+#include <glog/logging.h>
+#include <memory>
+#include <optional>
+#include <ostream>
+#include <string>
+#include <string_view>
+#include <utility>
+
 #include "ast/DeduceValue.h"
 #include "ast/expr/Expr.h"
-#include "ast/type/Type.h"
+#include "ast/Stmt.h"
+#include "ast/visitor.h"
+#include "enums.h"
+#include "macro.h"
+#include "utils/logging.h"
+#include "utils/status/status.h"
+
 namespace hzcc::ast {
 ArithmeticExpr::ArithmeticExpr(const Position& loc,        // NOLINT
                                std::string_view type,      // NOLINT

@@ -1,9 +1,22 @@
 //
 // Created by chen_ on 2022/3/29.
 //
+#include <glog/logging.h>
+#include <memory>
+#include <optional>
+#include <ostream>
+#include <string>
+#include <string_view>
+#include <utility>
+
 #include "ast/DeduceValue.h"
 #include "ast/expr/Expr.h"
-#include "ast/type/Type.h"
+#include "ast/Stmt.h"
+#include "ast/visitor.h"
+#include "macro.h"
+#include "utils/logging.h"
+#include "utils/status/status.h"
+
 namespace hzcc::ast {
 CastExpr::CastExpr(const char* node_name,       // NOLINT
                    const Position& location,    // NOLINT

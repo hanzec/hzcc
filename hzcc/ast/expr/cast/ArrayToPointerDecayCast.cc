@@ -2,8 +2,20 @@
 // Created by chen_ on 2022/6/15.
 //
 
+#include <glog/logging.h>
+#include <string.h>
+#include <memory>
+#include <ostream>
+#include <string>
+#include <string_view>
+#include <utility>
+
 #include "ast/type/Type.h"
 #include "ast/expr/Expr.h"
+#include "ast/Stmt.h"
+#include "macro.h"
+#include "utils/logging.h"
+
 namespace hzcc::ast {
 ArrayToPointerDecayCast::ArrayToPointerDecayCast(const Position& location,
                                                  std::unique_ptr<Expr> expr)

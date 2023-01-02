@@ -2,7 +2,13 @@
 // Created by chen_ on 2022/6/14.
 //
 
+#include <list>
+#include <memory>
+#include <utility>
+
 #include "ast/type/Type.h"
+#include "enums.h"
+
 namespace hzcc::ast {
 
 PointerType::PointerType(std::shared_ptr<Type> base_type,

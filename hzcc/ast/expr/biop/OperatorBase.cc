@@ -1,9 +1,18 @@
 //
 // Created by chen_ on 2022/3/29.
 //
-#include "ast/DeduceValue.h"
+#include <glog/logging.h>
+#include <memory>
+#include <ostream>
+#include <string>
+#include <utility>
+
 #include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
+#include "ast/Stmt.h"
+#include "macro.h"
+#include "utils/logging.h"
+#include "ast/DeduceValue.h"
 namespace hzcc::ast {
 OperatorBase::OperatorBase(const Position& loc,        // NOLINT
                            const char* node_name,      // NOLINT

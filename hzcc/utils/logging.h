@@ -1,6 +1,10 @@
 #include <glog/logging.h>
-
+#include <stdint.h>
 #include <iomanip>
+#include <ostream>
+#include <string>
+#include <string_view>
+#include <utility>
 
 #include "macro.h"
 #include "parser/common/name_utils.h"

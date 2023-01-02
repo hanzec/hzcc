@@ -1,11 +1,20 @@
 //
 // Created by chen_ on 2022/4/9.
 //
+#include <glog/logging.h>
+#include <stdint.h>
 #include <utility>
+#include <list>
+#include <memory>
+#include <optional>
+#include <ostream>
+#include <string>
 
 #include "ast/DeduceValue.h"
-#include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
+#include "ast/Stmt.h"
+#include "enums.h"
+
 namespace hzcc::ast {
 ArrayType::ArrayType(std::shared_ptr<Type> base_type,
                      std::unique_ptr<Expr> array_size,

@@ -1,10 +1,13 @@
 //
 // Created by chen_ on 2022/4/9.
 //
+#include <stdint.h>
 #include <list>
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <string_view>
+#include <utility>
 
 #include "macro.h"
 #ifndef HZCC_SOURCE_AST_SYMBOL_TABLE_H

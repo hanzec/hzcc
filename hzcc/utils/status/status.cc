@@ -14,9 +14,9 @@
 #include "utils/status/status.h"
 
 #include <absl/strings/cord.h>
-
-#include <cassert>
-#include <cerrno>
+#include <absl/strings/str_cat.h>
+#include <stdint.h>
+#include <string.h>
 #include <memory>
 #include <optional>
 #include <utility>

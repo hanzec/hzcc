@@ -3,12 +3,16 @@
 //
 #ifndef MYCC_SOURCE_AST_CAST_CASTAPPLIER_H_
 #define MYCC_SOURCE_AST_CAST_CASTAPPLIER_H_
-#include <unordered_map>
+#include <memory>         // for unique_ptr, shared_ptr
+#include <string>         // for string
+#include <unordered_map>  // for unordered_map
 
-#include "ast/cast/ICastRule.h"
-#include "utils/factory.h"
-#include "utils/status/statusor.h"
+#include "ICastRule.h"
+#include "utils/factory.h"          // for AutoRegFactory, HZCC_REGI_PRODUCT...
+#include "utils/status/statusor.h"  // for StatusOr
 namespace hzcc::ast {
+class Expr;
+class Type;
 class Cast : public utils::AutoRegFactory<ICastRule, std::string> {
   public:
     /**

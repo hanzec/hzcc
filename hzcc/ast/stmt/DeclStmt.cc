@@ -1,10 +1,18 @@
 //
 // Created by chen_ on 2022/12/27.
 //
+#include <glog/logging.h>
 #include <utility>
+#include <list>
+#include <memory>
+#include <ostream>
+#include <string>
+#include <string_view>
 
-#include "ast/expr/Expr.h"
-#include "ast/type/Type.h"
+#include "ast/Stmt.h"
+#include "macro.h"
+#include "utils/logging.h"
+
 namespace hzcc::ast {
 DeclStmt::DeclStmt(const Position& loc,                            // NOLINT
                    std::list<std::unique_ptr<VarDecl>> decl_list)  // NOLINT

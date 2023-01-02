@@ -3,12 +3,14 @@
 //
 #include "SymbTbl.h"
 
-#include <cassert>
+#include <glog/logging.h>
 #include <memory>
 #include <utility>
+#include <ostream>
 
 #include "ast/type/Type.h"
 #include "utils/logging.h"
+
 namespace hzcc::ast {
 SymbTbl::SymbTbl(std::shared_ptr<ast::Type> return_type,
                  std::weak_ptr<SymbTbl> parent)

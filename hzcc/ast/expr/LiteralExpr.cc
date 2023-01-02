@@ -1,9 +1,24 @@
 //
 // Created by chen_ on 2022/3/26.
 //
+#include <glog/logging.h>
+#include <stdint.h>
+#include <memory>
+#include <optional>
+#include <ostream>
+#include <string>
+#include <string_view>
+
 #include "Expr.h"
 #include "ast/DeduceValue.h"
 #include "ast/type/Type.h"
+#include "ast/Stmt.h"
+#include "ast/visitor.h"
+#include "enums.h"
+#include "macro.h"
+#include "utils/logging.h"
+#include "utils/status/status.h"
+
 namespace hzcc::ast {
 
 static constexpr const char* GetNodeName(LiteralType type) {

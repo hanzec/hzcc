@@ -3,8 +3,21 @@
 //
 #include "Cast.h"
 
+#include <glog/logging.h>
+#include <glog/vlog_is_on.h>
+#include <any>
+#include <ostream>
+#include <string_view>
+#include <utility>
+#include <vector>
+
 #include "ast/expr/Expr.h"
 #include "utils/logging.h"
+#include "ast/Stmt.h"
+#include "ast/cast/ICastRule.h"
+#include "ast/type/Type.h"
+#include "utils/status/status.h"
+
 namespace hzcc::ast {
 StatusOr<std::unique_ptr<Expr>> Cast::apply(
     bool require_rvalue,                      // NOLINT

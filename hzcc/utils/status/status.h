@@ -51,7 +51,6 @@
 #ifndef HZCC_UTILS_STATUS_STATUS_H_
 #define HZCC_UTILS_STATUS_STATUS_H_
 #include <absl/strings/cord.h>
-
 #include <atomic>
 #include <cassert>
 #include <functional>
@@ -59,10 +58,13 @@
 #include <ostream>
 #include <string>
 #include <utility>
+#include <cstdint>
+#include <string_view>
 
 #include "macro.h"
 #include "utils/logging.h"
 #include "utils/status/internal/status_internal.h"
+
 namespace hzcc {
 #define HZCC_CHECK_OK_OR_RETURN(expr) \
     do {                              \

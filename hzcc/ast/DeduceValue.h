@@ -4,6 +4,7 @@
 #include <array>
 #include <cstdint>
 #include <string>
+#include <cstddef>
 
 #ifndef HZCC_AST_DEDUCE_VALUE_H
 #define HZCC_AST_DEDUCE_VALUE_H

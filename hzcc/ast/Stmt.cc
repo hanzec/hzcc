@@ -3,11 +3,12 @@
 //
 #include "Stmt.h"
 
-#include <algorithm>
+#include <glog/logging.h>
 #include <utility>
+#include <ostream>
 
-#include "ast/DeduceValue.h"
-#include "ast/expr/Expr.h"
+#include "utils/logging.h"
+
 namespace hzcc::ast {
 Stmt::Stmt(Position loc, std::string_view name)
     : _id(s_id_counter += 1), _node_location(std::move(loc)), _node_name(name) {

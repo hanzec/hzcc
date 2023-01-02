@@ -1,7 +1,21 @@
 //
 // Created by chen_ on 2022/3/27.
 //
+#include <glog/logging.h>
+#include <list>
+#include <memory>
+#include <ostream>
+#include <string>
+#include <string_view>
+#include <tuple>
+#include <utility>
+
 #include "ast/Stmt.h"
+#include "ast/type/Type.h"
+#include "ast/visitor.h"
+#include "macro.h"
+#include "utils/logging.h"
+#include "utils/status/status.h"
 
 namespace hzcc::ast {
 

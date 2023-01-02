@@ -16,8 +16,10 @@
 // limitations under the License.
 #include "utils/status/statusor.h"
 
+#include <glog/logging.h>
 #include <cstdlib>
 #include <utility>
+#include <ostream>
 
 #include "utils/logging.h"
 

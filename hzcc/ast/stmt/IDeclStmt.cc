@@ -1,7 +1,15 @@
 //
 // Created by chen_ on 2022/3/28.
 //
+#include <glog/logging.h>
+#include <ostream>
+#include <string>
+#include <string_view>
+
 #include "ast/Stmt.h"
+#include "macro.h"
+#include "utils/logging.h"
+
 namespace hzcc::ast {
 IDeclStmt::IDeclStmt(const char* node_name,     // NOLINT
                      std::string_view name,     // NOLINT

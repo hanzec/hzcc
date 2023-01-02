@@ -1,8 +1,14 @@
 //
 // Created by chen_ on 2022/6/13.
 //
+#include <stdint.h>
+#include <array>
+#include <list>
+#include <string>
+
 #include "ast/type/Type.h"
 #include "utils/constexpr_utils.h"
+#include "enums.h"
 
 namespace hzcc::ast {
 

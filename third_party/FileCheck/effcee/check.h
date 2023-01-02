@@ -15,6 +15,7 @@
 #ifndef EFFCEE_CHECK_H
 #define EFFCEE_CHECK_H
 
+#include <re2/stringpiece.h>
 #include <memory>
 #include <string>
 #include <unordered_map>

@@ -4,20 +4,26 @@
 
 //
 
-#include <memory>
-#include <optional>
-#include <string>
+#include <stdint.h>  // for uint64_t, uintptr_t
 
-#include "ast/type/Type.h"
-#include "macro.h"
-#include "utils/logging.h"
-#include "visitor.h"
+#include <list>         // for list
+#include <memory>       // for unique_ptr, shared_ptr, make_unique
+#include <optional>     // for optional
+#include <string>       // for string
+#include <string_view>  // for string_view
+#include <tuple>        // for tuple
+#include <utility>      // for pair
+#include <vector>       // for vector
+
+#include "macro.h"                // for Position
+#include "utils/status/status.h"  // for Status
 
 #ifndef HZCC_AST_AST_NODE_H
 #define HZCC_AST_AST_NODE_H
 namespace hzcc::ast {
+class Stmt;
 class Type;
-class CastExpr;
+class Visitor;
 class DeduceValue;
 
 using StmtPtr = std::unique_ptr<Stmt>;
@@ -178,12 +184,12 @@ class TypeProxyExpr : public Expr {
     [[nodiscard]] std::shared_ptr<Type> retType() const override;
 
     [[nodiscard]] std::optional<DeduceValue> GetDeducedValue() const override;
+
   private:
     std::shared_ptr<Type> _type;
 };
 
 using TypeProxyExprPtr = std::unique_ptr<TypeProxyExpr>;
-
 
 class BreakStmt : public Stmt {
   public:
@@ -221,6 +227,7 @@ class CompoundStmt : public Stmt {
     [[nodiscard]] const std::unique_ptr<Stmt>& GetLastStatement() const;
 
     [[nodiscard]] std::list<std::unique_ptr<Stmt>>& get_body_stmts();
+
   private:
     std::list<std::unique_ptr<Stmt>> statements_{};
 };
@@ -530,7 +537,6 @@ class ParamVarDecl : public IDeclStmt {
      */
     Status visit(Visitor& visitor) override;
 
-
     [[nodiscard]] std::unique_ptr<TypeProxyExpr>& type_expr();
     [[nodiscard]] std::shared_ptr<Type> declType() const override;
 
@@ -588,6 +594,7 @@ class RecordDecl : public IDeclStmt {
     [[nodiscard]] std::shared_ptr<Type> declType() const override;
 
     [[nodiscard]] bool IsStructDecl() const override { return true; }
+
   private:
     std::unique_ptr<TypeProxyExpr> _type;
     std::list<std::unique_ptr<IDeclStmt>> _fields;
@@ -634,7 +641,7 @@ class VarDecl : public IDeclStmt {
 
     [[nodiscard]] std::shared_ptr<Type> declType() const override;
 
-    [[nodiscard]] std::unique_ptr<TypeProxyExpr> type_expr() ;
+    [[nodiscard]] std::unique_ptr<TypeProxyExpr> type_expr();
 
   private:
     std::unique_ptr<Expr> _init_expr;
@@ -673,8 +680,8 @@ class FuncDeclStmt : public IDeclStmt {
      * @param return_type the return type of the function
      * @param loc the location of the function
      */
-    FuncDeclStmt(const Position& loc,                 // NOLINT
-                 std::string_view name,               // NOLINT
+    FuncDeclStmt(const Position& loc,                          // NOLINT
+                 std::string_view name,                        // NOLINT
                  std::unique_ptr<TypeProxyExpr> return_type);  // NOLINT
 
     /**
@@ -704,7 +711,8 @@ class FuncDeclStmt : public IDeclStmt {
 
     [[nodiscard]] std::shared_ptr<Type> declType() const override;
 
-    [[nodiscard]] std::unique_ptr<TypeProxyExpr> type_expr() ;
+    [[nodiscard]] std::unique_ptr<TypeProxyExpr> type_expr();
+
   private:
     std::unique_ptr<CompoundStmt> _func_body;
     std::unique_ptr<TypeProxyExpr> _ret_type;
