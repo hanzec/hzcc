@@ -5,12 +5,11 @@
 #include "utils/logging.h"
 
 #include <glog/log_severity.h>
-
 #include <array>
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <fstream> // IWYU pragma: keep
 
 #include "fs_utils.h"
 #include "options.h"

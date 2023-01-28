@@ -6,13 +6,16 @@
 #include <ostream>
 #include <string>
 #include <utility>
+#include <optional>
+#include <string_view>
 
 #include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
 #include "ast/Stmt.h"
 #include "macro.h"
 #include "utils/logging.h"
-#include "ast/DeduceValue.h"
+#include "ast/DeduceValue.h" // IWYU pragma: keep
+
 namespace hzcc::ast {
 OperatorBase::OperatorBase(const Position& loc,        // NOLINT
                            const char* node_name,      // NOLINT

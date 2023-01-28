@@ -5,8 +5,52 @@
 #ifndef HZCC_AST_PRINTER_H
 #define HZCC_AST_PRINTER_H
 #include <list>
+#include <iosfwd>
+#include <string>
+#include <string_view>
 
 #include "ast/visitor.h"
+#include "utils/status/status.h"
+
+namespace hzcc {
+namespace ast {
+class ArithmeticExpr;
+class ArraySubscriptExpr;
+class AssignExpr;
+class BitwiseExpr;
+class BreakStmt;
+class CastExpr;
+class CommaExpr;
+class CompilationUnit;
+class CompoundStmt;
+class ContinueStmt;
+class DeclRefExpr;
+class DeclStmt;
+class DoStmt;
+class EmptyStmt;
+class ExplicitCastExpr;
+class ForStmt;
+class FuncCallStmt;
+class FuncDeclStmt;
+class IDeclStmt;
+class IfStmt;
+class ImplicitCastExpr;
+class LiteralExpr;
+class LogicalExpr;
+class MemberExpr;
+class ParamVarDecl;
+class RelationalExpr;
+class ReturnStmt;
+class SizeofExpr;
+class Stmt;
+class TernaryExpr;
+class TypeProxyExpr;
+class UnaryOperator;
+class VarDecl;
+class WhileStmt;
+}  // namespace ast
+}  // namespace hzcc
+
 namespace hzcc::ast {
 class AstPrinter : public Visitor{
   public:

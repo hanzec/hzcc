@@ -15,7 +15,6 @@
 
 #include <absl/strings/cord.h>
 #include <absl/strings/str_cat.h>
-#include <stdint.h>
 #include <string.h>
 #include <memory>
 #include <optional>

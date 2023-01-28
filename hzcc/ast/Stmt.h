@@ -1,7 +1,5 @@
 //
-
 // Created by Hanze Chen on 2022/2/3.
-
 //
 
 #include <stdint.h>  // for uint64_t, uintptr_t

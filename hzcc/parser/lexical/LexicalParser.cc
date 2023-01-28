@@ -1,7 +1,21 @@
 //
 // Created by chen_ on 2022/1/26.
 //
+#include <stddef.h>
+#include <magic_enum.hpp>
 #include <regex>
+#include <cctype>
+#include <cstdint>
+#include <functional>
+#include <istream>
+#include <limits>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <type_traits>
+#include <utility>
+#include <vector>
 
 #include "lexical_limit.h"
 #include "parser/common/Token.h"
@@ -9,6 +23,16 @@
 #include "parser/parser.h"
 #include "utils/logging.h"
 #include "utils/status/status.h"
+#include "macro.h"
+#include "parser/common/token_type.h"
+#include "utils/status/statusor.h"
+
+namespace hzcc {
+namespace lexical {
+struct AnalyzeCtx_t;
+}  // namespace lexical
+}  // namespace hzcc
+
 namespace hzcc::lexical {
 #define LIMIT_REGEX_CHECK(REGEX, INPUT, REQUIRED_TYPE, ERROR_STATUS)           \
     {                                                                          \

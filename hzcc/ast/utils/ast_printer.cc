@@ -4,9 +4,21 @@
 
 #include "ast_printer.h"
 
+#include <glog/logging.h>
+#include <magic_enum.hpp>
+#include <algorithm>
+#include <array>
+#include <memory>
+#include <ostream>
+#include <utility>
+#include <vector>
+
 #include "ast/CompilationUnit.h"
 #include "ast/Stmt.h"
 #include "ast/expr/Expr.h"
+#include "ast/type/Type.h"
+#include "enums.h"
+#include "macro.h"
 
 namespace hzcc::ast {
 Status AstPrinter::visit(CompoundStmt* p_stmt) {

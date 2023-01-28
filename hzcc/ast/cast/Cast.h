@@ -10,9 +10,17 @@
 #include "ICastRule.h"
 #include "utils/factory.h"          // for AutoRegFactory, HZCC_REGI_PRODUCT...
 #include "utils/status/statusor.h"  // for StatusOr
+
+namespace hzcc {
+namespace ast {
+class ICastRule;
+}  // namespace ast
+}  // namespace hzcc
+
 namespace hzcc::ast {
 class Expr;
 class Type;
+
 class Cast : public utils::AutoRegFactory<ICastRule, std::string> {
   public:
     /**

@@ -4,9 +4,18 @@
 
 #ifndef HZCC_SYNTAX_H
 #define HZCC_SYNTAX_H
+#include <memory>
+
 #include "ast/CompilationUnit.h"
 #include "parser/parser.h"
 #include "utils/status/statusor.h"
+
+namespace hzcc {
+namespace ast {
+class CompilationUnit;
+}  // namespace ast
+}  // namespace hzcc
+
 namespace hzcc::syntax {
 StatusOr<std::shared_ptr<ast::CompilationUnit>> Parse(TokenList& tokens);
 

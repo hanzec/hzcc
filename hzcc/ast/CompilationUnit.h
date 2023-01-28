@@ -1,21 +1,31 @@
 #include <absl/container/flat_hash_map.h>
-
 #include <memory>
 #include <string_view>
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <list>
+#include <string>
 
 #include "SymbTbl.h"
 #include "ast/Stmt.h"
 #include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
 #include "utils/status/status.h"
+#include "enums.h"
+
+namespace hzcc {
+namespace ast {
+class IDeclStmt;
+class SymbTbl;
+}  // namespace ast
+}  // namespace hzcc
 
 #ifndef HZCC_AST_AST_H
 #define HZCC_AST_AST_H
 namespace hzcc::ast {
 class StructType;
+
 class CompilationUnit {
   public:
     explicit CompilationUnit(std::string file_name);

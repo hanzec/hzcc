@@ -21,6 +21,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <algorithm>
 
 #include "effcee.h"
 #include "make_unique.h"

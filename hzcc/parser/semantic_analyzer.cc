@@ -1,11 +1,27 @@
 //
 // Created by chen_ on 2022/12/29.
 //
+#include <absl/strings/str_cat.h>
+#include <ext/alloc_traits.h>
+#include <glog/logging.h>
+#include <list>
+#include <memory>
+#include <ostream>
+#include <string>
+#include <tuple>
+#include <utility>
+
 #include "ast/Stmt.h"
 #include "ast/cast/Cast.h"
 #include "ast/expr/Expr.h"
 #include "options.h"
 #include "semantic.h"
+#include "ast/type/Type.h"
+#include "enums.h"
+#include "utils/logging.h"
+#include "utils/status/status.h"
+#include "utils/status/statusor.h"
+
 namespace hzcc::semantic {
 Status analyzer::visit(hzcc::ast::VarDecl* p_expr) {
     // fist check if type is exist
