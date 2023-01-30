@@ -7,7 +7,6 @@
 #define HZCC_AST_AST_VISITOR_H
 namespace hzcc::ast {
 class Stmt;
-class CastExpr;
 class ArithmeticExpr;
 class AssignExpr;
 class BitwiseExpr;
@@ -45,12 +44,6 @@ class CompilationUnit;
 class Visitor {
   public:
     virtual ~Visitor() = default;
-    virtual Status visit(hzcc::ast::CastExpr* p_expr) {
-        DLOG(WARNING) << "ast Visitor for Node " << __FUNCTION__
-                      << " hzcc::ast::CastExpr"
-                      << " not implemented!";
-        return NoError();
-    };
     virtual Status visit(hzcc::ast::ArithmeticExpr* p_expr) {
         DLOG(WARNING) << "ast Visitor for Node " << __FUNCTION__
                       << " hzcc::ast::ArithmeticExpr"

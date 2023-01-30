@@ -2,8 +2,7 @@
 // Created by Hanze Chen on 2022/2/3.
 //
 
-#include <stdint.h>  // for uint64_t, uintptr_t
-
+#include <cstdint>      // for uint64_t, uintptr_t
 #include <list>         // for list
 #include <memory>       // for unique_ptr, shared_ptr, make_unique
 #include <optional>     // for optional
@@ -13,19 +12,24 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
+#include "ast/DeduceValue.h"
 #include "macro.h"                // for Position
 #include "utils/status/status.h"  // for Status
+#include "visitor.h"
 
 #ifndef HZCC_AST_AST_NODE_H
 #define HZCC_AST_AST_NODE_H
 namespace hzcc::ast {
 class Stmt;
 class Type;
-class Visitor;
-class DeduceValue;
+class Expr;
+class TypeProxyExpr;
 
 using StmtPtr = std::unique_ptr<Stmt>;
 
+/**
+ * @brief The base class of all ast nodes.
+ */
 class Stmt {
   public:
     virtual ~Stmt() = default;
@@ -34,14 +38,14 @@ class Stmt {
      * @brief The unique id of the node.
      * @return The unique id of the node.
      */
-    [[nodiscard]] uintptr_t Id() const;
+    [[nodiscard]] uintptr_t Id() const { return _id; }
 
     /**
      * @brief Get the location of this Stmt in the source code. The location
      * have the form of (line, column).
      * @return The location of this Stmt
      */
-    [[nodiscard]] const Position& loc() const;
+    [[nodiscard]] const Position& loc() const { return _node_location; }
 
     /**
      * @brief Determine whether the node have a body or not
@@ -90,13 +94,16 @@ class Stmt {
      *         "[__NODE_NAME__:__NODE_ID__]"
      * @return The unique name of the node
      */
-    [[nodiscard]] virtual std::string UniqueName() const;
+    [[nodiscard]] std::string UniqueName() const {
+        return "[" + std::string(NodeName().data()) + ":" +
+               std::to_string(Id()) + "]";
+    }
 
     /**
      * @brief Get Name of the node
      * @return the name of the node
      */
-    [[nodiscard]] std::string_view NodeName() const;
+    [[nodiscard]] std::string_view NodeName() const { return _node_name; };
 
     /**
      * @brief Interface for Visitor pattern
@@ -106,16 +113,34 @@ class Stmt {
     [[nodiscard]] virtual Status visit(Visitor& visitor) = 0;
 
   protected:
-    Stmt(Position loc, std::string_view name);
+    /**
+     * @brief Constructor of Stmt, **should only be called by derived class**
+     * @param loc location of the statement
+     * @param name name of the statement node
+     */
+    Stmt(Position loc, std::string_view name)
+        : _node_name(name),
+          _id(s_id_counter += 1),
+          _node_location(std::move(loc)){
+              // NOLINT
+              HZCC_RUNTIME_CHECK_BLOCK({
+                  INTERNAL_LOG_IF(FATAL, !(_node_location.first >= 0 &&
+                                           _node_location.second >= 0))
+                      << "location invalid (should be greater than 0)";
+                  INTERNAL_LOG_IF(FATAL, _node_name.empty())
+                      << "node name empty";
+              })};
 
   private:
     const uint64_t _id;
     const Position _node_location;
     const std::string_view _node_name;
-
     inline static uint64_t s_id_counter = 0;
 };
 
+/**
+ * @brief The base class of all expression nodes.
+ */
 class Expr : public Stmt {
   public:
     /**
@@ -126,8 +151,9 @@ class Expr : public Stmt {
 
     [[nodiscard]] virtual bool IsReturnLValue() const { return false; }
 
-    [[nodiscard]] virtual std::optional<DeduceValue> GetDeducedValue()
-        const = 0;
+    [[nodiscard]] virtual std::optional<DeduceValue> GetDeducedValue() const {
+        return std::nullopt;
+    };
 
     /**
      * @brief Determine whether the node is used to access element in array or
@@ -142,12 +168,18 @@ class Expr : public Stmt {
      * @return the type of the node if the node have a return type, otherwise
      * return an void type. Return nullptr if has internal_status error.
      */
-    [[nodiscard]] virtual std::shared_ptr<Type> retType() const = 0;
+    [[nodiscard]] virtual std::shared_ptr<Type> type() const = 0;
 
   protected:
     Expr(const Position& loc, std::string_view name) : Stmt(loc, name) {}
 };
 
+using ExprPtr = std::unique_ptr<Expr>;
+
+/**
+ * @brief The class for type proxy expression. The type proxy expression is a
+ * kind of expression that will make type checking stage easier.
+ */
 class TypeProxyExpr : public Expr {
   public:
     /**
@@ -179,7 +211,7 @@ class TypeProxyExpr : public Expr {
      * @brief Get the type of the expression.
      * @return the type of the expression.
      */
-    [[nodiscard]] std::shared_ptr<Type> retType() const override;
+    [[nodiscard]] std::shared_ptr<Type> type() const override;
 
     [[nodiscard]] std::optional<DeduceValue> GetDeducedValue() const override;
 
@@ -189,63 +221,97 @@ class TypeProxyExpr : public Expr {
 
 using TypeProxyExprPtr = std::unique_ptr<TypeProxyExpr>;
 
+/**
+ * @brief The class for break statement
+ */
 class BreakStmt : public Stmt {
   public:
     /**
      * @brief Constructor of BreakStmt
      * @param loc location of the break statement
      */
-    explicit BreakStmt(const Position& loc);
+    explicit BreakStmt(const Position& loc) : Stmt(loc, "BreakStmt"){};
 
     /**
      * @brief ast Visitor acceptor
      * @param visitor Visitor object
      * @return return object of hzcc::Status with content of visit result
      */
-    Status visit(Visitor& visitor) override;
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
 };
 
+/**
+ * @brief The class for compound statement
+ */
 class CompoundStmt : public Stmt {
   public:
     /**
      * @brief Constructor of CompoundStmt
      * @param loc location of the compound statement
      */
-    explicit CompoundStmt(const Position& loc);
+    explicit CompoundStmt(const Position& loc) : Stmt(loc, "CompoundStmt"){};
 
     /**
      * @brief ast Visitor acceptor
      * @param visitor Visitor object
      * @return return object of hzcc::Status with content of visit result
      */
-    Status visit(Visitor& visitor) override;
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
-    void AddStatement(std::unique_ptr<Stmt> statement);
+    /**
+     * @brief Add a statement to the compound statement
+     * @param statement statement to be added
+     */
+    void add_stmt(std::unique_ptr<Stmt> statement) {
+        HZCC_RUNTIME_CHECK_BLOCK({
+            INTERNAL_LOG_IF(FATAL, statement == nullptr)
+                << "statement is nullptr";
+        });
+        statements_.push_back(std::move(statement));
+    };
 
-    [[nodiscard]] const std::unique_ptr<Stmt>& GetLastStatement() const;
+    /**
+     * @brief Get the last statement of the compound statement
+     * @return the last statement of the compound statement
+     */
+    [[nodiscard]] const std::unique_ptr<Stmt>& last_stmt() const {
+        return statements_.back();
+    };
 
-    [[nodiscard]] std::list<std::unique_ptr<Stmt>>& get_body_stmts();
+    /**
+     * @brief Get the body statements of the compound statement
+     * @return the body statements of the compound statement
+     */
+    [[nodiscard]] const std::list<std::unique_ptr<Stmt>>& body_stmts() const {
+        return statements_;
+    };
 
   private:
     std::list<std::unique_ptr<Stmt>> statements_{};
 };
 
+/**
+ * @brief The class for continue statement
+ */
 class ContinueStmt : public Stmt {
   public:
     /**
      * @brief Constructor of ContinueStmt
      * @param loc location of the continue statement
      */
-    explicit ContinueStmt(const Position& loc);
+    explicit ContinueStmt(const Position& loc) : Stmt(loc, "ContinueStmt"){};
 
     /**
      * @brief ast Visitor acceptor
      * @param visitor Visitor object
      * @return return object of hzcc::Status with content of visit result
      */
-    Status visit(Visitor& visitor) override;
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
 };
 
+/**
+ * @brief The base class for all declaration statement
+ */
 class IDeclStmt : public Stmt {
   public:
     /**
@@ -253,31 +319,55 @@ class IDeclStmt : public Stmt {
      * not
      * @return true if the node is a declaration node, false otherwise
      */
-    [[nodiscard]] bool IsDeclNode() const override;
+    [[nodiscard]] bool IsDeclNode() const override { return true; };
 
-    [[nodiscard]] virtual bool IsFuncDecl() const;
+    /**
+     * @brief Get the name of the declaration
+     * @return the name of the declaration
+     */
+    [[nodiscard]] std::string_view decl_name() const { return _decl_name; };
 
-    [[nodiscard]] std::string_view decl_name() const;
+    /**
+     * @brief Determine whether the declaration has an initializer or not
+     * @return true if the declaration has initializer false otherwise
+     */
+    [[nodiscard]] virtual bool has_init() const { return false; };
 
-    [[nodiscard]] virtual bool has_init() const;
-
-    [[nodiscard]] virtual std::shared_ptr<Type> declType() const = 0;
+    /**
+     * @brief Get the type of the declaration
+     * @return the type of the declaration
+     */
+    [[nodiscard]] virtual std::shared_ptr<Type> type() const = 0;
 
   protected:
     /**
      * @brief Constructor of DeclStmt, this abstract class should never
      * initialized directly.
-     * @param decl_name name of the declaration
+     * @param node_name name of the node
+     * @param name name of the declaration
      * @param location location of the declaration
      */
-    IDeclStmt(const char* node_name,      // NOLINT
-              std::string_view name,      // NOLINT
-              const Position& location);  // NOLINT
+    IDeclStmt(const char* node_name,  // NOLINT
+              std::string_view name,  // NOLINT
+              const Position& location)
+        : Stmt(location, node_name), _decl_name(name) {
+        /** #####################################################################
+         *  ### Runtime Assertion ###
+         *  #####################################################################
+         */
+        HZCC_RUNTIME_CHECK_BLOCK({
+            INTERNAL_LOG_IF(FATAL, !_decl_name.empty())
+                << this->UniqueName() << "decl name is empty";
+        })
+    }
 
   private:
-    std::string _decl_name;
+    const std::string _decl_name;
 };
 
+/**
+ * @brief The class for do-while statement
+ */
 class DoStmt : public Stmt {
   public:
     /**
@@ -286,16 +376,27 @@ class DoStmt : public Stmt {
      * @param body body of the do statement
      * @param pos location of the do statement
      */
-    DoStmt(const Position& pos,          // NOLINT
-           std::unique_ptr<Stmt> cond,   // NOLINT
-           std::unique_ptr<Stmt> body);  // NOLINT
+    DoStmt(const Position& pos,         // NOLINT
+           std::unique_ptr<Stmt> cond,  // NOLINT
+           std::unique_ptr<Stmt> body)
+        : Stmt(pos, "DoStmt"), _cond(std::move(cond)), _body(std::move(body)) {
+        /** #################################################################
+         *  ### Runtime Assertion ###
+         *  ################################################################# */
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        INTERNAL_LOG_IF(FATAL, _body != nullptr)
+            << UniqueName() << "body is nullptr";
+        INTERNAL_LOG_IF(FATAL, _cond != nullptr)
+            << UniqueName() << "condition is nullptr";
+#endif
+    }
 
     /**
      * @brief ast Visitor acceptor
      * @param visitor Visitor object
      * @return return object of hzcc::Status with content of visit result
      */
-    Status visit(Visitor& visitor) override;
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
     /**
      * @brief Determine whether the node have a body or not
@@ -303,32 +404,50 @@ class DoStmt : public Stmt {
      */
     [[nodiscard]] bool has_body() const override { return true; }
 
-    [[nodiscard]] std::unique_ptr<Stmt>& cond_stmt();
+    /**
+     * @brief Get the condition of the do statement
+     * @return the condition of the do statement
+     */
+    [[nodiscard]] std::unique_ptr<Stmt>& cond_stmt() { return _cond; };
 
-    [[nodiscard]] std::unique_ptr<Stmt>& body_stmt();
+    /**
+     * @brief Get the body of the do statement
+     * @return the body of the do statement
+     */
+    [[nodiscard]] std::unique_ptr<Stmt>& body_stmt() { return _body; };
 
   protected:
     std::unique_ptr<Stmt> _cond;
     std::unique_ptr<Stmt> _body;
 };
 
+/**
+ * @brief The class for empty statement
+ */
 class EmptyStmt : public Stmt {
   public:
     /**
      * @brief Constructor of EmptyStmt
      */
-    EmptyStmt();
+    EmptyStmt() : Stmt({0, 0}, "EmptyStmt"){};
 
     /**
      * @brief ast Visitor acceptor
      * @param visitor Visitor object
      * @return return object of hzcc::Status with content of visit result
      */
-    Status visit(Visitor& visitor) override;
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
-    [[nodiscard]] bool IsEmptyStmt() const override;
+    /**
+     * @brief Determine whether the node is an empty statement or not
+     * @return true if the node is an empty statement, false otherwise
+     */
+    [[nodiscard]] bool IsEmptyStmt() const override { return true; };
 };
 
+/**
+ * @brief The class for for loop statement
+ */
 class ForStmt : public Stmt {
   public:
     /**
@@ -339,14 +458,14 @@ class ForStmt : public Stmt {
      * @param body body of the for loop
      * @param location location of the for loop
      */
-    ForStmt(const Position& location);  // NOLINT
+    explicit ForStmt(const Position& location) : Stmt(location, "ForStmt"){};
 
     /**
      * @brief ast Visitor acceptor
      * @param visitor Visitor object
      * @return return object of hzcc::Status with content of visit result
      */
-    Status visit(Visitor& visitor) override;
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
     /**
      * @brief Determine whether the node have a body or not
@@ -354,43 +473,88 @@ class ForStmt : public Stmt {
      */
     [[nodiscard]] bool has_body() const override { return true; }
 
-    void set_init(std::unique_ptr<Stmt> init);
-    void set_cond(std::unique_ptr<Stmt> cond);
-    void set_step(std::unique_ptr<Stmt> step);
-    void set_body(std::unique_ptr<Stmt> body);
-    void set_incr(std::unique_ptr<Stmt> incr);
-
     /**
      * @brief Get the init stmt.
      * @return The init stmt.
      */
-    [[nodiscard]] const std::unique_ptr<Stmt>& init_stmt();
+    [[nodiscard]] const std::unique_ptr<Stmt>& init_stmt() { return _init; };
+
+    /**
+     * @brief Set the init stmt.
+     * @param init The init stmt.
+     */
+    void set_init(std::unique_ptr<Stmt> init) {
+        HZCC_RUNTIME_CHECK_BLOCK({
+            INTERNAL_LOG_IF(FATAL, init == nullptr)
+                << UniqueName() << "init stmt is nullptr";
+        })
+        this->_init = std::move(init);
+    }
 
     /**
      * @brief Get the condition stmt.
      * @return The condition stmt.
      */
-    [[nodiscard]] const std::unique_ptr<Stmt>& cond_stmt();
+    [[nodiscard]] const std::unique_ptr<Stmt>& cond_stmt() { return _cond; };
+
+    /**
+     * @brief Set the condition stmt.
+     * @param cond The condition stmt.
+     */
+    void set_cond(std::unique_ptr<Stmt> cond) {
+        HZCC_RUNTIME_CHECK_BLOCK({
+            INTERNAL_LOG_IF(FATAL, cond == nullptr)
+                << UniqueName() << "cond stmt is nullptr";
+        })
+        this->_cond = std::move(cond);
+    }
 
     /**
      * @brief Get the step expression.
      * @return  The step expression.
      */
-    [[nodiscard]] const std::unique_ptr<Stmt>& step_stmt();
+    [[nodiscard]] const std::unique_ptr<Stmt>& incr_stmt() { return _incr; };
+
+    /**
+     * @brief Set the step expression.
+     * @param incr The step expression.
+     */
+    void set_incr(std::unique_ptr<Stmt> incr) {
+        HZCC_RUNTIME_CHECK_BLOCK({
+            INTERNAL_LOG_IF(FATAL, incr == nullptr)
+                << UniqueName() << "incr stmt is nullptr";
+        })
+        this->_incr = std::move(incr);
+    }
 
     /**
      * @brief Get the body of the for stmt
      * @return  The body of the for stmt
      */
-    [[nodiscard]] const std::unique_ptr<Stmt>& body_stmt();
+    [[nodiscard]] const std::unique_ptr<Stmt>& body_stmt() { return _body; };
+
+    /**
+     * @brief Set the body of the for stmt
+     * @param body The body of the for stmt
+     */
+    void set_body(std::unique_ptr<Stmt> body) {
+        HZCC_RUNTIME_CHECK_BLOCK({
+            INTERNAL_LOG_IF(FATAL, body == nullptr)
+                << UniqueName() << "body stmt is nullptr";
+        })
+        this->_body = std::move(body);
+    }
 
   private:
-    const std::unique_ptr<Stmt> _init = std::make_unique<ast::EmptyStmt>();
-    const std::unique_ptr<Stmt> _cond = std::make_unique<ast::EmptyStmt>();
-    const std::unique_ptr<Stmt> _step = std::make_unique<ast::EmptyStmt>();
-    const std::unique_ptr<Stmt> _body = std::make_unique<ast::EmptyStmt>();
+    std::unique_ptr<Stmt> _init = std::make_unique<ast::EmptyStmt>();
+    std::unique_ptr<Stmt> _cond = std::make_unique<ast::EmptyStmt>();
+    std::unique_ptr<Stmt> _incr = std::make_unique<ast::EmptyStmt>();
+    std::unique_ptr<Stmt> _body = std::make_unique<ast::EmptyStmt>();
 };
 
+/**
+ * @brief The class for if statement
+ */
 class IfStmt : public Stmt {
   public:
     /**
@@ -399,27 +563,75 @@ class IfStmt : public Stmt {
      * @param body body of the if statement
      * @param location location of the if statement
      */
-    IfStmt(const Position& location,     // NOLINT
-           std::unique_ptr<Stmt> cond,   // NOLINT
-           std::unique_ptr<Stmt> body);  // NOLINT
+    IfStmt(const Position& location,    // NOLINT
+           std::unique_ptr<Stmt> cond,  // NOLINT
+           std::unique_ptr<Stmt> body)
+        : Stmt(location, "IfStmt"),
+          _condition(std::move(cond)),
+          _if_body_statement(std::move(body)) {
+        /** #################################################################
+         *  ### Runtime Assertion ###
+         *  ################################################################# */
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        INTERNAL_LOG_IF(FATAL, body != nullptr)
+            << UniqueName() << "body is nullptr";
+        INTERNAL_LOG_IF(FATAL, cond != nullptr)
+            << UniqueName() << "condition is nullptr";
+#endif
+    };
 
     /**
      * @brief ast Visitor acceptor
      * @param visitor Visitor object
      * @return return object of hzcc::Status with content of visit result
      */
-    Status visit(Visitor& visitor) override;
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
-    void set_else(std::unique_ptr<Stmt> else_body);
+    /**
+     * @brief Determine whether the node have a else statement or not
+     * @return true if the node have a else statement, false otherwise
+     */
+    [[nodiscard]] bool has_else() const { return _else_statement_ != nullptr; };
 
-    [[nodiscard]] std::unique_ptr<Stmt>& cond_stmt();
+    /**
+     * @brief get the else statement
+     * @return the else statement
+     */
+    [[nodiscard]] std::unique_ptr<Stmt>& else_stmt() {
+        return _else_statement_;
+    };
 
-    [[nodiscard]] std::unique_ptr<Stmt>& body_stmt();
+    /**
+     * @brief set the else statement
+     * @param else_body the else statement
+     */
+    void set_else(std::unique_ptr<Stmt> else_body) {
+        HZCC_RUNTIME_CHECK_BLOCK({
+            INTERNAL_LOG_IF(FATAL, else_body == nullptr)
+                << UniqueName() << "else is nullptr";
+        })
+        _else_statement_ = std::move(else_body);
+    }
 
-    bool has_else() const;
-    bool has_else_if() const;
+    /**
+     * @brief Get the condition stmt.
+     * @return The condition stmt.
+     */
+    [[nodiscard]] std::unique_ptr<Stmt>& cond_stmt() { return _condition; };
 
-    [[nodiscard]] std::unique_ptr<Stmt>& else_stmt();
+    /**
+     * @brief Get the body of the if stmt
+     * @return  The body of the if stmt
+     */
+    [[nodiscard]] std::unique_ptr<Stmt>& body_stmt() {
+        return _if_body_statement;
+    };
+
+    /**
+     * @brief Determine whether the node have a else-if statement or not
+     * @return true if the node have a else-if statement, false otherwise
+     */
+    [[nodiscard]] bool has_else_if() const { return !_else_ifs.empty(); };
 
     /**
      * @brief Get the list of else-if stmt. The return format is a vector
@@ -427,61 +639,41 @@ class IfStmt : public Stmt {
      * is the body.
      * @return The list of else-if stmt.
      */
-    [[nodiscard]] std::vector<
-        std::pair<std::unique_ptr<Stmt>, std::unique_ptr<Stmt>>>&
-    else_if_stmts();
+    [[nodiscard]] std::vector<std::pair<StmtPtr, StmtPtr>>& else_if_stmts() {
+        return _else_ifs;
+    };
 
-    void addElseIf(std::unique_ptr<Stmt> Cond, std::unique_ptr<Stmt> Body);
-
-    [[nodiscard]] bool HasElse() const;
+    /**
+     * @brief Add an else-if statement to the node.
+     * @param Cond The condition of the else-if statement.
+     * @param Body The body of the else-if statement.
+     */
+    void add_else_if(std::unique_ptr<Stmt> Cond, std::unique_ptr<Stmt> Body) {
+        HZCC_RUNTIME_CHECK_BLOCK({
+            INTERNAL_LOG_IF(FATAL, Cond == nullptr)
+                << UniqueName() << "Cond statement is nullptr";
+            INTERNAL_LOG_IF(FATAL, Body == nullptr)
+                << UniqueName() << "Body statement is nullptr";
+        })
+        _else_ifs.emplace_back(std::move(Cond), std::move(Body));
+    }
 
     /**
      * @brief Determine whether the node have a body or not
      * @return true if the node have a body, false otherwise
      */
-    [[nodiscard]] bool has_body() const override;
+    [[nodiscard]] bool has_body() const override { return true; };
 
   private:
     std::unique_ptr<Stmt> _condition;
     std::unique_ptr<Stmt> _if_body_statement;
     std::unique_ptr<Stmt> _else_statement_{nullptr};
-    std::vector<std::pair<std::unique_ptr<Stmt>, std::unique_ptr<Stmt>>>
-        _elseIfs;
+    std::vector<std::pair<StmtPtr, StmtPtr>> _else_ifs;
 };
 
-class ReturnStmt : public Stmt {
-  public:
-    /**
-     * @brief Constructor of ReturnStmt
-     * @param expr expression of the return statement
-     * @param loc location of the return statement
-     */
-    ReturnStmt(const Position& loc,          // NOLINT
-               std::unique_ptr<Expr> expr);  // NOLINT
-
-    /**
-     * @brief ast Visitor acceptor
-     * @param visitor Visitor object
-     * @return return object of hzcc::Status with content of visit result
-     */
-    Status visit(Visitor& visitor) override;
-
-    /**
-     * @brief Get the returned expression
-     * @return The returned expression
-     */
-    std::unique_ptr<Expr>& ret_expr();
-
-    /**
-     * @brief Determine whether the node is a return statement or not
-     * @return true if the node is a return statement, false otherwise
-     */
-    [[nodiscard]] bool IsReturn() const override { return true; }
-
-  private:
-    std::unique_ptr<Expr> _ret_expr;
-};
-
+/**
+ * @brief The class for while statement
+ */
 class WhileStmt : public Stmt {
   public:
     /**
@@ -490,16 +682,29 @@ class WhileStmt : public Stmt {
      * @param body body of the while
      * @param loc location of the while
      */
-    WhileStmt(const Position& loc,          // NOLINT
-              std::unique_ptr<Stmt> cond,   // NOLINT
-              std::unique_ptr<Stmt> body);  // NOLINT
+    WhileStmt(const Position& loc,         // NOLINT
+              std::unique_ptr<Stmt> cond,  // NOLINT
+              std::unique_ptr<CompoundStmt> body)
+        : Stmt(loc, "WhileStmt"),
+          _cond(std::move(cond)),
+          _body(std::move(body)) {
+        /** ##################################################################
+         *  ### Runtime Assertion ###
+         *  ################################################################# */
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        INTERNAL_LOG_IF(FATAL, _body != nullptr)
+            << UniqueName() << "body is nullptr";
+        INTERNAL_LOG_IF(FATAL, _cond != nullptr)
+            << UniqueName() << "condition is nullptr";
+#endif
+    }
 
     /**
      * @brief ast Visitor acceptor
      * @param visitor Visitor object
      * @return return object of hzcc::Status with content of visit result
      */
-    Status visit(Visitor& visitor) override;
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
     /**
      * @brief Determine whether the node have a body or not
@@ -507,15 +712,26 @@ class WhileStmt : public Stmt {
      */
     [[nodiscard]] bool has_body() const override { return true; }
 
-    [[nodiscard]] std::unique_ptr<Stmt>& cond_stmt();
+    /**
+     * @brief Get the condition stmt.
+     * @return The condition stmt.
+     */
+    [[nodiscard]] std::unique_ptr<Stmt>& cond_stmt() { return _cond; };
 
-    [[nodiscard]] std::unique_ptr<Stmt>& body_stmt();
+    /**
+     * @brief Get the body of the while stmt
+     * @return  The body of the while stmt
+     */
+    [[nodiscard]] std::unique_ptr<CompoundStmt>& body_stmt() { return _body; };
 
   protected:
     std::unique_ptr<Stmt> _cond;
-    std::unique_ptr<Stmt> _body;
+    std::unique_ptr<CompoundStmt> _body;
 };
 
+/**
+ * @brief The class for param var declaration statement
+ */
 class ParamVarDecl : public IDeclStmt {
   public:
     /**
@@ -524,23 +740,47 @@ class ParamVarDecl : public IDeclStmt {
      * @param loc location of the parameter
      * @param type type of the parameter
      */
-    ParamVarDecl(const Position& loc,                   // NOLINT
-                 std::string_view decl_name,            // NOLINT
-                 std::unique_ptr<TypeProxyExpr> type);  // NOLINT
+    ParamVarDecl(const Position& loc,         // NOLINT
+                 std::string_view decl_name,  // NOLINT
+                 std::unique_ptr<TypeProxyExpr> type)
+        : IDeclStmt("ParamVarDecl", decl_name, loc), _type(std::move(type)) {
+        /** ############################################################
+         *  ### Runtime Assertion                                   ###
+         *  ###########################################################*/
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        INTERNAL_LOG_IF(FATAL, _type != nullptr)
+            << UniqueName() << "type is nullptr";
+#endif
+    };
 
     /**
      * @brief ast Visitor acceptor
      * @param visitor Visitor object
      * @return return object of hzcc::Status with content of visit result
      */
-    Status visit(Visitor& visitor) override;
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
-    [[nodiscard]] std::unique_ptr<TypeProxyExpr>& type_expr();
-    [[nodiscard]] std::shared_ptr<Type> declType() const override;
+    /**
+     * @brief Get the type proxy expr of the parameter
+     * @return
+     */
+    [[nodiscard]] std::unique_ptr<TypeProxyExpr>& type_expr() { return _type; };
+
+    /**
+     * @brief Get the type of the parameter
+     * @return  The type of the parameter
+     */
+    [[nodiscard]] std::shared_ptr<Type> type() const override {
+        return _type->type();
+    };
 
   private:
     std::unique_ptr<TypeProxyExpr> _type;
 };
+
+/**
+ * @brief The class for var declaration statement within the struct definition
+ */
 class FieldDecl : public IDeclStmt {
   public:
     /**
@@ -551,23 +791,46 @@ class FieldDecl : public IDeclStmt {
      * @param attrs The attributes of the variable
      * @param name The name of the variable
      */
-    FieldDecl(const Position& loc,                   // NOLINT
-              std::string_view name,                 // NOLINT
-              std::unique_ptr<TypeProxyExpr> type);  // NOLINT
+    FieldDecl(const Position& loc,                  // NOLINT
+              std::string_view name,                // NOLINT
+              std::unique_ptr<TypeProxyExpr> type)  // NOLINT
+        : IDeclStmt("FieldDecl", name, loc), _type(std::move(type)) {
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+
+        INTERNAL_LOG_IF(FATAL, _type != nullptr)
+            << UniqueName() << "type is nullptr";
+#endif
+    }
 
     /**
      * @brief Visitor for ast
      * @param visitor the ast Visitor
      * @return visit result
      */
-    Status visit(Visitor& visitor) override;
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
+    ;
 
-    [[nodiscard]] std::shared_ptr<Type> declType() const override;
+    /**
+     * @brief Get the type proxy expr of the field
+     * @return
+     */
+    [[nodiscard]] std::unique_ptr<TypeProxyExpr>& type_expr() { return _type; };
+
+    /**
+     * @brief Get the type of the field
+     * @return  The type of the field
+     */
+    [[nodiscard]] std::shared_ptr<Type> type() const override {
+        return _type->type();
+    };
 
   private:
     std::unique_ptr<TypeProxyExpr> _type;
 };
 
+/**
+ * @brief The class for struct/union declaration statement
+ */
 class RecordDecl : public IDeclStmt {
   public:
     /**
@@ -580,8 +843,12 @@ class RecordDecl : public IDeclStmt {
                std::string_view decl_name,
                std::unique_ptr<TypeProxyExpr> type);  // NOLINT
 
-    // todo sync to struct type
+    /**
+     * @brief Add a field to the struct
+     * @param field  The field to be added
+     */
     void add_field(std::unique_ptr<IDeclStmt> field);
+
     /**
      * @brief ast Visitor acceptor
      * @param visitor Visitor object
@@ -589,8 +856,18 @@ class RecordDecl : public IDeclStmt {
      */
     Status visit(Visitor& visitor) override;
 
-    [[nodiscard]] std::shared_ptr<Type> declType() const override;
+    /**
+     * @brief Get the type ptr of the struct
+     * @return
+     */
+    [[nodiscard]] std::shared_ptr<Type> type() const override {
+        return _type->type();
+    }
 
+    /**
+     * @brief Determine whether the declaration is a struct declaration
+     * @return  true if the declaration is a struct declaration
+     */
     [[nodiscard]] bool IsStructDecl() const override { return true; }
 
   private:
@@ -600,6 +877,9 @@ class RecordDecl : public IDeclStmt {
 
 using RecordDEclPtr = std::unique_ptr<ast::RecordDecl>;
 
+/**
+ * @brief The class for var declaration statement
+ */
 class VarDecl : public IDeclStmt {
   public:
     /**
@@ -611,53 +891,113 @@ class VarDecl : public IDeclStmt {
      * @param name The name of the variable
      * @param init The initial value of the variable (optional)
      */
-    VarDecl(const Position& loc,                   // NOLINT
-            std::string_view name,                 // NOLINT
-            std::unique_ptr<Expr> init,            // NOLINT
-            std::unique_ptr<TypeProxyExpr> type);  // NOLINT
+    VarDecl(const Position& loc,         // NOLINT
+            std::string_view name,       // NOLINT
+            std::unique_ptr<Expr> init,  // NOLINT
+            std::unique_ptr<TypeProxyExpr> type)
+        : IDeclStmt("VarDecl", name, loc),
+          _type(std::move(type)),
+          _init_expr(std::move(init)) {
+        /** #####################################################################
+         *  ### Runtime Assertion ###
+         *  #####################################################################
+         */
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        // name and type is checked in DeclStmt
+        INTERNAL_LOG_IF(FATAL, _init_expr != nullptr)
+            << UniqueName() << "init expression is nullptr";
+#endif
+    }
 
     /**
      * @brief Visitor for ast
      * @param visitor the ast Visitor
      * @return visit result
      */
-    Status visit(Visitor& visitor) override;
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
     /**
      * @brief Inquire if current VarDecl contains init value or not
      * @return true if contains init value, false otherwise
      */
-    [[nodiscard]] bool has_init() const override;
+    [[nodiscard]] bool has_init() const override {
+        return _init_expr != nullptr;
+    };
 
     /**
      * @brief Get the init ast Node of current VarDecl Node
-     * @note will exit(-1) if current VarDecl doesn't contain init value when
-     * compile as DEBUG mode
+     * @note will exit(-1) if current VarDecl doesn't contain init value
+     * when compile as DEBUG mode
      * @return the init ast Node of current VarDecl Node
      */
-    [[nodiscard]] std::unique_ptr<Expr>& init_expr();
+    [[nodiscard]] std::unique_ptr<Expr>& init_expr() {
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        DLOG_ASSERT(_init_expr != nullptr) << "init cast is nullptr";
+#endif
+        return _init_expr;
+    };
 
-    [[nodiscard]] std::shared_ptr<Type> declType() const override;
+    /**
+     * @brief Get the type of the variable
+     * @return  The type of the variable
+     */
+    [[nodiscard]] std::shared_ptr<Type> type() const override {
+        return _type->type();
+    }
 
-    [[nodiscard]] std::unique_ptr<TypeProxyExpr> type_expr();
+    /**
+     * @brief Get the type proxy expr of the variable
+     * @return The type proxy expr of the variable
+     */
+    [[nodiscard]] std::unique_ptr<TypeProxyExpr> type_expr() {
+        return std::move(_type);
+    };
 
   private:
     std::unique_ptr<Expr> _init_expr;
     std::unique_ptr<TypeProxyExpr> _type;
 };
 
+/**
+ * @brief The class for var declaration statement
+ */
 class DeclStmt : public IDeclStmt {
   public:
-    DeclStmt(const Position& loc,                             // NOLINT
-             std::list<std::unique_ptr<VarDecl>> decl_list);  // NOLINT
+    DeclStmt(const Position& loc,  // NOLINT
+             std::list<std::unique_ptr<VarDecl>> decl_list)
+        : IDeclStmt("DeclStmt", "NO_NAME", loc),
+          _decl_list(std::move(decl_list)) {
+        /** #################################################################
+         *  ### Runtime Assertion ###
+         *  ################################################################# */
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        INTERNAL_LOG_IF(FATAL, _decl_list.empty())
+            << UniqueName() << "decl list is empty";
+#endif
+    }
 
-    Status visit(Visitor& visitor) override;
+    /**
+     * @brief Visitor for ast
+     * @param visitor the ast Visitor
+     * @return visit result
+     */
+    Status visit(Visitor& visitor) override { return visitor.visit(this); }
 
+    /**
+     * @brief Get the decl list of the declaration statement
+     * @return the decl list of the declaration statement
+     */
     [[nodiscard]] const std::list<std::unique_ptr<VarDecl>>& decl_list() {
         return _decl_list;
     }
 
-    [[nodiscard]] std::shared_ptr<Type> declType() const override;
+    /**
+     * @brief Get the type of the declaration statement
+     * @return the type of the declaration statement
+     */
+    [[nodiscard]] std::shared_ptr<Type> type() const override {
+        return _decl_list.front()->type();
+    }
 
   private:
     const std::shared_ptr<Type> _type;
@@ -667,6 +1007,9 @@ class DeclStmt : public IDeclStmt {
 using ArgumentList =
     std::list<std::tuple<std::string, std::shared_ptr<ast::Type>, Position>>;
 
+/**
+ * @brief The class for function declaration statement
+ */
 class FuncDeclStmt : public IDeclStmt {
   public:
     friend class Visitor;
@@ -703,18 +1046,62 @@ class FuncDeclStmt : public IDeclStmt {
      */
     [[nodiscard]] bool has_body() const override;
 
-    [[nodiscard]] bool IsFuncDecl() const override;
-
     bool AddFunctionArgument(std::unique_ptr<ParamVarDecl> type);
 
-    [[nodiscard]] std::shared_ptr<Type> declType() const override;
+    [[nodiscard]] std::shared_ptr<Type> type() const override {
+        return _ret_type->type();
+    }
 
-    [[nodiscard]] std::unique_ptr<TypeProxyExpr> type_expr();
+    [[nodiscard]] std::unique_ptr<TypeProxyExpr>& type_expr() {
+        return _ret_type;
+    }
 
   private:
     std::unique_ptr<CompoundStmt> _func_body;
     std::unique_ptr<TypeProxyExpr> _ret_type;
     std::list<std::unique_ptr<ParamVarDecl>> _func_param;
+};
+
+class ReturnStmt : public Stmt {
+  public:
+    /**
+     * @brief Constructor of ReturnStmt
+     * @param expr expression of the return statement
+     * @param loc location of the return statement
+     */
+    ReturnStmt(const Position& loc,  // NOLINT
+               std::unique_ptr<Expr> expr)
+        : Stmt(loc, "ReturnStmt"), _ret_expr(std::move(expr)) {
+/** #####################################################################
+ *  ### Runtime Assertion                                             ###
+ *  ##################################################################### */
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        INTERNAL_LOG_IF(FATAL, _ret_expr != nullptr)
+            << UniqueName() << "return statement is nullptr";
+#endif
+    }
+
+    /**
+     * @brief ast Visitor acceptor
+     * @param visitor Visitor object
+     * @return return object of hzcc::Status with content of visit result
+     */
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
+
+    /**
+     * @brief Get the returned expression
+     * @return The returned expression
+     */
+    std::unique_ptr<Expr>& ret_expr() { return _ret_expr; };
+
+    /**
+     * @brief Determine whether the node is a return statement or not
+     * @return true if the node is a return statement, false otherwise
+     */
+    [[nodiscard]] bool IsReturn() const override { return true; }
+
+  private:
+    std::unique_ptr<Expr> _ret_expr;
 };
 
 }  // namespace hzcc::ast

@@ -46,6 +46,12 @@ class Type : public std::enable_shared_from_this<Type> {
     [[nodiscard]] virtual bool IsFuncPtr() const;
 
     /**
+     * @brief Check if the type is a Union type.
+     * @return True if the type is a Union type, false otherwise.
+     */
+    [[nodiscard]] virtual bool IsUnion() const;
+
+    /**
      * @brief Check if the type is a pointer type
      * @return True if the type is a pointer type, false otherwise.
      */
@@ -97,7 +103,7 @@ class Type : public std::enable_shared_from_this<Type> {
 
   protected:
     /**
-     * @brief Constructor of retType. The abstract class should never be
+     * @brief Constructor of type. The abstract class should never be
      * initialized directly.
      * @param base_type The base type of the type.
      * @param attrs The attributes of the type.
@@ -161,7 +167,37 @@ static bool IsTypeOf(const ast::TypePtr& type) {
     return type == GetNumericalTypeOf<T>();
 }
 
-static TypePtr GetNumericalTypeOf(PrimitiveType type);
+ALWAYS_INLINE TypePtr GetNumericalTypeOf(PrimitiveType type) {
+    switch (type) {
+        case PrimitiveType::kInt:
+            return GetNumericalTypeOf<PrimitiveType::kInt>();
+        case PrimitiveType::kChar:
+            return GetNumericalTypeOf<PrimitiveType::kChar>();
+        case PrimitiveType::kFloat:
+            return GetNumericalTypeOf<PrimitiveType::kFloat>();
+        case PrimitiveType::kDouble:
+            return GetNumericalTypeOf<PrimitiveType::kDouble>();
+        case PrimitiveType::kVoid:
+            return GetNumericalTypeOf<PrimitiveType::kVoid>();
+        case PrimitiveType::kLong:
+            return GetNumericalTypeOf<PrimitiveType::kLong>();
+        case PrimitiveType::kShort:
+            return GetNumericalTypeOf<PrimitiveType::kShort>();
+        case PrimitiveType::kBool:
+            return GetNumericalTypeOf<PrimitiveType::kBool>();
+        case PrimitiveType::kComplex:
+            return GetNumericalTypeOf<PrimitiveType::kComplex>();
+        case PrimitiveType::kImaginary:
+            return GetNumericalTypeOf<PrimitiveType::kImaginary>();
+        case PrimitiveType::kLonglong:
+            return GetNumericalTypeOf<PrimitiveType::kLonglong>();
+        case PrimitiveType::kLong_double:
+            return GetNumericalTypeOf<PrimitiveType::kLong_double>();
+        default:
+            INTERNAL_LOG(FATAL)
+                << "Unknown primitive type: " << utils::as_integer(type);
+    }
+}
 
 class ArrayType : public Type {
   public:
@@ -238,7 +274,33 @@ class PointerType : public Type {
     std::shared_ptr<Type> _base_type;
 };
 
-class StructType : public Type {
+class IRecordType : public Type {
+  public:
+    /**
+     * @brief Construct a new IRecordType object.
+     * @param typeCategory The category of the type.
+     * @param attr_list The attributes of the type.
+     */
+    explicit IRecordType(TypeCategory typeCategory,  // NOLINT
+                         const std::list<Attribute>& attr_list = {})
+        : Type(typeCategory, attr_list) {
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        INTERNAL_LOG_IF(FATAL, typeCategory != TypeCategory::kStruct ||
+                                   typeCategory != TypeCategory::kUnion)
+            << "The type category must be kStruct or kUnion if you want to "
+               "construct a IRecordType.";
+#endif
+    }
+
+    /**
+     * @brief add the record to the record type.
+     * @param name The name of the record.
+     * @param type The type of the record.
+     */
+    virtual void add_record(std::string_view name, const TypePtr& type) = 0;
+};
+
+class StructType : public IRecordType {
   public:
     explicit StructType(const std::string& name,                      // NOLINT
                         const std::list<Attribute>& attr_list = {});  // NOLINT
@@ -257,16 +319,15 @@ class StructType : public Type {
      */
     [[nodiscard]] std::string Name() const override;
 
-    bool AddChild(const std::shared_ptr<StructType>& type);
-
-    bool AddChild(const std::string& name,             // NOLINT
-                  const std::shared_ptr<Type>& type);  // NOLINT
+    void add_record(std::string_view name,                        // NOLINT
+                    const std::shared_ptr<Type>& type) override;  // NOLINT
 
     std::shared_ptr<Type> field_type(std::string_view name);
 
   protected:
     /**
-     * @brief Check if the type is the same as another type.
+     * @brief Check if the type is the same as another type. This is the
+     * internal logic of IsSame. All comparison should use "==", not "IsSame".
      * @return True if the type is the same as another type, false otherwise.
      */
     [[nodiscard]] bool IsSame(const Type& rhs) const override;

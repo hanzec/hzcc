@@ -39,7 +39,7 @@ StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
                          utils::ParseCondition(context, tokens));
 
     // if condition could be converted to int
-    if (!condition->retType()->IsNumericalType()) {
+    if (!condition->type()->IsNumericalType()) {
         return syntax::utils::TokenErr(
             cond_token, "if condition has non-numeric type void");
     }
@@ -57,7 +57,7 @@ StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
         auto prev_else = tokens.pop();  // consume else;
         // if this is single else stmt
         if (tokens.peek().Type() == TokenType::kLBrace) {
-            if (ifNode->HasElse()) {
+            if (ifNode->has_else()) {
                 return syntax::utils::TokenErr(
                     prev_else, "If stmt cannot have multiple else statements");
             } else {
@@ -89,7 +89,7 @@ StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
             HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
 
             // check if else-if condition is valid
-            if (else_if_condition->retType()->is<TypeCategory::kNumerical>()) {
+            if (else_if_condition->type()->is<TypeCategory::kNumerical>()) {
                 return syntax::utils::TokenErr(
                     else_if_token, "if condition has non-numeric type void");
             }
@@ -98,8 +98,8 @@ StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
             HZCC_CHECK_OR_ASSIGN(
                 else_if_body,  // NOLINT
                 utils::ParseBodyStatement(context, false, tokens));
-            ifNode->addElseIf(std::move(else_if_condition),
-                              std::move(else_if_body));
+            ifNode->add_else_if(std::move(else_if_condition),
+                                std::move(else_if_body));
         }
 
         // else statements without code block

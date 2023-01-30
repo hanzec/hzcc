@@ -44,38 +44,5 @@ bool Type::is_ptr() const { return false; }
 uintptr_t Type::Id() const { return reinterpret_cast<uintptr_t>(this); }
 
 std::string Type::UniqueName() const { return "[" + Name() + "]"; }
-static TypePtr GetNumericalTypeOf(PrimitiveType type) {
-    switch (type) {
-        case PrimitiveType::kInt:
-            return GetNumericalTypeOf<PrimitiveType::kInt>();
-        case PrimitiveType::kChar:
-            return GetNumericalTypeOf<PrimitiveType::kChar>();
-        case PrimitiveType::kFloat:
-            return GetNumericalTypeOf<PrimitiveType::kFloat>();
-        case PrimitiveType::kDouble:
-            return GetNumericalTypeOf<PrimitiveType::kDouble>();
-        case PrimitiveType::kVoid:
-            return GetNumericalTypeOf<PrimitiveType::kVoid>();
-        case PrimitiveType::kLong:
-            return GetNumericalTypeOf<PrimitiveType::kLong>();
-        case PrimitiveType::kShort:
-            return GetNumericalTypeOf<PrimitiveType::kShort>();
-        case PrimitiveType::kBool:
-            return GetNumericalTypeOf<PrimitiveType::kBool>();
-        case PrimitiveType::kComplex:
-            return GetNumericalTypeOf<PrimitiveType::kComplex>();
-        case PrimitiveType::kImaginary:
-            return GetNumericalTypeOf<PrimitiveType::kImaginary>();
-        case PrimitiveType::kLonglong:
-            return GetNumericalTypeOf<PrimitiveType::kLonglong>();
-        case PrimitiveType::kLong_double:
-            return GetNumericalTypeOf<PrimitiveType::kLong_double>();
-        default:
-            INTERNAL_LOG(ERROR)
-                << "Unknown primitive type: " << utils::as_integer(type);
-    }
-    INTERNAL_LOG(ERROR) << "Unknown primitive type: "
-                        << utils::as_integer(type);
-    exit(1);
-}
+
 }  // namespace hzcc::ast

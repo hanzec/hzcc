@@ -87,7 +87,7 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
     /**
      * @brief Get the variable's shared_ptr with the given name.
      * @param name The name of the variable.
-     * @return std::shared_ptr<retType> The variable with the given name or
+     * @return std::shared_ptr<type> The variable with the given name or
      * nullptr if not found.
      */
     std::shared_ptr<ast::Type> getVariableType(const std::string& name);

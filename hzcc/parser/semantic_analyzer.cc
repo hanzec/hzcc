@@ -2,8 +2,9 @@
 // Created by chen_ on 2022/12/29.
 //
 #include <absl/strings/str_cat.h>
-#include <ext/alloc_traits.h>
 #include <glog/logging.h>
+
+#include <ext/alloc_traits.h>
 #include <list>
 #include <memory>
 #include <ostream>
@@ -14,10 +15,10 @@
 #include "ast/Stmt.h"
 #include "ast/cast/Cast.h"
 #include "ast/expr/Expr.h"
-#include "options.h"
-#include "semantic.h"
 #include "ast/type/Type.h"
 #include "enums.h"
+#include "options.h"
+#include "semantic.h"
 #include "utils/logging.h"
 #include "utils/status/status.h"
 #include "utils/status/statusor.h"
@@ -42,7 +43,7 @@ Status analyzer::visit(hzcc::ast::VarDecl* p_expr) {
     }
 
     // variable cannot be defined as void
-    auto curr_type = p_expr->type_expr()->retType();
+    auto curr_type = p_expr->type_expr()->type();
     if (curr_type->is<TypeCategory::kNumerical>() &&
         curr_type == ast::GetNumericalTypeOf<PrimitiveType::kVoid>()) {
         return CompileError(p_expr->loc(),
@@ -55,7 +56,7 @@ Status analyzer::visit(hzcc::ast::VarDecl* p_expr) {
 
     // check if type is match if there is an initializer
     if (p_expr->has_init()) {
-        auto init_type = p_expr->init_expr()->retType();
+        auto init_type = p_expr->init_expr()->type();
         if (init_type != curr_type) {
             // here we're trying to cast the type to the correct type, since
             // initializer always at right side, we always need rval for this
@@ -88,21 +89,22 @@ Status analyzer::visit(hzcc::ast::ReturnStmt* p_expr) {
     }
 
     // check if return type is match
-    else if (p_expr->ret_expr()->retType() == _ctx.scope_ret_type()) {
-        auto return_type = p_expr->ret_expr()->retType();
+    if (p_expr->ret_expr()->type() == _ctx.ret_type()) {
+        auto return_type = p_expr->ret_expr()->type();
         // cast expr need rvalue to return
         auto ret_expr_ret = ast::Cast::apply(
-            true, std::move(p_expr->ret_expr()), _ctx.scope_ret_type());
+            true, std::move(p_expr->ret_expr()), _ctx.ret_type().value());
 
         if (!ret_expr_ret.ok()) {
             return CompileError(p_expr->loc(),
                                 "return stmt type is not match, "
                                 "require: " +
-                                    _ctx.scope_ret_type()->Name() +
+                                    _ctx.ret_type().value()->Name() +
                                     ", got: " + return_type->Name());
         }
         p_expr->ret_expr() = std::move(ret_expr_ret.value());
     }
+
     return NoError();
 }
 
@@ -118,7 +120,7 @@ Status analyzer::visit(hzcc::ast::AssignExpr* p_expr) {
     }
 
     // LHS cannot be const variable
-    if (p_expr->lhs()->retType()->is<Attribute::kCONST>()) {
+    if (p_expr->lhs()->type()->is<Attribute::kCONST>()) {
         VLOG(SYNTAX_LOG_LEVEL)
             << "Left hand side [" << p_expr->lhs()->UniqueName()
             << "is not assignable";
@@ -126,14 +128,14 @@ Status analyzer::visit(hzcc::ast::AssignExpr* p_expr) {
                             "Left hand side is not assignable");
     }
 
-    if (!(p_expr->lhs()->retType() == p_expr->rhs()->retType())) {
-        auto rhs_type = p_expr->rhs()->retType();
+    if (!(p_expr->lhs()->type() == p_expr->rhs()->type())) {
+        auto rhs_type = p_expr->rhs()->type();
         auto rhs_ret = ast::Cast::apply(true, std::move(p_expr->rhs()),
-                                        p_expr->lhs()->retType());
+                                        p_expr->lhs()->type());
         if (!rhs_ret.ok()) {
             return CompileError(p_expr->rhs()->loc(),
                                 "Assignment mismatch " +
-                                    p_expr->lhs()->retType()->Name() +
+                                    p_expr->lhs()->type()->Name() +
                                     " += " + rhs_type->Name());
         }
         p_expr->rhs() = std::move(rhs_ret.value());
@@ -149,15 +151,14 @@ Status analyzer::visit(hzcc::ast::TernaryExpr* p_expr) {
 
     // todo only allow char
     // true expr and false expr must be same type
-    if (!(p_expr->true_expr()->retType() == p_expr->false_expr()->retType())) {
-        auto false_expr_type = p_expr->false_expr()->retType();
-        auto false_expr_type_ret =
-            ast::Cast::apply(true, std::move(p_expr->false_expr()),
-                             p_expr->true_expr()->retType());
+    if (!(p_expr->true_expr()->type() == p_expr->false_expr()->type())) {
+        auto false_expr_type = p_expr->false_expr()->type();
+        auto false_expr_type_ret = ast::Cast::apply(
+            true, std::move(p_expr->false_expr()), p_expr->true_expr()->type());
         if (!false_expr_type_ret.ok()) {
             return CompileError(p_expr->loc(),
                                 "Expect type " +
-                                    p_expr->true_expr()->retType()->Name() +
+                                    p_expr->true_expr()->type()->Name() +
                                     " but get " + false_expr_type->Name());
         }
         p_expr->false_expr() = std::move(false_expr_type_ret.value());
@@ -171,8 +172,8 @@ Status analyzer::visit(hzcc::ast::LogicalExpr* p_expr) {
     HZCC_CHECK_OK_OR_RETURN(p_expr->rhs()->visit(*this));
 
     // todo only allow char
-    auto lhs_type = p_expr->lhs()->retType();
-    auto rhs_type = p_expr->rhs()->retType();
+    auto lhs_type = p_expr->lhs()->type();
+    auto rhs_type = p_expr->rhs()->type();
 
     // LHS and rhs should not be void
     if (ast::IsTypeOf<PrimitiveType::kVoid>(rhs_type) ||
@@ -209,8 +210,8 @@ Status analyzer::visit(hzcc::ast::BitwiseExpr* p_expr) {
     HZCC_CHECK_OK_OR_RETURN(p_expr->rhs()->visit(*this));
 
     // todo only allow char
-    auto lhs_type = p_expr->lhs()->retType();
-    auto rhs_type = p_expr->rhs()->retType();
+    auto lhs_type = p_expr->lhs()->type();
+    auto rhs_type = p_expr->rhs()->type();
 
     // LHS and rhs should not be void
     if (ast::IsTypeOf<PrimitiveType::kVoid>(rhs_type) ||
@@ -247,8 +248,8 @@ Status analyzer::visit(hzcc::ast::RelationalExpr* p_expr) {
     HZCC_CHECK_OK_OR_RETURN(p_expr->rhs()->visit(*this));
 
     // todo only allow char
-    auto lhs_type = p_expr->lhs()->retType();
-    auto rhs_type = p_expr->rhs()->retType();
+    auto lhs_type = p_expr->lhs()->type();
+    auto rhs_type = p_expr->rhs()->type();
 
     // LHS and rhs should not be void
     if (ast::IsTypeOf<PrimitiveType::kVoid>(rhs_type) ||
@@ -285,8 +286,8 @@ Status analyzer::visit(hzcc::ast::ArithmeticExpr* p_expr) {
     HZCC_CHECK_OK_OR_RETURN(p_expr->rhs()->visit(*this));
 
     // todo only allow char
-    auto lhs_type = p_expr->lhs()->retType();
-    auto rhs_type = p_expr->rhs()->retType();
+    auto lhs_type = p_expr->lhs()->type();
+    auto rhs_type = p_expr->rhs()->type();
 
     // LHS and rhs should not be void
     if (ast::IsTypeOf<PrimitiveType::kVoid>(rhs_type) ||
@@ -334,7 +335,7 @@ Status analyzer::visit(hzcc::ast::UnaryOperator* p_expr) {
     }
 
     // LHS has to be a variable Node
-    if (p_expr->expr()->retType()->is<Attribute::kCONST>()) {
+    if (p_expr->expr()->type()->is<Attribute::kCONST>()) {
         return CompileError(p_expr->expr()->loc(),
                             "cannot set value to const variable");
     }
@@ -347,13 +348,13 @@ Status analyzer::visit(hzcc::ast::ArraySubscriptExpr* p_expr) {
     HZCC_CHECK_OK_OR_RETURN(p_expr->subscript_expr()->visit(*this));
 
     // base should be arrayed
-    if (!p_expr->base_expr()->retType()->IsArray()) {
+    if (!p_expr->base_expr()->type()->IsArray()) {
         return CompileError(p_expr->base_expr()->loc(),
                             "Subscripted value is not an array");
     }
 
     // array subscript should be a numerical type of int
-    auto subscript_type = p_expr->subscript_expr()->retType();
+    auto subscript_type = p_expr->subscript_expr()->type();
     if (!ast::IsTypeOf<PrimitiveType::kInt>(subscript_type)) {
         auto index_ret =
             ast::Cast::apply(true, std::move(p_expr->subscript_expr()),
@@ -372,7 +373,7 @@ Status analyzer::visit(hzcc::ast::MemberExpr* p_expr) {
     HZCC_CHECK_OK_OR_RETURN(p_expr->base_expr()->visit(*this));
 
     //  check if the type has this member
-    if (!p_expr->base_expr()->retType()->is<TypeCategory::kStruct>()) {
+    if (!p_expr->base_expr()->type()->is<TypeCategory::kStruct>()) {
         return CompileError(p_expr->base_expr()->loc(),
                             "Expect struct type for member "
                             "access");
@@ -381,9 +382,8 @@ Status analyzer::visit(hzcc::ast::MemberExpr* p_expr) {
     // static cast here is safe since we already check the type category
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-static-cast-downcast"
-    auto type =
-        static_cast<ast::StructType*>(p_expr->base_expr()->retType().get())
-            ->field_type(p_expr->field_name());
+    auto type = static_cast<ast::StructType*>(p_expr->base_expr()->type().get())
+                    ->field_type(p_expr->field_name());
 #pragma clang diagnostic pop
 
     // check member name
@@ -391,7 +391,7 @@ Status analyzer::visit(hzcc::ast::MemberExpr* p_expr) {
         return CompileError(
             p_expr->loc(),
             absl::StrCat("Unknown member '", p_expr->field_name(), "' in ",
-                         p_expr->base_expr()->retType()->Name()));
+                         p_expr->base_expr()->type()->Name()));
     }
     return NoError();
 }
@@ -428,8 +428,8 @@ Status analyzer::visit(hzcc::ast::FuncCallStmt* p_expr) {
     // check argument types for all arguments
     int i = 0;
     for (auto& expr : p_expr->args()) {
-        if (!(*expr->retType() == *funcType.front())) {
-            auto arg_type = expr->retType();
+        if (!(*expr->type() == *funcType.front())) {
+            auto arg_type = expr->type();
             auto expr_ret =
                 ast::Cast::apply(false, std::move(expr), funcType.front());
             if (!expr_ret.ok()) {
@@ -470,7 +470,7 @@ Status analyzer::visit(hzcc::ast::ParamVarDecl* p_expr) {
                          "'. Previous declaration at ", line_no.first));
     }
 
-    _ctx.add_var(p_expr->loc(), p_expr->declType(), p_expr->decl_name());
+    _ctx.add_var(p_expr->loc(), p_expr->type(), p_expr->decl_name());
     return NoError();
 }
 
@@ -510,7 +510,7 @@ Status analyzer::visit(hzcc::ast::FuncDeclStmt* p_expr) {
         }
 
         // compare return type
-        if (!(func_type == p_expr->type_expr()->retType())) {
+        if (!(func_type == p_expr->type_expr()->type())) {
             return CompileError(
                 p_expr->loc(),
                 absl::StrCat("Function ", p_expr->decl_name(),
@@ -521,7 +521,7 @@ Status analyzer::visit(hzcc::ast::FuncDeclStmt* p_expr) {
 
         // compare all argument type
         for (const auto& param : p_expr->params()) {
-            if (!(param->declType() == func_type_attributes.front())) {
+            if (!(param->type() == func_type_attributes.front())) {
                 return CompileError(
                     param->loc(),
                     absl::StrCat("Function ", p_expr->decl_name(),
@@ -530,13 +530,13 @@ Status analyzer::visit(hzcc::ast::FuncDeclStmt* p_expr) {
                                  std::to_string(line_no.first)));
             }
             func_type_attributes.pop_front();
-            arg_types.push_back(param->declType());
+            arg_types.push_back(param->type());
         }
     }
 
     // add function definition to _ctx
     _ctx.add_func(p_expr->loc(), p_expr->decl_name(),
-                  p_expr->type_expr()->retType(), arg_types);
+                  p_expr->type_expr()->type(), arg_types);
 
     // handle function body
     if (p_expr->has_body()) {

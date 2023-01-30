@@ -8,6 +8,7 @@
 
 #include "ast/CompilationUnit.h"
 #include "ast/visitor.h"
+#include "parser/common/Token.h"
 namespace hzcc::semantic {
 class Ctx {
   public:
@@ -20,51 +21,8 @@ class Ctx {
 
     void enter_scope();
 
-    bool at_root() const;
-
     void enter_scope(std::string_view name);
 
-    std::shared_ptr<ast::Type> scope_ret_type() const;
-
-    // ################################################################
-    // ###############    RetType related Functions     ###############
-    // ################################################################
-
-    /**
-     * @brief Check if the type is already defined.
-     * @details This function will first remove the potential keyword like
-     * const, volatile, etc. to get the "pure" type name. If the "pure" type
-     * name is a primitive type, it will return true. Otherwise, it will check
-     * if current "pure" type name is already defined in the current scope, then
-     * outer scope if not found, until the root scope.
-     *
-     * The Search order is:
-     *      1. Global scope
-     *      2. Current scope
-     *      3. Outer scope
-     *
-     * @param basicString The name of the type.
-     * @return True if the type is already defined. False otherwise.
-     */
-    bool hasType(std::string_view basicString);
-
-    /**
-     * @brief Get the type object by name.
-     * @param name
-     * @param attr_list
-     * @return
-     */
-    TypePtr get_type(const std::string& name,                 // NOLINT
-                     const std::list<Attribute>& attr_list);  // NOLINT
-
-    TypePtr getArrayType(const TypePtr& base_type,         // NOLINT
-                         const TokenList& attr_list,       // NOLINT
-                         std::list<ast::ExprPtr>& shape);  // NOLINT
-
-    TypePtr getFuncPtrType(const std::string& name);
-
-    std::shared_ptr<ast::StructType> addStructType(const std::string& name,
-                                                   const TokenList& attr_list);
 
     /**
      * ################################################################
@@ -96,21 +54,10 @@ class Ctx {
     std::tuple<TypePtr, std::list<TypePtr>, Position> func_def_info(
         std::string_view name);
 
-  protected:
-    /**
-     * @brief Search the user defined type by its name.
-     * @details This function will search the user defined type by its name from
-     * current scope to the root scope and the global scope lastly.
-     *
-     * The Search order is:
-     *      1. Current scope
-     *      2. Outer scope
-     *      3. Global scope
-     *
-     * @param name The name of the type.
-     * @return The type if found. nullptr otherwise.
-     */
-    TypePtr SearchNamedType(std::string_view name);
+
+    [[nodiscard]] bool at_root() const;
+
+    [[nodiscard]] std::optional<ast::TypePtr> ret_type() const;
 
   private:
     std::list<TokenType> _attributes;
@@ -161,6 +108,27 @@ class analyzer : public ast::Visitor {
 };
 
 Status analyze(std::shared_ptr<ast::CompilationUnit> p_unit);
+
+
+inline void Ctx::leave_scope(){
+    this->_compilationUnit->leave_scope();
+}
+
+inline void Ctx::enter_scope(){
+    this->_compilationUnit->enter_scope();
+}
+
+inline bool Ctx::at_root() const{
+    return this->_compilationUnit->at_root();
+}
+
+inline void Ctx::enter_scope(std::string_view name){
+    this->_compilationUnit->enter_scope(name);
+}
+
+inline std::optional<ast::TypePtr> Ctx::ret_type() const{
+    return this->_compilationUnit->ret_type();
+}
 
 }  // namespace hzcc::semantic
 #endif  // HZCC_SEMANTIC_H

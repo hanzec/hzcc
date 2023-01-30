@@ -5,11 +5,12 @@
 #include "utils/logging.h"
 
 #include <glog/log_severity.h>
+
 #include <array>
+#include <fstream>  // IWYU pragma: keep
 #include <iomanip>
 #include <iostream>
 #include <limits>
-#include <fstream> // IWYU pragma: keep
 
 #include "fs_utils.h"
 #include "options.h"
@@ -33,8 +34,8 @@ void set_current_file_name(const std::string& file_name) {
 }
 
 void print_message(CompileErrorLevel level,               // NOLINT
-                   const std::string& errorMessage,       // NOLINT
-                   std::pair<uint64_t, uint64_t>& loc) {  // NOLINT
+                   std::string_view errorMessage,         // NOLINT
+                   std::pair<uint64_t, uint64_t> loc) {  // NOLINT
     static constexpr std::array<const char*, 3> kLevelColorTable = {
         KEnableRed, KEnableYellow, KEnableGreen};
     static constexpr std::array<const char*, 3> kLevelStringTable = {

@@ -77,7 +77,7 @@ StatusOr<VarPack> DeclStatement::parse_type(TokenList& tokens,
 
             // global scope does not allow vla
             if (context->at_root() &&
-                !size_expr->retType()->is<Attribute::kCONST>()) {
+                !size_expr->type()->is<Attribute::kCONST>()) {
                 return syntax::utils::TokenErr(
                     tokens.peek(),
                     "Variable length array declaration not allowed at file "
@@ -436,8 +436,8 @@ StatusOr<ast::RecordDEclPtr> DeclStatement::parse_struct(SyntaxCtx& context,
                     parse_type(tokens, context, base_type_inner))  // NOLINT
 
                 // add variable to struct type and struct node
-                struct_type->AddChild(var_decl_inner.second.val(),
-                                      var_decl_inner.first);
+                struct_type->add_record(var_decl_inner.second.val(),
+                                        var_decl_inner.first);
                 struct_node->add_field(
                     std::make_unique<ast::FieldDecl>(  // NOLINT
                         var_decl_inner.second.loc(),

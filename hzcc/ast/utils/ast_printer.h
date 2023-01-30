@@ -12,8 +12,7 @@
 #include "ast/visitor.h"
 #include "utils/status/status.h"
 
-namespace hzcc {
-namespace ast {
+namespace hzcc::ast {
 class ArithmeticExpr;
 class ArraySubscriptExpr;
 class AssignExpr;
@@ -48,7 +47,6 @@ class TypeProxyExpr;
 class UnaryOperator;
 class VarDecl;
 class WhileStmt;
-}  // namespace ast
 }  // namespace hzcc
 
 namespace hzcc::ast {
@@ -56,7 +54,6 @@ class AstPrinter : public Visitor{
   public:
     explicit AstPrinter(std::ostream& output);
     ~AstPrinter() override = default;
-    Status visit(CastExpr* p_expr) override;
     Status visit(ArithmeticExpr* p_expr) override;
     Status visit(AssignExpr* p_expr) override;
     Status visit(BitwiseExpr* p_expr) override;

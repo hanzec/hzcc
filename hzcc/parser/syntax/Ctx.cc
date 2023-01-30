@@ -48,7 +48,7 @@
 //
 ///**
 // * #############################################################
-// * ###############    retType related Functions     ###############
+// * ###############    type related Functions     ###############
 // * #############################################################
 // */
 //
@@ -122,7 +122,7 @@
 //    }
 //
 //    if (base_type == nullptr || !hasType(base_type->Name())) {
-//        DLOG(ERROR) << "retType not found";
+//        DLOG(ERROR) << "type not found";
 //        return nullptr;
 //    } else {
 //        Ctx::TypePtr current_type = base_type;
@@ -156,7 +156,7 @@
 //            return nullptr;
 //        } else {
 //            DVLOG(AST_LOG_LEVEL)
-//                << "Add new Struct retType [" << name << "] to global scope";
+//                << "Add new Struct type [" << name << "] to global scope";
 //            auto new_type =
 //                std::make_shared<ast::StructType>(struct_name, attr_types);
 //            _named_types.insert(std::make_pair(name, new_type));
@@ -170,11 +170,11 @@
 //        }
 //    } else {
 //        if (_current_context.lock()->hasType(name)) {
-//            LOG(FATAL) << "retType " << name << " already exists";
+//            LOG(FATAL) << "type " << name << " already exists";
 //            return nullptr;
 //        } else {
 //            DVLOG(AST_LOG_LEVEL)
-//                << "Trying to add new retType [" << name << "] to local scope";
+//                << "Trying to add new type [" << name << "] to local scope";
 //
 //            // when leaving this function all attrs should be consumed
 //            DLOG_IF(FATAL, !attr_list.empty())
@@ -270,7 +270,7 @@
 //}
 //void Ctx::addDecl(std::unique_ptr<ast::IDeclStmt> type) {
 //    if (type->IsDeclNode() && !type->IsFuncDecl()) {
-//        auto vartype = type->declType();
+//        auto vartype = type->type();
 //        _current_context.lock()->addVariable(type->Location(), type->DeclName(),
 //                                             vartype);
 //    }

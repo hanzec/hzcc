@@ -17,15 +17,6 @@ file(GLOB hzcc_cast_biop_srcs ${CMAKE_CURRENT_LIST_DIR}/biop/*.cc)
 target_sources(hzcc PRIVATE ${hzcc_cast_biop_hdrs} ${hzcc_cast_biop_srcs})
 
 ###############################################################################
-## Cast Expression ############################################################
-###############################################################################
-file(GLOB hzcc_cast_cast_expr_hdrs ${CMAKE_CURRENT_LIST_DIR}/cast/*.h)
-file(GLOB hzcc_cast_cast_expr_srcs ${CMAKE_CURRENT_LIST_DIR}/cast/*.cc)
-
-# project sources
-target_sources(hzcc PRIVATE ${hzcc_cast_cast_expr_hdrs} ${hzcc_cast_cast_expr_srcs})
-
-###############################################################################
 ## Testing hzcc #############################################################
 ###############################################################################
 if (UNIT_TESTING MATCHES "ON")

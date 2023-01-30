@@ -1,12 +1,8 @@
 //
 // Created by chen_ on 2022/6/13.
 //
-#include <string.h>
-#include <exception>
+#include <cstring>
 #include <memory>
-#include <string>
-#include <string_view>
-#include <unordered_map>
 #include <utility>
 
 #include "ast/Stmt.h"
@@ -26,7 +22,7 @@ public:
      * In order to apply this rule, the rhs has to be an ArraySubscriptExpr
      * ,the rhs has to be a pointer type and lhs has to be not a pointer
      */
-    return !lhs->is_ptr() && rhs->retType()->is_ptr() &&
+    return !lhs->is_ptr() && rhs->type()->is_ptr() &&
            (strcmp(rhs->NodeName().data(), "ArraySubscriptExpr") == 0);
   }
 

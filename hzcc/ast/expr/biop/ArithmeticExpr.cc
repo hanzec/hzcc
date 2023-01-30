@@ -42,19 +42,19 @@ ArithmeticExpr::ArithmeticExpr(const Position& loc,        // NOLINT
      *  ##################################################################### */
     switch (type[0]) {
         case '+':
-            this->_type = ArithmeticType::kArithmeticType_Add;
+            this->_type = ArithmeticType::ADD;
             break;
         case '-':
-            this->_type = ArithmeticType::kArithmeticType_Sub;
+            this->_type = ArithmeticType::SUB;
             break;
         case '*':
-            this->_type = ArithmeticType::kArithmeticType_Mul;
+            this->_type = ArithmeticType::MUL;
             break;
         case '/':
-            this->_type = ArithmeticType::kArithmeticType_Div;
+            this->_type = ArithmeticType::DIV;
             break;
         case '%':
-            this->_type = ArithmeticType::kArithmeticType_Mod;
+            this->_type = ArithmeticType::MOD;
             break;
         default:
             INTERNAL_LOG(FATAL)
@@ -70,28 +70,23 @@ std::optional<DeduceValue> ArithmeticExpr::GetDeducedValue() const {
     }
 
     switch (this->_type) {
-        case ArithmeticType::kArithmeticType_Add:
+        case ArithmeticType::ADD:
             return lhs_c()->GetDeducedValue().value() +
                    rhs_c()->GetDeducedValue().value();
-        case ArithmeticType::kArithmeticType_Sub:
+        case ArithmeticType::SUB:
             return lhs_c()->GetDeducedValue().value() -
                    rhs_c()->GetDeducedValue().value();
-        case ArithmeticType::kArithmeticType_Mul:
+        case ArithmeticType::MUL:
             return lhs_c()->GetDeducedValue().value() *
                    rhs_c()->GetDeducedValue().value();
-        case ArithmeticType::kArithmeticType_Div:
+        case ArithmeticType::DIV:
             return lhs_c()->GetDeducedValue().value() /
                    rhs_c()->GetDeducedValue().value();
-        case ArithmeticType::kArithmeticType_Mod:
+        case ArithmeticType::MOD:
             return lhs_c()->GetDeducedValue().value() %
                    rhs_c()->GetDeducedValue().value();
         default:
             return std::nullopt;
     }
 }
-
-Status ArithmeticExpr::visit(Visitor& visitor) { return visitor.visit(this); }
-
-ArithmeticType ArithmeticExpr::op_type() const { return _type; }
-
 }  // namespace hzcc::ast

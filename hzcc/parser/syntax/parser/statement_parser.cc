@@ -2,28 +2,29 @@
 // Created by chen_ on 2022/3/24.
 //
 #include <glog/logging.h>
+
 #include <list>
 #include <memory>
 #include <ostream>
 #include <string>
 #include <utility>
 
+#include "ast/CompilationUnit.h"
 #include "ast/Stmt.h"
 #include "ast/expr/Expr.h"
-#include "parser/syntax/common_utils.h"
-#include "parser_factory.h"
-#include "syntax_parser.h"
-#include "utils/type_name_utils.h"
-#include "ast/CompilationUnit.h"
 #include "ast/type/Type.h"
 #include "enums.h"
 #include "parser/common/Token.h"
 #include "parser/common/name_utils.h"
 #include "parser/common/token_type.h"
 #include "parser/parser.h"
+#include "parser/syntax/common_utils.h"
+#include "parser_factory.h"
+#include "syntax_parser.h"
 #include "utils/logging.h"
 #include "utils/status/status.h"
 #include "utils/status/statusor.h"
+#include "utils/type_name_utils.h"
 
 namespace hzcc::syntax::parser {
 Statement::Statement() noexcept
@@ -614,13 +615,13 @@ StatusOr<ast::ExprPtr> Statement::ParseAccessExpr(const SyntaxCtx& ctx,
         switch (tokens.pop().Type()) {
             case TokenType::kChar:
                 return std::make_unique<ast::LiteralExpr>(
-                    ast::kLiteralType_Char, value.loc(), value.val());
+                    LiteralType::Char, value.loc(), value.val());
             case TokenType::kInteger:
                 return std::make_unique<ast::LiteralExpr>(
-                    ast::kLiteralType_Integer, value.loc(), value.val());
+                    LiteralType::Integer, value.loc(), value.val());
             case TokenType::kReal_number:
                 return std::make_unique<ast::LiteralExpr>(
-                    ast::kLiteralType_Real_number, value.loc(), value.val());
+                    LiteralType::Real_number, value.loc(), value.val());
             default:
                 LOG(FATAL) << "Unreachable code: \n"
                            << "\t Current ast:\n";
@@ -636,7 +637,7 @@ StatusOr<ast::ExprPtr> Statement::ParseAccessExpr(const SyntaxCtx& ctx,
         while (tokens.peek().Type() == TokenType::kString) {
             value_str += tokens.pop().val();
         }
-        return std::make_unique<ast::LiteralExpr>(ast::kLiteralType_String,
+        return std::make_unique<ast::LiteralExpr>(LiteralType::String,
                                                   lit_start.loc(), value_str);
     }
 

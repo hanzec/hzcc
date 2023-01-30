@@ -5,9 +5,10 @@
 #include "ast_printer.h"
 
 #include <glog/logging.h>
-#include <magic_enum.hpp>
+
 #include <algorithm>
 #include <array>
+#include <magic_enum.hpp>
 #include <memory>
 #include <ostream>
 #include <utility>
@@ -22,9 +23,8 @@
 
 namespace hzcc::ast {
 Status AstPrinter::visit(CompoundStmt* p_stmt) {
-    for (const auto& statement : p_stmt->get_body_stmts()) {
-        add_indent(statement == p_stmt->get_body_stmts().back() ? "  `"
-                                                                : "  |");
+    for (const auto& statement : p_stmt->body_stmts()) {
+        add_indent(statement == p_stmt->body_stmts().back() ? "  `" : "  |");
         HZCC_CHECK_OK_OR_RETURN(statement->visit(*this));
 
         remove_indent();
@@ -54,7 +54,7 @@ Status AstPrinter::visit(ForStmt* p_stmt) {
 
     // print step
     add_indent(" |");
-    HZCC_CHECK_OK_OR_RETURN(p_stmt->step_stmt()->visit(*this));
+    HZCC_CHECK_OK_OR_RETURN(p_stmt->incr_stmt()->visit(*this));
 
     // print body
     add_indent(" `");
@@ -114,7 +114,7 @@ Status AstPrinter::visit(WhileStmt* p_stmt) {
 }
 
 Status AstPrinter::visit(VarDecl* p_stmt) {
-    _out << p_stmt->decl_name() << " " << p_stmt->declType()->Name();
+    _out << p_stmt->decl_name() << " " << p_stmt->type()->Name();
     if (p_stmt->has_init()) {
         add_indent(" `");
         HZCC_CHECK_OK_OR_RETURN(p_stmt->init_expr()->visit(*this));
@@ -127,7 +127,7 @@ Status AstPrinter::visit(FuncDeclStmt* p_stmt) {
     // print its arguments
     _out << " (";
     for (const auto& arg : p_stmt->params()) {
-        _out << arg->declType()->Dump();
+        _out << arg->type()->Dump();
         if (arg != p_stmt->params().back()) {
             _out << ",";
         }
@@ -163,7 +163,7 @@ Status AstPrinter::visit(UnaryOperator* p_expr) {
 
     // print unary operator
     _out << kUnaryOpSTR[magic_enum::enum_integer(p_expr->GetUnaryType())] << " "
-         << p_expr->expr()->retType()->Name();
+         << p_expr->expr()->type()->Name();
 
     // print its operand
     add_indent(" `");
@@ -174,7 +174,7 @@ Status AstPrinter::visit(UnaryOperator* p_expr) {
 
 Status AstPrinter::visit(TernaryExpr* p_expr) {
     // type
-    _out << p_expr->retType()->Name();
+    _out << p_expr->type()->Name();
 
     // node
     add_indent(" |");
@@ -194,20 +194,18 @@ Status AstPrinter::visit(TernaryExpr* p_expr) {
 
 Status AstPrinter::visit(LiteralExpr* p_expr) {
     switch (p_expr->literal_type()) {
-        case LiteralType::kLiteralType_Char:
+        case LiteralType::Char:
             _out << "char \'" << p_expr->get_literal_val() << "\'";
             break;
-        case LiteralType::kLiteralType_Real_number:
+        case LiteralType::Real_number:
             _out << "real_number " << p_expr->get_literal_val();
             break;
-        case LiteralType::kLiteralType_String:
+        case LiteralType::String:
             _out << "string \"" << p_expr->get_literal_val() << "\"";
             break;
-        case LiteralType::kLiteralType_Integer:
+        case LiteralType::Integer:
             _out << "int " << p_expr->get_literal_val();
             break;
-        case kLiteralType_Max:
-            DLOG_ASSERT(false) << "unexpected literal type [kLiteralType_Max]";
     }
     return NoError();
 }
@@ -225,12 +223,12 @@ Status AstPrinter::visit(FuncCallStmt* p_stmt) {
 }
 
 Status AstPrinter::visit(DeclRefExpr* p_expr) {
-    _out << p_expr->var_name() << " " << p_expr->retType()->Name();
+    _out << p_expr->var_name() << " " << p_expr->type()->Name();
     return NoError();
 }
 
 Status AstPrinter::visit(ArraySubscriptExpr* p_expr) {
-    _out << p_expr->retType()->Name();
+    _out << p_expr->type()->Name();
 
     add_indent(" |");
     HZCC_CHECK_OK_OR_RETURN(p_expr->base_expr()->visit(*this));
@@ -245,30 +243,28 @@ Status AstPrinter::visit(ArraySubscriptExpr* p_expr) {
 
 Status AstPrinter::visit(RelationalExpr* p_expr) {
     // lhs type
-    _out << " " + p_expr->lhs()->retType()->Name();
+    _out << " " + p_expr->lhs()->type()->Name();
 
     // symbol type
     switch (p_expr->op_type()) {
-        case RelationalType::kRelationalType_Equal:
+        case RelationalType::EQ:
             _out << " == ";
             break;
-        case RelationalType::kRelationalType_NEqual:
+        case RelationalType::NE:
             _out << " != ";
             break;
-        case RelationalType::kRelationalType_Less:
+        case RelationalType::LT:
             _out << " < ";
             break;
-        case RelationalType::kRelationalType_LessEqual:
+        case RelationalType::LE:
             _out << " <= ";
             break;
-        case RelationalType::kRelationalType_Greater:
+        case RelationalType::GT:
             _out << " > ";
             break;
-        case RelationalType::kRelationalType_GreaterEqual:
+        case RelationalType::GE:
             _out << " >= ";
             break;
-        default:
-            DLOG(FATAL) << "Unknown relational biop: " << p_expr->op_type();
     }
 
     add_indent(" |");
@@ -284,7 +280,7 @@ Status AstPrinter::visit(RelationalExpr* p_expr) {
 
 Status AstPrinter::visit(LogicalExpr* p_expr) {
     // print logical type
-    _out << (p_expr->op_type() == kLogicalType_And ? "&&" : "||");
+    _out << (p_expr->op_type() == LogicalType::AND ? "&&" : "||");
 
     // print lhs
     add_indent(" |");
@@ -300,45 +296,43 @@ Status AstPrinter::visit(LogicalExpr* p_expr) {
 }
 
 Status AstPrinter::visit(AssignExpr* p_expr) {
-    _out << p_expr->lhs()->retType()->Name();
+    _out << p_expr->lhs()->type()->Name();
 
     // print symbol
     switch (p_expr->op_type()) {
-        case kAssignType_Assign:
+        case AssignType::ASSIGN:
             _out << " = ";
             break;
-        case kAssignType_AddAssign:
+        case AssignType::ADD:
             _out << " += ";
             break;
-        case kAssignType_SubAssign:
+        case AssignType::SUB:
             _out << " -= ";
             break;
-        case kAssignType_MulAssign:
+        case AssignType::MUL:
             _out << " *= ";
             break;
-        case kAssignType_DivAssign:
+        case AssignType::DIV:
             _out << " /= ";
             break;
-        case kAssignType_ModAssign:
+        case AssignType::MOD:
             _out << " %= ";
             break;
-        case kAssignType_LShiftAssign:
+        case AssignType::LSHIFT:
             _out << " <<= ";
             break;
-        case kAssignType_RShiftAssign:
+        case AssignType::RSHIFT:
             _out << " >>= ";
             break;
-        case kAssignType_AndAssign:
+        case AssignType::AND:
             _out << " &= ";
             break;
-        case kAssignType_OrAssign:
+        case AssignType::OR:
             _out << " |= ";
             break;
-        case kAssignType_XorAssign:
+        case AssignType::XOR:
             _out << " ^= ";
             break;
-        default:
-            DLOG(FATAL) << "Unknown assign biop: " << p_expr->op_type();
     }
 
     // print LHS and RHS
@@ -360,7 +354,7 @@ Status AstPrinter::visit(ArithmeticExpr* p_expr) {
 
     // print node info
     _out << kArithmeticStr[magic_enum::enum_integer(p_expr->op_type())] << ' '
-         << p_expr->lhs()->retType()->Name();
+         << p_expr->lhs()->type()->Name();
 
     // print LHS and RHS info
     add_indent(" |");
@@ -375,8 +369,8 @@ Status AstPrinter::visit(ArithmeticExpr* p_expr) {
 }
 
 Status AstPrinter::visit(ExplicitCastExpr* p_expr) {
-    _out << '[' << p_expr->cast_expr()->retType()->Name() << "]->["
-         << p_expr->retType()->Name() << "]";
+    _out << '[' << p_expr->cast_expr()->type()->Name() << "]->["
+         << p_expr->type()->Name() << "]";
 
     add_indent(" `");
     HZCC_CHECK_OK_OR_RETURN(p_expr->cast_expr()->visit(*this));
@@ -386,8 +380,8 @@ Status AstPrinter::visit(ExplicitCastExpr* p_expr) {
 }
 
 Status AstPrinter::visit(hzcc::ast::ImplicitCastExpr* p_expr) {
-    _out << '[' << p_expr->cast_expr()->retType()->Name() << "]->["
-         << p_expr->retType()->Name() << "]";
+    _out << '[' << p_expr->cast_expr()->type()->Name() << "]->["
+         << p_expr->type()->Name() << "]";
 
     add_indent(" `");
     HZCC_CHECK_OK_OR_RETURN(p_expr->cast_expr()->visit(*this));
@@ -423,5 +417,7 @@ Status AstPrinter::visit(hzcc::ast::CompilationUnit* p_expr) {
     remove_indent();
     return NoError();
 }
+std::string_view AstPrinter::get_indent() { return _indent.back(); }
+void AstPrinter::remove_indent() { _indent.pop_back(); }
 
 }  // namespace hzcc::ast

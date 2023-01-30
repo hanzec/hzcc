@@ -37,45 +37,44 @@ UnaryOperator::UnaryOperator(const Position& loc,    // NOLINT
     switch (type[0]) {
         case '-':
             if (type.size() == 1) {
-                _type = UnaryType::kUnaryMinus;
+                _type = UnaryType::SUB;
             } else {
                 if (loc.first < _expr->loc().first ||
                     loc.second < _expr->loc().second) {
-                    _type = UnaryType::kPreDec;
+                    _type = UnaryType::PRE_DEC;
                 } else {
-                    _type = UnaryType::kPostDec;
+                    _type = UnaryType::POST_DEC;
                 }
             }
             break;
         case '+':
-            if (loc.first < _expr->loc().first ||
-                loc.second < _expr->loc().second) {
-                _type = UnaryType::kPreInc;
+            if (type.size() == 1) {
+                _type = UnaryType::ADD;
             } else {
-                _type = UnaryType::kPostInc;
+                if (loc.first < _expr->loc().first ||
+                    loc.second < _expr->loc().second) {
+                    _type = UnaryType::PRE_INC;
+                } else {
+                    _type = UnaryType::POST_INC;
+                }
             }
             break;
         case '&':
-            _type = UnaryType::kReference;
+            _type = UnaryType::ADDR;
             break;
         case '*':
-            _type = UnaryType::kDereference;
+            _type = UnaryType::DEREF;
             break;
         case '!':
-            _type = UnaryType::kLogicalNot;
+            _type = UnaryType::NOT;
             break;
         case '~':
-            _type = UnaryType::kBitwiseNot;
+            _type = UnaryType::BIT_NOT;
             break;
         default:
             INTERNAL_LOG(FATAL)
                 << UniqueName()
-                << "retType: [" + std::string(type) + "] not supported ";
+                << "type: [" + std::string(type) + "] not supported ";
     }
 }
-
-Status UnaryOperator::visit(Visitor& visitor) { return visitor.visit(this); }
-
-std::unique_ptr<Expr>& UnaryOperator::expr() { return _expr; }
-UnaryType UnaryOperator::GetUnaryType() const { return _type; }
 }  // namespace hzcc::ast

@@ -25,12 +25,12 @@ std::string ALWAYS_INLINE to_string(const TypeNamePair& tokens) {
 }
 
 namespace syntax::utils {
-ALWAYS_INLINE Status TokenErr(const Token& token, const std::string& message) {
+ALWAYS_INLINE Status TokenErr(const Token& token, std::string_view message) {
     return CompileError(token.loc(),  // NOLINT
                         message);     // NOLINT
 }
 
-ALWAYS_INLINE Status TokenErr(TokenList& token, const std::string& message) {
+ALWAYS_INLINE Status TokenErr(TokenList& token, std::string_view message) {
     if (token.empty()) {
         message::print_message(kCompileErrorLevel_Error, message, {0, 0});
         return {StatusCode::kSyntaxStageErr, message};
@@ -99,7 +99,7 @@ ALWAYS_INLINE StatusOr<ast::ExprPtr> ParseCondition(
     return condition;
 }
 
-ALWAYS_INLINE StatusOr<ast::StmtPtr> ParseBodyStatement(
+ALWAYS_INLINE StatusOr<std::unique_ptr<ast::CompoundStmt>> ParseBodyStatement(
     std::shared_ptr<ast::CompilationUnit>& context, bool add_semicolon,
     TokenList& tokens) {
     if (tokens.peek().Type() == TokenType::kLBrace) {
@@ -126,7 +126,11 @@ ALWAYS_INLINE StatusOr<ast::StmtPtr> ParseBodyStatement(
             HZCC_CheckAndConsume_ReturnErr(TokenType::kSemiColon, tokens)
         }
 
-        return body_statement;
+        // pack into a compound statement
+        auto compound_stmt = std::make_unique<ast::CompoundStmt>(body_statement->loc());
+        compound_stmt->add_stmt(std::move(body_statement));
+
+        return compound_stmt;
     }
 }
 

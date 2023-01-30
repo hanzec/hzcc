@@ -2,14 +2,15 @@
 // Created by Hanze Chen on 2022/3/29.
 //
 #include <glog/logging.h>
+
 #include <memory>
 #include <ostream>
 #include <string>
 #include <string_view>
 #include <utility>
 
-#include "ast/expr/Expr.h"
 #include "ast/Stmt.h"
+#include "ast/expr/Expr.h"
 #include "ast/visitor.h"
 #include "macro.h"
 #include "utils/logging.h"
@@ -25,7 +26,6 @@ AssignExpr::AssignExpr(const Position& loc,        // NO_LINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-
     INTERNAL_LOG_IF(FATAL, !type.empty())
         << UniqueName() << "type string empty";
     INTERNAL_LOG_IF(
@@ -40,37 +40,37 @@ AssignExpr::AssignExpr(const Position& loc,        // NO_LINT
      *  ##################################################################### */
     switch (type[0]) {
         case '=':
-            this->_type = AssignType::kAssignType_Assign;
+            this->_type = AssignType::ASSIGN;
             break;
         case '+':
-            this->_type = AssignType::kAssignType_AddAssign;
+            this->_type = AssignType::ADD;
             break;
         case '-':
-            this->_type = AssignType::kAssignType_SubAssign;
+            this->_type = AssignType::SUB;
             break;
         case '*':
-            this->_type = AssignType::kAssignType_MulAssign;
+            this->_type = AssignType::MUL;
             break;
         case '/':
-            this->_type = AssignType::kAssignType_DivAssign;
+            this->_type = AssignType::DIV;
             break;
         case '%':
-            this->_type = AssignType::kAssignType_ModAssign;
+            this->_type = AssignType::MOD;
             break;
         case '<':
-            this->_type = AssignType::kAssignType_LShiftAssign;
+            this->_type = AssignType::LSHIFT;
             break;
         case '>':
-            this->_type = AssignType::kAssignType_RShiftAssign;
+            this->_type = AssignType::RSHIFT;
             break;
         case '&':
-            this->_type = AssignType::kAssignType_AndAssign;
+            this->_type = AssignType::AND;
             break;
         case '|':
-            this->_type = AssignType::kAssignType_OrAssign;
+            this->_type = AssignType::OR;
             break;
         case '^':
-            this->_type = AssignType::kAssignType_XorAssign;
+            this->_type = AssignType::XOR;
             break;
         default:
             INTERNAL_LOG(FATAL)
@@ -78,8 +78,4 @@ AssignExpr::AssignExpr(const Position& loc,        // NO_LINT
                 << "type: [" + std::string(type) + "] not supported";
     }
 };
-
-Status AssignExpr::visit(Visitor& visitor) { return visitor.visit(this); }
-AssignType AssignExpr::op_type() const { return _type; }
-
 }  // namespace hzcc::ast

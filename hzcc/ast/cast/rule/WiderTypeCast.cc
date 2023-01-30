@@ -42,7 +42,7 @@ class WiderTypeCast : public ICastRule {
 public:
   bool CouldApplyTo(const std::shared_ptr<Type> &lhs,            // NOLINT
                     const std::unique_ptr<Expr> &rhs) override { // NOLINT
-    auto rhs_type = rhs->retType();
+    auto rhs_type = rhs->type();
 
     // builtin type only
     if (lhs->IsNumericalType() && rhs_type->IsNumericalType()) {
@@ -56,7 +56,7 @@ public:
 
   StatusOr<std::unique_ptr<CastExpr>> Apply(std::unique_ptr<Expr> node, // NOLINT
                                             const std::shared_ptr<Type> &to) override {
-    auto rhs_type = std::dynamic_pointer_cast<NumericalType>(node->retType());
+    auto rhs_type = std::dynamic_pointer_cast<NumericalType>(node->type());
     if (rhs_type->GetTypeId() < magic_enum::enum_integer(PrimitiveType::kFloat)) {
       return std::make_unique<IntegralCast>(node->loc(), to, std::move(node));
     } else {

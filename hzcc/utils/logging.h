@@ -1,5 +1,6 @@
 #include <glog/logging.h>
 #include <stdint.h>
+
 #include <iomanip>
 #include <ostream>
 #include <string>
@@ -8,6 +9,7 @@
 
 #include "macro.h"
 #include "parser/common/name_utils.h"
+
 #ifndef HZCC_UTILS_LOGGING_H_
 #define HZCC_UTILS_LOGGING_H_
 namespace hzcc {
@@ -31,11 +33,10 @@ void initLogging(char argv[]);
                       << ((int)(token).Type() <= 0xFF                         \
                               ? "Symbol"                                      \
                               : "" + ::hzcc::to_string((token).Type()))       \
-                      << "]<" << std::setw(3) << (token).loc().first + 1 \
-                      << "," << std::setw(3) << (token).loc().second     \
-                      << ">" << std::setw(-1) << ":@ " << std::left           \
-                      << std::setw(10) << (token).val(true) << " @\033[0m"  \
-                      << std::setw(-1)
+                      << "]<" << std::setw(3) << (token).loc().first + 1      \
+                      << "," << std::setw(3) << (token).loc().second << ">"   \
+                      << std::setw(-1) << ":@ " << std::left << std::setw(10) \
+                      << (token).val(true) << " @\033[0m" << std::setw(-1)
 
 #define HZCC_INTERNAL_STATUS_MACROS_IMPL_CONCAT_NAME_INNER(x, y) x##y
 #define HZCC_INTERNAL_STATUS_MACROS_IMPL_CONCAT_NAME(x, y) \
@@ -70,13 +71,9 @@ enum PACKED CompileErrorLevel {
     kCompileErrorLevel_SIZE,
 };
 
-
 namespace message {
 
 void setFilename(const std::string& filename);
-
-void print_message(CompileErrorLevel level,         // NOLINT
-                   std::string_view errorMessage);  // NOLINT
 
 void print_message(CompileErrorLevel level,             // NOLINT
                    std::string_view errorMessage,       // NOLINT

@@ -39,19 +39,19 @@ BitwiseExpr::BitwiseExpr(const Position& loc,               // NOLINT
      *  ##################################################################### */
     switch (type[0]) {
         case '&':
-            this->_type = BitwiseType::kBitwiseType_AND;
+            this->_type = BitwiseType::AND;
             break;
         case '|':
-            this->_type = BitwiseType::kBitwiseType_OR;
+            this->_type = BitwiseType::OR;
             break;
         case '^':
-            this->_type = BitwiseType::kBitwiseType_XOR;
+            this->_type = BitwiseType::XOR;
             break;
         case '<':
-            this->_type = BitwiseType::kBitwiseType_LSHIFT;
+            this->_type = BitwiseType::LSHIFT;
             break;
         case '>':
-            this->_type = BitwiseType::kBitwiseType_RSHIFT;
+            this->_type = BitwiseType::RSHIFT;
             break;
         default:
             INTERNAL_LOG(FATAL)
@@ -59,5 +59,4 @@ BitwiseExpr::BitwiseExpr(const Position& loc,               // NOLINT
                 << "type: [" + std::string(type) + "] not supported";
     }
 }
-Status BitwiseExpr::visit(Visitor& visitor) { return visitor.visit(this); }
 }  // namespace hzcc::ast

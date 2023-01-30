@@ -11,15 +11,10 @@
 #include "utils/factory.h"          // for AutoRegFactory, HZCC_REGI_PRODUCT...
 #include "utils/status/statusor.h"  // for StatusOr
 
-namespace hzcc {
-namespace ast {
-class ICastRule;
-}  // namespace ast
-}  // namespace hzcc
-
 namespace hzcc::ast {
 class Expr;
 class Type;
+class ICastRule;
 
 class Cast : public utils::AutoRegFactory<ICastRule, std::string> {
   public:
@@ -49,7 +44,8 @@ class Cast : public utils::AutoRegFactory<ICastRule, std::string> {
     /**
      * The set of cast rules.
      */
-    static std::unordered_map<std::string, std::unique_ptr<ICastRule>> _rules;
+    inline static std::unordered_map<std::string, std::unique_ptr<ICastRule>>
+        _rules;
 };
 
 #define HZCC_REG_CAST_RULE(Product, name, desc) \

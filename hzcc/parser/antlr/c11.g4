@@ -559,7 +559,7 @@ RightBracket : ']';
 LeftBrace : '{';
 RightBrace : '}';
 
-Less : '<';
+LT : '<';
 LessEqual : '<=';
 Greater : '>';
 GreaterEqual : '>=';

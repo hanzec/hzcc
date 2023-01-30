@@ -37,22 +37,22 @@ RelationalExpr::RelationalExpr(const Position& loc, std::string_view type,
      *  ##################################################################### */
     switch (type[0]) {
         case '=':
-            this->_type = RelationalType::kRelationalType_Equal;
+            this->_type = RelationalType::EQ;
             break;
         case '!':
-            this->_type = RelationalType::kRelationalType_NEqual;
+            this->_type = RelationalType::NE;
             break;
         case '<':
             if (type[1] == '=')
-                this->_type = RelationalType::kRelationalType_LessEqual;
+                this->_type = RelationalType::LE;
             else
-                this->_type = RelationalType::kRelationalType_Less;
+                this->_type = RelationalType::LT;
             break;
         case '>':
             if (type[1] == '=')
-                this->_type = RelationalType::kRelationalType_GreaterEqual;
+                this->_type = RelationalType::GE;
             else
-                this->_type = RelationalType::kRelationalType_Greater;
+                this->_type = RelationalType::GT;
             break;
         default:
             INTERNAL_LOG(FATAL)
@@ -60,10 +60,4 @@ RelationalExpr::RelationalExpr(const Position& loc, std::string_view type,
                 << "type: [" + std::string(type) + "] not supported";
     }
 }
-
-std::shared_ptr<Type> RelationalExpr::retType() const {
-    return GetNumericalTypeOf<PrimitiveType::kChar>();
-}
-Status RelationalExpr::visit(Visitor& visitor) { return visitor.visit(this); }
-RelationalType RelationalExpr::op_type() const { return _type; }
 }  // namespace hzcc::ast

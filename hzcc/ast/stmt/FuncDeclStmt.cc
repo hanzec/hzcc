@@ -2,6 +2,7 @@
 // Created by chen_ on 2022/3/27.
 //
 #include <glog/logging.h>
+
 #include <list>
 #include <memory>
 #include <ostream>
@@ -19,7 +20,8 @@
 
 namespace hzcc::ast {
 
-FuncDeclStmt::FuncDeclStmt(const Position& loc, std::string_view name,
+FuncDeclStmt::FuncDeclStmt(
+    const Position& loc, std::string_view name,
     std::unique_ptr<TypeProxyExpr> return_type)  // NO_LINT
     : IDeclStmt("FunctionDecl", name, loc), _ret_type(std::move(return_type)) {
     /** #####################################################################
@@ -47,8 +49,8 @@ bool FuncDeclStmt::AddFunctionArgument(
     if (param_var_decl == nullptr) {
         return false;
     }
-    DVLOG(AST_LOG_LEVEL) << "Add argument " << param_var_decl->decl_name() << "("
-                         << param_var_decl->declType()->Dump()
+    DVLOG(AST_LOG_LEVEL) << "Add argument " << param_var_decl->decl_name()
+                         << "(" << param_var_decl->type()->Dump()
                          << ") to function node [" << decl_name() << "]";
     _func_param.push_back(std::move(param_var_decl));
     return true;
@@ -58,12 +60,10 @@ ArgumentList FuncDeclStmt::getArguments() {
     ArgumentList result;
     for (const auto& arg : _func_param) {
         result.emplace_back(
-            std::make_tuple(arg->decl_name(), arg->declType(), arg->loc()));
+            std::make_tuple(arg->decl_name(), arg->type(), arg->loc()));
     }
     return result;
 }
-
-bool FuncDeclStmt::IsFuncDecl() const { return true; }
 
 bool FuncDeclStmt::has_body() const { return _func_body != nullptr; }
 

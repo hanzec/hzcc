@@ -41,7 +41,7 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
     // apply all rules
     bool changed = false;
     auto& r_ref = _rules;
-    while (ret != nullptr && ret->retType() != lhs_type) {
+    while (ret != nullptr && ret->type() != lhs_type) {
         auto&& status = for_each_product([&](const std::string& cast_id)
                                              -> Status {
             auto rule = r_ref.find(cast_id);
@@ -50,7 +50,7 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
                 r_ref.insert({cast_id, create(cast_id)});
             }
 
-            if (rule->second->CouldApplyTo(ret->retType(), ret)) {
+            if (rule->second->CouldApplyTo(ret->type(), ret)) {
                 DVLOG(SYNTAX_LOG_LEVEL) << "Applying <" << cast_id << "> cast";
                 auto move_ret =
                     std::move(rule->second->Apply(std::move(ret), lhs_type));
@@ -82,7 +82,7 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
                 std::stringstream ss;
 
                 ss << "Trying to apply cast rules from ["
-                   << ret->retType()->UniqueName() << "] to ["
+                   << ret->type()->UniqueName() << "] to ["
                    << lhs_type->UniqueName() << "]:" << std::endl;
 
                 for (auto&& statue : status) {
@@ -97,12 +97,12 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
     }
 
     // return the final node
-    INTERNAL_LOG_IF(ERROR, ret == nullptr || ret->retType() != lhs_type)
+    INTERNAL_LOG_IF(ERROR, ret == nullptr || ret->type() != lhs_type)
         << "Failed rhs resolve Cast Rule lhs: " << ret->UniqueName() << "("
-        << ret->retType()->Name() << ") rhs type: "
+        << ret->type()->Name() << ") rhs type: "
         << "(" << lhs_type->Name() << ")";
 
-    if(ret == nullptr || ret->retType() != lhs_type) {
+    if(ret == nullptr || ret->type() != lhs_type) {
         return Status(StatusCode::kCastStage, "Failed rhs resolve Cast Rule");
     }
     return std::move(ret);

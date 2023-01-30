@@ -3,6 +3,7 @@
 //
 
 #include <glog/logging.h>
+
 #include <list>
 #include <memory>
 #include <ostream>
@@ -12,13 +13,13 @@
 #include <utility>
 
 #include "ast/type/Type.h"
-#include "utils/logging.h"
 #include "enums.h"
+#include "utils/logging.h"
 
 namespace hzcc::ast {
 StructType::StructType(const std::string &name,
                        const std::list<Attribute> &attr_list)
-    : Type(TypeCategory::kStruct, attr_list), _name(name) {
+    : IRecordType(TypeCategory::kStruct, attr_list), _name(name) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
@@ -38,21 +39,17 @@ bool StructType::IsSame(const Type &rhs) const {
     return false;
 }
 
-bool StructType::AddChild(const std::shared_ptr<StructType> &type) {
-    if (type == nullptr) {
-        return false;
-    }
-    _localTypeList.emplace_back(type->Name(), type);
-    return true;
-}
-bool StructType::AddChild(const std::string &name,              // NOLINT
-                          const std::shared_ptr<Type> &type) {  // NOLINT
-    if (type == nullptr) {
-        return false;
-    }
+void StructType::add_record(std::string_view name,              // NOLINT
+                            const std::shared_ptr<Type> &type) {  // NOLINT
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+    INTERNAL_LOG_IF(FATAL, !name.empty())  // NOLINT
+        << UniqueName() << "name is empty";
+    INTERNAL_LOG_IF(FATAL, type != nullptr)  // NOLINT
+        << UniqueName() << "type is nullptr";
+#endif
     _localTypeList.emplace_back(name, type);
-    return true;
 }
+
 std::shared_ptr<Type> StructType::field_type(std::string_view name) {
     for (auto &item : _localTypeList) {
         if (std::get<0>(item) == name) {

@@ -25,6 +25,49 @@ enum class PrimitiveType {
     kLong_double,
 };
 
+enum class LiteralType {
+    Char = 0,
+    Integer = 1,
+    Real_number = 2,
+    String = 3,
+};
+
+enum class RelationalType {
+    LT = 0,
+    EQ = 1,
+    NE = 2,
+    GT = 3,
+    LE = 4,
+    GE = 5,
+};
+
+enum class LogicalType {
+    AND = 0,
+    OR = 1,
+};
+
+enum class BitwiseType {
+    AND = 0,
+    OR = 1,
+    XOR = 2,
+    LSHIFT = 3,
+    RSHIFT = 4,
+};
+
+enum class AssignType {
+    ASSIGN = 0,
+    ADD = 1,
+    SUB = 2,
+    MUL = 3,
+    DIV = 4,
+    MOD = 5,
+    LSHIFT = 6,
+    RSHIFT = 7,
+    AND = 8,
+    OR = 9,
+    XOR = 10,
+};
+
 enum class TypeCategory {
     kNumerical,
     kPointer,
@@ -32,6 +75,7 @@ enum class TypeCategory {
     kStruct,
     kFuncPtr,
     kEnum,
+    kUnion,
     kBuiltin,
     kUnknown,
 };
@@ -50,23 +94,24 @@ enum class Attribute {
 };
 
 enum class ArithmeticType {
-    kArithmeticType_Add = 0,
-    kArithmeticType_Sub = 1,
-    kArithmeticType_Mul = 2,
-    kArithmeticType_Div = 3,
-    kArithmeticType_Mod = 4,
+    ADD = 0,
+    SUB = 1,
+    MUL = 2,
+    DIV = 3,
+    MOD = 4,
 };
 
 enum class UnaryType {
-    kUnaryMinus = 0,
-    kPreInc = 1,
-    kPreDec = 2,
-    kPostInc = 3,
-    kPostDec = 4,
-    kReference = 5,
-    kDereference = 6,
-    kLogicalNot = 7,
-    kBitwiseNot = 8,
+    ADD = 0,
+    PRE_INC = 1,
+    PRE_DEC = 2,
+    POST_INC = 3,
+    POST_DEC = 4,
+    ADDR = 5,
+    DEREF = 6,
+    NOT = 7,
+    SUB = 8,
+    BIT_NOT = 9,
 };
 
 namespace {
@@ -74,11 +119,11 @@ constexpr std::array<const char[2], magic_enum::enum_count<ArithmeticType>()>
     kArithmeticStr = {"+", "-", "*", "/", "%"};
 
 /**
- * Literals retType's table.
+ * Literals type's table.
  */
 constexpr const int KLiteralsTypeTableSize = 6;
 constexpr std::array<const char *, KLiteralsTypeTableSize> kLiteralsSymbol{
-    "retType", "Char", "Integer", "RealNumber", "String", "Identity"};
+    "type", "Char", "Integer", "RealNumber", "String", "Identity"};
 
 constexpr const std::array<const char[10], magic_enum::enum_count<Attribute>()>
     kAttributeTable{"const",  "extern",   "static", "auto",     "volatile",

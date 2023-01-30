@@ -23,13 +23,13 @@ namespace hzcc::ast {
 
 static constexpr const char* GetNodeName(LiteralType type) {
     switch (type) {
-        case LiteralType::kLiteralType_Char:
+        case LiteralType::Char:
             return "CharLiteral";
-        case LiteralType::kLiteralType_Real_number:
+        case LiteralType::Real_number:
             return "RealNumberLiteral";
-        case LiteralType::kLiteralType_String:
+        case LiteralType::String:
             return "StringLiteral";
-        case LiteralType::kLiteralType_Integer:
+        case LiteralType::Integer:
             return "IntegerLiteral";
         default:
             DLOG_ASSERT(false) << "unexpected literal type";
@@ -38,8 +38,8 @@ static constexpr const char* GetNodeName(LiteralType type) {
 }
 
 LiteralExpr::LiteralExpr(int64_t value, const Position& location)
-    : Expr(location, GetNodeName(LiteralType::kLiteralType_Integer)),
-      _type(kLiteralType_Integer),
+    : Expr(location, GetNodeName(LiteralType::Integer)),
+      _type(LiteralType::Integer),
       _value(std::to_string(value)) {}
 
 LiteralExpr::LiteralExpr(LiteralType type,        // NO_LINT
@@ -48,7 +48,7 @@ LiteralExpr::LiteralExpr(LiteralType type,        // NO_LINT
     : Expr(loc, GetNodeName(type)),
       _type(type),
       _value(std::string(value) +
-             (type == LiteralType::kLiteralType_String ? "\\x00" : "")) {
+             (type == LiteralType::String ? "\\x00" : "")) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
@@ -60,13 +60,13 @@ LiteralExpr::LiteralExpr(LiteralType type,        // NO_LINT
 
 std::optional<DeduceValue> LiteralExpr::GetDeducedValue() const {
     switch (_type) {
-        case LiteralType::kLiteralType_Char:
+        case LiteralType::Char:
             return DeduceValue(_value[0]);
-        case LiteralType::kLiteralType_Real_number:
+        case LiteralType::Real_number:
             return DeduceValue(std::stod(_value));
-        case LiteralType::kLiteralType_String:
+        case LiteralType::String:
             return std::nullopt;
-        case LiteralType::kLiteralType_Integer:
+        case LiteralType::Integer:
             return DeduceValue(static_cast<int64_t>(std::stoi(_value)));
         default:
             DLOG_ASSERT(false) << "unexpected literal type";
@@ -74,28 +74,21 @@ std::optional<DeduceValue> LiteralExpr::GetDeducedValue() const {
     return std::nullopt;
 }
 
-std::shared_ptr<Type> LiteralExpr::retType() const {
+std::shared_ptr<Type> LiteralExpr::type() const {
     switch (_type) {
-        case LiteralType::kLiteralType_Char:
+        case LiteralType::Char:
             return GetNumericalTypeOf<PrimitiveType::kChar>();
-        case LiteralType::kLiteralType_Real_number:
+        case LiteralType::Real_number:
             return GetNumericalTypeOf<PrimitiveType::kFloat>();
-        case LiteralType::kLiteralType_String:
+        case LiteralType::String:
             return std::make_shared<ArrayType>(
                 GetNumericalTypeOf<PrimitiveType::kChar>(),
                 std::make_unique<LiteralExpr>(_value.size() + 1, loc()));
-        case LiteralType::kLiteralType_Integer:
+        case LiteralType::Integer:
             return GetNumericalTypeOf<PrimitiveType::kInt>();
         default:
             DLOG_ASSERT(false) << "unexpected literal type";
     }
     return nullptr;
 }
-
-bool LiteralExpr::IsReturnLValue() const { return false; }
-Status LiteralExpr::visit(Visitor& visitor) { return visitor.visit(this); }
-LiteralType LiteralExpr::literal_type() const { return _type; }
-bool LiteralExpr::IsLiteral() const { return true; }
-std::string_view LiteralExpr::get_literal_val() const { return _value; }
-
 }  // namespace hzcc::ast

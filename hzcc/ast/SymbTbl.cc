@@ -36,7 +36,7 @@ bool SymbTbl::hasType(std::string_view name) {
 std::shared_ptr<ast::StructType> SymbTbl::addStructType(
     const std::string& name) {
     if (hasType("struct " + name)) {
-        LOG(FATAL) << "retType " << name << " has already been defined";
+        LOG(FATAL) << "type " << name << " has already been defined";
     } else {
         auto new_type = std::make_shared<ast::StructType>(name);
 

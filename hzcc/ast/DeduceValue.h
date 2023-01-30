@@ -57,7 +57,7 @@ class DeduceValue {
      * error if compile as DEBUG. Undefined behavior if compile as NDEBUG.
      * @return the integer value of the deduce value
      */
-    [[nodiscard]] char AsChar() const;
+    [[nodiscard]] char as_char() const;
 
     /**
      * @brief Get the value of the deduce value as integer number.

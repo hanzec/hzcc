@@ -35,10 +35,10 @@ static constexpr const int kDoubleCharSymbolTableSize = 19;
 static constexpr const int KLiteralsTypeTableSize = 6;
 
 /**
- * Literals retType's table.
+ * Literals type's table.
  */
 constexpr static std::array<const char *, KLiteralsTypeTableSize>
-    kLiteralsSymbol{"retType",    "Char",   "Integer",
+    kLiteralsSymbol{"type",    "Char",   "Integer",
                     "RealNumber", "String", "Identity"};
 
 /**

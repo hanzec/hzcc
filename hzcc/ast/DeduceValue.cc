@@ -57,7 +57,7 @@ DeduceValue::DeduceValue(DeduceValueType type, std::string str_value)
     }
 }
 
-char DeduceValue::AsChar() const {
+char DeduceValue::as_char() const {
     DLOG_ASSERT(_type == kDeduceValueType_Char) << "type is not char";
     char ret;
     std::memcpy(&ret, &_raw_value.front(), sizeof(char));

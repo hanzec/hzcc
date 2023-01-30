@@ -36,9 +36,9 @@ StatusOr<ast::StmtPtr> CompoundStatement::parse_impl(SyntaxCtx context,
     while (!tokens.empty() && tokens.peek().Type() != TokenType::kRBrace) {
         HZCC_CHECK_OR_ASSIGN(stmt,  // NOLINT
                              Parser::Parse<ast::Stmt>(context, tokens))
-        block_node->AddStatement(std::move(stmt));
+        block_node->add_stmt(std::move(stmt));
 
-        if (!block_node->GetLastStatement()->has_body()) {
+        if (!block_node->last_stmt()->has_body()) {
             // stmt need end with ';'
             HZCC_CheckAndConsume_ReturnErr(TokenType::kSemiColon, tokens);
         }
