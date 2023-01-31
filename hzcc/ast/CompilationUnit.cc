@@ -185,7 +185,7 @@ StructTypePtr CompilationUnit::add_struct_type(std::string_view struct_name,
  * ################################################################
  */
 
-bool CompilationUnit::has_var(const std::string &name, bool current_scope) {
+bool CompilationUnit::has_var(std::string_view name, bool current_scope) {
     return _current_context.lock()->has_var(name, current_scope);
 }
 
@@ -197,7 +197,7 @@ void CompilationUnit::addDecl(std::unique_ptr<IDeclStmt> node) {
     if (node->IsDeclNode()) {
         std::unique_ptr<IDeclStmt> derivedPointer(
             dynamic_cast<IDeclStmt *>(node.release()));
-        auto fuc_name = std::string(derivedPointer->decl_name()) +
+        auto fuc_name = std::string(derivedPointer->name()) +
                         (derivedPointer->has_body() ? "_decl" : "");
 
         // if we already have the

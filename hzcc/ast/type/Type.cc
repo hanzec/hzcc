@@ -19,14 +19,6 @@ Type::Type(TypeCategory typeCategory, const std::list<Attribute>& attrs)
     }
 }
 
-bool Type::is_arr() const { return false; }
-
-bool Type::is_struct() const { return false; }
-
-bool Type::is_func_ptr() const { return false; }
-
-bool Type::is_numerical() const { return false; }
-
 std::string Type::Dump() { return Name(); }
 
 std::list<Attribute> Type::GetAttributes() {
@@ -38,11 +30,4 @@ std::list<Attribute> Type::GetAttributes() {
     }
     return ret;
 }
-bool Type::operator==(const Type& rhs) const { return is_same(rhs); }
-bool Type::operator!=(const Type& type) const { return !is_same(type); }
-bool Type::is_ptr() const { return false; }
-uintptr_t Type::id() const { return reinterpret_cast<uintptr_t>(this); }
-
-std::string Type::UniqueName() const { return "[" + Name() + "]"; }
-
 }  // namespace hzcc::ast

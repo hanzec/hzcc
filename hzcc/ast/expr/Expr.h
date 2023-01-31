@@ -396,6 +396,12 @@ class SizeofExpr : public Expr {
         return GetNumericalTypeOf<PrimitiveType::kLong>();
     };
 
+    /**
+     * @brief Get the expression to get the size of
+     * @return the expression to get the size of
+     */
+    [[nodiscard]] std::unique_ptr<Stmt>& expr() { return _expr; };
+
   private:
     std::unique_ptr<Stmt> _expr;
 };
@@ -780,7 +786,7 @@ class MemberExpr : public Expr {
      * @brief Get the field name.
      * @return the field name.
      */
-    [[nodiscard]] std::string_view field_name() const { return _field; }
+    [[nodiscard]] std::string_view member_name() const { return _field; }
 
     /**
      * @brief Get the chain access expression.
@@ -960,9 +966,7 @@ class CommaExpr : public OperatorBase {
  * @brief Represent a bitwise expression in AST tree.
  * @details Bitwise expression is a expression that compares two
  * expressions. The bitwise expression is in the form of:
- * lhs operator rhs.
- *
- * Supported operators are listed in following table:
+ * lhs operator rhs. Supported operators are listed in following table:
  *         Operator  |         Description        |     ENUM class
  *        :--------: | :------------------------: | :----------------:
  *           &       | bitwise and                | BitwiseType::AND
@@ -1012,6 +1016,12 @@ class BitwiseExpr : public OperatorBase {
     [[nodiscard]] std::shared_ptr<Type> type() const override {
         return lhs_c()->type();
     }
+
+    /**
+     * @brief Get type of the bitwise expression
+     * @return type of the bitwise expression
+     */
+    [[nodiscard]] BitwiseType op_type() const { return _type; };
 
   private:
     BitwiseType _type;

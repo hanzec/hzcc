@@ -55,17 +55,17 @@ enum class BitwiseType {
 };
 
 enum class AssignType {
-    ASSIGN = 0,
-    ADD = 1,
-    SUB = 2,
-    MUL = 3,
-    DIV = 4,
-    MOD = 5,
-    LSHIFT = 6,
-    RSHIFT = 7,
-    AND = 8,
-    OR = 9,
-    XOR = 10,
+    ASSIGN,
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    MOD,
+    LSHIFT,
+    RSHIFT,
+    AND,
+    OR,
+    XOR,
 };
 
 enum class TypeCategory {

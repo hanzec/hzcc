@@ -35,7 +35,7 @@ void RecordDecl::add_field(std::unique_ptr<IDeclStmt> field) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-static-cast-downcast"
     auto record_type = static_cast<IRecordType*>(_type->type().get());
-    record_type->add_record(_fields.back()->decl_name(),
+    record_type->add_record(_fields.back()->name(),
                             _fields.back()->type());
 #pragma clang diagnostic pop
 }

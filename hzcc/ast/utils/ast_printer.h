@@ -71,7 +71,6 @@ class AstPrinter : public Visitor{
     Status visit(BreakStmt* p_stmt) override;
     Status visit(CompoundStmt* p_stmt) override;
     Status visit(ContinueStmt* p_stmt) override;
-    Status visit(IDeclStmt* p_stmt) override;
     Status visit(DeclStmt* p_stmt) override;
     Status visit(DoStmt* p_stmt) override;
     Status visit(EmptyStmt* p_stmt) override;
@@ -94,13 +93,11 @@ class AstPrinter : public Visitor{
     void remove_indent();
     std::string_view get_indent();
 
-    void PrintStmtHeader(Stmt* p_stmt);
+    void print_stmt_hdr(Stmt* p_stmt);
 
   private:
     std::ostream &_out;
     std::list<std::string> _indent;
-
-
 };
 }
 #endif  // HZCC_AST_PRINTER_H

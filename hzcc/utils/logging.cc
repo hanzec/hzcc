@@ -11,6 +11,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <magic_enum.hpp>
 
 #include "fs_utils.h"
 #include "options.h"
@@ -33,8 +34,8 @@ void set_current_file_name(const std::string& file_name) {
     CURRENT_FILE_NAME = file_name;
 }
 
-void print_message(CompileErrorLevel level,               // NOLINT
-                   std::string_view errorMessage,         // NOLINT
+void print_message(CompileErrorLevel level,              // NOLINT
+                   std::string_view errorMessage,        // NOLINT
                    std::pair<uint64_t, uint64_t> loc) {  // NOLINT
     static constexpr std::array<const char*, 3> kLevelColorTable = {
         KEnableRed, KEnableYellow, KEnableGreen};
@@ -57,9 +58,10 @@ void print_message(CompileErrorLevel level,               // NOLINT
                   << ": ";
 
         if (Options::Global_disable_color) {
-            std::cerr << kLevelStringTable[level];
+            std::cerr << kLevelStringTable[magic_enum::enum_integer(level)];
         } else {
-            std::cerr << kLevelColorTable[level] << kLevelStringTable[level]
+            std::cerr << kLevelColorTable[magic_enum::enum_integer(level)]
+                      << kLevelStringTable[magic_enum::enum_integer(level)]
                       << KDisableColor;
         }
 
@@ -69,7 +71,8 @@ void print_message(CompileErrorLevel level,               // NOLINT
         // print source code line
         for (int i = 0; i < line.length(); ++i) {
             if (loc.second == i && !Options::Global_disable_color) {
-                std::cerr << kLevelColorTable[level] << line[i];
+                std::cerr << kLevelColorTable[magic_enum::enum_integer(level)]
+                          << line[i];
             } else {
                 std::cerr << line[i];
             }

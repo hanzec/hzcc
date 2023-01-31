@@ -32,7 +32,7 @@ ALWAYS_INLINE Status TokenErr(const Token& token, std::string_view message) {
 
 ALWAYS_INLINE Status TokenErr(TokenList& token, std::string_view message) {
     if (token.empty()) {
-        message::print_message(kCompileErrorLevel_Error, message, {0, 0});
+        message::print_message(CompileErrorLevel::Error, message, {0, 0});
         return {StatusCode::kSyntaxStageErr, message};
     } else {
         return TokenErr(token.peek(), message);
@@ -127,7 +127,8 @@ ALWAYS_INLINE StatusOr<std::unique_ptr<ast::CompoundStmt>> ParseBodyStatement(
         }
 
         // pack into a compound statement
-        auto compound_stmt = std::make_unique<ast::CompoundStmt>(body_statement->loc());
+        auto compound_stmt =
+            std::make_unique<ast::CompoundStmt>(body_statement->loc());
         compound_stmt->add_stmt(std::move(body_statement));
 
         return compound_stmt;

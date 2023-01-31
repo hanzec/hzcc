@@ -17,19 +17,55 @@ class Ctx {
 
     explicit Ctx(std::shared_ptr<ast::CompilationUnit> compilationUnit);
 
-    void leave_scope();
-
-    void enter_scope();
-
-    void enter_scope(std::string_view name);
-
+    /**
+     * ----------------------------------------------------------------
+     * ## Scope related Functions                                   ###
+     * ----------------------------------------------------------------
+     */
 
     /**
-     * ################################################################
-     * ###############   Variable related Functions  ##################
-     * ################################################################
+     * @brief Check if the current scope is the root scope
+     * @return
      */
-    bool has_var(const std::string_view& name, bool current_scope);
+    [[nodiscard]] bool at_root() const {
+        return this->_compilationUnit->at_root();
+    };
+
+    /**
+     * @brief Leave the current scope
+     */
+    void leave_scope() { this->_compilationUnit->leave_scope(); };
+
+    /**
+     * @brief Enter the scope
+     */
+    void enter_scope() { this->_compilationUnit->enter_scope(); };
+
+    /**
+     * @brief Enter the scope with name
+     * @param name  The name of the scope
+     */
+    void enter_scope(std::string_view name) {
+        this->_compilationUnit->enter_scope(name);
+    };
+
+    /**
+     *---------------------------------------------------------------
+     * ## Variable related Functions                               ###
+     * --------------------------------------------------------------
+     */
+
+    /**
+     * @brief Check if the variable is defined in the current scope
+     * @param name  The name of the variable
+     * @param current_scope  If true, only check the current scope, otherwise
+     * check the whole scope
+     * @return true if the variable is defined in the current scope or the whole
+     * scope otherwise false
+     */
+    bool has_var(std::string_view name, bool current_scope) {
+        return this->_compilationUnit->has_var(name, current_scope);
+    }
 
     void add_var(Position pos,            // NOLINT
                  TypePtr variable_type,   // NOLINT
@@ -54,10 +90,9 @@ class Ctx {
     std::tuple<TypePtr, std::list<TypePtr>, Position> func_def_info(
         std::string_view name);
 
-
-    [[nodiscard]] bool at_root() const;
-
-    [[nodiscard]] std::optional<ast::TypePtr> ret_type() const;
+    [[nodiscard]] std::optional<ast::TypePtr> ret_type() const {
+        return this->_compilationUnit->ret_type();
+    };
 
   private:
     std::list<TokenType> _attributes;
@@ -108,27 +143,5 @@ class analyzer : public ast::Visitor {
 };
 
 Status analyze(std::shared_ptr<ast::CompilationUnit> p_unit);
-
-
-inline void Ctx::leave_scope(){
-    this->_compilationUnit->leave_scope();
-}
-
-inline void Ctx::enter_scope(){
-    this->_compilationUnit->enter_scope();
-}
-
-inline bool Ctx::at_root() const{
-    return this->_compilationUnit->at_root();
-}
-
-inline void Ctx::enter_scope(std::string_view name){
-    this->_compilationUnit->enter_scope(name);
-}
-
-inline std::optional<ast::TypePtr> Ctx::ret_type() const{
-    return this->_compilationUnit->ret_type();
-}
-
 }  // namespace hzcc::semantic
 #endif  // HZCC_SEMANTIC_H

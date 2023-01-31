@@ -25,43 +25,45 @@ class Type : public std::enable_shared_from_this<Type> {
      * @brief The unique id of the node.
      * @return The unique id of the node.
      */
-    [[nodiscard]] uintptr_t id() const;
+    [[nodiscard]] uintptr_t id() const {
+        return reinterpret_cast<uintptr_t>(this);
+    };
 
     /**
      * @brief Check if the type is an Array.
      * @return True if the type is an Array, false otherwise.
      */
-    [[nodiscard]] virtual bool is_arr() const;
+    [[nodiscard]] virtual bool is_arr() const { return false; };
 
     /**
      * @brief Check if the type is a Struct.
      * @return True if the type is a Struct, false otherwise.
      */
-    [[nodiscard]] virtual bool is_struct() const;
+    [[nodiscard]] virtual bool is_struct() const { return false; };
 
     /**
      * @brief Check if the type is a Function pointer type.
      * @return True if the type is a Function pointer type, false otherwise.
      */
-    [[nodiscard]] virtual bool is_func_ptr() const;
+    [[nodiscard]] virtual bool is_func_ptr() const { return false; };
 
     /**
      * @brief Check if the type is a Union type.
      * @return True if the type is a Union type, false otherwise.
      */
-    [[nodiscard]] virtual bool IsUnion() const;
+    [[nodiscard]] virtual bool IsUnion() const { return false; };
 
     /**
      * @brief Check if the type is a pointer type
      * @return True if the type is a pointer type, false otherwise.
      */
-    [[nodiscard]] virtual bool is_ptr() const;
+    [[nodiscard]] virtual bool is_ptr() const { return false; };
 
     /**
      * @brief Check if the type is a builtin type.
      * @return True if the type is a builtin type, false otherwise.
      */
-    [[nodiscard]] virtual bool is_numerical() const;
+    [[nodiscard]] virtual bool is_numerical() const { return false; };
 
     virtual std::string Dump();
 
@@ -84,7 +86,7 @@ class Type : public std::enable_shared_from_this<Type> {
      *         "[__TYPE_NAME__:__TYPE_ID__]"
      * @return The unique name of the node
      */
-    [[nodiscard]] std::string UniqueName() const;
+    [[nodiscard]] std::string UniqueName() const { return "[" + Name() + "]"; };
 
     /**
      * @brief Get the declare name of the type.
@@ -96,10 +98,10 @@ class Type : public std::enable_shared_from_this<Type> {
     std::list<Attribute> GetAttributes();
 
     // overload operator == for RetType
-    bool operator==(const Type& type) const;
+    bool operator==(const Type& type) const { return is_same(type); };
 
     // overload operator != for RetType
-    bool operator!=(const Type& type) const;
+    bool operator!=(const Type& type) const { return !is_same(type); };
 
   protected:
     /**
@@ -134,8 +136,6 @@ class NumericalType : public Type {
         PrimitiveType type,                           // NOLINT
         const std::list<Attribute>& attr_list = {});  // NOLINT
 
-    [[nodiscard]] uint8_t GetTypeId() const;
-
     /**
      * @brief Get the declare name of the type.
      * @param without_attr If true, the attribute will not be included in the
@@ -144,7 +144,19 @@ class NumericalType : public Type {
      */
     [[nodiscard]] std::string Name() const override;
 
-    [[nodiscard]] bool is_numerical() const override;
+    /**
+     * @brief Get the type id of the type.
+     * @return uint8_t The type id of the type.
+     */
+    [[nodiscard]] uint8_t GetTypeId() const {
+        return magic_enum::enum_integer(_type);
+    };
+
+    /**
+     * @brief Check if the type is a numerical type.
+     * @return True if the type is a numerical type, false otherwise.
+     */
+    [[nodiscard]] bool is_numerical() const override { return true; };
 
   protected:
     /**
@@ -244,22 +256,22 @@ class PointerType : public Type {
      * @brief Check if the type is a pointer type
      * @return True if the type is a pointer type, false otherwise.
      */
-    [[nodiscard]] bool is_ptr() const override;
-
-    /**
-     * @brief Get the declare name of the type.
-     * @param without_attr If true, the attribute will not be included in the
-     * name.
-     * @return std::string The declare name of the type.
-     */
-    [[nodiscard]] std::string Name() const override;
+    [[nodiscard]] bool is_ptr() const override { return true; };
 
     /**
      * @brief Get the base type of the pointer type.
      * @return std::shared_ptr<Type> The base type of the pointer type.
      */
-    [[nodiscard]] std::shared_ptr<Type> GetBaseType() const;
+    [[nodiscard]] std::shared_ptr<Type> GetBaseType() const {
+        return _base_type;
+    };
 
+    /**
+     * @brief Get the declare name of the type.
+     * name.
+     * @return std::string The declare name of the type.
+     */
+    [[nodiscard]] std::string Name() const override;
   protected:
     /**
      * @brief Check if the type is the same as another type.

@@ -27,7 +27,7 @@
 //
 //        // print out error
 //        Message::print_message(
-//            Message::kCompileErrorLevel_Error,
+//            Message::Error,
 //            "Max include depth achieved : \n " + include_expand + "\b", "",
 //            std::make_pair(0, -2));
 //
@@ -49,7 +49,7 @@
 //                if (!std::filesystem::exists(final_file_name)) {
 //                    Message::set_current_file(final_file_name);
 //                    Message::print_message(
-//                        Message::kCompileErrorLevel_Error,
+//                        Message::Error,
 //                        "include file not found: " + final_file_name.string(),
 //                        line, std::make_pair(row, start_pos));
 //                }
@@ -60,7 +60,7 @@
 //                    included_files.end()) {
 
 //                    Message::print_message(
-//                        Message::kCompileErrorLevel_Error,
+//                        Message::Error,
 //                        "include loop detected: " + final_file_name.string(),
 //                        line, std::make_pair(row, start_pos));
 //                }

@@ -2,19 +2,19 @@
 // Created by chen_ on 2022/6/13.
 //
 #include <stdint.h>
+
 #include <array>
 #include <list>
 #include <string>
 
 #include "ast/type/Type.h"
-#include "utils/constexpr_utils.h"
 #include "enums.h"
+#include "utils/constexpr_utils.h"
 
 namespace hzcc::ast {
 
-NumericalType::NumericalType(
-    PrimitiveType type,                                     // NOLINT
-    const std::list<Attribute>& attr_list)  // NOLINT
+NumericalType::NumericalType(PrimitiveType type,                     // NOLINT
+                             const std::list<Attribute>& attr_list)  // NOLINT
     : Type(TypeCategory::kNumerical, attr_list), _type(type) {}
 
 std::string NumericalType::Name() const {
@@ -24,10 +24,17 @@ std::string NumericalType::Name() const {
                             "double",     "void",      "long",
                             "short",      "_Bool",     "_Complex",
                             "_Imaginary", "long long", "long double"};
-    return kPrimitiveTypeTable[utils::as_integer(_type)];
+    return kPrimitiveTypeTable[magic_enum::enum_integer(_type)];
 }
 
-bool NumericalType::is_numerical() const { return true; }
-
-uint8_t NumericalType::GetTypeId() const { return utils::as_integer(_type); }
+bool NumericalType::is_same(const Type& rhs) const {
+    if (rhs.is_numerical()) {
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cppcoreguidelines-pro-type-static-cast-downcast"
+        return GetTypeId() ==
+               static_cast<const NumericalType*>(&rhs)->GetTypeId();
+#pragma clang diagnostic pop
+    }
+    return false;
+}
 }  // namespace hzcc::ast

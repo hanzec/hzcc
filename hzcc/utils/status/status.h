@@ -51,15 +51,16 @@
 #ifndef HZCC_UTILS_STATUS_STATUS_H_
 #define HZCC_UTILS_STATUS_STATUS_H_
 #include <absl/strings/cord.h>
+
 #include <atomic>
 #include <cassert>
+#include <cstdint>
 #include <functional>
 #include <optional>
 #include <ostream>
 #include <string>
-#include <utility>
-#include <cstdint>
 #include <string_view>
+#include <utility>
 
 #include "macro.h"
 #include "utils/logging.h"
@@ -699,7 +700,7 @@ std::ostream& operator<<(std::ostream& os, const Status& x);
 
 ALWAYS_INLINE Status CompileError(Position pos,            // NOLINT
                                   std::string_view msg) {  // NOLINT
-    message::print_message(kCompileErrorLevel_Error, msg, pos);
+    message::print_message(CompileErrorLevel::Error, msg, pos);
     return {StatusCode::kCompileError, msg};
 }
 
@@ -746,12 +747,6 @@ Status UnknownError(std::string_view message);
 // See https://en.cppreference.com/w/cpp/error/errno_macros and similar
 // references.
 hzcc::StatusCode ErrnoToStatusCode(int error_number);
-
-// ErrnoToStatus()
-//
-// Convenience function that creates a `hzcc::Status` using an `error_number`,
-// which should be an `errno` value.
-Status ErrnoToStatus(int error_number, std::string_view message);
 
 //------------------------------------------------------------------------------
 // Implementation details follow

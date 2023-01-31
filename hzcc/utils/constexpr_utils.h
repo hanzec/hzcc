@@ -42,11 +42,6 @@ constexpr ALWAYS_INLINE int search_table(Type str,
 #pragma GCC pop_options
 #endif
 
-template <typename Enumeration>
-constexpr auto as_integer(Enumeration const value) ->
-    typename std::underlying_type<Enumeration>::type {
-    return static_cast<typename std::underlying_type<Enumeration>::type>(value);
-}
 
 // we cannot return a char array from a function, therefore we need a wrapper
 template <unsigned N>

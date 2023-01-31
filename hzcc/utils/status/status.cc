@@ -67,7 +67,7 @@ std::ostream& operator<<(std::ostream& os, StatusCode code) {
 namespace status_internal {
 // Convert canonical code to a value known to this binary.
 hzcc::StatusCode MapToLocalCode(int value) {
-    hzcc::StatusCode code = static_cast<hzcc::StatusCode>(value);
+    auto code = static_cast<hzcc::StatusCode>(value);
     switch (code) {
         case hzcc::StatusCode::kOk:
         case hzcc::StatusCode::kUnknown:
@@ -184,27 +184,27 @@ std::ostream& operator<<(std::ostream& os, const Status& x) {
 }
 
 Status AlreadyExistsError(std::string_view message) {
-    return Status(hzcc::StatusCode::kAlreadyExists, message);
+    return {hzcc::StatusCode::kAlreadyExists, message};
 }
 
 Status DataLossError(std::string_view message) {
-    return Status(hzcc::StatusCode::kDataLoss, message);
+    return {hzcc::StatusCode::kDataLoss, message};
 }
 
 
 Status InternalError(std::string_view message) {
-    return Status(hzcc::StatusCode::kInternal, message);
+    return {hzcc::StatusCode::kInternal, message};
 }
 
 Status NotFoundError(std::string_view message) {
-    return Status(hzcc::StatusCode::kNotFound, message);
+    return {hzcc::StatusCode::kNotFound, message};
 }
 
 Status OutOfRangeError(std::string_view message) {
-    return Status(hzcc::StatusCode::kOutOfRange, message);
+    return {hzcc::StatusCode::kOutOfRange, message};
 }
 Status UnauthenticatedError(std::string_view message) {
-    return Status(hzcc::StatusCode::kUnauthenticated, message);
+    return {hzcc::StatusCode::kUnauthenticated, message};
 }
 
 Status UnavailableError(std::string_view message) {
@@ -257,11 +257,6 @@ std::string MessageForErrnoToStatus(int error_number,
     return std::string(message) + ": " + strerror(error_number);
 }
 }  // namespace
-
-Status ErrnoToStatus(int error_number, std::string_view message) {
-    return Status(ErrnoToStatusCode(error_number),
-                  MessageForErrnoToStatus(error_number, message));
-}
 
 namespace status_internal {
 

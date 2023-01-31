@@ -325,7 +325,7 @@ class IDeclStmt : public Stmt {
      * @brief Get the name of the declaration
      * @return the name of the declaration
      */
-    [[nodiscard]] std::string_view decl_name() const { return _decl_name; };
+    [[nodiscard]] std::string_view name() const { return _decl_name; };
 
     /**
      * @brief Determine whether the declaration has an initializer or not
@@ -987,7 +987,7 @@ class DeclStmt : public IDeclStmt {
      * @brief Get the decl list of the declaration statement
      * @return the decl list of the declaration statement
      */
-    [[nodiscard]] const std::list<std::unique_ptr<VarDecl>>& decl_list() {
+    [[nodiscard]] const std::list<std::unique_ptr<VarDecl>>& decls() {
         return _decl_list;
     }
 

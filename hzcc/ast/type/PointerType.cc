@@ -13,10 +13,17 @@ namespace hzcc::ast {
 
 PointerType::PointerType(std::shared_ptr<Type> base_type,
                          const std::list<Attribute>& attrs)
-    : Type(TypeCategory::kPointer, attrs),
-      _base_type(std::move(base_type)) {}
+    : Type(TypeCategory::kPointer, attrs), _base_type(std::move(base_type)) {}
 
-bool PointerType::is_ptr() const { return true; }
-
-std::shared_ptr<Type> PointerType::GetBaseType() const { return _base_type; }
+bool PointerType::is_same(const Type& rhs) const {
+    if (rhs.is_ptr()) {
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cppcoreguidelines-pro-type-static-cast-downcast"
+        return GetBaseType() ==
+               static_cast<const PointerType*>(&rhs)->GetBaseType();
+#pragma clang diagnostic pop
+    }
+    return false;
+}
+std::string PointerType::Name() const { return std::string(); }
 }  // namespace hzcc::ast

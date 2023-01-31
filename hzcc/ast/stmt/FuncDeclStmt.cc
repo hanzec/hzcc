@@ -38,7 +38,7 @@ bool FuncDeclStmt::set_body(std::unique_ptr<ast::CompoundStmt> declaration) {
         DLOG(WARNING) << "function body is nullptr";
         return false;
     }
-    DVLOG(AST_LOG_LEVEL) << "set function body for function [" << decl_name()
+    DVLOG(AST_LOG_LEVEL) << "set function body for function [" << name()
                          << "]";
     _func_body = std::move(declaration);
     return true;
@@ -49,9 +49,9 @@ bool FuncDeclStmt::AddFunctionArgument(
     if (param_var_decl == nullptr) {
         return false;
     }
-    DVLOG(AST_LOG_LEVEL) << "Add argument " << param_var_decl->decl_name()
+    DVLOG(AST_LOG_LEVEL) << "Add argument " << param_var_decl->name()
                          << "(" << param_var_decl->type()->Dump()
-                         << ") to function node [" << decl_name() << "]";
+                         << ") to function node [" << name() << "]";
     _func_param.push_back(std::move(param_var_decl));
     return true;
 }
@@ -60,7 +60,7 @@ ArgumentList FuncDeclStmt::getArguments() {
     ArgumentList result;
     for (const auto& arg : _func_param) {
         result.emplace_back(
-            std::make_tuple(arg->decl_name(), arg->type(), arg->loc()));
+            std::make_tuple(arg->name(), arg->type(), arg->loc()));
     }
     return result;
 }

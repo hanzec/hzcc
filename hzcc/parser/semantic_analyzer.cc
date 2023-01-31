@@ -31,12 +31,12 @@ Status analyzer::visit(hzcc::ast::VarDecl* p_expr) {
     // check duplicate variable, here we only check if the variable is
     // already defined in the current scope. since we can mask the
     // definition of the variable in the parent scope.
-    if (_ctx.has_var(p_expr->decl_name(), true)) {
-        auto [is_global, line_no] = _ctx.get_var_info(p_expr->decl_name());
+    if (_ctx.has_var(p_expr->name(), true)) {
+        auto [is_global, line_no] = _ctx.get_var_info(p_expr->name());
         return CompileError(
             p_expr->loc(),
             (_ctx.at_root() ? "Global variable '" : "Local variable '") +
-                std::string(p_expr->decl_name()) +
+                std::string(p_expr->name()) +
                 (is_global ? "' duplicates global variable declared in"
                            : "' duplicates local variable declared in") +
                 " line " + std::to_string(line_no.first));
@@ -47,12 +47,12 @@ Status analyzer::visit(hzcc::ast::VarDecl* p_expr) {
     if (curr_type->is<TypeCategory::kNumerical>() &&
         curr_type == ast::GetNumericalTypeOf<PrimitiveType::kVoid>()) {
         return CompileError(p_expr->loc(),
-                            "Variable '" + std::string(p_expr->decl_name()) +
+                            "Variable '" + std::string(p_expr->name()) +
                                 "' has type void");
     }
 
     // add current variable to the _ctx
-    _ctx.add_var(p_expr->loc(), curr_type, p_expr->decl_name());
+    _ctx.add_var(p_expr->loc(), curr_type, p_expr->name());
 
     // check if type is match if there is an initializer
     if (p_expr->has_init()) {
@@ -383,14 +383,14 @@ Status analyzer::visit(hzcc::ast::MemberExpr* p_expr) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-static-cast-downcast"
     auto type = static_cast<ast::StructType*>(p_expr->base_expr()->type().get())
-                    ->field_type(p_expr->field_name());
+                    ->field_type(p_expr->member_name());
 #pragma clang diagnostic pop
 
     // check member name
     if (type == nullptr) {
         return CompileError(
             p_expr->loc(),
-            absl::StrCat("Unknown member '", p_expr->field_name(), "' in ",
+            absl::StrCat("Unknown member '", p_expr->member_name(), "' in ",
                          p_expr->base_expr()->type()->Name()));
     }
     return NoError();
@@ -448,7 +448,7 @@ Status analyzer::visit(hzcc::ast::FuncCallStmt* p_expr) {
 }
 
 Status analyzer::visit(hzcc::ast::DeclStmt* p_expr) {
-    for (const auto& var : p_expr->decl_list()) {
+    for (const auto& var : p_expr->decls()) {
         auto ret = var->visit(*this);
         if (!ret.ok()) {
             return ret;
@@ -462,48 +462,48 @@ Status analyzer::visit(hzcc::ast::ParamVarDecl* p_expr) {
     HZCC_CHECK_OK_OR_RETURN(p_expr->type_expr()->visit(*this));
 
     // we don't allow duplicate type name
-    if (_ctx.has_var(p_expr->decl_name(), true)) {
-        auto [_, line_no] = _ctx.get_var_info(p_expr->decl_name());
+    if (_ctx.has_var(p_expr->name(), true)) {
+        auto [_, line_no] = _ctx.get_var_info(p_expr->name());
         return CompileError(
             p_expr->loc(),
-            absl::StrCat("Duplicate parameter name '", p_expr->decl_name(),
+            absl::StrCat("Duplicate parameter name '", p_expr->name(),
                          "'. Previous declaration at ", line_no.first));
     }
 
-    _ctx.add_var(p_expr->loc(), p_expr->type(), p_expr->decl_name());
+    _ctx.add_var(p_expr->loc(), p_expr->type(), p_expr->name());
     return NoError();
 }
 
 Status analyzer::visit(hzcc::ast::FuncDeclStmt* p_expr) {
     // function name cannot duplicate with any other variable name
     if (!Options::Global_allow_same_name_for_func_val &&
-        _ctx.has_var(p_expr->decl_name(), true)) {
+        _ctx.has_var(p_expr->name(), true)) {
         return CompileError(
             p_expr->loc(),
-            absl::StrCat("Function '", p_expr->decl_name(),
+            absl::StrCat("Function '", p_expr->name(),
                          "' already defined as global variable"));
     }
 
     // check function name is redefinition or not only when the function body is
     // exits
-    if (p_expr->has_body() && _ctx.has_func(p_expr->decl_name()) &&
-        _ctx.has_func_body(p_expr->decl_name())) {
+    if (p_expr->has_body() && _ctx.has_func(p_expr->name()) &&
+        _ctx.has_func_body(p_expr->name())) {
         return CompileError(p_expr->loc(),
-                            absl::StrCat("Function '", p_expr->decl_name(),
+                            absl::StrCat("Function '", p_expr->name(),
                                          "' already defined"));
     }
 
     // function with same name must match previous definition
     std::list<ast::TypePtr> arg_types;
-    if (_ctx.has_func(p_expr->decl_name())) {
+    if (_ctx.has_func(p_expr->name())) {
         auto [func_type, func_type_attributes, line_no] =
-            _ctx.func_def_info(p_expr->decl_name());
+            _ctx.func_def_info(p_expr->name());
 
         // compare argument number
         if (func_type_attributes.size() != p_expr->params().size()) {
             return CompileError(
                 p_expr->loc(),
-                absl::StrCat("Function '", p_expr->decl_name(),
+                absl::StrCat("Function '", p_expr->name(),
                              "' already defined with different argument "
                              "number from previous definition in line" +
                                  std::to_string(line_no.first)));
@@ -513,7 +513,7 @@ Status analyzer::visit(hzcc::ast::FuncDeclStmt* p_expr) {
         if (!(func_type == p_expr->type_expr()->type())) {
             return CompileError(
                 p_expr->loc(),
-                absl::StrCat("Function ", p_expr->decl_name(),
+                absl::StrCat("Function ", p_expr->name(),
                              " already defined with ", func_type->Name(),
                              " return type in line ",
                              std::to_string(line_no.first)));
@@ -524,7 +524,7 @@ Status analyzer::visit(hzcc::ast::FuncDeclStmt* p_expr) {
             if (!(param->type() == func_type_attributes.front())) {
                 return CompileError(
                     param->loc(),
-                    absl::StrCat("Function ", p_expr->decl_name(),
+                    absl::StrCat("Function ", p_expr->name(),
                                  " already defined with different argument "
                                  "type in line ",
                                  std::to_string(line_no.first)));
@@ -535,12 +535,12 @@ Status analyzer::visit(hzcc::ast::FuncDeclStmt* p_expr) {
     }
 
     // add function definition to _ctx
-    _ctx.add_func(p_expr->loc(), p_expr->decl_name(),
+    _ctx.add_func(p_expr->loc(), p_expr->name(),
                   p_expr->type_expr()->type(), arg_types);
 
     // handle function body
     if (p_expr->has_body()) {
-        _ctx.enter_scope(p_expr->decl_name());
+        _ctx.enter_scope(p_expr->name());
 
         // add all arguments to the scope
         for (auto& arg : p_expr->params()) {

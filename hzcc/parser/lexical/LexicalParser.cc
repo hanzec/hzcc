@@ -2,14 +2,15 @@
 // Created by chen_ on 2022/1/26.
 //
 #include <stddef.h>
-#include <magic_enum.hpp>
-#include <regex>
+
 #include <cctype>
 #include <cstdint>
 #include <functional>
 #include <istream>
 #include <limits>
+#include <magic_enum.hpp>
 #include <memory>
+#include <regex>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -18,13 +19,13 @@
 #include <vector>
 
 #include "lexical_limit.h"
+#include "macro.h"
 #include "parser/common/Token.h"
+#include "parser/common/token_type.h"
 #include "parser/lexical/utils/symbol_utils.h"
 #include "parser/parser.h"
 #include "utils/logging.h"
 #include "utils/status/status.h"
-#include "macro.h"
-#include "parser/common/token_type.h"
 #include "utils/status/statusor.h"
 
 namespace hzcc {
@@ -45,7 +46,7 @@ namespace hzcc::lexical {
             if constexpr (std::is_same_v<REQUIRED_TYPE, int64_t>) {            \
                 if (std::stoll((INPUT).data()) >                               \
                     std::numeric_limits<int64_t>::max()) {                     \
-                    message::print_message(kCompileErrorLevel_Error,           \
+                    message::print_message(CompileErrorLevel::Error,           \
                                            "integer number overflow",          \
                                            std::make_pair(ctx->row, start));   \
                     return {StatusCode::kLexicalAnalysisStage,                 \
@@ -56,7 +57,7 @@ namespace hzcc::lexical {
                         std::numeric_limits<long double>::max() ||             \
                     std::stod((INPUT).data()) <                                \
                         std::numeric_limits<long double>::lowest()) {          \
-                    message::print_message(kCompileErrorLevel_Error,           \
+                    message::print_message(CompileErrorLevel::Error,           \
                                            "real number literal out of range", \
                                            std::make_pair(ctx->row, start));   \
                     return {StatusCode::kLexicalAnalysisStage,                 \
@@ -69,7 +70,7 @@ namespace hzcc::lexical {
                     tmp_str.erase(dot_pos + kMaxSignificantDigits + 1,         \
                                   (INPUT).length());                           \
                     message::print_message(                                    \
-                        kCompileErrorLevel_Warning,                            \
+                        CompileErrorLevel::Warning,                            \
                         "real number is greater than most possible "           \
                         "significant digits, will truncating to " +            \
                             tmp_str,                                           \
@@ -77,7 +78,7 @@ namespace hzcc::lexical {
                 }                                                              \
             }                                                                  \
         } catch (const std::out_of_range& e) {                                 \
-            message::print_message(kCompileErrorLevel_Error,                   \
+            message::print_message(CompileErrorLevel::Error,                   \
                                    "number out of range",                      \
                                    std::make_pair(ctx->row, start));           \
             return {StatusCode::kLexicalAnalysisStage, "number out of range"}; \
@@ -147,7 +148,7 @@ ALWAYS_INLINE static Status StrLitHandler(TokenList& tokens,
     for (ctx->col++; true; ctx->col++) {
         // return error if string literal is not closed
         if (ctx->col > line.length()) {
-            message::print_message(kCompileErrorLevel_Error,
+            message::print_message(CompileErrorLevel::Error,
                                    "Missing terminating '\"' character",
                                    std::make_pair(ctx->row, ctx->col - 2));
             return {StatusCode::kLexicalAnalysisStage,
@@ -195,13 +196,13 @@ ALWAYS_INLINE static Status CharLitHandler(TokenList& tokens,
     if (line[ctx->col] != '\'') {
         if (line.find_first_of('\'', ctx->col) == std::string::npos) {
             ctx->col = line.length();
-            message::print_message(kCompileErrorLevel_Error,
+            message::print_message(CompileErrorLevel::Error,
                                    "unclosed char literal",
                                    std::make_pair(row, start - 1));
             return {StatusCode::kLexicalAnalysisStage, "unclosed char literal"};
         } else {
             ctx->col += 1;
-            message::print_message(kCompileErrorLevel_Error,
+            message::print_message(CompileErrorLevel::Error,
                                    "Multi-character character constant",
                                    std::make_pair(row, start - 1));
             return {StatusCode::kLexicalAnalysisStage,
@@ -277,7 +278,7 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
             (tmp_numbers[0] == '0' && tmp_numbers.length() == 1)) {
             static std::regex int_regex("^[0-9]+$");
             LIMIT_REGEX_CHECK(int_regex, tmp_numbers, int64_t, {
-                message::print_message(kCompileErrorLevel_Error,
+                message::print_message(CompileErrorLevel::Error,
                                        "invalid integer number",
                                        std::make_pair(ctx->row, start));
             })
@@ -291,14 +292,14 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
                     tmp_numbers.find_first_not_of("0123456789abcdefABCDEF", 2);
 
                 if (error_pos == std::string::npos) {
-                    message::print_message(kCompileErrorLevel_Error,
+                    message::print_message(CompileErrorLevel::Error,
                                            "Invalid hex string '" +
                                                std::string(tmp_numbers) +
                                                "' on integer constant",
                                            std::make_pair(ctx->row, start));
                 } else {
                     message::print_message(
-                        kCompileErrorLevel_Error,
+                        CompileErrorLevel::Error,
                         "Invalid suffix '" +
                             std::string(line.substr(
                                 error_pos, line.length() - error_pos)) +
@@ -313,7 +314,7 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
             static std::regex binary_regex("^0[bB][01]+$");
             LIMIT_REGEX_CHECK(binary_regex, tmp_numbers, int64_t, {
                 message::print_message(
-                    kCompileErrorLevel_Error,
+                    CompileErrorLevel::Error,
                     "invalid binary number: [" + std::string(tmp_numbers) + "]",
                     std::make_pair(ctx->row, start));
             })
@@ -327,14 +328,14 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
                     tmp_numbers.find_first_not_of("01234567", 1);
 
                 if (invalid_digit == std::string::npos) {
-                    message::print_message(kCompileErrorLevel_Error,
+                    message::print_message(CompileErrorLevel::Error,
                                            "Invalid octal string '" +
                                                std::string(tmp_numbers) +
                                                "' on integer constant",
                                            std::make_pair(ctx->row, start));
                 } else {
                     message::print_message(
-                        kCompileErrorLevel_Error,
+                        CompileErrorLevel::Error,
                         "Invalid digit '" +
                             std::string(1, tmp_numbers[invalid_digit]) +
                             "' in octal constant",
@@ -349,14 +350,14 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
                 tmp_numbers.find_first_not_of("0123456789.eE+-", 0);
 
             if (error_pos == std::string::npos) {
-                message::print_message(kCompileErrorLevel_Error,
+                message::print_message(CompileErrorLevel::Error,
                                        "Invalid string '" +
                                            std::string(tmp_numbers) +
                                            "' for real constant",
                                        std::make_pair(ctx->row, start));
             } else {
                 message::print_message(
-                    kCompileErrorLevel_Error,
+                    CompileErrorLevel::Error,
                     "Invalid suffix '" +
                         std::string(
                             line.substr(error_pos, line.length() - error_pos)) +
@@ -384,7 +385,7 @@ ALWAYS_INLINE static Status AnalyzeLine(TokenList& tokens,
                 break;  // skip tab
             case '@':   // skip @
             case '`':
-                message::print_message(kCompileErrorLevel_Warning,
+                message::print_message(CompileErrorLevel::Warning,
                                        "Unexpected symbol, ignoring.",
                                        std::make_pair(ctx->row, col));
                 break;
@@ -451,7 +452,7 @@ StatusOr<TokenList> ParseToToken(std::istream& source) noexcept {
 
     // check stream is valid
     if (!source.good()) {
-        message::print_message(kCompileErrorLevel_Error,
+        message::print_message(CompileErrorLevel::Error,
                                "source file is not readable",
                                std::make_pair(0, 0));
         return NotFoundError("source file not found");
@@ -480,7 +481,7 @@ StatusOr<TokenList> ParseToToken(std::istream& source) noexcept {
 
     // if line finished without multi-line comment closed
     if (ctx->multi_line_comment) {
-        message::print_message(kCompileErrorLevel_Error, "Unclosed comment",
+        message::print_message(CompileErrorLevel::Error, "Unclosed comment",
                                ctx->multiple_line_comment_start);
         return Status(StatusCode::kLexicalAnalysisStage, "Unclosed comment");
     }
