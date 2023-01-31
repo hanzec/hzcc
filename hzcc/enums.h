@@ -133,7 +133,7 @@ constexpr const std::array<const char[15],
                            magic_enum::enum_count<PrimitiveType>()>
     kPrimitiveTypeTable{"int",     "char",      "float",    "double",
                         "void",    "long",      "short",    "bool",
-                        "complex", "imaginary", "longlong", "long_double"};
+                        "complex", "imaginary", "longlong", "long double"};
 
 constexpr const int kDoubleCharSymbolTableSize = 19;
 constexpr std::array<const char *, kDoubleCharSymbolTableSize>

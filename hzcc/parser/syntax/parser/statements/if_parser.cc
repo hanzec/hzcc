@@ -39,7 +39,7 @@ StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
                          utils::ParseCondition(context, tokens));
 
     // if condition could be converted to int
-    if (!condition->type()->IsNumericalType()) {
+    if (!condition->type()->is_numerical()) {
         return syntax::utils::TokenErr(
             cond_token, "if condition has non-numeric type void");
     }

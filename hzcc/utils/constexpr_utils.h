@@ -27,19 +27,13 @@ namespace hzcc::utils {
 #endif
 template <class Type, unsigned long Size>
 constexpr ALWAYS_INLINE int search_table(Type str,
-                                         const std::array<Type, Size> &table) {
+                                         const std::array<Type, Size>& table) {
 #ifdef __clang__
 #pragma clang loop unroll(full)
 #endif
     for (int i = 0; i < Size; ++i) {
-        if constexpr (std::is_same_v<Type, const char *>) {
-            if (std::strcmp(table[i], str) == 0) {
-                return i;
-            }
-        } else {
-            if (table[i] == str) {
-                return i;
-            }
+        if (table[i] == str) {
+            return i;
         }
     }
     return -1;
@@ -54,15 +48,14 @@ constexpr auto as_integer(Enumeration const value) ->
     return static_cast<typename std::underlying_type<Enumeration>::type>(value);
 }
 
-
 // we cannot return a char array from a function, therefore we need a wrapper
 template <unsigned N>
 struct String {
     char c[N];
 };
 
-template<unsigned ...Len>
-constexpr auto concat(const char (&...strings)[Len]) {
+template <unsigned... Len>
+constexpr auto concat(const char (&... strings)[Len]) {
     constexpr unsigned N = (... + Len) - sizeof...(Len);
     String<N + 1> result = {};
     result.c[N] = '\0';

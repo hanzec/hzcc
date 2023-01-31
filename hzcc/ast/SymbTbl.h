@@ -1,25 +1,26 @@
 //
 // Created by chen_ on 2022/4/9.
 //
-#include <stdint.h>
+#include <absl/container/flat_hash_map.h>
+
+#include <cstdint>
 #include <list>
 #include <memory>
 #include <string>
-#include <unordered_map>
 #include <string_view>
+#include <unordered_map>
 #include <utility>
 
+#include "ast/type/Type.h"
 #include "macro.h"
 #ifndef HZCC_SOURCE_AST_SYMBOL_TABLE_H
 #define HZCC_SOURCE_AST_SYMBOL_TABLE_H
 namespace hzcc::ast {
-class Type;
 class StructType;
 
 class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
   public:
-    SymbTbl(std::shared_ptr<ast::Type> return_type,
-            std::weak_ptr<SymbTbl> parent);
+    SymbTbl(TypePtr return_type, std::weak_ptr<SymbTbl> parent);
 
     /**
      * @brief Return the parent of this symbol table.
@@ -35,16 +36,7 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
      * @return true if type is existed.
      * @return false if type is not existed.
      */
-    bool hasType(std::string_view name);
-
-    /**
-     * @brief Register a type to the symbol table.
-     * @param name The shared_ptr of the type to be registered.
-     * @return true if type is successfully registered.
-     * @return false if type name is existed as other type or as registered
-     * variable identifier.
-     */
-    std::shared_ptr<ast::StructType> addStructType(const std::string& name);
+    bool has_type(std::string_view name);
 
     /**
      * @brief Get the type's shared_ptr with the given name.
@@ -58,7 +50,16 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
      * @return std::shared_ptr<Type> The type with the given name or nullptr if
      * not found.
      */
-    std::shared_ptr<ast::Type> getType(std::string_view name);
+    TypePtr get_type(std::string_view name);
+
+    /**
+     * @brief Register a type to the symbol table.
+     * @param name The shared_ptr of the type to be registered.
+     * @return true if type is successfully registered.
+     * @return false if type name is existed as other type or as registered
+     * variable identifier.
+     */
+    StructTypePtr add_struct_type(std::string_view name);
 
     /**
      * @brief Check if the symbol table has a variable with the given name.
@@ -67,7 +68,7 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
      * @return true if variable is existed.
      * @return false if variable is not existed.
      */
-    bool hasVariable(std::string_view name, bool current_scope);
+    bool has_var(std::string_view name, bool current_scope);
 
     /**
      * @brief Register a variable to the symbol table.
@@ -78,9 +79,9 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
      * @return false if variable name is existed as other variable or as
      * registered type identifier.
      */
-    void addVariable(std::pair<uint_fast32_t, uint_fast32_t> pos,
-                     std::string_view name,
-                     std::shared_ptr<ast::Type>& token_types);
+    void add_var(Position pos,                              // NOLINT
+                 std::string_view name,                     // NOLINT
+                 std::shared_ptr<ast::Type>& token_types);  // NOLINT
 
     int getVariableDeclLine(const std::string& name);
 
@@ -97,9 +98,9 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
      * @return std::shared_ptr<SymbTbl> The new symbol table for the new
      * scope.
      */
-    std::shared_ptr<SymbTbl> EnterScope();
+    std::shared_ptr<SymbTbl> enter_scope();
 
-    std::shared_ptr<ast::Type> GetReturnType();
+    std::shared_ptr<ast::Type> ret_type();
 
   private:
     /**
@@ -116,15 +117,13 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
     /**
      * Variables table
      */
-    std::unordered_map<std::string_view,
-                       std::pair<Position, std::shared_ptr<ast::Type>>>
+    absl::flat_hash_map<std::string, std::pair<Position, TypePtr>>
         _variable_lookup_table;
 
     /**
      * Types table
      */
-    std::unordered_map<std::string_view, std::shared_ptr<ast::Type>>
-        _named_types;
+    absl::flat_hash_map<std::string, TypePtr> _named_types;
     std::list<std::shared_ptr<SymbTbl>> _scoped_contexts;
 };
 }  // namespace hzcc::ast

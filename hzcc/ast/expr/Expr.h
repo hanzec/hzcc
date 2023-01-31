@@ -652,7 +652,7 @@ class ArraySubscriptExpr : public Expr {
             << UniqueName() << "array is nullptr";
         INTERNAL_LOG_IF(FATAL, _subscript != nullptr)
             << UniqueName() << "subscript is nullptr";
-        INTERNAL_LOG_IF(FATAL, _array->type()->IsArray())
+        INTERNAL_LOG_IF(FATAL, _array->type()->is_arr())
             << UniqueName() << "not accessing array";
 #endif
     }
@@ -748,7 +748,7 @@ class MemberExpr : public Expr {
             << UniqueName() << "field string empty";
         INTERNAL_LOG_IF(FATAL, _variable != nullptr)
             << UniqueName() << "chain_access is nullptr";
-        INTERNAL_LOG_IF(FATAL, _variable->type()->IsStruct())
+        INTERNAL_LOG_IF(FATAL, _variable->type()->is_struct())
             << UniqueName() << "chain_access is not struct";
 #endif
     }
@@ -1321,8 +1321,8 @@ class IntegralCast : public ImplicitCastExpr {
             << UniqueName() << "cast type is nullptr";
         INTERNAL_LOG_IF(WARNING, (*cast_expr()->type()) != *_type)
             << UniqueName() << "cast type is not equal to cast cast type";
-        INTERNAL_LOG_IF(WARNING, (_type->IsNumericalType() ||
-                                  cast_expr()->type()->IsNumericalType()))
+        INTERNAL_LOG_IF(WARNING, (_type->is_numerical() ||
+                                  cast_expr()->type()->is_numerical()))
             << UniqueName()
             << "cast type or expression type is not builtin type";
 #endif

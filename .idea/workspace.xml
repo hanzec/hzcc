@@ -30,81 +30,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2a186403-fc0f-43d8-a82c-50cf70816857" name="Changes" comment="Changes">
-      <change beforePath="$PROJECT_DIR$/.idea/cmake.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cmake.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/chen_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/chen_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/developers.tex" beforeDir="false" afterPath="$PROJECT_DIR$/doc/developers.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/DeduceValue.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/DeduceValue.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/DeduceValue.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/DeduceValue.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/Stmt.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/Stmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/Stmt.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/ast/SymbTbl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/SymbTbl.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/ast/SymbTbl.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/SymbTbl.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/cast/Cast.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/cast/Cast.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/cast/Cast.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/cast/Cast.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/cast/rule/ArrayToPointerDecay.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/cast/rule/ArrayToPointerDecay.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/ast/cast/rule/WiderTypeCast.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/cast/rule/WiderTypeCast.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/AccessExpr.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/ArraySubscriptExpr.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/DeclRefExpr.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/EmptyExpr.cc" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/Expr.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/Expr.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/FuncCallStmt.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/LiteralExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/LiteralExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/SizeofExpr.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/TernaryExpr.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/UnaryOperator.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/UnaryOperator.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/ArithmeticExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/ArithmeticExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/AssignExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/AssignExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/BitwiseExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/BitwiseExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/CommaExpr.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/LogicalExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/LogicalExpr.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/OperatorBase.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/OperatorBase.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/RelationalExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/RelationalExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/cast/ArrayToPointerDecayCast.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/cast/CastExpr.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/cast/ExplicitCastExpr.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/cast/ImplicitCastExpr.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/cast/IntegralCast.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/cast/LvalueToRvalueCast.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/BreakStmt.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/CompoundStmt.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/ContinueStmt.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/DeclStmt.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/DoStmt.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/EmptyStmt.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/FieldDecl.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/ForStmt.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/FuncDeclStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/stmt/FuncDeclStmt.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/IDeclStmt.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/IfStmt.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/ParamVarDecl.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/ReturnStmt.cc" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/StructDeclStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/stmt/StructDeclStmt.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/VarDecl.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/WhileStmt.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/test/DeduceValue_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/test/DeduceValue_test.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/type/ArrayType.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/type/ArrayType.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/type/BuiltinType.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/type/BuiltinType.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/ast/type/StructType.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/type/StructType.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/ast/type/Type.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/type/Type.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/ast/type/Type.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/type/Type.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/utils/ast_printer.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/utils/ast_printer.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/utils/ast_printer.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/utils/ast_printer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/visitor.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/visitor.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/enums.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/enums.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/antlr/c11.g4" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/antlr/c11.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/keywords.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/keywords.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/parser/common/name_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/name_utils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/semantic.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/semantic.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/parser/semantic_analyzer.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/semantic_analyzer.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/Ctx.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/Ctx.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/common_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/common_utils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/decl_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/decl_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statement_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/compound_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/compound_parser.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/if_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/if_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/utils/logging.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/logging.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/utils/constexpr_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/constexpr_utils.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/utils/logging.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/logging.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -357,7 +302,7 @@
       <workItem from="1675045240782" duration="878000" />
       <workItem from="1675046189823" duration="159000" />
       <workItem from="1675046359506" duration="542000" />
-      <workItem from="1675107022506" duration="11622000" />
+      <workItem from="1675107022506" duration="20284000" />
     </task>
     <servers />
   </component>
@@ -395,7 +340,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/hzcc/ast/type/Type.h</url>
-          <line>263</line>
+          <line>260</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -432,6 +377,11 @@
           <url>file://$PROJECT_DIR$/hzcc/ast/expr/Expr.h</url>
           <line>193</line>
           <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/hzcc/ast/SymbTbl.h</url>
+          <line>61</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

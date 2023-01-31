@@ -17,7 +17,7 @@
 #include "utils/logging.h"
 
 namespace hzcc::ast {
-StructType::StructType(const std::string &name,
+StructType::StructType(std::string_view name,
                        const std::list<Attribute> &attr_list)
     : IRecordType(TypeCategory::kStruct, attr_list), _name(name) {
     /** #####################################################################
@@ -29,10 +29,10 @@ StructType::StructType(const std::string &name,
 #endif
 }
 
-bool StructType::IsStruct() const { return true; }
+bool StructType::is_struct() const { return true; }
 
-bool StructType::IsSame(const Type &rhs) const {
-    if (rhs.IsStruct()) {
+bool StructType::is_same(const Type &rhs) const {
+    if (rhs.is_struct()) {
         const auto &rhs_struct = dynamic_cast<const StructType &>(rhs);
         return _name == rhs_struct._name;
     }

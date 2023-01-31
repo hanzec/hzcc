@@ -45,7 +45,7 @@ public:
     auto rhs_type = rhs->type();
 
     // builtin type only
-    if (lhs->IsNumericalType() && rhs_type->IsNumericalType()) {
+    if (lhs->is_numerical() && rhs_type->is_numerical()) {
       auto lhs_builtin = std::dynamic_pointer_cast<NumericalType>(lhs);
       auto rhs_builtin = std::dynamic_pointer_cast<NumericalType>(rhs_type);
       return kCastTable[lhs_builtin->GetTypeId()][rhs_builtin->GetTypeId()];

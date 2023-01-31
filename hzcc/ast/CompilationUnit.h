@@ -21,7 +21,6 @@ namespace hzcc::semantic {
 class Ctx;
 }
 
-
 namespace hzcc::ast {
 class SymbTbl;
 class IDeclStmt;
@@ -40,6 +39,61 @@ class CompilationUnit {
     [[nodiscard]] std::string GetFileName() const;
 
     /**
+     * ################################################################
+     * #################   Scope related Functions  ###################
+     * ################################################################
+     */
+
+    /**
+     * @brief Leave the current scope
+     */
+    void leave_scope();
+
+    /**
+     * @brief Check if the current scope is the root scope
+     * @return true if the current scope is the root scope
+     */
+    [[nodiscard]] bool at_root() const;
+
+    /**
+     * @brief Enter a new scope
+     */
+    void enter_scope(std::string_view name = "");
+
+    /**
+     * @brief Create a new function scope
+     * @param name the name of the function
+     * @param return_type the return type of the function
+     * @return
+     */
+    void create_func(std::string_view name, const TypePtr& return_type);
+
+    /**
+     * @brief Get the return type of the current scope
+     * @return the return type of the current function scope, or nearest
+     * function scope if the current scope is not a function scope. std::nullopt
+     * if at root scope
+     */
+    [[nodiscard]] std::optional<ast::TypePtr> ret_type() const;
+
+    /**
+     * ################################################################
+     * #################   Type related Functions  ####################
+     * ################################################################
+     */
+    bool has_type(std::string_view name);
+
+    TypePtr get_type(std::string_view name,
+                     std::list<Attribute> attr_list = {});
+
+    StructTypePtr add_struct_type(std::string_view name,
+                                  std::list<Attribute> attr);
+
+    StructTypePtr get_struct_type(std::string_view name);
+
+    bool has_var(const std::string& name, bool current_scope);
+
+    /**
      * @brief Add a new Declare Node to the ast
      *
      * @Note: if the Declare Node has a duplicate name, it will be replaced the
@@ -52,25 +106,6 @@ class CompilationUnit {
     std::list<std::pair<std::string, std::unique_ptr<ast::IDeclStmt>>>&
     GetDecls();
 
-    bool has_type(std::string_view name);
-
-    std::shared_ptr<ast::Type> get_type(std::string_view name);
-
-    std::shared_ptr<ast::StructType> add_struct_type(std::string_view name,
-                                                     std::list<Attribute> attr);
-
-    std::shared_ptr<ast::StructType> get_struct_type(std::string_view name);
-
-    [[nodiscard]] std::optional<ast::TypePtr> ret_type() const;
-
-    [[nodiscard]] bool at_root() const;
-
-    void leave_scope();
-
-    void enter_scope();
-
-    void enter_scope(std::string_view name);
-
     void new_scope(const std::string& name, const TypePtr& return_type);
 
     std::shared_ptr<ast::StructType> add_type(std::string_view name,
@@ -81,6 +116,8 @@ class CompilationUnit {
 
   protected:
     const std::string _file_name;
+
+    TypePtr search_type(std::string_view name);
 
   private:
     std::weak_ptr<SymbTbl> _current_context;

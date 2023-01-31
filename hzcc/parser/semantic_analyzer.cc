@@ -308,7 +308,7 @@ Status analyzer::visit(hzcc::ast::ArithmeticExpr* p_expr) {
     }
 
     // lhs and rhs should not be arrayed
-    if (lhs_type->IsArray() || rhs_type->IsArray()) {
+    if (lhs_type->is_arr() || rhs_type->is_arr()) {
         return CompileError(
             lhs_type->is<TypeCategory::kArray>() ? p_expr->lhs()->loc()
                                                  : p_expr->rhs()->loc(),
@@ -348,7 +348,7 @@ Status analyzer::visit(hzcc::ast::ArraySubscriptExpr* p_expr) {
     HZCC_CHECK_OK_OR_RETURN(p_expr->subscript_expr()->visit(*this));
 
     // base should be arrayed
-    if (!p_expr->base_expr()->type()->IsArray()) {
+    if (!p_expr->base_expr()->type()->is_arr()) {
         return CompileError(p_expr->base_expr()->loc(),
                             "Subscripted value is not an array");
     }

@@ -22,7 +22,7 @@ RecordDecl::RecordDecl(const Position& loc, std::string_view decl_name,
     INTERNAL_LOG_IF(FATAL, _type != nullptr)
         << this->UniqueName() << "type is nullptr";
     INTERNAL_LOG_IF(FATAL,
-                    _type->type()->IsStruct() || _type->type()->IsUnion())
+                    _type->type()->is_struct() || _type->type()->IsUnion())
         << this->UniqueName() << "type is not struct or union";
 #endif
 }

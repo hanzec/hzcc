@@ -1,15 +1,12 @@
 #include <glog/logging.h>
-#include <stdint.h>
+#include <cstdint>
 
 #include <iomanip>
 #include <ostream>
 #include <string>
 #include <string_view>
 #include <utility>
-
 #include "macro.h"
-#include "parser/common/name_utils.h"
-
 #ifndef HZCC_UTILS_LOGGING_H_
 #define HZCC_UTILS_LOGGING_H_
 namespace hzcc {

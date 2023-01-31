@@ -4,9 +4,10 @@
 #include "SymbTbl.h"
 
 #include <glog/logging.h>
+
 #include <memory>
-#include <utility>
 #include <ostream>
+#include <utility>
 
 #include "ast/type/Type.h"
 #include "utils/logging.h"
@@ -22,37 +23,36 @@ std::shared_ptr<SymbTbl> SymbTbl::getUpperScope() {
 }
 
 // NOLINTNEXTLINE(misc-no-recursion)
-bool SymbTbl::hasType(std::string_view name) {
+bool SymbTbl::has_type(std::string_view name) {
     if (_named_types.find(name) != _named_types.end()) {
         return true;
     } else {
         if (_upper_scope_table.lock() != nullptr) {
-            return _upper_scope_table.lock()->hasType(name);
+            return _upper_scope_table.lock()->has_type(name);
         } else {
             return false;
         }
     }
 }
-std::shared_ptr<ast::StructType> SymbTbl::addStructType(
-    const std::string& name) {
-    if (hasType("struct " + name)) {
+StructTypePtr SymbTbl::add_struct_type(std::string_view name) {
+    if (has_type("struct " + std::string(name))) {
         LOG(FATAL) << "type " << name << " has already been defined";
     } else {
         auto new_type = std::make_shared<ast::StructType>(name);
 
-        _named_types.insert(std::make_pair("struct " + name, new_type));
+        _named_types.insert(std::make_pair("struct " + std::string(name), new_type));
         return new_type;
     }
 }
 
 // NOLINTNEXTLINE(misc-no-recursion)
-std::shared_ptr<ast::Type> SymbTbl::getType(std::string_view name) {
-    if (!hasType(name)) return nullptr;
+std::shared_ptr<ast::Type> SymbTbl::get_type(std::string_view name) {
+    if (!has_type(name)) return nullptr;
     if (_named_types.find(name) != _named_types.end()) {
         return _named_types[name];
     } else {
         if (_upper_scope_table.lock() != nullptr) {
-            return _upper_scope_table.lock()->getType(name);
+            return _upper_scope_table.lock()->get_type(name);
         } else {
             return nullptr;
         }
@@ -60,12 +60,12 @@ std::shared_ptr<ast::Type> SymbTbl::getType(std::string_view name) {
 }
 
 // NOLINTNEXTLINE(misc-no-recursion)
-bool SymbTbl::hasVariable(std::string_view name, bool current_scope) {
+bool SymbTbl::has_var(std::string_view name, bool current_scope) {
     if (_variable_lookup_table.find(name) != _variable_lookup_table.end()) {
         return true;
     } else if (!current_scope) {
         if (_upper_scope_table.lock() != nullptr) {
-            return _upper_scope_table.lock()->hasVariable(name, false);
+            return _upper_scope_table.lock()->has_var(name, false);
         } else {
             return false;
         }
@@ -74,17 +74,17 @@ bool SymbTbl::hasVariable(std::string_view name, bool current_scope) {
     }
 }
 
-void SymbTbl::addVariable(Position pos,                               // NOLINT
-                          std::string_view name,                      // NOLINT
-                          std::shared_ptr<ast::Type>& token_types) {  // NOLINT
-    DLOG_ASSERT(!hasType(name) || name.find("struct ") != std::string::npos)
+void SymbTbl::add_var(Position pos,                               // NOLINT
+                      std::string_view name,                      // NOLINT
+                      std::shared_ptr<ast::Type>& token_types) {  // NOLINT
+    DLOG_ASSERT(!has_type(name) || name.find("struct ") != std::string::npos)
         << " Variable " << name << " is already defined as a type";
     DLOG_ASSERT(token_types != nullptr)
         << " Variable " << name << " has passed a nullptr type";
-    DLOG_ASSERT(!hasVariable(name, true))
+    DLOG_ASSERT(!has_var(name, true))
         << " Variable " << name << " has already been defined";
     DVLOG(SYNTAX_LOG_LEVEL) << "Adding variable " << name;
-    _variable_lookup_table.insert(
+    _variable_lookup_table.emplace(
         std::make_pair(name, std::make_pair(pos, token_types)));
 }
 
@@ -100,7 +100,8 @@ std::shared_ptr<ast::Type> SymbTbl::getVariableType(const std::string& name) {
         }
     }
 }
-std::shared_ptr<SymbTbl> SymbTbl::EnterScope() {
+
+std::shared_ptr<SymbTbl> SymbTbl::enter_scope() {
     auto current_scope = shared_from_this();
     auto new_scope = std::make_shared<SymbTbl>(_return_type, current_scope);
     _scoped_contexts.push_back(new_scope);
@@ -110,7 +111,7 @@ std::shared_ptr<SymbTbl> SymbTbl::EnterScope() {
 // NOLINTNEXTLINE(misc-no-recursion)
 int SymbTbl::getVariableDeclLine(const std::string& name) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, hasVariable(name, false))
+    INTERNAL_LOG_IF(FATAL, has_var(name, false))
         << "Variable " << name << " has not been defined";
 #endif
 
@@ -124,6 +125,6 @@ int SymbTbl::getVariableDeclLine(const std::string& name) {
         }
     }
 }
-std::shared_ptr<ast::Type> SymbTbl::GetReturnType() { return _return_type; }
+std::shared_ptr<ast::Type> SymbTbl::ret_type() { return _return_type; }
 
 }  // namespace hzcc::ast

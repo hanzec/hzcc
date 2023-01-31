@@ -33,12 +33,12 @@ bool ArrayType::HasDeduceSize() {
     return _size_node->GetDeducedValue().has_value();
 }
 
-bool ArrayType::IsSame(const Type& type) const {
-    if (type.IsArray()) {
+bool ArrayType::is_same(const Type& type) const {
+    if (type.is_arr()) {
         auto other = dynamic_cast<const ArrayType*>(&type);
 
         DLOG_ASSERT(other != nullptr)
-            << "dynamic cast to array type failed when IsArray() is true";
+            << "dynamic cast to array type failed when is_arr() is true";
 
         return *GetBaseType() == *other->GetBaseType();
     } else {
@@ -60,6 +60,6 @@ std::string ArrayType::Name() const {
                              "]"
                        : "[VLA]"));
 }
-bool ArrayType::IsArray() const { return true; }
+bool ArrayType::is_arr() const { return true; }
 
 }  // namespace hzcc::ast

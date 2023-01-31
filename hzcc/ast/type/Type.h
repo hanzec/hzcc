@@ -25,25 +25,25 @@ class Type : public std::enable_shared_from_this<Type> {
      * @brief The unique id of the node.
      * @return The unique id of the node.
      */
-    [[nodiscard]] uintptr_t Id() const;
+    [[nodiscard]] uintptr_t id() const;
 
     /**
      * @brief Check if the type is an Array.
      * @return True if the type is an Array, false otherwise.
      */
-    [[nodiscard]] virtual bool IsArray() const;
+    [[nodiscard]] virtual bool is_arr() const;
 
     /**
      * @brief Check if the type is a Struct.
      * @return True if the type is a Struct, false otherwise.
      */
-    [[nodiscard]] virtual bool IsStruct() const;
+    [[nodiscard]] virtual bool is_struct() const;
 
     /**
      * @brief Check if the type is a Function pointer type.
      * @return True if the type is a Function pointer type, false otherwise.
      */
-    [[nodiscard]] virtual bool IsFuncPtr() const;
+    [[nodiscard]] virtual bool is_func_ptr() const;
 
     /**
      * @brief Check if the type is a Union type.
@@ -61,7 +61,7 @@ class Type : public std::enable_shared_from_this<Type> {
      * @brief Check if the type is a builtin type.
      * @return True if the type is a builtin type, false otherwise.
      */
-    [[nodiscard]] virtual bool IsNumericalType() const;
+    [[nodiscard]] virtual bool is_numerical() const;
 
     virtual std::string Dump();
 
@@ -115,7 +115,7 @@ class Type : public std::enable_shared_from_this<Type> {
      * @brief Check if the type is the same as another type.
      * @return True if the type is the same as another type, false otherwise.
      */
-    [[nodiscard]] virtual bool IsSame(const Type& rhs) const = 0;
+    [[nodiscard]] virtual bool is_same(const Type& rhs) const = 0;
 
   private:
     TypeCategory _typeCategory;
@@ -144,14 +144,14 @@ class NumericalType : public Type {
      */
     [[nodiscard]] std::string Name() const override;
 
-    [[nodiscard]] bool IsNumericalType() const override;
+    [[nodiscard]] bool is_numerical() const override;
 
   protected:
     /**
      * @brief Check if the type is the same as another type.
      * @return True if the type is the same as another type, false otherwise.
      */
-    [[nodiscard]] bool IsSame(const Type& rhs) const override;
+    [[nodiscard]] bool is_same(const Type& rhs) const override;
 
   private:
     const PrimitiveType _type;
@@ -193,9 +193,6 @@ ALWAYS_INLINE TypePtr GetNumericalTypeOf(PrimitiveType type) {
             return GetNumericalTypeOf<PrimitiveType::kLonglong>();
         case PrimitiveType::kLong_double:
             return GetNumericalTypeOf<PrimitiveType::kLong_double>();
-        default:
-            INTERNAL_LOG(FATAL)
-                << "Unknown primitive type: " << utils::as_integer(type);
     }
 }
 
@@ -205,7 +202,7 @@ class ArrayType : public Type {
               std::unique_ptr<Expr> array_size,         // NOLINT
               const std::list<Attribute>& attrs = {});  // NOLINT
 
-    [[nodiscard]] bool IsArray() const override;
+    [[nodiscard]] bool is_arr() const override;
 
     [[nodiscard]] std::shared_ptr<ast::Type> GetBaseType() const {
         return _base_type;
@@ -217,7 +214,7 @@ class ArrayType : public Type {
 
     [[nodiscard]] const std::unique_ptr<ast::Expr>& GetArraySizeNode() const;
 
-    [[nodiscard]] bool IsSame(const Type& type) const override;
+    [[nodiscard]] bool is_same(const Type& type) const override;
 
     /**
      * @brief Get the declare name of the type.
@@ -268,7 +265,7 @@ class PointerType : public Type {
      * @brief Check if the type is the same as another type.
      * @return True if the type is the same as another type, false otherwise.
      */
-    [[nodiscard]] bool IsSame(const Type& rhs) const override;
+    [[nodiscard]] bool is_same(const Type& rhs) const override;
 
   private:
     std::shared_ptr<Type> _base_type;
@@ -302,14 +299,14 @@ class IRecordType : public Type {
 
 class StructType : public IRecordType {
   public:
-    explicit StructType(const std::string& name,                      // NOLINT
+    explicit StructType(std::string_view name,                        // NOLINT
                         const std::list<Attribute>& attr_list = {});  // NOLINT
 
     /**
      * @brief Check if the type is a Struct.
      * @return True if the type is a Struct, false otherwise.
      */
-    [[nodiscard]] bool IsStruct() const override;
+    [[nodiscard]] bool is_struct() const override;
 
     /**
      * @brief Get the declare name of the type.
@@ -327,15 +324,17 @@ class StructType : public IRecordType {
   protected:
     /**
      * @brief Check if the type is the same as another type. This is the
-     * internal logic of IsSame. All comparison should use "==", not "IsSame".
+     * internal logic of IsSame. All comparison should use "==", not "is_same".
      * @return True if the type is the same as another type, false otherwise.
      */
-    [[nodiscard]] bool IsSame(const Type& rhs) const override;
+    [[nodiscard]] bool is_same(const Type& rhs) const override;
 
   private:
     const std::string _name;
     std::list<std::tuple<std::string, std::shared_ptr<Type>>> _localTypeList;
 };
+
+using StructTypePtr = std::shared_ptr<StructType>;
 
 static std::string ToString(const std::list<Type::TypePtr>& types) {
     std::string ret = "(";
@@ -351,7 +350,7 @@ class FuncPtrType : public Type {
                 std::list<std::shared_ptr<Type>> args)
         : Type({}), _args(std::move(args)), _return_type(return_type) {}
 
-    [[nodiscard]] bool IsFuncPtr() const override { return true; }
+    [[nodiscard]] bool is_func_ptr() const override { return true; }
 
   private:
     std::shared_ptr<Type> _return_type;

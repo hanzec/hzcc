@@ -27,7 +27,7 @@ std::string NumericalType::Name() const {
     return kPrimitiveTypeTable[utils::as_integer(_type)];
 }
 
-bool NumericalType::IsNumericalType() const { return true; }
+bool NumericalType::is_numerical() const { return true; }
 
 uint8_t NumericalType::GetTypeId() const { return utils::as_integer(_type); }
 }  // namespace hzcc::ast

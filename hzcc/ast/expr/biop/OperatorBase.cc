@@ -27,9 +27,9 @@ OperatorBase::OperatorBase(const Position& loc,        // NOLINT
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
     INTERNAL_LOG_IF(FATAL, _lhs != nullptr) << UniqueName() << "lhs is nullptr";
     INTERNAL_LOG_IF(FATAL, _rhs != nullptr) << UniqueName() << "rhs is nullptr";
-    INTERNAL_LOG_IF(FATAL, !_lhs->type()->IsArray())
+    INTERNAL_LOG_IF(FATAL, !_lhs->type()->is_arr())
         << UniqueName() << "lhs could not be array";
-    INTERNAL_LOG_IF(FATAL, !_rhs->type()->IsArray())
+    INTERNAL_LOG_IF(FATAL, !_rhs->type()->is_arr())
         << UniqueName() << "rhs could not be array";
 #endif
 }

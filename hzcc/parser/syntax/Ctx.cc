@@ -8,109 +8,6 @@
 //#include "ast/type/Type.h"
 //namespace hzcc::syntax {
 //
-//using AttrList = std::list<ast::Attribute>;
-//
-//Ctx::Ctx(std::shared_ptr<ast::CompilationUnit> compilationUnit)
-//    : _compilationUnit(std::move(compilationUnit)) {
-//    _scoped_symbol_table["ROOT"] = std::make_shared<SymbTbl>(
-//        std::shared_ptr<ast::Type>(nullptr), std::shared_ptr<SymbTbl>(nullptr));
-//    _current_context = _scoped_symbol_table["ROOT"];
-//}
-//
-//void Ctx::leave_scope() {
-//    if (_current_context.lock() == nullptr) {
-//        DLOG(FATAL) << "cannot leave scope, already at root";
-//    } else {
-//        _current_context = _current_context.lock()->getUpperScope();
-//    }
-//}
-//
-//void Ctx::enter_scope() {
-//    if (_current_context.lock() == nullptr) {
-//        DLOG(FATAL) << "Cannot enter scope while current context is null";
-//    } else {
-//        auto new_context = _current_context.lock()->EnterScope();
-//        _current_context = new_context;
-//    }
-//}
-//
-//void Ctx::enterScope(const std::string &name, const Ctx::TypePtr &return_type) {
-//    DLOG_IF(WARNING, return_type == nullptr)
-//        << "scope " << name << " has no return type";
-//    if (!isRoot()) {
-//        DLOG(FATAL) << "Only root context can enter a named scope";
-//    } else {
-//        _scoped_symbol_table[name] =
-//            std::make_shared<SymbTbl>(return_type, _current_context);
-//        _current_context = _scoped_symbol_table[name];
-//    }
-//}
-//
-///**
-// * #############################################################
-// * ###############    type related Functions     ###############
-// * #############################################################
-// */
-//
-//Ctx::TypePtr Ctx::SearchNamedType(std::string_view name) {
-//    if (name.empty()) {
-//        return nullptr;
-//    }
-//
-//    // directly return true if the type is PrimitiveType
-//    if (parser_common::IsPrimitiveType(name.data())) {
-//        return ast::GetNumericalTypeOf(static_cast<ast::PrimitiveType>(
-//            parser_common::PrimitiveTypeID(name.data())));
-//    } else {
-//        // we fist check our global scope
-//        auto it = _named_types.find(name);
-//        if (it != _named_types.end()) {
-//            return it->second;
-//        } else {
-//            // then check the current scope
-//            if (_current_context.lock() != nullptr &&
-//                _current_context.lock()->hasType(name)) {
-//                return _current_context.lock()->getType(name);
-//            } else {
-//                return nullptr;
-//            }
-//        }
-//    }
-//}
-//
-//bool Ctx::hasType(std::string_view basicString) {
-//    return SearchNamedType(basicString) != nullptr;
-//}
-//
-//Ctx::TypePtr Ctx::get_type(const std::string &name,
-//                           const std::list<ast::Attribute> &attr_list) {
-//    // directly return true if the type is PrimitiveType
-//    if (parser_common::IsPrimitiveType(name.data())) {
-//        if (attr_list.empty()) {
-//            return ast::GetNumericalTypeOf(static_cast<ast::PrimitiveType>(
-//                parser_common::PrimitiveTypeID(name.data())));
-//        } else {
-//            return std::make_shared<ast::NumericalType>(
-//                static_cast<ast::PrimitiveType>(
-//                    parser_common::PrimitiveTypeID(name.data())),
-//                attr_list);
-//        }
-//    } else {
-//        // we fist check our global scope
-//        auto it = _named_types.find(name);
-//        if (it != _named_types.end()) {
-//            return it->second;
-//        } else {
-//            // then check the current scope
-//            if (_current_context.lock() != nullptr &&
-//                _current_context.lock()->hasType(name)) {
-//                return _current_context.lock()->getType(name);
-//            } else {
-//                return nullptr;
-//            }
-//        }
-//    }
-//}
 //
 //Ctx::TypePtr Ctx::getArrayType(const Ctx::TypePtr &base_type,
 //                               const TokenList &attr_list,
@@ -139,56 +36,9 @@
 //
 //Ctx::TypePtr Ctx::getFuncPtrType(const std::string &name) { return nullptr; }
 //
-//std::shared_ptr<ast::StructType> Ctx::addStructType(
-//    const std::string &struct_name, const std::list<Token> &attr_list) {
-//    auto name = "struct " + struct_name;
 //
-//    // convert the shape to a list of TokenType
-//    std::list<TokenType> attr_types;
-//    for (const auto &type : attr_list) {
-//        attr_types.emplace_back(type.Type());
-//    }
 //
-//    // if we are adding global type
-//    if (_current_context.lock() == nullptr) {
-//        if (_named_types.find(name) != _named_types.end()) {
-//            LOG(FATAL) << "Struct " << name << " already exists";
-//            return nullptr;
-//        } else {
-//            DVLOG(AST_LOG_LEVEL)
-//                << "Add new Struct type [" << name << "] to global scope";
-//            auto new_type =
-//                std::make_shared<ast::StructType>(struct_name, attr_types);
-//            _named_types.insert(std::make_pair(name, new_type));
 //
-//            // when leaving this function all attrs should be consumed
-//            DLOG_IF(FATAL, !attr_list.empty())
-//                << "When constructing new struct " << name
-//                << "its attributes should be consumed";
-//
-//            return new_type;
-//        }
-//    } else {
-//        if (_current_context.lock()->hasType(name)) {
-//            LOG(FATAL) << "type " << name << " already exists";
-//            return nullptr;
-//        } else {
-//            DVLOG(AST_LOG_LEVEL)
-//                << "Trying to add new type [" << name << "] to local scope";
-//
-//            // when leaving this function all attrs should be consumed
-//            DLOG_IF(FATAL, !attr_list.empty())
-//                << "When constructing new struct " << name
-//                << "its attributes should be consumed";
-//
-//            return _current_context.lock()->addStructType(struct_name);
-//        }
-//    }
-//}
-//
-//bool Ctx::hasVariable(const std::string &name, bool current_scope) {
-//    return SearchNamedType(name) != nullptr;
-//}
 //
 //Ctx::TypePtr Ctx::getVariableType(const std::string &name) {
 //    if (hasVariable(name, false)) {
@@ -217,7 +67,7 @@
 //void Ctx::addVariable(Position pos, const std::string &name,
 //                      Ctx::TypePtr &variable_type) {
 //    DLOG_ASSERT(_current_context.lock() != nullptr)
-//        << " should never call addVariable when in root context";
+//        << " should never call add_var when in root context";
 //    DLOG_ASSERT(!_current_context.lock()->hasVariable(name, true))
 //        << "variable already exists";
 //    _current_context.lock()->addVariable(pos, name, variable_type);
