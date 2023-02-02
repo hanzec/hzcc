@@ -10,7 +10,7 @@ if (NOT EXISTS "${TEST_OUTPUT_FOLDER}")
 endif ()
 
 # llvm-lit executable
-set(LLVM_LIT_EXECUTABLE "../../third_party/llvm_lit.py")
+set(LLVM_LIT_EXECUTABLE "../third_party/llvm_lit.py")
 
 ###############################################################################
 ## Helper Function ############################################################

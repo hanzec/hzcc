@@ -3,10 +3,10 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <excludeRoots>
-      <file path="$PROJECT_DIR$/hzcc/test/codegen" />
-      <file path="$PROJECT_DIR$/hzcc/test/compiler_info" />
-      <file path="$PROJECT_DIR$/hzcc/test/lexical" />
-      <file path="$PROJECT_DIR$/hzcc/test/syntax" />
+      <file path="$PROJECT_DIR$/test/codegen" />
+      <file path="$PROJECT_DIR$/test/compiler_info" />
+      <file path="$PROJECT_DIR$/test/lexical" />
+      <file path="$PROJECT_DIR$/test/syntax" />
       <file path="$PROJECT_DIR$/third_party" />
     </excludeRoots>
   </component>

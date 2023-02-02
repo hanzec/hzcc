@@ -121,6 +121,15 @@ cmake_host_system_information(RESULT MACHINE_HOST_NAME QUERY HOSTNAME)
 add_subdirectory(hzcc)
 
 ###############################################################################
+## E2E Test ###################################################################
+###############################################################################
+if (E2E_TESTING MATCHES "ON")
+    message(STATUS "Enable E2E testing")
+    add_custom_target(hzcc_e2e_test COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS hzcc)
+    add_subdirectory(test)
+endif ()
+
+###############################################################################
 ## Documentation ##############################################################
 ###############################################################################
 if (ENABLE_DOCUMENTATION MATCHES "ON")

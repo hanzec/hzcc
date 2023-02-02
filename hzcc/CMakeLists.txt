@@ -16,16 +16,6 @@ if (UNIT_TESTING MATCHES "ON")
     # required cpp 17 since hzcc require cpp 17
     set_property(TARGET hzcc_test PROPERTY CXX_STANDARD 17)
     set_property(TARGET hzcc_test PROPERTY CXX_STANDARD_REQUIRED ON)
-
-    if (E2E_TESTING MATCHES "ON")
-        message(STATUS "Enable E2E testing")
-        add_custom_target(hzcc_e2e_test COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS hzcc)
-        add_subdirectory(test)
-    endif ()
-else ()
-    if (E2E_TESTING MATCHES "ON")
-        message(WARNING "E2E_TESTING flag only works when UNIT_TESTING enabled")
-    endif ()
 endif ()
 
 ###############################################################################
