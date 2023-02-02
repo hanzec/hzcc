@@ -21,7 +21,7 @@ class CompilationUnit;
 using TypeNamePair = std::pair<TokenType, Token>;
 
 std::string ALWAYS_INLINE to_string(const TypeNamePair& tokens) {
-    return std::string(to_string(tokens.first)) + " " + tokens.second.val();
+    return std::string(to_string(tokens.first)) + " " + tokens.second.to_str();
 }
 
 namespace syntax::utils {
@@ -50,21 +50,21 @@ ALWAYS_INLINE StatusOr<TypeNamePair> get_base_type(
             return hzcc::syntax::utils::TokenErr(tokens.peek(),
                                                  "except a identifier");
         } else {
-            if (context->has_type("struct " + tokens.peek().val())) {
+            if (context->has_type("struct " + tokens.peek().to_str())) {
                 return hzcc::syntax::utils::TokenErr(
                     tokens.peek(),
-                    "struct " + tokens.peek().val() + " has been defined");
+                    "struct " + tokens.peek().to_str() + " has been defined");
             } else {
                 return std::make_pair(fist_token.Type(), tokens.pop());
             }
         }
     } else {
-        if (context->has_type(fist_token.val())) {
+        if (context->has_type(fist_token.to_str())) {
             return std::make_pair(fist_token.Type(), fist_token);
         } else {
             return hzcc::syntax::utils::TokenErr(
                 fist_token,
-                "type " + fist_token.val() + " has not been defined");
+                "type " + fist_token.to_str() + " has not been defined");
         }
     }
 }

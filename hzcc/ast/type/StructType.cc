@@ -17,9 +17,8 @@
 #include "utils/logging.h"
 
 namespace hzcc::ast {
-StructType::StructType(std::string_view name,
-                       const std::list<Attribute> &attr_list)
-    : IRecordType(TypeCategory::kStruct, attr_list), _name(name) {
+StructType::StructType(std::string_view name)
+    : IRecordType(TypeCategory::Struct), _name(name) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
@@ -29,28 +28,26 @@ StructType::StructType(std::string_view name,
 #endif
 }
 
-bool StructType::is_struct() const { return true; }
-
 bool StructType::is_same(const Type &rhs) const {
-    if (rhs.is_struct()) {
+    if (rhs.is<TypeCategory::Struct>()) {
         const auto &rhs_struct = dynamic_cast<const StructType &>(rhs);
         return _name == rhs_struct._name;
     }
     return false;
 }
 
-void StructType::add_record(std::string_view name,              // NOLINT
-                            const std::shared_ptr<Type> &type) {  // NOLINT
+void StructType::add_record(std::string_view name,      // NOLINT
+                            const QualTypePtr &type) {  // NOLINT
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
     INTERNAL_LOG_IF(FATAL, !name.empty())  // NOLINT
-        << UniqueName() << "name is empty";
+        << UniqueName() << "to_str is empty";
     INTERNAL_LOG_IF(FATAL, type != nullptr)  // NOLINT
         << UniqueName() << "type is nullptr";
 #endif
     _localTypeList.emplace_back(name, type);
 }
 
-std::shared_ptr<Type> StructType::field_type(std::string_view name) {
+QualTypePtr StructType::field_type(std::string_view name) {
     for (auto &item : _localTypeList) {
         if (std::get<0>(item) == name) {
             return std::get<1>(item);
@@ -58,5 +55,5 @@ std::shared_ptr<Type> StructType::field_type(std::string_view name) {
     }
     return nullptr;
 }
-std::string StructType::Name() const { return "struct " + _name; }
+std::string StructType::to_str() const { return "struct " + _name; }
 }  // namespace hzcc::ast

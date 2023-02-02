@@ -22,7 +22,7 @@ TEST(PARSER_COMMON_TOKEN, construct_one_with_string_test) {  // NOLINT
     EXPECT_EQ(Token::_const_value_storage.begin()->first, "test");
 
     // token should be constructed
-    EXPECT_EQ(new_token->val(), "test");
+    EXPECT_EQ(new_token->to_str(), "test");
     EXPECT_EQ(new_token->Type(), kIdentity);
     EXPECT_EQ(new_token->loc(), std::make_pair(0, 0));
 
@@ -41,7 +41,7 @@ TEST(PARSER_COMMON_TOKEN, construct_one_without_string_test) {  // NOLINT
     EXPECT_EQ(Token::_const_value_storage.size(), 0);
 
     // token should be constructed
-    EXPECT_EQ(new_token->val(), "+");
+    EXPECT_EQ(new_token->to_str(), "+");
     EXPECT_EQ(new_token->Type(), kAdd);
     EXPECT_EQ(new_token->loc(), std::make_pair(0, 0));
 
@@ -62,7 +62,7 @@ TEST(PARSER_COMMON_TOKEN, construct_two_with_same_string_test) {  // NOLINT
     EXPECT_EQ(Token::_const_value_storage.begin()->first, "test");
 
     // token should be constructed
-    EXPECT_EQ(new_token_0->val(), "test");
+    EXPECT_EQ(new_token_0->to_str(), "test");
     EXPECT_EQ(new_token_0->Type(), kIdentity);
     EXPECT_EQ(new_token_0->loc(), std::make_pair(0, 0));
 
@@ -74,7 +74,7 @@ TEST(PARSER_COMMON_TOKEN, construct_two_with_same_string_test) {  // NOLINT
     EXPECT_EQ(Token::_const_value_storage.begin()->first, "test");
 
     // token should be constructed
-    EXPECT_EQ(new_token_1->val(), "test");
+    EXPECT_EQ(new_token_1->to_str(), "test");
     EXPECT_EQ(new_token_1->Type(), kIdentity);
     EXPECT_EQ(new_token_1->loc(), std::make_pair(0, 1));
 
@@ -86,7 +86,7 @@ TEST(PARSER_COMMON_TOKEN, construct_two_with_same_string_test) {  // NOLINT
     EXPECT_EQ(Token::_const_value_storage.begin()->first, "test");
 
     // new token should be still available now
-    EXPECT_EQ(new_token_1->val(), "test");
+    EXPECT_EQ(new_token_1->to_str(), "test");
 
     delete new_token_1;
 
@@ -106,7 +106,7 @@ TEST(PARSER_COMMON_TOKEN, construct_three_string_test) {  // NOLINT
     EXPECT_EQ(Token::_const_value_storage.begin()->first, "test");
 
     // token should be constructed
-    EXPECT_EQ(new_token_0->val(), "test");
+    EXPECT_EQ(new_token_0->to_str(), "test");
     EXPECT_EQ(new_token_0->Type(), kIdentity);
     EXPECT_EQ(new_token_0->loc(), std::make_pair(0, 0));
 
@@ -118,7 +118,7 @@ TEST(PARSER_COMMON_TOKEN, construct_three_string_test) {  // NOLINT
     EXPECT_EQ(Token::_const_value_storage["test_other"], 1);
 
     // token should be constructed
-    EXPECT_EQ(new_token_1->val(), "test_other");
+    EXPECT_EQ(new_token_1->to_str(), "test_other");
     EXPECT_EQ(new_token_1->Type(), kIdentity);
     EXPECT_EQ(new_token_1->loc(), std::make_pair(0, 1));
 
@@ -130,7 +130,7 @@ TEST(PARSER_COMMON_TOKEN, construct_three_string_test) {  // NOLINT
     EXPECT_EQ(Token::_const_value_storage["test_other"], 1);
 
     // token should be constructed
-    EXPECT_EQ(new_token_2->val(), "test");
+    EXPECT_EQ(new_token_2->to_str(), "test");
     EXPECT_EQ(new_token_2->Type(), kIdentity);
     EXPECT_EQ(new_token_2->loc(), std::make_pair(0, 1));
 
@@ -142,8 +142,8 @@ TEST(PARSER_COMMON_TOKEN, construct_three_string_test) {  // NOLINT
     EXPECT_EQ(Token::_const_value_storage["test_other"], 1);
 
     // new token should be still available now
-    EXPECT_EQ(new_token_1->val(), "test_other");
-    EXPECT_EQ(new_token_2->val(), "test");
+    EXPECT_EQ(new_token_1->to_str(), "test_other");
+    EXPECT_EQ(new_token_2->to_str(), "test");
 
     delete new_token_2;
 
@@ -152,7 +152,7 @@ TEST(PARSER_COMMON_TOKEN, construct_three_string_test) {  // NOLINT
     EXPECT_EQ(Token::_const_value_storage["test_other"], 1);
 
     // new token should be still available now
-    EXPECT_EQ(new_token_1->val(), "test_other");
+    EXPECT_EQ(new_token_1->to_str(), "test_other");
 
     delete new_token_1;
 

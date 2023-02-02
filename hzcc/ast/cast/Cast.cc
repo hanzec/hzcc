@@ -5,24 +5,25 @@
 
 #include <glog/logging.h>
 #include <glog/vlog_is_on.h>
+
 #include <any>
 #include <ostream>
 #include <string_view>
 #include <utility>
 #include <vector>
 
-#include "ast/expr/Expr.h"
-#include "utils/logging.h"
 #include "ast/Stmt.h"
 #include "ast/cast/ICastRule.h"
+#include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
+#include "utils/logging.h"
 #include "utils/status/status.h"
 
 namespace hzcc::ast {
 StatusOr<std::unique_ptr<Expr>> Cast::apply(
-    bool require_rvalue,                      // NOLINT
-    std::unique_ptr<Expr> rhs,                // NOLINT
-    const std::shared_ptr<Type>& lhs_type) {  // NOLINT
+    bool require_rvalue,        // NOLINT
+    std::unique_ptr<Expr> rhs,  // NOLINT
+    QualTypePtr lhs_type) {     // NOLINT
 
     auto ret = std::move(rhs);
 
@@ -50,8 +51,8 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
                 r_ref.insert({cast_id, create(cast_id)});
             }
 
-            if (rule->second->CouldApplyTo(ret->type(), ret)) {
-                DVLOG(SYNTAX_LOG_LEVEL) << "Applying <" << cast_id << "> cast";
+            if (rule->second->CouldApplyTo(ret, ret->type())) {
+                VLOG(SYNTAX_LOG_LEVEL) << "Applying <" << cast_id << "> cast";
                 auto move_ret =
                     std::move(rule->second->Apply(std::move(ret), lhs_type));
 
@@ -69,7 +70,7 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
 
         // prevent infinite loop
         if (!changed) {
-            DVLOG(HZCC_VLOG_DEBUG_LEVEL)
+            VLOG(HZCC_VLOG_DEBUG_LEVEL)
                 << "Could not apply any Cast Rule rhs node "
                 << ret->UniqueName() << " because it's not match";
             return Status(StatusCode::kCastStage,
@@ -82,8 +83,8 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
                 std::stringstream ss;
 
                 ss << "Trying to apply cast rules from ["
-                   << ret->type()->UniqueName() << "] to ["
-                   << lhs_type->UniqueName() << "]:" << std::endl;
+                   << ret->type()->to_str() << "] to ["
+                   << lhs_type->to_str() << "]:" << std::endl;
 
                 for (auto&& statue : status) {
                     if (!statue.ok()) {
@@ -91,7 +92,7 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
                     }
                 }
 
-                DVLOG(HZCC_VLOG_DEBUG_LEVEL) << ss.str();
+                VLOG(HZCC_VLOG_DEBUG_LEVEL) << ss.str();
             }
         }
     }
@@ -99,10 +100,10 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
     // return the final node
     INTERNAL_LOG_IF(ERROR, ret == nullptr || ret->type() != lhs_type)
         << "Failed rhs resolve Cast Rule lhs: " << ret->UniqueName() << "("
-        << ret->type()->Name() << ") rhs type: "
-        << "(" << lhs_type->Name() << ")";
+        << ret->type()->to_str() << ") rhs type: "
+        << "(" << lhs_type->to_str() << ")";
 
-    if(ret == nullptr || ret->type() != lhs_type) {
+    if (ret == nullptr || ret->type() != lhs_type) {
         return Status(StatusCode::kCastStage, "Failed rhs resolve Cast Rule");
     }
     return std::move(ret);

@@ -2,7 +2,9 @@
 // Created by chen_ on 2022/3/26.
 //
 #include <glog/logging.h>
-#include <stdint.h>
+
+#include <cstdint>
+#include <magic_enum.hpp>
 #include <memory>
 #include <optional>
 #include <ostream>
@@ -11,8 +13,8 @@
 
 #include "Expr.h"
 #include "ast/DeduceValue.h"
-#include "ast/type/Type.h"
 #include "ast/Stmt.h"
+#include "ast/type/Type.h"
 #include "ast/visitor.h"
 #include "enums.h"
 #include "macro.h"
@@ -20,32 +22,18 @@
 #include "utils/status/status.h"
 
 namespace hzcc::ast {
-
-static constexpr const char* GetNodeName(LiteralType type) {
-    switch (type) {
-        case LiteralType::Char:
-            return "CharLiteral";
-        case LiteralType::Real_number:
-            return "RealNumberLiteral";
-        case LiteralType::String:
-            return "StringLiteral";
-        case LiteralType::Integer:
-            return "IntegerLiteral";
-        default:
-            DLOG_ASSERT(false) << "unexpected literal type";
-    }
-    return "";
-}
+static std::array<const char[32], 4> LiteralTypeString = {
+    "CharLiteral", "RealNumberLiteral", "StringLiteral", "IntegerLiteral"};
 
 LiteralExpr::LiteralExpr(int64_t value, const Position& location)
-    : Expr(location, GetNodeName(LiteralType::Integer)),
+    : Expr(location, "IntegerLiteral"),
       _type(LiteralType::Integer),
       _value(std::to_string(value)) {}
 
 LiteralExpr::LiteralExpr(LiteralType type,        // NO_LINT
                          const Position& loc,     // NO_LINT
                          std::string_view value)  // NO_LINT
-    : Expr(loc, GetNodeName(type)),
+    : Expr(loc, LiteralTypeString[magic_enum::enum_integer(type)]),
       _type(type),
       _value(std::string(value) +
              (type == LiteralType::String ? "\\x00" : "")) {
@@ -74,16 +62,16 @@ std::optional<DeduceValue> LiteralExpr::GetDeducedValue() const {
     return std::nullopt;
 }
 
-std::shared_ptr<Type> LiteralExpr::type() const {
+QualTypePtr LiteralExpr::type() const {
     switch (_type) {
         case LiteralType::Char:
             return GetNumericalTypeOf<PrimitiveType::kChar>();
         case LiteralType::Real_number:
             return GetNumericalTypeOf<PrimitiveType::kFloat>();
         case LiteralType::String:
-            return std::make_shared<ArrayType>(
-                GetNumericalTypeOf<PrimitiveType::kChar>(),
-                std::make_unique<LiteralExpr>(_value.size() + 1, loc()));
+            return std::make_shared<QualType>(std::make_shared<ArrayType>(
+                std::make_unique<LiteralExpr>(_value.size() + 1, loc()),
+                GetNumericalTypeOf<PrimitiveType::kChar>()));
         case LiteralType::Integer:
             return GetNumericalTypeOf<PrimitiveType::kInt>();
         default:

@@ -130,7 +130,7 @@ StatusOr<ast::ExprPtr> Statement::ParseAssignExpr(TokenList& tokens,
 
         HZCC_CHECK_OR_ASSIGN(rhs, ParseAssignExpr(tokens, ctx))
         return std::make_unique<ast::AssignExpr>(
-            assign_type.loc(), assign_type.val(), std::move(lhs),
+            assign_type.loc(), assign_type.to_str(), std::move(lhs),
             std::move(rhs));
     } else {
         return lhs;
@@ -178,7 +178,7 @@ StatusOr<ast::ExprPtr> Statement::ParseLogicalOrExpr(TokenList& tokens,
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseLogicalOrExpr(tokens, ctx))
         return std::make_unique<ast::LogicalExpr>(
-            op.loc(), op.val(), std::move(lhs), std::move(rhs));
+            op.loc(), op.to_str(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -197,7 +197,7 @@ StatusOr<ast::ExprPtr> Statement::ParseLogicalAndExpr(TokenList& tokens,
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseLogicalAndExpr(tokens, ctx))
         return std::make_unique<ast::LogicalExpr>(
-            next.loc(), next.val(), std::move(lhs), std::move(rhs));
+            next.loc(), next.to_str(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -217,7 +217,7 @@ StatusOr<ast::ExprPtr> Statement::ParseBitwiseOrExpr(TokenList& tokens,
         HZCC_CHECK_OR_ASSIGN(rhs, ParseBitwiseOrExpr(tokens, ctx))
 
         return std::make_unique<ast::BitwiseExpr>(
-            op.loc(), op.val(), std::move(lhs), std::move(rhs));
+            op.loc(), op.to_str(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -236,7 +236,7 @@ StatusOr<ast::ExprPtr> Statement::ParseBitwiseXorExpr(TokenList& tokens,
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseBitwiseXorExpr(tokens, ctx))
         return std::make_unique<ast::BitwiseExpr>(
-            op.loc(), op.val(), std::move(lhs), std::move(rhs));
+            op.loc(), op.to_str(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -254,7 +254,7 @@ StatusOr<ast::ExprPtr> Statement::ParseBitwiseAndExpr(TokenList& tokens,
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseBitwiseAndExpr(tokens, ctx))
         return std::make_unique<ast::BitwiseExpr>(
-            op.loc(), op.val(), std::move(lhs), std::move(rhs));
+            op.loc(), op.to_str(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -273,7 +273,7 @@ StatusOr<ast::ExprPtr> Statement::ParseEqualityExpr(TokenList& tokens,
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseEqualityExpr(tokens, ctx))
         return std::make_unique<ast::RelationalExpr>(
-            op_type.loc(), op_type.val(), std::move(lhs), std::move(rhs));
+            op_type.loc(), op_type.to_str(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -294,7 +294,7 @@ StatusOr<ast::ExprPtr> Statement::ParseRelationalExpr(TokenList& tokens,
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseRelationalExpr(tokens, ctx))
         return std::make_unique<ast::RelationalExpr>(
-            op_type.loc(), op_type.val(), std::move(lhs), std::move(rhs));
+            op_type.loc(), op_type.to_str(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -314,7 +314,7 @@ StatusOr<ast::ExprPtr> Statement::ParseShiftExpr(TokenList& tokens,
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseShiftExpr(tokens, ctx))
         return std::make_unique<ast::BitwiseExpr>(
-            op_type.loc(), op_type.val(), std::move(lhs), std::move(rhs));
+            op_type.loc(), op_type.to_str(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -335,7 +335,7 @@ StatusOr<ast::ExprPtr> Statement::ParseAdditiveExpr(TokenList& tokens,
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseAdditiveExpr(tokens, ctx))
         return std::make_unique<ast::ArithmeticExpr>(
-            type.loc(), type.val(), std::move(lhs), std::move(rhs));
+            type.loc(), type.to_str(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -357,7 +357,7 @@ StatusOr<ast::ExprPtr> Statement::ParseMultiplicativeExpr(
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseMultiplicativeExpr(tokens, ctx))
         return std::make_unique<ast::ArithmeticExpr>(
-            type.loc(), type.val(), std::move(lhs), std::move(rhs));
+            type.loc(), type.to_str(), std::move(lhs), std::move(rhs));
     } else {
         return lhs;
     }
@@ -371,22 +371,23 @@ StatusOr<ast::TypeProxyExprPtr> Statement::ParseTypeName(TokenList& tokens,
     auto type = tokens.pop();
 
     // handle base types
-    std::shared_ptr<ast::Type> type_ptr;
-    if (parser_common::IsPrimitiveType(type.val().c_str())) {
-        type_ptr = ast::GetNumericalTypeOf(to_primitive_type(type.val()));
+    ast::QualTypePtr type_ptr;
+    if (parser_common::IsPrimitiveType(type.to_str().c_str())) {
+        type_ptr = ast::GetNumericalTypeOf(to_primitive_type(type.to_str()));
     } else {
         if (type.Type() == TokenType::kEnum ||
             type.Type() == TokenType::kStruct) {
             auto type_name = tokens.pop();
 
-            if (ctx->has_type(type.val() + " " + type_name.val())) {
-                type_ptr = ctx->get_type(type.val() + " " + type_name.val());
+            if (ctx->has_type(type.to_str() + " " + type_name.to_str())) {
+                type_ptr =
+                    ctx->get_type(type.to_str() + " " + type_name.to_str());
             } else {
                 return CompileError(type.loc(), "unknown type");
             }
         } else {
-            if (ctx->has_type(type.val())) {
-                type_ptr = ctx->get_type(type.val());
+            if (ctx->has_type(type.to_str())) {
+                type_ptr = ctx->get_type(type.to_str());
             } else {
                 return CompileError(type.loc(), "unknown type");
             }
@@ -396,7 +397,8 @@ StatusOr<ast::TypeProxyExprPtr> Statement::ParseTypeName(TokenList& tokens,
     // handle pointer(*)
     while (tokens.peek().Type() == TokenType::kMul) {
         tokens.pop();
-        type_ptr = std::make_shared<ast::PointerType>(type_ptr);
+        type_ptr = std::make_shared<ast::QualType>(
+            std::make_shared<ast::PointerType>(type_ptr));
     }
 
     return std::make_unique<ast::TypeProxyExpr>(type.loc(), type_ptr);
@@ -408,11 +410,11 @@ StatusOr<ast::TypeProxyExprPtr> Statement::ParseTypeName(TokenList& tokens,
 StatusOr<ast::ExprPtr> Statement::ParseCastExpr(TokenList& tokens,
                                                 const SyntaxCtx& ctx) {
     if (tokens.peek().Type() == TokenType::kRParentheses ||
-        ctx->has_type(tokens.peek2().val())) {
+        ctx->has_type(tokens.peek2().to_str())) {
         auto loc = tokens.peek().loc();
         tokens.pop();
 
-        // type name
+        // type to_str
         HZCC_CHECK_OR_ASSIGN(type, ParseTypeName(tokens, ctx))
         HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
 
@@ -441,7 +443,7 @@ StatusOr<ast::ExprPtr> Statement::ParseUnaryExpr(TokenList& tokens,
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseCastExpr(tokens, ctx))
         return std::make_unique<ast::UnaryOperator>(
-            op_type.loc(), op_type.val(), std::move(rhs));
+            op_type.loc(), op_type.to_str(), std::move(rhs));
     }
 
     // cast expression
@@ -449,7 +451,7 @@ StatusOr<ast::ExprPtr> Statement::ParseUnaryExpr(TokenList& tokens,
         auto size_of = tokens.pop();
         if (tokens.peek().Type() == TokenType::kLParentheses &&
             (tokens.peek().Type() == TokenType::kStruct ||
-             ctx->has_type(tokens.peek2().val()))) {
+             ctx->has_type(tokens.peek2().to_str()))) {
             tokens.pop();
             HZCC_CHECK_OR_ASSIGN(type, ParseTypeName(tokens, ctx))
             HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
@@ -474,7 +476,7 @@ StatusOr<ast::ExprPtr> Statement::ParseUnaryExpr(TokenList& tokens,
         // parsing RHS
         HZCC_CHECK_OR_ASSIGN(rhs, ParseUnaryExpr(tokens, ctx))
 
-        return std::make_unique<ast::UnaryOperator>(type.loc(), type.val(),
+        return std::make_unique<ast::UnaryOperator>(type.loc(), type.to_str(),
                                                     std::move(rhs));
     } else {
         return ParsePostfixExpr(tokens, ctx);
@@ -539,7 +541,7 @@ StatusOr<ast::ExprPtr> Statement::ParsePostfixExpr(TokenList& tokens,
             }
 
             final_expr = std::make_unique<ast::MemberExpr>(
-                isPtr, loc, tokens.pop().val(), std::move(final_expr));
+                isPtr, loc, tokens.pop().to_str(), std::move(final_expr));
         }
         return std::move(final_expr);
     }
@@ -553,7 +555,7 @@ StatusOr<ast::ExprPtr> Statement::ParsePostfixExpr(TokenList& tokens,
             auto type = tokens.pop();
 
             final_expr = std::make_unique<ast::UnaryOperator>(
-                type.loc(), type.val(), std::move(final_expr));
+                type.loc(), type.to_str(), std::move(final_expr));
         }
         return std::move(final_expr);
     } else {
@@ -597,11 +599,12 @@ StatusOr<ast::ExprPtr> Statement::ParseAccessExpr(const SyntaxCtx& ctx,
             // consume the ')'
             HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
 
-            return std::make_unique<ast::FuncCallStmt>(ident.loc(), ident.val(),
-                                                       std::move(args_expr));
+            return std::make_unique<ast::FuncCallStmt>(
+                ident.loc(), ident.to_str(), std::move(args_expr));
         } else {
             // variable
-            return std::make_unique<ast::DeclRefExpr>(ident.loc(), ident.val());
+            return std::make_unique<ast::DeclRefExpr>(ident.loc(),
+                                                      ident.to_str());
         }
     }
 
@@ -615,13 +618,13 @@ StatusOr<ast::ExprPtr> Statement::ParseAccessExpr(const SyntaxCtx& ctx,
         switch (tokens.pop().Type()) {
             case TokenType::kChar:
                 return std::make_unique<ast::LiteralExpr>(
-                    LiteralType::Char, value.loc(), value.val());
+                    LiteralType::Char, value.loc(), value.to_str());
             case TokenType::kInteger:
                 return std::make_unique<ast::LiteralExpr>(
-                    LiteralType::Integer, value.loc(), value.val());
+                    LiteralType::Integer, value.loc(), value.to_str());
             case TokenType::kReal_number:
                 return std::make_unique<ast::LiteralExpr>(
-                    LiteralType::Real_number, value.loc(), value.val());
+                    LiteralType::Real_number, value.loc(), value.to_str());
             default:
                 LOG(FATAL) << "Unreachable code: \n"
                            << "\t Current ast:\n";
@@ -632,10 +635,10 @@ StatusOr<ast::ExprPtr> Statement::ParseAccessExpr(const SyntaxCtx& ctx,
     // handle string literal
     else if (tokens.peek().Type() == TokenType::kString) {
         auto lit_start = tokens.pop();
-        auto value_str = lit_start.val();
+        auto value_str = lit_start.to_str();
         // concat all string literals
         while (tokens.peek().Type() == TokenType::kString) {
-            value_str += tokens.pop().val();
+            value_str += tokens.pop().to_str();
         }
         return std::make_unique<ast::LiteralExpr>(LiteralType::String,
                                                   lit_start.loc(), value_str);

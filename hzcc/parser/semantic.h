@@ -27,53 +27,45 @@ class Ctx {
      * @brief Check if the current scope is the root scope
      * @return
      */
-    [[nodiscard]] bool at_root() const {
-        return this->_compilationUnit->at_root();
-    };
+    [[nodiscard]] bool at_root() const;
 
     /**
      * @brief Leave the current scope
      */
-    void leave_scope() { this->_compilationUnit->leave_scope(); };
+    void leave_scope();
 
     /**
      * @brief Enter the scope
      */
-    void enter_scope() { this->_compilationUnit->enter_scope(); };
+    void enter_scope();
 
     /**
-     * @brief Enter the scope with name
-     * @param name  The name of the scope
+     * @brief Enter the scope with to_str
+     * @param name  The to_str of the scope
      */
-    void enter_scope(std::string_view name) {
-        this->_compilationUnit->enter_scope(name);
-    };
+    void enter_scope(std::string_view name);
 
     /**
      *---------------------------------------------------------------
-     * ## Variable related Functions                               ###
+     * ## Variable related Functions                              ###
      * --------------------------------------------------------------
      */
 
     /**
      * @brief Check if the variable is defined in the current scope
-     * @param name  The name of the variable
+     * @param name  The to_str of the variable
      * @param current_scope  If true, only check the current scope, otherwise
      * check the whole scope
      * @return true if the variable is defined in the current scope or the whole
      * scope otherwise false
      */
-    bool has_var(std::string_view name, bool current_scope) {
-        return this->_compilationUnit->has_var(name, current_scope);
-    }
+    bool has_var(std::string_view name, bool current_scope);
 
     void add_var(Position pos,            // NOLINT
-                 TypePtr variable_type,   // NOLINT
+                 ast::QualTypePtr type,   // NOLINT
                  std::string_view name);  // NOLINT
 
-    std::pair<bool, Position> get_var_info(const std::string_view& name);
-
-    TypePtr getVariableType(const std::basic_string<char>& name);
+    std::pair<bool, Position> var_def_pos(std::string_view name);
 
     /**
      * #############################################################
@@ -82,29 +74,13 @@ class Ctx {
      */
     bool has_func(std::string_view name);
 
-    bool has_func_body(std::string_view name);
+    ast::FuncDeclStmtPtr& get_func(std::string_view name);
 
-    bool add_func(Position line_no, std::string_view name, TypePtr output,
-                  const std::list<TypePtr>& argument_list);
-
-    std::tuple<TypePtr, std::list<TypePtr>, Position> func_def_info(
-        std::string_view name);
-
-    [[nodiscard]] std::optional<ast::TypePtr> ret_type() const {
-        return this->_compilationUnit->ret_type();
-    };
+    [[nodiscard]] std::optional<ast::QualTypePtr> ret_type() const;
 
   private:
     std::list<TokenType> _attributes;
     std::shared_ptr<ast::CompilationUnit> _compilationUnit;
-
-    /**
-     * Function table:
-     *  [name, [output_type, [argument_type, ...], line_no]]
-     */
-    absl::flat_hash_map<std::string,
-                        std::tuple<TypePtr, std::list<TypePtr>, Position>>
-        _function_def_table;
 };
 
 class analyzer : public ast::Visitor {
@@ -143,5 +119,39 @@ class analyzer : public ast::Visitor {
 };
 
 Status analyze(std::shared_ptr<ast::CompilationUnit> p_unit);
+
+/** ---------------------------------------------------------------
+ * ## Inlined Function Implementations                          ###
+ *  --------------------------------------------------------------- */
+ALWAYS_INLINE bool Ctx::at_root() const {
+    return this->_compilationUnit->at_root();
+}
+
+ALWAYS_INLINE void Ctx::leave_scope() { this->_compilationUnit->leave_scope(); }
+
+ALWAYS_INLINE void Ctx::enter_scope() { this->_compilationUnit->enter_scope(); }
+
+ALWAYS_INLINE void Ctx::enter_scope(std::string_view name) {
+    this->_compilationUnit->enter_scope(name);
+}
+
+ALWAYS_INLINE bool Ctx::has_var(std::string_view name, bool current_scope) {
+    return this->_compilationUnit->has_var(name, current_scope);
+}
+
+ALWAYS_INLINE bool Ctx::has_func(std::string_view name) {
+    return this->_compilationUnit->has_func(name);
+}
+
+ALWAYS_INLINE ast::FuncDeclStmtPtr& Ctx::get_func(std::string_view name) {
+    INTERNAL_LOG_IF(FATAL, !has_func(name))
+        << "Function " << name << " is not defined";
+    return this->_compilationUnit->_func_tbl[name];
+}
+
+ALWAYS_INLINE std::optional<ast::QualTypePtr> Ctx::ret_type() const {
+    return this->_compilationUnit->ret_type();
+}
+
 }  // namespace hzcc::semantic
 #endif  // HZCC_SEMANTIC_H

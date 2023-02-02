@@ -16,18 +16,16 @@
 namespace hzcc::ast {
 class ArrayToPointerDecay : public ICastRule {
 public:
-  bool CouldApplyTo(const std::shared_ptr<Type> &lhs, // NOLINT
-                    const std::unique_ptr<Expr> &rhs) override {
+  bool CouldApplyTo(const ExprPtr &rhs, const QualTypePtr &lhs) override {
     /**
      * In order to apply this rule, the rhs has to be an ArraySubscriptExpr
      * ,the rhs has to be a pointer type and lhs has to be not a pointer
      */
-    return !lhs->is_ptr() && rhs->type()->is_ptr() &&
+    return !lhs->is<TypeCategory::Ptr>() && rhs->type()->is<TypeCategory::Ptr>() &&
            (strcmp(rhs->NodeName().data(), "ArraySubscriptExpr") == 0);
   }
 
-  StatusOr<std::unique_ptr<CastExpr>> Apply(std::unique_ptr<Expr> node,
-                                            const std::shared_ptr<Type> &to) override {
+  StatusOr<std::unique_ptr<CastExpr>> Apply(std::unique_ptr<Expr> node, const QualTypePtr &to) override {
     return std::make_unique<ArrayToPointerDecayCast>(node->loc(), std::move(node));
   }
 };

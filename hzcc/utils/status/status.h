@@ -303,7 +303,7 @@ enum class StatusCode : int {
 
 // StatusCodeToString()
 //
-// Returns the name for the status code, or "" if it is an unknown value.
+// Returns the to_str for the status code, or "" if it is an unknown value.
 std::string StatusCodeToString(StatusCode code);
 
 // operator<<
@@ -537,12 +537,12 @@ class Status final {
     // Status::ToString()
     //
     // Returns a string based on the `mode`. By default, it returns combination
-    // of the error code name, the message and any associated payload messages.
+    // of the error code to_str, the message and any associated payload messages.
     // This string is designed simply to be human readable and its exact format
     // should not be load bearing. Do not depend on the exact format of the
     // result of `ToString()` which is subject to change.
     //
-    // The printed code name and the message are generally substrings of the
+    // The printed code to_str and the message are generally substrings of the
     // result, and the payload to be printed use the status payload printer
     // mechanism (which is internal).
     [[nodiscard]] std::string ToString(
@@ -722,7 +722,7 @@ ALWAYS_INLINE Status CompileError(Position pos,            // NOLINT
 // UnknownError()
 //
 // These convenience functions create an `hzcc::Status` object with an error
-// code as indicated by the associated function name, using the error message
+// code as indicated by the associated function to_str, using the error message
 // passed in `message`.
 Status NotFoundError(std::string_view message);
 

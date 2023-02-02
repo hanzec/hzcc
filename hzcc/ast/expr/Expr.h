@@ -54,7 +54,7 @@ class OperatorBase : public Expr {
      *      not be deduced.
      * @return return the type of the current expression
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] QualTypePtr type() const override {
         if (!_lhs->GetDeducedValue().has_value() &&
             !_rhs->GetDeducedValue().has_value()) {
             return _lhs->type();
@@ -72,10 +72,26 @@ class OperatorBase : public Expr {
      * @param rhs right hand side expression
      * @param loc location of operator
      */
+    template <int N>
     OperatorBase(const Position& loc,         // NOLINT
-                 const char* node_name,       // NOLINT
+                 const char (&node_name)[N],  // NOLINT
                  std::unique_ptr<Expr> lhs,   // NOLINT
-                 std::unique_ptr<Expr> rhs);  // NOLINT
+                 std::unique_ptr<Expr> rhs)
+        : Expr(loc, node_name), _lhs(std::move(lhs)), _rhs(std::move(rhs)) {
+/** #####################################################################
+ *  ### Runtime Assertion                                             ###
+ *  ##################################################################### */
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        INTERNAL_LOG_IF(FATAL, _lhs != nullptr)
+            << UniqueName() << "lhs is nullptr";
+        INTERNAL_LOG_IF(FATAL, _rhs != nullptr)
+            << UniqueName() << "rhs is nullptr";
+        INTERNAL_LOG_IF(FATAL, !_lhs->type()->is<TypeCategory::Array>())
+            << UniqueName() << "lhs could not be array";
+        INTERNAL_LOG_IF(FATAL, !_rhs->type()->is<TypeCategory::Array>())
+            << UniqueName() << "rhs could not be array";
+#endif
+    }
 
     /**
      * @brief Get left hand side expression with const qualifier
@@ -108,14 +124,6 @@ class OperatorBase : public Expr {
  */
 class CastExpr : public Expr {
   public:
-    /**
-     * @brief Determine whether the node is a literal node or not
-     * @return true if the node is a literal node, false otherwise
-     */
-    [[nodiscard]] bool IsLiteral() const override {
-        return _expr->IsLiteral();
-    };
-
     /**
      * @brief determine whether the node will return a location value (LValue)
      * or auto_factory value (RValue)
@@ -152,10 +160,11 @@ class CastExpr : public Expr {
      * @param type the type to cast to
      * @param expr the expression to cast
      * @param location location of the cast operator
-     * @param node_name the name of the cast node
+     * @param node_name the to_str of the cast node
      */
-    CastExpr(const char* node_name,     // NOLINT
-             const Position& location,  // NOLINT
+    template <int N>
+    CastExpr(const char (&node_name)[N],  // NOLINT
+             const Position& location,    // NOLINT
              std::unique_ptr<Expr> expr)
         : Expr(location, node_name), _expr(std::move(expr)) {
 /** #####################################################################
@@ -218,9 +227,7 @@ class UnaryOperator : public Expr {
      * @brief Get the type of the expression
      * @return
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
-        return _expr->type();
-    };
+    [[nodiscard]] QualTypePtr type() const override { return _expr->type(); };
 
   private:
     UnaryType _type;
@@ -298,7 +305,7 @@ class TernaryExpr : public Expr {
      * @brief Get the type of the ternary expression
      * @return the type of the ternary expression
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] QualTypePtr type() const override {
         return _true_expr->type();
     };
 
@@ -348,7 +355,7 @@ class EmptyExpr : public Expr {
      * @brief Return type of the SizeofExpr
      * @return will always return "int"
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] QualTypePtr type() const override {
         return GetNumericalTypeOf<PrimitiveType::kVoid>();
     };
 };
@@ -392,7 +399,7 @@ class SizeofExpr : public Expr {
      * @brief Return type of the SizeofExpr
      * @return will always return "int"
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] QualTypePtr type() const override {
         return GetNumericalTypeOf<PrimitiveType::kLong>();
     };
 
@@ -440,7 +447,6 @@ class LiteralExpr : public Expr {
     LiteralExpr(LiteralType type,         // NOLINT
                 const Position& loc,      // NOLINT
                 std::string_view value);  // NOLINT
-
     /**
      * @brief ast Visitor acceptor
      * @param visitor Visitor object
@@ -452,13 +458,7 @@ class LiteralExpr : public Expr {
      * @brief Return type of the LiteralExpr
      * @return will return the type of the literal expression
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override;
-
-    /**
-     * @brief Determine whether the node is a literal node or not
-     * @return true if the node is a literal node, false otherwise
-     */
-    [[nodiscard]] bool IsLiteral() const override { return true; };
+    [[nodiscard]] QualTypePtr type() const override;
 
     /**
      * @brief Get the Literal Type object
@@ -502,7 +502,7 @@ class FuncCallStmt : public Expr {
     /**
      * @brief Constructor of FuncCallStmt
      * @param type type of the function call
-     * @param name name of the function call
+     * @param name to_str of the function call
      * @param loc location of the function call
      * @param args arguments of the function call
      */
@@ -518,7 +518,7 @@ class FuncCallStmt : public Expr {
  */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
         INTERNAL_LOG_IF(FATAL, _name.empty())
-            << UniqueName() << "name is empty";
+            << UniqueName() << "to_str is empty";
         INTERNAL_LOG_IF(FATAL, _ret_type != nullptr)
             << UniqueName() << "return type is nullptr";
         {
@@ -540,8 +540,8 @@ class FuncCallStmt : public Expr {
     Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
     /**
-     * @brief Get the function name of the function call statement
-     * @return the function name of the function call statement
+     * @brief Get the function to_str of the function call statement
+     * @return the function to_str of the function call statement
      */
     [[nodiscard]] std::string_view name() const { return _name; };
 
@@ -549,18 +549,16 @@ class FuncCallStmt : public Expr {
      * @brief Get the type of the function call statement
      * @return the type of the function call statement
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
-        return _ret_type;
-    }
+    [[nodiscard]] QualTypePtr type() const override { return _ret_type; }
 
     /**
      * @brief Get the arguments of the function call statement
      * @return the arguments of the function call statement
      */
-    [[nodiscard]] std::list<ExprPtr>& args() { return _func_args; }
+    [[nodiscard]] std::list<ExprPtr>& params() { return _func_args; }
 
   private:
-    TypePtr _ret_type;
+    QualTypePtr _ret_type;
     const std::string _name;
     std::list<ExprPtr> _func_args;
 };
@@ -576,10 +574,10 @@ class DeclRefExpr : public Expr {
   public:
     /**
      * @brief Constructor of DeclRefExpr. If runtime assert is enabled, will
-     * trigger an error if the given name is empty string.
+     * trigger an error if the given to_str is empty string.
      * @param loc location of the node
      * @param type type of the variable
-     * @param name The name of the variable.
+     * @param name The to_str of the variable.
      */
     DeclRefExpr(const Position& loc,    // NO_LINT
                 std::string_view name)  // NO_LINT
@@ -589,7 +587,7 @@ class DeclRefExpr : public Expr {
  *  #####################################################################*/
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
         INTERNAL_LOG_IF(FATAL, _type != nullptr) << "type is nullptr";
-        INTERNAL_LOG_IF(FATAL, !_name.empty()) << "name is empty string";
+        INTERNAL_LOG_IF(FATAL, !_name.empty()) << "to_str is empty string";
 #endif
     }
 
@@ -608,8 +606,8 @@ class DeclRefExpr : public Expr {
     [[nodiscard]] bool IsReturnLValue() const override { return true; };
 
     /**
-     * @brief get the name of the variable
-     * @return the name of the variable
+     * @brief get the to_str of the variable
+     * @return the to_str of the variable
      */
     [[nodiscard]] std::string_view var_name() const { return _name; };
 
@@ -617,9 +615,7 @@ class DeclRefExpr : public Expr {
      * @brief get the type of the variable
      * @return the type of the variable
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
-        return _type->type();
-    };
+    [[nodiscard]] QualTypePtr type() const override { return _type->type(); };
 
   private:
     const std::string _name;
@@ -658,7 +654,7 @@ class ArraySubscriptExpr : public Expr {
             << UniqueName() << "array is nullptr";
         INTERNAL_LOG_IF(FATAL, _subscript != nullptr)
             << UniqueName() << "subscript is nullptr";
-        INTERNAL_LOG_IF(FATAL, _array->type()->is_arr())
+        INTERNAL_LOG_IF(FATAL, _array->type()->is<TypeCategory::Array>())
             << UniqueName() << "not accessing array";
 #endif
     }
@@ -687,9 +683,8 @@ class ArraySubscriptExpr : public Expr {
      * @brief get the type of the array subscript expression
      * @return the type of the array subscript expression
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
-        return std::dynamic_pointer_cast<ast::ArrayType>(_array->type())
-            ->GetBaseType();
+    [[nodiscard]] QualTypePtr type() const override {
+        return _array->type()->as<ArrayType>()->GetBaseType();
     };
 
     /**
@@ -734,7 +729,7 @@ class MemberExpr : public Expr {
      * access the struct member. Runtime will check the type is struct or
      * not if enabled. Also the field F must be not empty.
      * @param isPtr whether the access expression is a pointer access
-     * @param field the field name
+     * @param field the field to_str
      * @param expr if have chain access or EmptyStmt otherwise
      * @param loc location of access expression
      */
@@ -754,7 +749,7 @@ class MemberExpr : public Expr {
             << UniqueName() << "field string empty";
         INTERNAL_LOG_IF(FATAL, _variable != nullptr)
             << UniqueName() << "chain_access is nullptr";
-        INTERNAL_LOG_IF(FATAL, _variable->type()->is_struct())
+        INTERNAL_LOG_IF(FATAL, _variable->type()->is<TypeCategory::Struct>())
             << UniqueName() << "chain_access is not struct";
 #endif
     }
@@ -777,14 +772,13 @@ class MemberExpr : public Expr {
      * @brief Get the type of specified field.
      * @return he type of specified field.
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
-        return dynamic_cast<StructType*>(_variable->type().get())
-            ->field_type(_field);
+    [[nodiscard]] QualTypePtr type() const override {
+        return _variable->type()->as<StructType>()->field_type(_field);
     };
 
     /**
-     * @brief Get the field name.
-     * @return the field name.
+     * @brief Get the field to_str.
+     * @return the field to_str.
      */
     [[nodiscard]] std::string_view member_name() const { return _field; }
 
@@ -861,10 +855,10 @@ class RelationalExpr : public OperatorBase {
     /**
      * @brief Get the type of the current expression. The RelationalExpr
      * will always return a char value.
-     * @return will always return std::shared_ptr<Type> which have type of
+     * @return will always return QualTypePtr which have type of
      * char
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] QualTypePtr type() const override {
         return GetNumericalTypeOf<PrimitiveType::kChar>();
     };
 
@@ -914,10 +908,10 @@ class LogicalExpr : public OperatorBase {
     /**
      * @brief Get the type of the current expression. The LogicalExpr will
      * always return a char value.
-     * @return will always return std::shared_ptr<Type> which have type of
+     * @return will always return QualTypePtr which have type of
      * char
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] QualTypePtr type() const override {
         return GetNumericalTypeOf<PrimitiveType::kChar>();
     };
 
@@ -954,12 +948,10 @@ class CommaExpr : public OperatorBase {
     /**
      * @brief Get the type of the current expression. The LogicalExpr will
      * always return a char value.
-     * @return will always return std::shared_ptr<Type> which have type of
+     * @return will always return QualTypePtr which have type of
      * char
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
-        return lhs_c()->type();
-    }
+    [[nodiscard]] QualTypePtr type() const override { return lhs_c()->type(); }
 };
 
 /**
@@ -1010,12 +1002,10 @@ class BitwiseExpr : public OperatorBase {
     /**
      * @brief Get the type of the current expression. The LogicalExpr will
      * always return a char value.
-     * @return will always return std::shared_ptr<Type> which have type of
+     * @return will always return QualTypePtr which have type of
      * char
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
-        return lhs_c()->type();
-    }
+    [[nodiscard]] QualTypePtr type() const override { return lhs_c()->type(); }
 
     /**
      * @brief Get type of the bitwise expression
@@ -1092,12 +1082,10 @@ class AssignExpr : public OperatorBase {
     /**
      * @brief Get the type of the current expression. The LogicalExpr will
      * always return a char value.
-     * @return will always return std::shared_ptr<Type> which have type of
+     * @return will always return QualTypePtr which have type of
      * char
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
-        return lhs_c()->type();
-    }
+    [[nodiscard]] QualTypePtr type() const override { return lhs_c()->type(); }
 
   private:
     AssignType _type;
@@ -1203,7 +1191,7 @@ class ExplicitCastExpr : public CastExpr {
      * @brief return the type that is being casted to
      * @return the type that is being casted to
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] QualTypePtr type() const override {
         return _cast_type->type();
     }
 
@@ -1238,7 +1226,7 @@ class ImplicitCastExpr : public CastExpr {
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
         INTERNAL_LOG_IF(FATAL, !_name.empty())
-            << UniqueName() << "cast name is empty string";
+            << UniqueName() << "cast to_str is empty string";
         INTERNAL_LOG_IF(FATAL, cast_expr()->type() != nullptr)
             << UniqueName() << "cast cast have a nullptr type";
 #endif
@@ -1291,7 +1279,7 @@ class LvalueToRvalueCast : public ImplicitCastExpr {
      * @brief return the type that is being casted to
      * @return the type that is being casted to
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] QualTypePtr type() const override {
         return cast_expr()->type();
     };
 
@@ -1317,8 +1305,8 @@ class IntegralCast : public ImplicitCastExpr {
      * @param expr The expression to cast.
      * @param type The type to cast to.
      */
-    IntegralCast(const Position& location,    // NOLINT
-                 std::shared_ptr<Type> type,  // NOLINT
+    IntegralCast(const Position& location,  // NOLINT
+                 QualTypePtr type,          // NOLINT
                  std::unique_ptr<Expr> expr)
         : ImplicitCastExpr("IntegralCast", location, std::move(expr)),
           _type(std::move(type)) {
@@ -1331,8 +1319,9 @@ class IntegralCast : public ImplicitCastExpr {
             << UniqueName() << "cast type is nullptr";
         INTERNAL_LOG_IF(WARNING, (*cast_expr()->type()) != *_type)
             << UniqueName() << "cast type is not equal to cast cast type";
-        INTERNAL_LOG_IF(WARNING, (_type->is_numerical() ||
-                                  cast_expr()->type()->is_numerical()))
+        INTERNAL_LOG_IF(WARNING,
+                        (_type->is<TypeCategory::Numerical>() ||
+                         cast_expr()->type()->is<TypeCategory::Numerical>()))
             << UniqueName()
             << "cast type or expression type is not builtin type";
 #endif
@@ -1342,7 +1331,7 @@ class IntegralCast : public ImplicitCastExpr {
      * @brief return the type that is being casted to
      * @return the type that is being casted to
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override { return _type; };
+    [[nodiscard]] QualTypePtr type() const override { return _type; };
 
     /**
      * @brief ast Visitor acceptor
@@ -1352,7 +1341,7 @@ class IntegralCast : public ImplicitCastExpr {
     Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
   private:
-    std::shared_ptr<Type> _type;
+    QualTypePtr _type;
 };
 
 /**
@@ -1375,7 +1364,7 @@ class ArrayToPointerDecayCast : public ImplicitCastExpr {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, cast_expr()->type()->is_ptr())
+        INTERNAL_LOG_IF(FATAL, cast_expr()->type()->is<TypeCategory::Ptr>())
             << UniqueName() << "has to be a pointer type";
 
         INTERNAL_LOG_IF(FATAL, strcmp(cast_expr()->NodeName().data(),
@@ -1388,9 +1377,8 @@ class ArrayToPointerDecayCast : public ImplicitCastExpr {
      * @brief return the type that is being casted to
      * @return the type that is being casted to
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
-        return std::dynamic_pointer_cast<ArrayType>(cast_expr()->type())
-            ->GetBaseType();
+    [[nodiscard]] QualTypePtr type() const override {
+        return cast_expr()->type()->as<ArrayType>()->GetBaseType();
     };
 
     /**

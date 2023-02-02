@@ -9,25 +9,24 @@
 namespace hzcc::ast {
 class ICastRule {
   public:
-    virtual bool CouldApplyTo(const std::shared_ptr<Type>& lhs,   // NOLINT
-                              const std::unique_ptr<Expr>& rhs);  // NOLINT
+    virtual bool CouldApplyTo(const ExprPtr& rhs,
+                              const QualTypePtr& lhs);  // NOLINT
 
     virtual ~ICastRule() = default;
 
     virtual StatusOr<std::unique_ptr<CastExpr>> Apply(
-        std::unique_ptr<Expr> node, const std::shared_ptr<Type>& to);
+        std::unique_ptr<Expr> node, const QualTypePtr& to);
 
     ICastRule() = default;
 };
 
-inline bool ICastRule::CouldApplyTo(
-    const std::shared_ptr<Type>& lhs,    // NOLINT
-    const std::unique_ptr<Expr>& rhs) {  // NOLINT
+inline bool ICastRule::CouldApplyTo(const ExprPtr& rhs,        // NOLINT
+                                    const QualTypePtr& lhs) {  // NOLINT
     return false;
 }
 
 inline StatusOr<std::unique_ptr<CastExpr>> ICastRule::Apply(
-    std::unique_ptr<Expr> node, const std::shared_ptr<Type>& to) {
+    std::unique_ptr<Expr> node, const QualTypePtr& to) {
     return Status(StatusCode::kUnimplemented, "Not implemented");
 }
 }  // namespace hzcc::ast

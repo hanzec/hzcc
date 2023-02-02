@@ -10,6 +10,17 @@
 #include "utils/logging.h"
 
 namespace hzcc {
+enum class StmtType { DECL = 0, EMPTY, RETURN, EXPR, CTRL, DEFAULT };
+
+enum class DeclType {
+    PARAM = 0,
+    FUNC,
+    FIELD,
+    RECORD,
+    VAR,
+    COMB_VAR,
+};
+
 enum class PrimitiveType {
     kInt = 0,
     kChar,
@@ -69,29 +80,18 @@ enum class AssignType {
 };
 
 enum class TypeCategory {
-    kNumerical,
-    kPointer,
-    kArray,
-    kStruct,
+    Numerical,
+    Ptr,
+    Array,
+    Struct,
     kFuncPtr,
     kEnum,
-    kUnion,
+    Union,
     kBuiltin,
     kUnknown,
 };
 
-enum class Attribute {
-    kCONST,
-    kEXTERN,
-    kSTATIC,
-    kAUTO,
-    kVOLATILE,
-    kINLINE,
-    kRESTRICT,
-    kSIGNED,
-    kUNSIGNED,
-    kREGISTER,
-};
+enum class Qualifier { CONST, VOLATILE, RESTRICT, ATOMIC };
 
 enum class ArithmeticType {
     ADD = 0,
@@ -125,9 +125,8 @@ constexpr const int KLiteralsTypeTableSize = 6;
 constexpr std::array<const char *, KLiteralsTypeTableSize> kLiteralsSymbol{
     "type", "Char", "Integer", "RealNumber", "String", "Identity"};
 
-constexpr const std::array<const char[10], magic_enum::enum_count<Attribute>()>
-    kAttributeTable{"const",  "extern",   "static", "auto",     "volatile",
-                    "inline", "restrict", "signed", "unsigned", "register"};
+constexpr const std::array<const char[10], magic_enum::enum_count<Qualifier>()>
+    kQualifierTable{"const", "volatile", "restrict", "_Atomic"};
 
 constexpr const std::array<const char[15],
                            magic_enum::enum_count<PrimitiveType>()>
@@ -173,36 +172,24 @@ ALWAYS_INLINE constexpr PrimitiveType to_primitive_type(
     }
 }
 
-ALWAYS_INLINE constexpr Attribute to_attr(TokenType attr) {
+ALWAYS_INLINE constexpr Qualifier to_attr(TokenType attr) {
     switch (attr) {
         case TokenType::kConst:
-            return Attribute::kCONST;
-        case TokenType::kExtern:
-            return Attribute::kEXTERN;
-        case TokenType::kStatic:
-            return Attribute::kSTATIC;
-        case TokenType::kAuto:
-            return Attribute::kAUTO;
+            return Qualifier::CONST;
         case TokenType::kVolatile:
-            return Attribute::kVOLATILE;
-        case TokenType::kInline:
-            return Attribute::kINLINE;
+            return Qualifier::VOLATILE;
         case TokenType::kRestrict:
-            return Attribute::kRESTRICT;
-        case TokenType::kSigned:
-            return Attribute::kSIGNED;
-        case TokenType::kUnsigned:
-            return Attribute::kUNSIGNED;
-        case TokenType::kRegister:
-            return Attribute::kREGISTER;
+            return Qualifier::RESTRICT;
+        case TokenType::kAtomic:
+            return Qualifier::ATOMIC;
         default:
-            INTERNAL_LOG(FATAL)
-                << "Unknown attribute: " << magic_enum::enum_name(attr);
+            INTERNAL_LOG(FATAL) << "Token: " << magic_enum::enum_name(attr)
+                                << " is not a qualifier";
     }
 }
 
-ALWAYS_INLINE constexpr auto to_string(Attribute attr) -> const char (&)[10] {
-    return kAttributeTable[magic_enum::enum_integer(attr)];
+ALWAYS_INLINE constexpr auto to_string(Qualifier attr) -> const char (&)[10] {
+    return kQualifierTable[magic_enum::enum_integer(attr)];
 }
 
 ALWAYS_INLINE constexpr auto to_string(PrimitiveType attr) -> const

@@ -2,6 +2,7 @@
 // Created by chen_ on 2022/12/27.
 //
 #include <glog/logging.h>
+
 #include <list>
 #include <memory>
 #include <string>
@@ -9,16 +10,17 @@
 #include <utility>
 
 #include "ast/CompilationUnit.h"
+#include "ast/Stmt.h"
 #include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
-#include "parser/syntax/common_utils.h"
-#include "parser_factory.h"
-#include "syntax_parser.h"
-#include "ast/Stmt.h"
 #include "enums.h"
+#include "options.h"
 #include "parser/common/Token.h"
 #include "parser/common/token_type.h"
 #include "parser/parser.h"
+#include "parser/syntax/common_utils.h"
+#include "parser_factory.h"
+#include "syntax_parser.h"
 #include "utils/logging.h"
 #include "utils/status/status.h"
 #include "utils/status/statusor.h"
@@ -29,35 +31,22 @@ DeclStatement::DeclStatement() noexcept
     : ParserBase(TypeNameUtil::hash<ast::IDeclStmt>(),
                  TypeNameUtil::name_pretty<ast::IDeclStmt>()) {}
 
-template <typename T_LIST = std::list<Token>>
-static StatusOr<T_LIST> check_duplicate(const T_LIST& tokens) {
-    T_LIST ret;
-    for (auto& token : tokens) {
-        if (std::find(ret.begin(), ret.end(), token) != ret.end()) {
-            return hzcc::syntax::utils::TokenErr(
-                token, "duplicate identifier " + token.val());
-        } else {
-            ret.push_back(token);
-        }
-    }
-    return ret;
-}
-
 StatusOr<VarPack> DeclStatement::parse_type(TokenList& tokens,
                                             SyntaxCtx& context,
-                                            ast::TypePtr& base_type) {
+                                            ast::QualTypePtr& base_type) {
     // for *
     while (tokens.peek().Type() == TokenType::kMul) {
-        if (base_type->is_ptr()) {
+        if (base_type->is<TypeCategory::Ptr>()) {
             tokens.pop();
-            base_type = std::make_shared<ast::PointerType>(base_type);
+            base_type = std::make_shared<ast::QualType>(
+                std::make_shared<ast::PointerType>(base_type));
         } else {
             return syntax::utils::TokenErr(
                 tokens, "Cannot use '*' on non-pointer type");
         }
     }
 
-    // get decl name
+    // get decl to_str
     if (!tokens.empty() && tokens.peek().Type() != TokenType::kIdentity) {
         return syntax::utils::TokenErr(tokens.peek(), "except a identifier");
     }
@@ -77,15 +66,16 @@ StatusOr<VarPack> DeclStatement::parse_type(TokenList& tokens,
 
             // global scope does not allow vla
             if (context->at_root() &&
-                !size_expr->type()->is<Attribute::kCONST>()) {
+                !size_expr->type()->is<Qualifier::CONST>()) {
                 return syntax::utils::TokenErr(
                     tokens.peek(),
                     "Variable length array declaration not allowed at file "
                     "scope");
             }
 
-            base_type = std::make_shared<ast::ArrayType>(base_type,
-                                                         std::move(size_expr));
+            base_type = std::make_shared<ast::QualType>(
+                std::make_shared<ast::ArrayType>(std::move(size_expr),
+                                                 base_type));
         }
         tokens.pop();
     }
@@ -121,19 +111,19 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_impl(SyntaxCtx context,
 
     // convert all token type to Attr
     auto base_type_list = tokens.cache_attr_list();
-    std::list<Attribute> ret_attr_list;
+    std::list<Qualifier> ret_attr_list;
     for (auto& attr : base_type_list) {
         ret_attr_list.emplace_back(to_attr(attr.Type()));
     }
 
     // for vardecl and funcdecl, we need to consume the *
-    std::shared_ptr<ast::Type> base_type =
-        context->get_type(base_type_str)->type_of(ret_attr_list);
-    std::shared_ptr<ast::Type> final_type(base_type);
+    auto base_type = context->get_type(base_type_str)->type_of(ret_attr_list);
+    ast::QualTypePtr final_type(base_type);
     while (tokens.peek().Type() == TokenType::kMul) {
-        if (base_type->is_ptr()) {
+        if (base_type->is<TypeCategory::Array>()) {
             tokens.pop();
-            final_type = std::make_shared<ast::PointerType>(final_type);
+            final_type = std::make_shared<ast::QualType>(
+                std::make_shared<ast::PointerType>(final_type));
         } else {
             return syntax::utils::TokenErr(
                 tokens, "Cannot use '*' on non-pointer type");
@@ -154,8 +144,8 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_impl(SyntaxCtx context,
 
 StatusOr<ast::StmtPtr> DeclStatement::parse_var(TokenList& tokens,
                                                 SyntaxCtx& context,
-                                                ast::TypePtr base_type,
-                                                ast::TypePtr curr_type) {
+                                                ast::QualTypePtr base_type,
+                                                ast::QualTypePtr curr_type) {
     if (tokens.peek().Type() != TokenType::kIdentity) {
         return syntax::utils::TokenErr(tokens.peek(), "except a identifier");
     }
@@ -171,11 +161,11 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_var(TokenList& tokens,
                              Parser::Parse<ast::Expr>(context, tokens))
 
         var_list.emplace_back(std::make_unique<ast::VarDecl>(
-            name.loc(), name.val(), std::move(init_expr),
+            name.loc(), name.to_str(), std::move(init_expr),
             std::make_unique<ast::TypeProxyExpr>(init_expr->loc(), curr_type)));
     } else {
         var_list.emplace_back(std::make_unique<ast::VarDecl>(
-            name.loc(), name.val(), std::make_unique<ast::EmptyExpr>(),
+            name.loc(), name.to_str(), std::make_unique<ast::EmptyExpr>(),
             std::make_unique<ast::TypeProxyExpr>(name.loc(), curr_type)));
     }
 
@@ -193,11 +183,11 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_var(TokenList& tokens,
                                  Parser::Parse<ast::Expr>(context, tokens))
 
             var_list.emplace_back(std::make_unique<ast::VarDecl>(
-                name.loc(), name.val(), std::move(init_expr),
+                name.loc(), name.to_str(), std::move(init_expr),
                 std::make_unique<ast::TypeProxyExpr>(name.loc(), curr_type)));
         } else {
             var_list.emplace_back(std::make_unique<ast::VarDecl>(
-                name.loc(), name.val(), std::make_unique<ast::EmptyExpr>(),
+                name.loc(), name.to_str(), std::make_unique<ast::EmptyExpr>(),
                 std::make_unique<ast::TypeProxyExpr>(name.loc(), curr_type)));
         }
     }
@@ -207,8 +197,8 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_var(TokenList& tokens,
 
 StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
                                                  SyntaxCtx& context,
-                                                 ast::TypePtr return_type) {
-    // get function name
+                                                 ast::QualTypePtr return_type) {
+    // get function to_str
     auto func_name = tokens.pop();
 
     // function can only be defined in global scope
@@ -217,25 +207,45 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
             func_name, "function can only be defined in global scope");
     }
 
+    // function name cannot duplicate with any other variable to_str
+    if (!Options::Global_allow_same_name_for_func_val &&
+        context->has_var(func_name.to_str(), true)) {
+        return CompileError(
+            func_name.loc(),
+            absl::StrCat("Function '", func_name.to_str(),
+                         "' already defined as global variable"));
+    }
+
+    // function can not define twice with different return type
+    if (context->has_func(func_name.to_str()) &&
+        context->func_ret_type(func_name.to_str()) != return_type) {
+        return CompileError(
+            func_name.loc(),
+            absl::StrCat("Function '", func_name.to_str(),
+                         "' already defined with different "
+                         "return type (Previous: ",
+                         context->func_ret_type(func_name.to_str())->to_str(),
+                         ", Current: ", return_type->to_str(), ")"));
+    }
+
     /**
      * Parse Argument List
      */
     // consume '('
     HZCC_CheckAndConsume_ReturnErr(TokenType::kLParentheses, tokens)
-
         // next token should not be ',', if it is, it means empty argument list
         if (tokens.peek().Type() == TokenType::kComma) {
-        return syntax::utils::TokenErr(tokens, "Expected type name");
+        return syntax::utils::TokenErr(tokens, "Expected type to_str");
     }
 
     // actual function node
     auto func_node = std::make_unique<ast::FuncDeclStmt>(
-        func_name.loc(), func_name.val(),
+        func_name.loc(), func_name.to_str(),
         std::make_unique<ast::TypeProxyExpr>(func_name.loc(), return_type));
 
     // parse argument list
     bool first = false;
-    std::list<ast::TypePtr> arg_type_list;
+    std::list<VarPack> arg_type_list;
     do {
         // consume ',' if available
         if (tokens.peek().Type() == TokenType::kComma) {
@@ -262,34 +272,61 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
 
         // convert all token type to Attr
         auto base_type_list = tokens.cache_attr_list();
-        std::list<Attribute> ret_attr_list;
+        std::list<Qualifier> ret_attr_list;
         for (auto& attr : base_type_list) {
             ret_attr_list.emplace_back(to_attr(attr.Type()));
         }
 
         // for vardecl and funcdecl, we need to consume the *
-        std::shared_ptr<ast::Type> base_type =
+        auto base_type =
             context->get_type(base_type_str)->type_of(ret_attr_list);
 
         HZCC_CHECK_OR_ASSIGN(var_pack,                                // NOLINT
                              parse_type(tokens, context, base_type))  // NOLINT
 
         first = true;
-        arg_type_list.emplace_back(var_pack.first);
+        arg_type_list.emplace_back(var_pack.first, var_pack.second);
         func_node->AddFunctionArgument(std::make_unique<ast::ParamVarDecl>(
-            var_pack.second.loc(), var_pack.second.val(),
+            var_pack.second.loc(), var_pack.second.to_str(),
             std::make_unique<ast::TypeProxyExpr>(var_pack.second.loc(),
                                                  var_pack.first)));
     } while (!tokens.empty() &&
              tokens.peek().Type() != TokenType::kRParentheses);
+
+    // check argument list is matched with previous definition
+    if (context->has_func(func_name.to_str())) {
+        int index = 0;
+        auto func_param = context->func_param_types(func_name.to_str());
+        for (auto& [arg_type, token] : arg_type_list) {
+            if (arg_type != func_param[index++]) {
+                return CompileError(
+                    token.loc(),
+                    absl::StrCat(
+                        "Function '", func_name.to_str(),
+                        "' already defined with different "
+                        "argument type at index ",
+                        index, " (Previous: ",
+                        context->func_ret_type(func_name.to_str())->to_str(),
+                        ", Current: ", return_type->to_str(), ")"));
+            }
+        }
+    }
 
     // check ')'  and consume
     HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
 
     // trying to parse the function body if it exists
     if (tokens.peek().Type() == TokenType::kLBrace) {
+        // we do not allow multiple implementation of the same function
+        if (context->has_func(func_name.to_str()) &&
+            context->has_body(func_name.to_str())) {
+            return CompileError(func_name.loc(),
+                                absl::StrCat("Function '", func_name.to_str(),
+                                             "' already defined"));
+        }
+
         // create a new named scope
-        context->new_scope(func_name.val(), return_type);
+        context->new_scope(func_name.to_str(), return_type);
 
         // trying to syntax the function body
         HZCC_CHECK_OR_ASSIGN(func_body,
@@ -334,18 +371,18 @@ StatusOr<ast::RecordDEclPtr> DeclStatement::parse_struct(SyntaxCtx& context,
     // add struct to context first to avoid recursive struct definition
     // convert all token type to Attr
     auto base_type_list = tokens.cache_attr_list();
-    std::list<Attribute> ret_attr_list;
+    std::list<Qualifier> ret_attr_list;
     for (auto& attr : base_type_list) {
         ret_attr_list.emplace_back(to_attr(attr.Type()));
     }
 
     // for vardecl and funcdecl, we need to consume the *
     auto struct_type =
-        context->add_struct_type(struct_name.val(), ret_attr_list);
+        context->add_struct_type(struct_name.to_str(), ret_attr_list);
 
     // construct struct node
     auto struct_node = std::make_unique<ast::RecordDecl>(
-        struct_name.loc(), struct_name.val(),
+        struct_name.loc(), struct_name.to_str(),
         std::make_unique<ast::TypeProxyExpr>(struct_name.loc(), struct_type));
 
     // parse struct body
@@ -381,7 +418,7 @@ StatusOr<ast::RecordDEclPtr> DeclStatement::parse_struct(SyntaxCtx& context,
             }
 
             // for vardecl and funcdecl, we need to consume the *
-            std::shared_ptr<ast::Type> base_type =
+            auto base_type =
                 context->get_type(base_type_str)->type_of(ret_attr_list);
 
             // parse variable declaration
@@ -391,7 +428,7 @@ StatusOr<ast::RecordDEclPtr> DeclStatement::parse_struct(SyntaxCtx& context,
 
             // add variable to struct node
             struct_node->add_field(std::make_unique<ast::FieldDecl>(  // NOLINT
-                var_decl.second.loc(), var_decl.second.val(),
+                var_decl.second.loc(), var_decl.second.to_str(),
                 std::make_unique<ast::TypeProxyExpr>(var_decl.second.loc(),
                                                      var_decl.first)));
 
@@ -427,8 +464,7 @@ StatusOr<ast::RecordDEclPtr> DeclStatement::parse_struct(SyntaxCtx& context,
 
                 // get actual base type
                 auto base_type_inner =
-                    context->get_struct_type(base_type_str_inner)
-                        ->type_of(ret_attr_list);
+                    context->add_struct_type(base_type_str_inner);
 
                 // parse variable declaration
                 HZCC_CHECK_OR_ASSIGN(                              // NOLINT
@@ -436,12 +472,10 @@ StatusOr<ast::RecordDEclPtr> DeclStatement::parse_struct(SyntaxCtx& context,
                     parse_type(tokens, context, base_type_inner))  // NOLINT
 
                 // add variable to struct type and struct node
-                struct_type->add_record(var_decl_inner.second.val(),
-                                        var_decl_inner.first);
                 struct_node->add_field(
                     std::make_unique<ast::FieldDecl>(  // NOLINT
                         var_decl_inner.second.loc(),
-                        var_decl_inner.second.val(),
+                        var_decl_inner.second.to_str(),
                         std::make_unique<ast::TypeProxyExpr>(
                             var_decl_inner.second.loc(),
                             var_decl_inner.first)));

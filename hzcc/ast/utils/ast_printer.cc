@@ -136,7 +136,7 @@ Status AstPrinter::visit(WhileStmt* p_stmt) {
 Status AstPrinter::visit(VarDecl* p_stmt) {
     print_stmt_hdr(p_stmt);  // print node info
 
-    _out << p_stmt->name() << " " << p_stmt->type()->Name();
+    _out << p_stmt->name() << " " << p_stmt->type()->to_str();
     if (p_stmt->has_init()) {
         add_indent(" `");
         HZCC_CHECK_OK_OR_RETURN(p_stmt->init_expr()->visit(*this));
@@ -151,7 +151,7 @@ Status AstPrinter::visit(FuncDeclStmt* p_stmt) {
     // print its arguments
     _out << " (";
     for (const auto& arg : p_stmt->params()) {
-        _out << arg->type()->Dump();
+        _out << arg->type()->to_str();
         if (arg != p_stmt->params().back()) {
             _out << ",";
         }
@@ -189,7 +189,7 @@ Status AstPrinter::visit(UnaryOperator* p_expr) {
 
     // print unary operator
     _out << kUnaryOpSTR[magic_enum::enum_integer(p_expr->GetUnaryType())] << " "
-         << p_expr->expr()->type()->Name();
+         << p_expr->expr()->type()->to_str();
 
     // print its operand
     add_indent(" `");
@@ -202,7 +202,7 @@ Status AstPrinter::visit(TernaryExpr* p_expr) {
     print_stmt_hdr(p_expr);  // print node info
 
     // type
-    _out << p_expr->type()->Name();
+    _out << p_expr->type()->to_str();
 
     // node
     add_indent(" |");
@@ -244,9 +244,9 @@ Status AstPrinter::visit(FuncCallStmt* p_stmt) {
     print_stmt_hdr(p_stmt);  // print node info
 
     _out << p_stmt->name();
-    if (!p_stmt->args().empty()) {
-        for (auto& arg : p_stmt->args()) {
-            add_indent(arg == p_stmt->args().back() ? " ` " : " | ");
+    if (!p_stmt->params().empty()) {
+        for (auto& arg : p_stmt->params()) {
+            add_indent(arg == p_stmt->params().back() ? " ` " : " | ");
             HZCC_CHECK_OK_OR_RETURN(arg->visit(*this));
             remove_indent();
         }
@@ -257,14 +257,14 @@ Status AstPrinter::visit(FuncCallStmt* p_stmt) {
 Status AstPrinter::visit(DeclRefExpr* p_expr) {
     print_stmt_hdr(p_expr);  // print node info
 
-    _out << p_expr->var_name() << " " << p_expr->type()->Name();
+    _out << p_expr->var_name() << " " << p_expr->type()->to_str();
     return NoError();
 }
 
 Status AstPrinter::visit(ArraySubscriptExpr* p_expr) {
     print_stmt_hdr(p_expr);  // print node info
 
-    _out << p_expr->type()->Name();
+    _out << p_expr->type()->to_str();
 
     add_indent(" |");
     HZCC_CHECK_OK_OR_RETURN(p_expr->base_expr()->visit(*this));
@@ -284,7 +284,7 @@ Status AstPrinter::visit(RelationalExpr* p_expr) {
     print_stmt_hdr(p_expr);  // print node info
 
     // lhs type
-    _out << " " + p_expr->lhs()->type()->Name();
+    _out << " " + p_expr->lhs()->type()->to_str();
 
     // symbol type
     _out << kRelationalOpSTR[magic_enum::enum_integer(p_expr->op_type())];
@@ -326,7 +326,7 @@ Status AstPrinter::visit(AssignExpr* p_expr) {
             " = ", " += ", " -= ", " *= ", " /= ", " %= ", " <<= ", " >>= "};
     print_stmt_hdr(p_expr);  // print node info
 
-    _out << p_expr->lhs()->type()->Name();
+    _out << p_expr->lhs()->type()->to_str();
 
     // print symbol
     _out << kAssignTypeStr[magic_enum::enum_integer(p_expr->op_type())];
@@ -351,7 +351,7 @@ Status AstPrinter::visit(ArithmeticExpr* p_expr) {
 
     // print node info
     _out << kArithmeticStr[magic_enum::enum_integer(p_expr->op_type())] << ' '
-         << p_expr->lhs()->type()->Name();
+         << p_expr->lhs()->type()->to_str();
 
     // print LHS and RHS info
     add_indent(" |");
@@ -368,8 +368,8 @@ Status AstPrinter::visit(ArithmeticExpr* p_expr) {
 Status AstPrinter::visit(ExplicitCastExpr* p_expr) {
     print_stmt_hdr(p_expr);  // print node info
 
-    _out << '[' << p_expr->cast_expr()->type()->Name() << "]->["
-         << p_expr->type()->Name() << "]";
+    _out << '[' << p_expr->cast_expr()->type()->to_str() << "]->["
+         << p_expr->type()->to_str() << "]";
 
     add_indent(" `");
     HZCC_CHECK_OK_OR_RETURN(p_expr->cast_expr()->visit(*this));
@@ -381,8 +381,8 @@ Status AstPrinter::visit(ExplicitCastExpr* p_expr) {
 Status AstPrinter::visit(hzcc::ast::ImplicitCastExpr* p_expr) {
     print_stmt_hdr(p_expr);  // print node info
 
-    _out << '[' << p_expr->cast_expr()->type()->Name() << "]->["
-         << p_expr->type()->Name() << "]";
+    _out << '[' << p_expr->cast_expr()->type()->to_str() << "]->["
+         << p_expr->type()->to_str() << "]";
 
     add_indent(" `");
     HZCC_CHECK_OK_OR_RETURN(p_expr->cast_expr()->visit(*this));
@@ -399,7 +399,7 @@ Status AstPrinter::visit(BitwiseExpr* p_expr) {
 
     // print node info
     _out << kBitwiseTypeStr[magic_enum::enum_integer(p_expr->op_type())] << ' '
-         << p_expr->lhs()->type()->Name();
+         << p_expr->lhs()->type()->to_str();
 
     // print LHS and RHS info
     add_indent(" |");
@@ -446,7 +446,7 @@ Status AstPrinter::visit(CommaExpr* p_expr) {
 Status AstPrinter::visit(MemberExpr* p_expr) {
     print_stmt_hdr(p_expr);  // print node info
 
-    _out << p_expr->type()->Name() << " " << p_expr->member_name();
+    _out << p_expr->type()->to_str() << " " << p_expr->member_name();
 
     add_indent(" `");
     HZCC_CHECK_OK_OR_RETURN(p_expr->base_expr()->visit(*this));
@@ -458,7 +458,7 @@ Status AstPrinter::visit(MemberExpr* p_expr) {
 Status AstPrinter::visit(SizeofExpr* p_expr) {
     print_stmt_hdr(p_expr);  // print node info
 
-    _out << p_expr->type()->Name();
+    _out << p_expr->type()->to_str();
 
     add_indent(" `");
     HZCC_CHECK_OK_OR_RETURN(p_expr->expr()->visit(*this));
@@ -498,7 +498,7 @@ Status AstPrinter::visit(EmptyStmt* p_stmt) { return NoError(); }
 Status AstPrinter::visit(ParamVarDecl* p_stmt) {
     print_stmt_hdr(p_stmt);  // print node info
 
-    _out << p_stmt->type()->Name() << " " << p_stmt->name();
+    _out << p_stmt->type()->to_str() << " " << p_stmt->name();
     return NoError();
 }
 

@@ -81,7 +81,7 @@ class Token {
      * string
      * @return std::string the human readable string value of the token
      */
-    [[nodiscard]] std::string val(bool escape = false) const noexcept;
+    [[nodiscard]] std::string to_str(bool escape = false) const noexcept;
 
   private:
     Position _location;

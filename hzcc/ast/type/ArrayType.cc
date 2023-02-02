@@ -3,23 +3,23 @@
 //
 #include <glog/logging.h>
 #include <stdint.h>
-#include <utility>
+
 #include <list>
 #include <memory>
 #include <optional>
 #include <ostream>
 #include <string>
+#include <utility>
 
 #include "ast/DeduceValue.h"
-#include "ast/type/Type.h"
 #include "ast/Stmt.h"
+#include "ast/type/Type.h"
 #include "enums.h"
 
 namespace hzcc::ast {
-ArrayType::ArrayType(std::shared_ptr<Type> base_type,
-                     std::unique_ptr<Expr> array_size,
-                     const std::list<Attribute>& attrs)
-    : Type(TypeCategory::kArray, attrs),
+ArrayType::ArrayType(std::unique_ptr<Expr> array_size,
+                     std::shared_ptr<QualType> base_type)
+    : Type(TypeCategory::Array),
       _size_node(std::move(array_size)),
       _base_type(std::move(base_type)) {}
 
@@ -34,13 +34,13 @@ bool ArrayType::HasDeduceSize() {
 }
 
 bool ArrayType::is_same(const Type& type) const {
-    if (type.is_arr()) {
+    if (type.is<TypeCategory::Array>()) {
         auto other = dynamic_cast<const ArrayType*>(&type);
 
         DLOG_ASSERT(other != nullptr)
             << "dynamic cast to array type failed when is_arr() is true";
 
-        return *GetBaseType() == *other->GetBaseType();
+        return GetBaseType() == other->GetBaseType();
     } else {
         return false;
     }
@@ -48,9 +48,9 @@ bool ArrayType::is_same(const Type& type) const {
 const std::unique_ptr<ast::Expr>& ArrayType::GetArraySizeNode() const {
     return _size_node;
 }
-std::string ArrayType::Name() const {
-    return _base_type->Name() +
-           (_size_node->IsEmptyStmt()
+std::string ArrayType::to_str() const {
+    return _base_type->to_str() +
+           (_size_node->stmt_type() == StmtType::EMPTY
                 ? "[]"
                 : (_size_node->GetDeducedValue().has_value()
                        ? "[" +
@@ -60,6 +60,4 @@ std::string ArrayType::Name() const {
                              "]"
                        : "[VLA]"));
 }
-bool ArrayType::is_arr() const { return true; }
-
 }  // namespace hzcc::ast

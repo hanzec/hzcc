@@ -23,7 +23,8 @@ namespace hzcc::ast {
 FuncDeclStmt::FuncDeclStmt(
     const Position& loc, std::string_view name,
     std::unique_ptr<TypeProxyExpr> return_type)  // NO_LINT
-    : IDeclStmt("FunctionDecl", name, loc), _ret_type(std::move(return_type)) {
+    : IDeclStmt(DeclType::FUNC, "FunctionDecl", name, loc),
+      _ret_type(std::move(return_type)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
@@ -38,8 +39,7 @@ bool FuncDeclStmt::set_body(std::unique_ptr<ast::CompoundStmt> declaration) {
         DLOG(WARNING) << "function body is nullptr";
         return false;
     }
-    DVLOG(AST_LOG_LEVEL) << "set function body for function [" << name()
-                         << "]";
+    DVLOG(AST_LOG_LEVEL) << "set function body for function [" << name() << "]";
     _func_body = std::move(declaration);
     return true;
 }
@@ -49,20 +49,11 @@ bool FuncDeclStmt::AddFunctionArgument(
     if (param_var_decl == nullptr) {
         return false;
     }
-    DVLOG(AST_LOG_LEVEL) << "Add argument " << param_var_decl->name()
-                         << "(" << param_var_decl->type()->Dump()
+    DVLOG(AST_LOG_LEVEL) << "Add argument " << param_var_decl->name() << "("
+                         << param_var_decl->type()->to_str()
                          << ") to function node [" << name() << "]";
     _func_param.push_back(std::move(param_var_decl));
     return true;
-}
-
-ArgumentList FuncDeclStmt::getArguments() {
-    ArgumentList result;
-    for (const auto& arg : _func_param) {
-        result.emplace_back(
-            std::make_tuple(arg->name(), arg->type(), arg->loc()));
-    }
-    return result;
 }
 
 bool FuncDeclStmt::has_body() const { return _func_body != nullptr; }

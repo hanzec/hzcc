@@ -13,6 +13,7 @@
 #include <vector>       // for vector
 
 #include "ast/DeduceValue.h"
+#include "enums.h"
 #include "macro.h"                // for Position
 #include "utils/status/status.h"  // for Status
 #include "visitor.h"
@@ -21,14 +22,29 @@
 #define HZCC_AST_AST_NODE_H
 namespace hzcc::ast {
 class Stmt;
-class Type;
 class Expr;
+class QualType;
 class TypeProxyExpr;
 
 using StmtPtr = std::unique_ptr<Stmt>;
 
 /**
- * @brief The base class of all ast nodes.
+ * @brief The base class of all ast nodes. All ast nodes should inherit from
+ * this class.
+ * @details The Stmt class is the base class of all ast nodes. It provides
+ *         interfaces for the Visitor pattern and the unique id of the node.
+ *         All ast nodes should inherit from this class.
+ *
+ *         There are 6 kinds of Stmt which listed in following table:
+ *            StmtType  |    Description  |     Enum Value    |  Example
+ *         :-----------:|:---------------:|:-----------------:|:---------:
+ *           ExprStmt   |  Expression     | StmtType::EXPR    | 1 + 2
+ *           DeclStmt   |  Declaration    | StmtType::DECL    | int a = 1
+ *           RetStmt    |  Return         | StmtType::RET     | return 1
+ *          ControlStmt |  Control        | StmtType::CTRL    | break
+ *           EmptyStmt  |  Empty          | StmtType::EMPTY   | ;
+ *          DefaultStmt |  All other type | StmtType::DEFAULT | default
+ *
  */
 class Stmt {
   public:
@@ -54,45 +70,15 @@ class Stmt {
     [[nodiscard]] virtual bool has_body() const { return false; }
 
     /**
-     * @brief Determine whether the node is a literal node or not
-     * @return true if the node is a literal node, false otherwise
+     * @brief Get the statement type of the node
+     * @return the statement type of the node
      */
-    [[nodiscard]] virtual bool IsLiteral() const { return false; }
+    [[nodiscard]] StmtType stmt_type() const { return _stmt_type; };
 
     /**
-     * @brief Determine whether the current ast node is a declaration node or
-     * not
-     * @return true if the node is a declaration node, false otherwise
-     */
-
-    [[nodiscard]] virtual bool IsDeclNode() const { return false; }
-
-    /**
-     * @brief Determine whether the current ast node is a struct declaration
-     * node or not node or not
-     * @return true if the node is a struct declaration node, false otherwise
-     */
-
-    [[nodiscard]] virtual bool IsStructDecl() const { return false; }
-
-    /**
-     * @brief Determine whether the current ast node is a empty statement node
-     * or not
-     * @return true if the node is a empty statement node, false otherwise
-     */
-    [[nodiscard]] virtual bool IsEmptyStmt() const { return false; }
-
-    /**
-     * @brief Determine whether the node is a return statement or not
-     * @return true if the node is a return statement, false otherwise
-     */
-
-    [[nodiscard]] virtual bool IsReturn() const { return false; }
-
-    /**
-     * @brief Get the unique name of the node in form of
+     * @brief Get the unique to_str of the node in form of
      *         "[__NODE_NAME__:__NODE_ID__]"
-     * @return The unique name of the node
+     * @return The unique to_str of the node
      */
     [[nodiscard]] std::string UniqueName() const {
         return "[" + std::string(NodeName().data()) + ":" +
@@ -100,10 +86,12 @@ class Stmt {
     }
 
     /**
-     * @brief Get Name of the node
-     * @return the name of the node
+     * @brief Get to_str of the node
+     * @return the to_str of the node
      */
-    [[nodiscard]] std::string_view NodeName() const { return _node_name; };
+    [[nodiscard]] constexpr std::string_view NodeName() const {
+        return _node_name;
+    };
 
     /**
      * @brief Interface for Visitor pattern
@@ -116,23 +104,27 @@ class Stmt {
     /**
      * @brief Constructor of Stmt, **should only be called by derived class**
      * @param loc location of the statement
-     * @param name name of the statement node
+     * @param stmt_type type of the statement
+     * @param name to_str of the statement node
      */
-    Stmt(Position loc, std::string_view name)
+    template <int N>
+    Stmt(Position loc, StmtType stmt_type, const char (&name)[N])
         : _node_name(name),
+          _stmt_type(stmt_type),
           _id(s_id_counter += 1),
-          _node_location(std::move(loc)){
-              // NOLINT
-              HZCC_RUNTIME_CHECK_BLOCK({
-                  INTERNAL_LOG_IF(FATAL, !(_node_location.first >= 0 &&
-                                           _node_location.second >= 0))
-                      << "location invalid (should be greater than 0)";
-                  INTERNAL_LOG_IF(FATAL, _node_name.empty())
-                      << "node name empty";
-              })};
+          _node_location(std::move(loc)) {
+        // NOLINT
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        INTERNAL_LOG_IF(
+            FATAL, !(_node_location.first >= 0 && _node_location.second >= 0))
+            << "location invalid (should be greater than 0)";
+        INTERNAL_LOG_IF(FATAL, _node_name.empty()) << "node to_str empty";
+#endif
+    }
 
   private:
     const uint64_t _id;
+    const StmtType _stmt_type;
     const Position _node_location;
     const std::string_view _node_name;
     inline static uint64_t s_id_counter = 0;
@@ -168,10 +160,12 @@ class Expr : public Stmt {
      * @return the type of the node if the node have a return type, otherwise
      * return an void type. Return nullptr if has internal_status error.
      */
-    [[nodiscard]] virtual std::shared_ptr<Type> type() const = 0;
+    [[nodiscard]] virtual std::shared_ptr<QualType> type() const = 0;
 
   protected:
-    Expr(const Position& loc, std::string_view name) : Stmt(loc, name) {}
+    template <int N>
+    Expr(const Position& loc, const char (&name)[N])
+        : Stmt(loc, StmtType::EXPR, name) {}
 };
 
 using ExprPtr = std::unique_ptr<Expr>;
@@ -190,33 +184,25 @@ class TypeProxyExpr : public Expr {
      * @param expr the expression
      * @param loc location of the expression
      */
-    TypeProxyExpr(const Position& loc,          // NO_LINT
-                  std::shared_ptr<Type> type);  // NO_LINT
+    TypeProxyExpr(const Position& loc,  // NO_LINT
+                  std::shared_ptr<QualType> type)
+        : Expr(loc, "TypeProxyExpr"), _type(std::move(type)) {}
 
     /**
      * @brief ast Visitor acceptor
      * @param visitor Visitor object
      * @return return object of hzcc::Status with content of visit result
      */
-    Status visit(Visitor& visitor) override;
-
-    /**
-     * @brief determine whether the node will return a location value (LValue)
-     * or auto_factory value (RValue)
-     * @return true if the node will return a LValue, false otherwise
-     */
-    [[nodiscard]] bool IsReturnLValue() const override;
+    Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
     /**
      * @brief Get the type of the expression.
      * @return the type of the expression.
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override;
-
-    [[nodiscard]] std::optional<DeduceValue> GetDeducedValue() const override;
+    [[nodiscard]] std::shared_ptr<QualType> type() const override { return _type; }
 
   private:
-    std::shared_ptr<Type> _type;
+    std::shared_ptr<QualType> _type;
 };
 
 using TypeProxyExprPtr = std::unique_ptr<TypeProxyExpr>;
@@ -230,7 +216,8 @@ class BreakStmt : public Stmt {
      * @brief Constructor of BreakStmt
      * @param loc location of the break statement
      */
-    explicit BreakStmt(const Position& loc) : Stmt(loc, "BreakStmt"){};
+    explicit BreakStmt(const Position& loc)
+        : Stmt(loc, StmtType::DEFAULT, "BreakStmt"){};
 
     /**
      * @brief ast Visitor acceptor
@@ -249,7 +236,8 @@ class CompoundStmt : public Stmt {
      * @brief Constructor of CompoundStmt
      * @param loc location of the compound statement
      */
-    explicit CompoundStmt(const Position& loc) : Stmt(loc, "CompoundStmt"){};
+    explicit CompoundStmt(const Position& loc)
+        : Stmt(loc, StmtType::DEFAULT, "CompoundStmt"){};
 
     /**
      * @brief ast Visitor acceptor
@@ -299,7 +287,8 @@ class ContinueStmt : public Stmt {
      * @brief Constructor of ContinueStmt
      * @param loc location of the continue statement
      */
-    explicit ContinueStmt(const Position& loc) : Stmt(loc, "ContinueStmt"){};
+    explicit ContinueStmt(const Position& loc)
+        : Stmt(loc, StmtType::DEFAULT, "ContinueStmt"){};
 
     /**
      * @brief ast Visitor acceptor
@@ -315,17 +304,18 @@ class ContinueStmt : public Stmt {
 class IDeclStmt : public Stmt {
   public:
     /**
-     * @brief Determine whether the current ast node is a declaration node or
-     * not
-     * @return true if the node is a declaration node, false otherwise
+     * @brief The type of declaration
+     * @return the type of declaration
      */
-    [[nodiscard]] bool IsDeclNode() const override { return true; };
+    [[nodiscard]] constexpr DeclType decl_type() const { return _decl_type; };
 
     /**
-     * @brief Get the name of the declaration
-     * @return the name of the declaration
+     * @brief Get the to_str of the declaration
+     * @return the to_str of the declaration
      */
-    [[nodiscard]] std::string_view name() const { return _decl_name; };
+    [[nodiscard]] constexpr std::string_view name() const {
+        return _decl_name;
+    };
 
     /**
      * @brief Determine whether the declaration has an initializer or not
@@ -337,33 +327,40 @@ class IDeclStmt : public Stmt {
      * @brief Get the type of the declaration
      * @return the type of the declaration
      */
-    [[nodiscard]] virtual std::shared_ptr<Type> type() const = 0;
+    [[nodiscard]] virtual std::shared_ptr<QualType> type() const = 0;
 
   protected:
     /**
      * @brief Constructor of DeclStmt, this abstract class should never
      * initialized directly.
-     * @param node_name name of the node
-     * @param name name of the declaration
+     * @param node_name to_str of the node
+     * @param name to_str of the declaration
      * @param location location of the declaration
      */
-    IDeclStmt(const char* node_name,  // NOLINT
-              std::string_view name,  // NOLINT
+    template <int N>
+    IDeclStmt(DeclType _decl_type,         // NOLINT
+              const char (&node_name)[N],  // NOLINT
+              std::string_view name,       // NOLINT
               const Position& location)
-        : Stmt(location, node_name), _decl_name(name) {
+        : Stmt(location, StmtType::DECL, node_name),
+          _decl_name(name),
+          _decl_type(_decl_type) {
         /** #####################################################################
          *  ### Runtime Assertion ###
          *  #####################################################################
          */
         HZCC_RUNTIME_CHECK_BLOCK({
             INTERNAL_LOG_IF(FATAL, !_decl_name.empty())
-                << this->UniqueName() << "decl name is empty";
+                << this->UniqueName() << "decl to_str is empty";
         })
     }
 
   private:
+    const DeclType _decl_type;
     const std::string _decl_name;
 };
+
+using IDeclStmtPtr = std::unique_ptr<IDeclStmt>;
 
 /**
  * @brief The class for do-while statement
@@ -379,7 +376,9 @@ class DoStmt : public Stmt {
     DoStmt(const Position& pos,         // NOLINT
            std::unique_ptr<Stmt> cond,  // NOLINT
            std::unique_ptr<Stmt> body)
-        : Stmt(pos, "DoStmt"), _cond(std::move(cond)), _body(std::move(body)) {
+        : Stmt(pos, StmtType::DEFAULT, "DoStmt"),
+          _cond(std::move(cond)),
+          _body(std::move(body)) {
         /** #################################################################
          *  ### Runtime Assertion ###
          *  ################################################################# */
@@ -429,7 +428,7 @@ class EmptyStmt : public Stmt {
     /**
      * @brief Constructor of EmptyStmt
      */
-    EmptyStmt() : Stmt({0, 0}, "EmptyStmt"){};
+    EmptyStmt() : Stmt({0, 0}, StmtType::EMPTY, "EmptyStmt"){};
 
     /**
      * @brief ast Visitor acceptor
@@ -437,12 +436,6 @@ class EmptyStmt : public Stmt {
      * @return return object of hzcc::Status with content of visit result
      */
     Status visit(Visitor& visitor) override { return visitor.visit(this); };
-
-    /**
-     * @brief Determine whether the node is an empty statement or not
-     * @return true if the node is an empty statement, false otherwise
-     */
-    [[nodiscard]] bool IsEmptyStmt() const override { return true; };
 };
 
 /**
@@ -458,7 +451,8 @@ class ForStmt : public Stmt {
      * @param body body of the for loop
      * @param location location of the for loop
      */
-    explicit ForStmt(const Position& location) : Stmt(location, "ForStmt"){};
+    explicit ForStmt(const Position& location)
+        : Stmt(location, StmtType::CTRL, "ForStmt"){};
 
     /**
      * @brief ast Visitor acceptor
@@ -566,7 +560,7 @@ class IfStmt : public Stmt {
     IfStmt(const Position& location,    // NOLINT
            std::unique_ptr<Stmt> cond,  // NOLINT
            std::unique_ptr<Stmt> body)
-        : Stmt(location, "IfStmt"),
+        : Stmt(location, StmtType::CTRL, "IfStmt"),
           _condition(std::move(cond)),
           _if_body_statement(std::move(body)) {
         /** #################################################################
@@ -685,7 +679,7 @@ class WhileStmt : public Stmt {
     WhileStmt(const Position& loc,         // NOLINT
               std::unique_ptr<Stmt> cond,  // NOLINT
               std::unique_ptr<CompoundStmt> body)
-        : Stmt(loc, "WhileStmt"),
+        : Stmt(loc, StmtType::CTRL, "WhileStmt"),
           _cond(std::move(cond)),
           _body(std::move(body)) {
         /** ##################################################################
@@ -730,20 +724,24 @@ class WhileStmt : public Stmt {
 };
 
 /**
- * @brief The class for param var declaration statement
+ * @brief The class for param var declaration statement. A param var declaration
+ * statement is a statement that declare a variable in the parameter list of a
+ * function. It is not a real statement, but a part of the function declaration.
+ * It is used to store the information of the parameter.
  */
 class ParamVarDecl : public IDeclStmt {
   public:
     /**
      * @brief Constructor of ParamVarDecl
-     * @param decl_name name of the parameter
+     * @param decl_name to_str of the parameter
      * @param loc location of the parameter
      * @param type type of the parameter
      */
     ParamVarDecl(const Position& loc,         // NOLINT
                  std::string_view decl_name,  // NOLINT
                  std::unique_ptr<TypeProxyExpr> type)
-        : IDeclStmt("ParamVarDecl", decl_name, loc), _type(std::move(type)) {
+        : IDeclStmt(DeclType::PARAM, "ParamVarDecl", decl_name, loc),
+          _type(std::move(type)) {
         /** ############################################################
          *  ### Runtime Assertion                                   ###
          *  ###########################################################*/
@@ -770,7 +768,7 @@ class ParamVarDecl : public IDeclStmt {
      * @brief Get the type of the parameter
      * @return  The type of the parameter
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] std::shared_ptr<QualType> type() const override {
         return _type->type();
     };
 
@@ -789,14 +787,14 @@ class FieldDecl : public IDeclStmt {
      * compiling in debug mode
      * @param type The type of the variable
      * @param attrs The attributes of the variable
-     * @param name The name of the variable
+     * @param name The to_str of the variable
      */
     FieldDecl(const Position& loc,                  // NOLINT
               std::string_view name,                // NOLINT
               std::unique_ptr<TypeProxyExpr> type)  // NOLINT
-        : IDeclStmt("FieldDecl", name, loc), _type(std::move(type)) {
+        : IDeclStmt(DeclType::FIELD, "FieldDecl", name, loc),
+          _type(std::move(type)) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-
         INTERNAL_LOG_IF(FATAL, _type != nullptr)
             << UniqueName() << "type is nullptr";
 #endif
@@ -820,7 +818,7 @@ class FieldDecl : public IDeclStmt {
      * @brief Get the type of the field
      * @return  The type of the field
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] std::shared_ptr<QualType> type() const override {
         return _type->type();
     };
 
@@ -835,7 +833,7 @@ class RecordDecl : public IDeclStmt {
   public:
     /**
      * @brief Constructor of RecordDecl
-     * @param decl_name name of the struct
+     * @param decl_name to_str of the struct
      * @param loc loc of the struct
      * @param type type of the struct
      */
@@ -860,15 +858,9 @@ class RecordDecl : public IDeclStmt {
      * @brief Get the type ptr of the struct
      * @return
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] std::shared_ptr<QualType> type() const override {
         return _type->type();
     }
-
-    /**
-     * @brief Determine whether the declaration is a struct declaration
-     * @return  true if the declaration is a struct declaration
-     */
-    [[nodiscard]] bool IsStructDecl() const override { return true; }
 
   private:
     std::unique_ptr<TypeProxyExpr> _type;
@@ -888,14 +880,14 @@ class VarDecl : public IDeclStmt {
      * compiling in debug mode
      * @param type The type of the variable
      * @param attrs The attributes of the variable
-     * @param name The name of the variable
+     * @param name The to_str of the variable
      * @param init The initial value of the variable (optional)
      */
     VarDecl(const Position& loc,         // NOLINT
             std::string_view name,       // NOLINT
             std::unique_ptr<Expr> init,  // NOLINT
             std::unique_ptr<TypeProxyExpr> type)
-        : IDeclStmt("VarDecl", name, loc),
+        : IDeclStmt(DeclType::VAR, "VarDecl", name, loc),
           _type(std::move(type)),
           _init_expr(std::move(init)) {
         /** #####################################################################
@@ -903,7 +895,7 @@ class VarDecl : public IDeclStmt {
          *  #####################################################################
          */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        // name and type is checked in DeclStmt
+        // to_str and type is checked in DeclStmt
         INTERNAL_LOG_IF(FATAL, _init_expr != nullptr)
             << UniqueName() << "init expression is nullptr";
 #endif
@@ -941,7 +933,7 @@ class VarDecl : public IDeclStmt {
      * @brief Get the type of the variable
      * @return  The type of the variable
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] std::shared_ptr<QualType> type() const override {
         return _type->type();
     }
 
@@ -959,13 +951,14 @@ class VarDecl : public IDeclStmt {
 };
 
 /**
- * @brief The class for var declaration statement
+ * @brief The combined declaration statement class, which contains a list of
+ * VarDecl Node that are declared in the same line
  */
 class DeclStmt : public IDeclStmt {
   public:
     DeclStmt(const Position& loc,  // NOLINT
              std::list<std::unique_ptr<VarDecl>> decl_list)
-        : IDeclStmt("DeclStmt", "NO_NAME", loc),
+        : IDeclStmt(DeclType::COMB_VAR, "DeclStmt", "NO_NAME", loc),
           _decl_list(std::move(decl_list)) {
         /** #################################################################
          *  ### Runtime Assertion ###
@@ -995,17 +988,14 @@ class DeclStmt : public IDeclStmt {
      * @brief Get the type of the declaration statement
      * @return the type of the declaration statement
      */
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] std::shared_ptr<QualType> type() const override {
         return _decl_list.front()->type();
     }
 
   private:
-    const std::shared_ptr<Type> _type;
+    const std::shared_ptr<QualType> _type;
     const std::list<std::unique_ptr<VarDecl>> _decl_list;
 };
-
-using ArgumentList =
-    std::list<std::tuple<std::string, std::shared_ptr<ast::Type>, Position>>;
 
 /**
  * @brief The class for function declaration statement
@@ -1017,7 +1007,7 @@ class FuncDeclStmt : public IDeclStmt {
     /**
      * @brief Construct a new Function Prototype For Function Node
      *
-     * @param name the name of the function
+     * @param name the to_str of the function
      * @param return_type the return type of the function
      * @param loc the location of the function
      */
@@ -1038,8 +1028,6 @@ class FuncDeclStmt : public IDeclStmt {
 
     std::list<std::unique_ptr<ParamVarDecl>>& params();
 
-    ArgumentList getArguments();
-
     /**
      * @brief Determine whether the node have a body or not
      * @return true if the node have a body, false otherwise
@@ -1048,7 +1036,7 @@ class FuncDeclStmt : public IDeclStmt {
 
     bool AddFunctionArgument(std::unique_ptr<ParamVarDecl> type);
 
-    [[nodiscard]] std::shared_ptr<Type> type() const override {
+    [[nodiscard]] std::shared_ptr<QualType> type() const override {
         return _ret_type->type();
     }
 
@@ -1062,6 +1050,8 @@ class FuncDeclStmt : public IDeclStmt {
     std::list<std::unique_ptr<ParamVarDecl>> _func_param;
 };
 
+using FuncDeclStmtPtr = std::unique_ptr<FuncDeclStmt>;
+
 class ReturnStmt : public Stmt {
   public:
     /**
@@ -1071,7 +1061,8 @@ class ReturnStmt : public Stmt {
      */
     ReturnStmt(const Position& loc,  // NOLINT
                std::unique_ptr<Expr> expr)
-        : Stmt(loc, "ReturnStmt"), _ret_expr(std::move(expr)) {
+        : Stmt(loc, StmtType::RETURN, "ReturnStmt"),
+          _ret_expr(std::move(expr)) {
 /** #####################################################################
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
@@ -1093,12 +1084,6 @@ class ReturnStmt : public Stmt {
      * @return The returned expression
      */
     std::unique_ptr<Expr>& ret_expr() { return _ret_expr; };
-
-    /**
-     * @brief Determine whether the node is a return statement or not
-     * @return true if the node is a return statement, false otherwise
-     */
-    [[nodiscard]] bool IsReturn() const override { return true; }
 
   private:
     std::unique_ptr<Expr> _ret_expr;

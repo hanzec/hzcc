@@ -17,7 +17,7 @@ namespace lexical {
  * @brief Parse the source code and generate a list of LexicalToken
  *
  * @param source the source code to be parsed
- * @param source_name the source file name
+ * @param source_name the source file to_str
  * @return StatusOr<std::list<Token>> the list of LexicalToken or the error
  */
 StatusOr<TokenList> ParseToToken(std::istream& source) noexcept;
@@ -27,7 +27,7 @@ StatusOr<TokenList> ParseToToken(std::istream& source) noexcept;
  *
  * @param source the source code to be parsed
  * @param tokenStream the output list of parsed LexicalToken
- * @param source_name the source file name, default is ""
+ * @param source_name the source file to_str, default is ""
  * @return Status return the parsing result
  */
 Status PreprocessSource(const std::istream& input, std::ostream& output);

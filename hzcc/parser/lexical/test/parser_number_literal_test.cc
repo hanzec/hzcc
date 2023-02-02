@@ -16,7 +16,7 @@ TEST(LEXICAL_PARSER, binary_number_0) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "0b111");
+    ASSERT_EQ(token_stream.front().to_str(), "0b111");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
 
@@ -29,7 +29,7 @@ TEST(LEXICAL_PARSER, binary_number_1) {  // NOLINT
 
     ASSERT_FALSE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "0b111c");
+    ASSERT_EQ(token_stream.front().to_str(), "0b111c");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
 
@@ -42,7 +42,7 @@ TEST(LEXICAL_PARSER, binary_number_3) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "c0b111");
+    ASSERT_EQ(token_stream.front().to_str(), "c0b111");
     ASSERT_EQ(token_stream.front().Type(), kIdentity);
 }
 
@@ -55,7 +55,7 @@ TEST(LEXICAL_PARSER, binary_number_4) {  // NOLINT
 
     ASSERT_FALSE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "0b1c11");
+    ASSERT_EQ(token_stream.front().to_str(), "0b1c11");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
 
@@ -68,11 +68,11 @@ TEST(LEXICAL_PARSER, binary_number_5) {  // NOLINT
 
     ASSERT_FALSE(result.Ok());
     ASSERT_EQ(token_stream.size(), 2);
-    ASSERT_EQ(token_stream.front().val(), "0b11c1");
+    ASSERT_EQ(token_stream.front().to_str(), "0b11c1");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "0b111");
+    ASSERT_EQ(token_stream.front().to_str(), "0b111");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
 
@@ -85,11 +85,11 @@ TEST(LEXICAL_PARSER, binary_number_6) {  // NOLINT
 
     ASSERT_FALSE(result.Ok());
     ASSERT_EQ(token_stream.size(), 2);
-    ASSERT_EQ(token_stream.front().val(), "0B11c1");
+    ASSERT_EQ(token_stream.front().to_str(), "0B11c1");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "0b111");
+    ASSERT_EQ(token_stream.front().to_str(), "0b111");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
 
@@ -102,7 +102,7 @@ TEST(LEXICAL_PARSER, hex_number_1) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "0x333333");
+    ASSERT_EQ(token_stream.front().to_str(), "0x333333");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
 
@@ -115,11 +115,11 @@ TEST(LEXICAL_PARSER, hex_number_2) {  // NOLINT
 
     ASSERT_FALSE(result.Ok());
     ASSERT_EQ(token_stream.size(), 2);
-    ASSERT_EQ(token_stream.front().val(), "0xDEFGD");
+    ASSERT_EQ(token_stream.front().to_str(), "0xDEFGD");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "0xFFFFFF");
+    ASSERT_EQ(token_stream.front().to_str(), "0xFFFFFF");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
 
@@ -132,7 +132,7 @@ TEST(LEXICAL_PARSER, hex_number_3) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "0X333333");
+    ASSERT_EQ(token_stream.front().to_str(), "0X333333");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
 
@@ -145,11 +145,11 @@ TEST(LEXICAL_PARSER, hex_number_4) {  // NOLINT
 
     ASSERT_FALSE(result.Ok());
     ASSERT_EQ(token_stream.size(), 2);
-    ASSERT_EQ(token_stream.front().val(), "0xDEFGD");
+    ASSERT_EQ(token_stream.front().to_str(), "0xDEFGD");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "0XFFFFFF");
+    ASSERT_EQ(token_stream.front().to_str(), "0XFFFFFF");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
 
@@ -162,7 +162,7 @@ TEST(LEXICAL_PARSER, real_number_1) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "0.333");
+    ASSERT_EQ(token_stream.front().to_str(), "0.333");
     ASSERT_EQ(token_stream.front().Type(), kReal_number);
 }
 
@@ -175,7 +175,7 @@ TEST(LEXICAL_PARSER, real_number_2) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "0.333e-2");
+    ASSERT_EQ(token_stream.front().to_str(), "0.333e-2");
     ASSERT_EQ(token_stream.front().Type(), kReal_number);
 }
 
@@ -188,7 +188,7 @@ TEST(LEXICAL_PARSER, real_number_3) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "0.333E-2");
+    ASSERT_EQ(token_stream.front().to_str(), "0.333E-2");
     ASSERT_EQ(token_stream.front().Type(), kReal_number);
 }
 
@@ -201,15 +201,15 @@ TEST(LEXICAL_PARSER, real_number_4) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 3);
-    ASSERT_EQ(token_stream.front().val(), "0.333E-2");
+    ASSERT_EQ(token_stream.front().to_str(), "0.333E-2");
     ASSERT_EQ(token_stream.front().Type(), kReal_number);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "0.333e-2");
+    ASSERT_EQ(token_stream.front().to_str(), "0.333e-2");
     ASSERT_EQ(token_stream.front().Type(), kReal_number);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "0.333");
+    ASSERT_EQ(token_stream.front().to_str(), "0.333");
     ASSERT_EQ(token_stream.front().Type(), kReal_number);
 }
 
@@ -222,7 +222,7 @@ TEST(LEXICAL_PARSER, real_number_5) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "0.333e+10");
+    ASSERT_EQ(token_stream.front().to_str(), "0.333e+10");
     ASSERT_EQ(token_stream.front().Type(), kReal_number);
 }
 
@@ -235,7 +235,7 @@ TEST(LEXICAL_PARSER, real_number_6) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "0.333E+10");
+    ASSERT_EQ(token_stream.front().to_str(), "0.333E+10");
     ASSERT_EQ(token_stream.front().Type(), kReal_number);
 }
 
@@ -248,7 +248,7 @@ TEST(LEXICAL_PARSER, real_number_7) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "3E+10");
+    ASSERT_EQ(token_stream.front().to_str(), "3E+10");
     ASSERT_EQ(token_stream.front().Type(), kReal_number);
 }
 
@@ -261,7 +261,7 @@ TEST(LEXICAL_PARSER, rinteger_number_1) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 1);
-    ASSERT_EQ(token_stream.front().val(), "123456789");
+    ASSERT_EQ(token_stream.front().to_str(), "123456789");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
 
@@ -274,11 +274,11 @@ TEST(LEXICAL_PARSER, rinteger_number_2) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 2);
-    ASSERT_EQ(token_stream.front().val(), "123456789");
+    ASSERT_EQ(token_stream.front().to_str(), "123456789");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "123456789");
+    ASSERT_EQ(token_stream.front().to_str(), "123456789");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
 
@@ -291,31 +291,31 @@ TEST(LEXICAL_PARSER, mixed_number) {  // NOLINT
 
     ASSERT_TRUE(result.Ok());
     ASSERT_EQ(token_stream.size(), 7);
-    ASSERT_EQ(token_stream.front().val(), "123456789");
+    ASSERT_EQ(token_stream.front().to_str(), "123456789");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "0.333e-2");
+    ASSERT_EQ(token_stream.front().to_str(), "0.333e-2");
     ASSERT_EQ(token_stream.front().Type(), kReal_number);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "0X333333");
+    ASSERT_EQ(token_stream.front().to_str(), "0X333333");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "0.333E-2");
+    ASSERT_EQ(token_stream.front().to_str(), "0.333E-2");
     ASSERT_EQ(token_stream.front().Type(), kReal_number);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "0.333");
+    ASSERT_EQ(token_stream.front().to_str(), "0.333");
     ASSERT_EQ(token_stream.front().Type(), kReal_number);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "0x333333");
+    ASSERT_EQ(token_stream.front().to_str(), "0x333333");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 
     token_stream.pop_front();
-    ASSERT_EQ(token_stream.front().val(), "0b11111");
+    ASSERT_EQ(token_stream.front().to_str(), "0b11111");
     ASSERT_EQ(token_stream.front().Type(), kInteger);
 }
 }  // namespace hzcc::lexical

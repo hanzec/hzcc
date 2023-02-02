@@ -38,7 +38,7 @@ class Cast : public utils::AutoRegFactory<ICastRule, std::string> {
     static StatusOr<std::unique_ptr<Expr>> apply(
         bool require_rvalue,                     // NOLINT
         std::unique_ptr<Expr> rhs,               // NOLINT
-        const std::shared_ptr<Type>& lhs_type);  // NOLINT
+        QualTypePtr lhs_type);  // NOLINT
 
   private:
     /**

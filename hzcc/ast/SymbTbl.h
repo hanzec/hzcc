@@ -20,7 +20,8 @@ class StructType;
 
 class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
   public:
-    SymbTbl(TypePtr return_type, std::weak_ptr<SymbTbl> parent);
+    SymbTbl(QualTypePtr return_type,         // NOLINT
+            std::weak_ptr<SymbTbl> parent);  // NOLINT
 
     /**
      * @brief Return the parent of this symbol table.
@@ -31,39 +32,40 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
 
     /**
      * @brief Check if the symbol table has a symbol as type with the given
-     * name.
-     * @param name The name of the symbol.
+     * to_str.
+     * @param name The to_str of the symbol.
      * @return true if type is existed.
      * @return false if type is not existed.
      */
     bool has_type(std::string_view name);
 
     /**
-     * @brief Get the type's shared_ptr with the given name.
+     * @brief Get the type's shared_ptr with the given to_str.
      *
-     * @param name The name of the type.
+     * @param name The to_str of the type.
      *
      * @details We are searching the symbol table from the current symbol table
      * first, if not found, then we will search the upper symbol table. Until
      * reaching root symbol table.
      *
-     * @return std::shared_ptr<Type> The type with the given name or nullptr if
-     * not found.
+     * @return std::shared_ptr<Type> The type with the given to_str or nullptr
+     * if not found.
      */
-    TypePtr get_type(std::string_view name);
+    QualTypePtr get_type(std::string_view name,
+                         const std::list<Qualifier>& qualifiers = {});
 
     /**
      * @brief Register a type to the symbol table.
      * @param name The shared_ptr of the type to be registered.
      * @return true if type is successfully registered.
-     * @return false if type name is existed as other type or as registered
+     * @return false if type to_str is existed as other type or as registered
      * variable identifier.
      */
     StructTypePtr add_struct_type(std::string_view name);
 
     /**
-     * @brief Check if the symbol table has a variable with the given name.
-     * @param name The name of the variable.
+     * @brief Check if the symbol table has a variable with the given to_str.
+     * @param name The to_str of the variable.
      * @param current_scope true when limit the search to the current scope.
      * @return true if variable is existed.
      * @return false if variable is not existed.
@@ -74,25 +76,16 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
      * @brief Register a variable to the symbol table.
      * @param pos the line number of the variable.
      * @param name the identifier of the variable to be registered.
-     * @param token_types The shared_ptr of the variable types to be registered.
+     * @param type The shared_ptr of the variable types to be registered.
      * @return true if variable is successfully registered.
-     * @return false if variable name is existed as other variable or as
+     * @return false if variable to_str is existed as other variable or as
      * registered type identifier.
      */
-    void add_var(Position pos,                              // NOLINT
-                 std::string_view name,                     // NOLINT
-                 std::shared_ptr<ast::Type>& token_types);  // NOLINT
+    void add_var(Position pos,            // NOLINT
+                 QualTypePtr& type,       // NOLINT
+                 std::string_view name);  // NOLINT
 
-    int getVariableDeclLine(const std::string& name);
-
-    /**
-     * @brief Get the variable's shared_ptr with the given name.
-     * @param name The name of the variable.
-     * @return std::shared_ptr<type> The variable with the given name or
-     * nullptr if not found.
-     */
-    std::shared_ptr<ast::Type> getVariableType(const std::string& name);
-
+    Position var_def_pos(std::string_view name);
     /**
      * @brief Enter a new symbol table.
      * @return std::shared_ptr<SymbTbl> The new symbol table for the new
@@ -100,14 +93,14 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
      */
     std::shared_ptr<SymbTbl> enter_scope();
 
-    std::shared_ptr<ast::Type> ret_type();
+    QualTypePtr ret_type();
 
   private:
     /**
      * Current Scoped Information
      */
     bool _is_function_scope = false;
-    std::shared_ptr<ast::Type> _return_type;
+    QualTypePtr _return_type;
 
     /**
      * Upper scope information
@@ -117,7 +110,7 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
     /**
      * Variables table
      */
-    absl::flat_hash_map<std::string, std::pair<Position, TypePtr>>
+    absl::flat_hash_map<std::string, std::pair<Position, QualTypePtr>>
         _variable_lookup_table;
 
     /**
@@ -126,5 +119,12 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
     absl::flat_hash_map<std::string, TypePtr> _named_types;
     std::list<std::shared_ptr<SymbTbl>> _scoped_contexts;
 };
+
+/** ---------------------------------------------------------------
+ * ## Inlined Function Implementations                          ###
+ *  --------------------------------------------------------------- */
+
+ALWAYS_INLINE QualTypePtr SymbTbl::ret_type() { return _return_type; }
+
 }  // namespace hzcc::ast
 #endif  // HZCC_SOURCE_AST_SYMBOL_TABLE_H

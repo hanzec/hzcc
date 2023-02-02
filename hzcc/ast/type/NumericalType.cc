@@ -13,11 +13,10 @@
 
 namespace hzcc::ast {
 
-NumericalType::NumericalType(PrimitiveType type,                     // NOLINT
-                             const std::list<Attribute>& attr_list)  // NOLINT
-    : Type(TypeCategory::kNumerical, attr_list), _type(type) {}
+NumericalType::NumericalType(PrimitiveType type)  // NOLINT
+    : Type(TypeCategory::Numerical), _type(type) {}
 
-std::string NumericalType::Name() const {
+std::string NumericalType::to_str() const {
     static constexpr int KPermittedTypeTableSize = 12;
     static constexpr std::array<const char*, KPermittedTypeTableSize>
         kPrimitiveTypeTable{"int",        "char",      "float",
@@ -28,7 +27,7 @@ std::string NumericalType::Name() const {
 }
 
 bool NumericalType::is_same(const Type& rhs) const {
-    if (rhs.is_numerical()) {
+    if (rhs.is<TypeCategory::Numerical>()) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-static-cast-downcast"
         return GetTypeId() ==

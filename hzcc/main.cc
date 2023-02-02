@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
                               << std::setw(5) << token.loc().first
                               << std::setw(0) << " Token " << std::setw(3)
                               << magic_enum::enum_integer(token.Type())
-                              << std::setw(0) << " Text " << token.val(true)
+                              << std::setw(0) << " Text " << token.to_str(true)
                               << std::endl;
                 }
             } else {
@@ -124,7 +124,7 @@ int main(int argc, char* argv[]) {
                             << std::setw(5) << token.loc().first
                             << std::setw(0) << " Token " << std::setw(3)
                             << magic_enum::enum_integer(token.Type())
-                            << std::setw(0) << " Text " << token.val(true)
+                            << std::setw(0) << " Text " << token.to_str(true)
                             << std::endl;
                 }
                 outfile.close();

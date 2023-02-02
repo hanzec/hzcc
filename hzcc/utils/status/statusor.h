@@ -423,15 +423,15 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
         return *this;
     }
 
-    // Constructs the inner value `T` in-place using the provided args, using
-    // the `T(args...)` constructor.
+    // Constructs the inner value `T` in-place using the provided params, using
+    // the `T(params...)` constructor.
     template <typename... Args>
     explicit StatusOr(std::in_place_t, Args&&... args);
     template <typename U, typename... Args>
     explicit StatusOr(std::in_place_t, std::initializer_list<U> ilist,
                       Args&&... args);
 
-    // Constructs the inner value `T` in-place using the provided args, using
+    // Constructs the inner value `T` in-place using the provided params, using
     // the `T(U)` (direct-initialization) constructor. This constructor is only
     // valid if `T` can be constructed from a `U`. Can accept move or copy
     // constructors.
@@ -583,8 +583,8 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
 
     // StatusOr<T>::emplace()
     //
-    // Reconstructs the inner value T in-place using the provided args, using
-    // the T(args...) constructor. Returns reference to the reconstructed `T`.
+    // Reconstructs the inner value T in-place using the provided params, using
+    // the T(params...) constructor. Returns reference to the reconstructed `T`.
     template <typename... Args>
     T& emplace(Args&&... args) {
         if (ok()) {

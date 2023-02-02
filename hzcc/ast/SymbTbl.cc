@@ -13,8 +13,7 @@
 #include "utils/logging.h"
 
 namespace hzcc::ast {
-SymbTbl::SymbTbl(std::shared_ptr<ast::Type> return_type,
-                 std::weak_ptr<SymbTbl> parent)
+SymbTbl::SymbTbl(QualTypePtr return_type, std::weak_ptr<SymbTbl> parent)
     : _upper_scope_table(std::move(parent)),
       _return_type(std::move(return_type)) {}
 
@@ -40,20 +39,23 @@ StructTypePtr SymbTbl::add_struct_type(std::string_view name) {
     } else {
         auto new_type = std::make_shared<ast::StructType>(name);
 
-        _named_types.insert(std::make_pair("struct " + std::string(name), new_type));
+        _named_types.insert(
+            std::make_pair("struct " + std::string(name), new_type));
         return new_type;
     }
 }
 
 // NOLINTNEXTLINE(misc-no-recursion)
-std::shared_ptr<ast::Type> SymbTbl::get_type(std::string_view name) {
+QualTypePtr SymbTbl::get_type(std::string_view name,
+                              const std::list<Qualifier>& qualifiers) {
     if (!has_type(name)) return nullptr;
     if (_named_types.find(name) != _named_types.end()) {
-        return _named_types[name];
+        return std::make_shared<QualType>(_named_types[name], qualifiers);
     } else {
         if (_upper_scope_table.lock() != nullptr) {
             return _upper_scope_table.lock()->get_type(name);
         } else {
+            LOG(ERROR) << "Variable " << name << " has not been defined";
             return nullptr;
         }
     }
@@ -74,31 +76,18 @@ bool SymbTbl::has_var(std::string_view name, bool current_scope) {
     }
 }
 
-void SymbTbl::add_var(Position pos,                               // NOLINT
-                      std::string_view name,                      // NOLINT
-                      std::shared_ptr<ast::Type>& token_types) {  // NOLINT
+void SymbTbl::add_var(Position pos,             // NOLINT
+                      QualTypePtr& type,        // NOLINT
+                      std::string_view name) {  // NOLINT
+    DLOG_ASSERT(type != nullptr)
+        << " Variable " << name << " has passed a nullptr type";
     DLOG_ASSERT(!has_type(name) || name.find("struct ") != std::string::npos)
         << " Variable " << name << " is already defined as a type";
-    DLOG_ASSERT(token_types != nullptr)
-        << " Variable " << name << " has passed a nullptr type";
     DLOG_ASSERT(!has_var(name, true))
         << " Variable " << name << " has already been defined";
     DVLOG(SYNTAX_LOG_LEVEL) << "Adding variable " << name;
     _variable_lookup_table.emplace(
-        std::make_pair(name, std::make_pair(pos, token_types)));
-}
-
-// NOLINTNEXTLINE(misc-no-recursion)
-std::shared_ptr<ast::Type> SymbTbl::getVariableType(const std::string& name) {
-    if (_variable_lookup_table.find(name) != _variable_lookup_table.end()) {
-        return _variable_lookup_table[name].second;
-    } else {
-        if (_upper_scope_table.lock() != nullptr) {
-            return _upper_scope_table.lock()->getVariableType(name);
-        } else {
-            LOG(FATAL) << "Variable " << name << " has not been defined";
-        }
-    }
+        std::make_pair(name, std::make_pair(pos, type)));
 }
 
 std::shared_ptr<SymbTbl> SymbTbl::enter_scope() {
@@ -109,22 +98,21 @@ std::shared_ptr<SymbTbl> SymbTbl::enter_scope() {
 }
 
 // NOLINTNEXTLINE(misc-no-recursion)
-int SymbTbl::getVariableDeclLine(const std::string& name) {
+Position SymbTbl::var_def_pos(std::string_view name) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
     INTERNAL_LOG_IF(FATAL, has_var(name, false))
         << "Variable " << name << " has not been defined";
 #endif
 
     if (_variable_lookup_table.find(name) != _variable_lookup_table.end()) {
-        return _variable_lookup_table[name].first.second;
+        return _variable_lookup_table[name].first;
     } else {
         if (_upper_scope_table.lock() != nullptr) {
-            return _upper_scope_table.lock()->getVariableDeclLine(name);
+            return _upper_scope_table.lock()->var_def_pos(name);
         } else {
             LOG(FATAL) << "Variable " << name << " has not been defined";
         }
     }
 }
-std::shared_ptr<ast::Type> SymbTbl::ret_type() { return _return_type; }
 
 }  // namespace hzcc::ast

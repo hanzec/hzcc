@@ -1,21 +1,21 @@
 //
 // Created by chen_ on 2022/6/13.
 //
-#include <magic_enum.hpp>
-#include <glog/logging.h>
 #include <array>
 #include <exception>
+#include <glog/logging.h>
+#include <magic_enum.hpp>
 #include <memory>
 #include <ostream>
 #include <string>
 #include <unordered_map>
 #include <utility>
 
+#include "ast/Stmt.h"
 #include "ast/cast/Cast.h"
 #include "ast/cast/ICastRule.h"
 #include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
-#include "ast/Stmt.h"
 #include "enums.h"
 #include "utils/factory.h"
 #include "utils/status/statusor.h"
@@ -40,27 +40,26 @@ namespace hzcc::ast {
  */
 class WiderTypeCast : public ICastRule {
 public:
-  bool CouldApplyTo(const std::shared_ptr<Type> &lhs,            // NOLINT
-                    const std::unique_ptr<Expr> &rhs) override { // NOLINT
+  bool CouldApplyTo(const ExprPtr &rhs, const QualTypePtr &lhs) override { // NOLINT
     auto rhs_type = rhs->type();
 
     // builtin type only
-    if (lhs->is_numerical() && rhs_type->is_numerical()) {
-      auto lhs_builtin = std::dynamic_pointer_cast<NumericalType>(lhs);
-      auto rhs_builtin = std::dynamic_pointer_cast<NumericalType>(rhs_type);
+    if (lhs->is<TypeCategory::Numerical>() && rhs_type->is<TypeCategory::Numerical>()) {
+      auto lhs_builtin = lhs->as<NumericalType>();
+      auto rhs_builtin = rhs_type->as<NumericalType>();
       return kCastTable[lhs_builtin->GetTypeId()][rhs_builtin->GetTypeId()];
     } else {
       return false;
     }
   }
 
-  StatusOr<std::unique_ptr<CastExpr>> Apply(std::unique_ptr<Expr> node, // NOLINT
-                                            const std::shared_ptr<Type> &to) override {
-    auto rhs_type = std::dynamic_pointer_cast<NumericalType>(node->type());
+  StatusOr<std::unique_ptr<CastExpr>> Apply(ExprPtr node,                     // NOLINT
+                                            const QualTypePtr &to) override { // NOLINT
+    auto rhs_type = node->type()->as<NumericalType>();
     if (rhs_type->GetTypeId() < magic_enum::enum_integer(PrimitiveType::kFloat)) {
       return std::make_unique<IntegralCast>(node->loc(), to, std::move(node));
     } else {
-      LOG(WARNING) << "WiderTypeCast: " << rhs_type->Name() << " to " << to->Name() << " is not impl.";
+      LOG(WARNING) << "WiderTypeCast: " << rhs_type->to_str() << " to " << to->to_str() << " is not impl.";
       return nullptr;
     }
   }

@@ -42,7 +42,7 @@ class AutoRegFactory {
     /**
      * @brief Helper class for expose the private method outside
      *
-     * @param cmd the name of the command
+     * @param cmd the to_str of the command
      * @param desc the description of the command
      * @param obj the reference of std::function for creating the command object
      */

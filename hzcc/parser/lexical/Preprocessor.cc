@@ -92,7 +92,7 @@
 //                // delete string
 //                line.erase(start_pos, end_pos - start_pos + 1);
 //            } else if (std::string::npos != (end_pos = line.find("define"))) {
-//                // get macro name
+//                // get macro to_str
 //                auto macro_name_start = line.find_first_of(' ', end_pos);
 //                auto macro_name_end =
 //                    line.find_first_of(' ', macro_name_start + 1);
@@ -110,7 +110,7 @@
 //                // delete string
 //                line.erase(start_pos, line.size() - start_pos);
 //            } else if (std::string::npos != (end_pos = line.find("undef"))) {
-//                // get macro name
+//                // get macro to_str
 //                auto macro_name_start = line.find_first_of(' ', end_pos);
 //                auto macro_name_end =
 //                    line.find_first_of(' ', macro_name_start + 1);
@@ -124,7 +124,7 @@
 //                // delete string
 //                line.erase(start_pos, end_pos - start_pos + 1);
 //            } else if (std::string::npos != (end_pos = line.find("ifdef"))) {
-//                // get macro name
+//                // get macro to_str
 //                auto macro_name_start = line.find_first_of(' ', end_pos);
 //                auto macro_name_end =
 //                    line.find_first_of(' ', macro_name_start + 1);
@@ -153,7 +153,7 @@
 //                    }
 //                }
 //            } else if (std::string::npos != (end_pos = line.find("ifdef"))){
-//                // get macro name
+//                // get macro to_str
 //                auto macro_name_start = line.find_first_of(' ', end_pos);
 //                auto macro_name_end =
 //                    line.find_first_of(' ', macro_name_start + 1);

@@ -18,7 +18,7 @@
 //        attr_types.emplace_back(type.Type());
 //    }
 //
-//    if (base_type == nullptr || !hasType(base_type->Name())) {
+//    if (base_type == nullptr || !hasType(base_type->to_str())) {
 //        DLOG(ERROR) << "type not found";
 //        return nullptr;
 //    } else {
@@ -34,92 +34,49 @@
 //    }
 //}
 //
-//Ctx::TypePtr Ctx::getFuncPtrType(const std::string &name) { return nullptr; }
+//Ctx::TypePtr Ctx::getFuncPtrType(const std::string &to_str) { return nullptr; }
 //
 //
 //
 //
 //
-//Ctx::TypePtr Ctx::getVariableType(const std::string &name) {
-//    if (hasVariable(name, false)) {
-//        return _current_context.lock()->getVariableType(name);
+//Ctx::TypePtr Ctx::getVariableType(const std::string &to_str) {
+//    if (hasVariable(to_str, false)) {
+//        return _current_context.lock()->getVariableType(to_str);
 //    } else {
-//        DLOG(ERROR) << "Variable " << name << " not found";
+//        DLOG(ERROR) << "Variable " << to_str << " not found";
 //        return nullptr;
 //    }
 //}
 //
-//std::pair<bool, int> Ctx::getVariableInfo(const std::basic_string<char> &name) {
-//    DLOG_ASSERT(name.empty() == false) << "Variable name cannot be empty";
-//    DLOG_ASSERT(hasVariable(name, false))
-//        << "Variable " << name << " not found";
+
 //
-//    if (_current_context.lock() != nullptr &&
-//        _current_context.lock()->hasVariable(name, false)) {
-//        return std::make_pair(
-//            false, _current_context.lock()->getVariableDeclLine(name));
-//    } else {
-//        DLOG(ERROR) << "Variable " << name << " not found";
-//        return std::make_pair(false, 0);
-//    }
-//}
 //
-//void Ctx::addVariable(Position pos, const std::string &name,
-//                      Ctx::TypePtr &variable_type) {
-//    DLOG_ASSERT(_current_context.lock() != nullptr)
-//        << " should never call add_var when in root context";
-//    DLOG_ASSERT(!_current_context.lock()->hasVariable(name, true))
-//        << "variable already exists";
-//    _current_context.lock()->addVariable(pos, name, variable_type);
-//}
 //
-//bool Ctx::hasFunction(const std::string &name) {
-//    if (_function_def_table.find(name) != _function_def_table.end()) {
-//        return true;
-//    } else {
-//        return false;
-//    }
-//}
-//
-//bool Ctx::hasFunctionBody(const std::string &name) {
-//    if (_function_def_table.find(name + "_decl") != _function_def_table.end()) {
-//        return true;
-//    } else {
-//        return false;
-//    }
-//}
-//
-//bool Ctx::addFunction(Position line_no, const std::string &name,
+//bool Ctx::addFunction(Position line_no, const std::string &to_str,
 //                      Ctx::TypePtr &output,
 //                      const std::list<Ctx::TypePtr> &argument_list) {
 //    if (output == nullptr) {
-//        DLOG(FATAL) << "Output type is nullptr for function " << name;
+//        DLOG(FATAL) << "Output type is nullptr for function " << to_str;
 //    }
 //
-//    if (_function_def_table.find(name) != _function_def_table.end()) {
-//        DLOG(ERROR) << "Function " << name << " already exists";
+//    if (_function_def_table.find(to_str) != _function_def_table.end()) {
+//        DLOG(ERROR) << "Function " << to_str << " already exists";
 //        return false;
 //    } else {
-//        DVLOG(AST_LOG_LEVEL) << "Add new Function [" << name << "]";
+//        DVLOG(AST_LOG_LEVEL) << "Add new Function [" << to_str << "]";
 //        _function_def_table.insert(std::make_pair(
-//            name, std::make_tuple(output, argument_list, line_no)));
+//            to_str, std::make_tuple(output, argument_list, line_no)));
 //        return true;
 //    }
 //}
 //
 //std::tuple<ast::TypePtr, std::list<ast::TypePtr>, Position>
-//Ctx::func_def_info(const std::basic_string<char> &name) {
-//    if (hasFunction(name)) {
-//        return {
-//            _function_def_table[name],
-//        };
-//    } else {
-//        DVLOG(SYNTAX_LOG_LEVEL) << "Function " << name << " does not exist";
-//        return {nullptr, {}, {-1, -1}};
-//    }
+//Ctx::func_def_info(const std::basic_string<char> &to_str) {
+
 //}
 //void Ctx::addDecl(std::unique_ptr<ast::IDeclStmt> type) {
-//    if (type->IsDeclNode() && !type->IsFuncDecl()) {
+//    if (type->is_decl() && !type->IsFuncDecl()) {
 //        auto vartype = type->type();
 //        _current_context.lock()->addVariable(type->Location(), type->DeclName(),
 //                                             vartype);

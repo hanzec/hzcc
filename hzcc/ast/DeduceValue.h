@@ -27,25 +27,25 @@ enum DeduceValueType {
 class DeduceValue {
   public:
     /**
-     * @brief Construct a new Deduce val object.
+     * @brief Construct a new Deduce to_str object.
      * @param value value of the deduce value as character.
      */
     explicit DeduceValue(char value);
 
     /**
-     * @brief Construct a new Deduce val object.
+     * @brief Construct a new Deduce to_str object.
      * @param value value of the deduce value in real number
      */
     explicit DeduceValue(double value);
 
     /**
-     * @brief Construct a new Deduce val object.
+     * @brief Construct a new Deduce to_str object.
      * @param value value of the deduce value in integer
      */
     explicit DeduceValue(int64_t value);
 
     /**
-     * @brief Construct a new Deduce val object.
+     * @brief Construct a new Deduce to_str object.
      * @param type type of the deduce value
      * @param value value of the deduce value in string format
      */

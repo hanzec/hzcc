@@ -70,7 +70,7 @@ void Token::Type(TokenType new_type) noexcept { _token_type = new_type; }
 
 TokenType Token::Type() const noexcept { return _token_type; }
 
-std::string Token::val(bool escape) const noexcept {
+std::string Token::to_str(bool escape) const noexcept {
     if (_token_val_ref == nullptr) {
         return to_string(_token_type);
     } else {

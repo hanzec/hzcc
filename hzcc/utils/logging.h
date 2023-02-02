@@ -45,7 +45,7 @@ void initLogging(char argv[]);
                       << "]<" << std::setw(3) << (token).loc().first + 1      \
                       << "," << std::setw(3) << (token).loc().second << ">"   \
                       << std::setw(-1) << ":@ " << std::left << std::setw(10) \
-                      << (token).val(true) << " @\033[0m" << std::setw(-1)
+                      << (token).to_str(true) << " @\033[0m" << std::setw(-1)
 
 /**
  * ------------------------------------------------------------------------

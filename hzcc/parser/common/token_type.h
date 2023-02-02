@@ -99,6 +99,7 @@ enum class PACKED TokenType {
     kSizeOf,
     kUnion,
     kEnum,
+    kAtomic,
     kTokenType_KEYWORD_END,
 
     kUnknown = 999

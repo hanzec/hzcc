@@ -39,7 +39,7 @@ StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
                          utils::ParseCondition(context, tokens));
 
     // if condition could be converted to int
-    if (!condition->type()->is_numerical()) {
+    if (!condition->type()->is<TypeCategory::Numerical>()) {
         return syntax::utils::TokenErr(
             cond_token, "if condition has non-numeric type void");
     }
@@ -89,7 +89,7 @@ StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
             HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
 
             // check if else-if condition is valid
-            if (else_if_condition->type()->is<TypeCategory::kNumerical>()) {
+            if (else_if_condition->type()->is<TypeCategory::Numerical>()) {
                 return syntax::utils::TokenErr(
                     else_if_token, "if condition has non-numeric type void");
             }

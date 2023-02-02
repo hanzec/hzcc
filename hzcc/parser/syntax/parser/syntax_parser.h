@@ -5,7 +5,7 @@
 #include "parser/parser.h"
 #include "utils/status/statusor.h"
 namespace hzcc::syntax::parser {
-using VarPack = std::pair<ast::TypePtr, Token>;
+using VarPack = std::pair<ast::QualTypePtr, Token>;
 
 class ParserBase {
   public:
@@ -19,11 +19,9 @@ class ParserBase {
         return parse_impl(std::move(ctx), token);
     };
 
-    [[nodiscard]] size_t ParserID() const { return _id; }
+    [[nodiscard]] size_t id() const { return _id; }
 
-    [[nodiscard]] std::string_view GetASTNodeName() const {
-        return _astNodeName;
-    }
+    [[nodiscard]] std::string_view name() const { return _astNodeName; }
 
   protected:
     virtual StatusOr<ast::StmtPtr> parse_impl(SyntaxCtx ctx,
@@ -48,18 +46,20 @@ class DeclStatement : public ParserBase {
   protected:
     static StatusOr<ast::StmtPtr> parse_var(TokenList& tokens,
                                             SyntaxCtx& context,
-                                            ast::TypePtr base_type,
-                                            ast::TypePtr curr_type);
+                                            ast::QualTypePtr base_type,
+                                            ast::QualTypePtr curr_type);
+
     static StatusOr<ast::StmtPtr> parse_func(TokenList& tokens,
                                              SyntaxCtx& context,
-                                             ast::TypePtr return_type);
+                                             ast::QualTypePtr return_type);
 
     static StatusOr<ast::RecordDEclPtr> parse_struct(SyntaxCtx& context,
                                                      TokenList& tokens);
 
   private:
-    static StatusOr<VarPack> parse_type(TokenList& tokens, SyntaxCtx& context,
-                                        ast::TypePtr& base_type);  // NOLINT
+    static StatusOr<VarPack> parse_type(TokenList& tokens,             // NOLINT
+                                        SyntaxCtx& context,            // NOLINT
+                                        ast::QualTypePtr& base_type);  // NOLINT
 
     bool _is_fist_declare = true;
     uint_fast32_t attribute_size_ = 0;

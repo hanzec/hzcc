@@ -8,6 +8,7 @@
 #include "enums.h"
 namespace hzcc::ast {
 class Expr;
+class QualType;
 
 /**
  * @class Type
@@ -19,8 +20,6 @@ class Type : public std::enable_shared_from_this<Type> {
 
     virtual ~Type() = default;
 
-    std::shared_ptr<Type> type_of(std::list<Attribute> attr) const;
-
     /**
      * @brief The unique id of the node.
      * @return The unique id of the node.
@@ -29,89 +28,46 @@ class Type : public std::enable_shared_from_this<Type> {
         return reinterpret_cast<uintptr_t>(this);
     };
 
-    /**
-     * @brief Check if the type is an Array.
-     * @return True if the type is an Array, false otherwise.
-     */
-    [[nodiscard]] virtual bool is_arr() const { return false; };
-
-    /**
-     * @brief Check if the type is a Struct.
-     * @return True if the type is a Struct, false otherwise.
-     */
-    [[nodiscard]] virtual bool is_struct() const { return false; };
-
-    /**
-     * @brief Check if the type is a Function pointer type.
-     * @return True if the type is a Function pointer type, false otherwise.
-     */
-    [[nodiscard]] virtual bool is_func_ptr() const { return false; };
-
-    /**
-     * @brief Check if the type is a Union type.
-     * @return True if the type is a Union type, false otherwise.
-     */
-    [[nodiscard]] virtual bool IsUnion() const { return false; };
-
-    /**
-     * @brief Check if the type is a pointer type
-     * @return True if the type is a pointer type, false otherwise.
-     */
-    [[nodiscard]] virtual bool is_ptr() const { return false; };
-
-    /**
-     * @brief Check if the type is a builtin type.
-     * @return True if the type is a builtin type, false otherwise.
-     */
-    [[nodiscard]] virtual bool is_numerical() const { return false; };
-
-    virtual std::string Dump();
-
-    /**
-     * @brief Check if the type is a constant value.
-     * @return
-     */
-    template <Attribute type>
-    [[nodiscard]] bool is() const {
-        return _attrs[magic_enum::enum_integer(type)];
-    }
-
     template <TypeCategory type>
-    [[nodiscard]] bool is() const {
+    [[nodiscard]] constexpr bool is() const {
         return _typeCategory == type;
     }
 
     /**
-     * @brief Get the unique name of the node in form of
+     * @brief Get the unique to_str of the node in form of
      *         "[__TYPE_NAME__:__TYPE_ID__]"
-     * @return The unique name of the node
+     * @return The unique to_str of the node
      */
-    [[nodiscard]] std::string UniqueName() const { return "[" + Name() + "]"; };
+    [[nodiscard]] std::string UniqueName() const {
+        return "[" + to_str() + "]";
+    };
 
     /**
-     * @brief Get the declare name of the type.
-     * name.
-     * @return std::string The declare name of the type.
+     * @brief Get the declare to_str of the type.
+     * to_str.
+     * @return std::string The declare to_str of the type.
      */
-    [[nodiscard]] virtual std::string Name() const = 0;
+    [[nodiscard]] virtual std::string to_str() const = 0;
 
-    std::list<Attribute> GetAttributes();
+    // overload operator ==
+    [[nodiscard]] bool operator==(const Type& rhs) const {
+        return is_same(rhs);
+    }
 
-    // overload operator == for RetType
-    bool operator==(const Type& type) const { return is_same(type); };
-
-    // overload operator != for RetType
-    bool operator!=(const Type& type) const { return !is_same(type); };
+    [[nodiscard]] bool operator!=(const Type& rhs) const {
+        return !is_same(rhs);
+    }
 
   protected:
+    friend class QualType;
+
     /**
      * @brief Constructor of type. The abstract class should never be
      * initialized directly.
      * @param base_type The base type of the type.
      * @param attrs The attributes of the type.
      */
-    explicit Type(TypeCategory typeCategory,
-                  const std::list<Attribute>& attrs = {});
+    explicit Type(TypeCategory typeCategory) : _typeCategory(typeCategory){};
 
     /**
      * @brief Check if the type is the same as another type.
@@ -121,10 +77,97 @@ class Type : public std::enable_shared_from_this<Type> {
 
   private:
     TypeCategory _typeCategory;
-    std::bitset<magic_enum::enum_count<Attribute>()> _attrs;
 };
 
 using TypePtr = std::shared_ptr<Type>;
+
+class QualType : public std::enable_shared_from_this<QualType> {
+  public:
+    /**
+     * @brief Construct a new QualType object.
+     *
+     * @param base_type The base type of the qualifier type.
+     * @param attrs The attributes of the qualifier type.
+     */
+    QualType(std::shared_ptr<Type> base_type,         // NOLINT
+             const std::list<Qualifier>& attrs = {})  // NOLINT
+        : _base_type(std::move(base_type)) {
+        for (const auto& attr : attrs) {
+            _qualifier[magic_enum::enum_integer(attr)] = true;
+        }
+    }
+
+    /**
+     * @brief Get QualType with same base type but different qualifiers.
+     * @return TypePtr The base type of the qualifier type.
+     */
+    std::shared_ptr<QualType> type_of(const std::list<Qualifier>& attrs) const {
+        auto ret = std::make_shared<QualType>(_base_type);
+        for (const auto& attr : attrs) {
+            ret->_qualifier[magic_enum::enum_integer(attr)] = true;
+        }
+        return ret;
+    }
+
+    template <TypeCategory type>
+    [[nodiscard]] constexpr bool is() const {
+        return _base_type->is<type>();
+    }
+
+    template <typename T,                                // NOLINT
+              std::enable_if_t<                          // NOLINT
+                  std::is_base_of_v<Type, T>, int> = 0>  // NOLINT
+    [[nodiscard]] constexpr std::shared_ptr<T> as() const {
+        return std::static_pointer_cast<T>(_base_type);
+    }
+
+    /**
+     * @brief Get the declare to_str of the type.
+     * @param without_attr If true, the attribute will not be included in the
+     * to_str.
+     * @return std::string The declare to_str of the type.
+     */
+    [[nodiscard]] std::string to_str() const {
+        std::string ret;
+        if (is<Qualifier::CONST>()) {
+            ret += "const ";
+        }
+        if (is<Qualifier::VOLATILE>()) {
+            ret += "volatile ";
+        }
+        if (is<Qualifier::RESTRICT>()) {
+            ret += "restrict ";
+        }
+        if (is<Qualifier::ATOMIC>()) {
+            ret += "_Atomic ";
+        }
+        ret += _base_type->to_str();
+        return ret;
+    }
+
+    /**
+     * @brief Check if the type is a constant value.
+     * @return
+     */
+    template <Qualifier type>
+    [[nodiscard]] bool is() const {
+        return _qualifier[magic_enum::enum_integer(type)];
+    }
+
+    // overload operator ==
+    bool operator==(const QualType& rhs) const {
+        return _base_type->is_same(*rhs._base_type);
+    }
+
+    // overload operator !=
+    bool operator!=(const QualType& rhs) const { return !(*this == rhs); }
+
+  private:
+    std::shared_ptr<Type> _base_type;
+    std::bitset<magic_enum::enum_count<Qualifier>()> _qualifier;
+};
+
+using QualTypePtr = std::shared_ptr<QualType>;
 
 /**
  * @brief The BuiltinType class
@@ -132,17 +175,15 @@ using TypePtr = std::shared_ptr<Type>;
  */
 class NumericalType : public Type {
   public:
-    explicit NumericalType(
-        PrimitiveType type,                           // NOLINT
-        const std::list<Attribute>& attr_list = {});  // NOLINT
+    explicit NumericalType(PrimitiveType type);
 
     /**
-     * @brief Get the declare name of the type.
+     * @brief Get the declare to_str of the type.
      * @param without_attr If true, the attribute will not be included in the
-     * name.
-     * @return std::string The declare name of the type.
+     * to_str.
+     * @return std::string The declare to_str of the type.
      */
-    [[nodiscard]] std::string Name() const override;
+    [[nodiscard]] std::string to_str() const override;
 
     /**
      * @brief Get the type id of the type.
@@ -153,13 +194,6 @@ class NumericalType : public Type {
     };
 
     /**
-     * @brief Check if the type is a numerical type.
-     * @return True if the type is a numerical type, false otherwise.
-     */
-    [[nodiscard]] bool is_numerical() const override { return true; };
-
-  protected:
-    /**
      * @brief Check if the type is the same as another type.
      * @return True if the type is the same as another type, false otherwise.
      */
@@ -169,17 +203,155 @@ class NumericalType : public Type {
     const PrimitiveType _type;
 };
 
-template <PrimitiveType type>
-static TypePtr GetNumericalTypeOf() {
-    const static TypePtr char_type = std::make_shared<NumericalType>(type);
-    return char_type;
-}
-template <PrimitiveType T>
-static bool IsTypeOf(const ast::TypePtr& type) {
-    return type == GetNumericalTypeOf<T>();
+class ArrayType : public Type {
+  public:
+    ArrayType(std::unique_ptr<Expr> array_size,
+              std::shared_ptr<QualType> base_type);  // NOLINT
+
+    [[nodiscard]] std::shared_ptr<QualType> GetBaseType() const {
+        return _base_type;
+    }
+
+    [[nodiscard]] bool HasDeduceSize();
+
+    [[nodiscard]] uint64_t GetSize() const;
+
+    [[nodiscard]] const std::unique_ptr<ast::Expr>& GetArraySizeNode() const;
+
+    [[nodiscard]] bool is_same(const Type& type) const override;
+
+    /**
+     * @brief Get the declare to_str of the type.
+     * @param without_attr If true, the attribute will not be included in the
+     * to_str.
+     * @return std::string The declare to_str of the type.
+     */
+    [[nodiscard]] std::string to_str() const override;
+
+  private:
+    const std::unique_ptr<Expr> _size_node;
+    const std::shared_ptr<QualType> _base_type;
+};
+
+class PointerType : public Type {
+  public:
+    /**
+     * @brief Construct a new PointerType object.
+     *
+     * @param base_type The base type of the pointer.
+     * @param attrs The attributes of the pointer.
+     */
+    explicit PointerType(QualTypePtr base_type);
+
+    /**
+     * @brief Get the base type of the pointer type.
+     * @return std::shared_ptr<Type> The base type of the pointer type.
+     */
+    [[nodiscard]] QualTypePtr base_type() const {
+        return _base_type;
+    };
+
+    /**
+     * @brief Get the declare to_str of the type.
+     * to_str.
+     * @return std::string The declare to_str of the type.
+     */
+    [[nodiscard]] std::string to_str() const override;
+
+    /**
+     * @brief Check if the type is the same as another type.
+     * @return True if the type is the same as another type, false otherwise.
+     */
+    [[nodiscard]] bool is_same(const Type& rhs) const override;
+
+  private:
+    QualTypePtr _base_type;
+};
+
+class IRecordType : public Type {
+  public:
+    /**
+     * @brief Construct a new IRecordType object.
+     * @param typeCategory The category of the type.
+     * @param attr_list The attributes of the type.
+     */
+    explicit IRecordType(TypeCategory typeCategory) : Type(typeCategory) {
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        INTERNAL_LOG_IF(FATAL, typeCategory != TypeCategory::Struct ||
+                                   typeCategory != TypeCategory::Union)
+            << "The type category must be Struct or Union if you want to "
+               "construct a IRecordType.";
+#endif
+    }
+
+    /**
+     * @brief add the record to the record type.
+     * @param name The to_str of the record.
+     * @param type The type of the record.
+     */
+    virtual void add_record(std::string_view name, const QualTypePtr& type) = 0;
+};
+
+class StructType : public IRecordType {
+  public:
+    explicit StructType(std::string_view name);  // NOLINT
+
+    /**
+     * @brief Get the declare to_str of the type.
+     * @param without_attr If true, the attribute will not be included in the
+     * to_str.
+     * @return std::string The declare to_str of the type.
+     */
+    [[nodiscard]] std::string to_str() const override;
+
+    void add_record(std::string_view name,              // NOLINT
+                    const QualTypePtr& type) override;  // NOLINT
+
+    QualTypePtr field_type(std::string_view name);
+
+    /**
+     * @brief Check if the type is the same as another type. This is the
+     * internal logic of IsSame. All comparison should use "==", not "is_same".
+     * @return True if the type is the same as another type, false otherwise.
+     */
+    [[nodiscard]] bool is_same(const Type& rhs) const override;
+
+  private:
+    const std::string _name;
+    std::list<std::tuple<std::string, QualTypePtr>> _localTypeList;
+};
+
+using StructTypePtr = std::shared_ptr<StructType>;
+
+class FuncPtrType : public Type {
+  public:
+    FuncPtrType(std::shared_ptr<Type>& return_type,
+                std::list<std::shared_ptr<Type>> args)
+        : Type({}), _args(std::move(args)), _return_type(return_type) {}
+
+  private:
+    std::shared_ptr<Type> _return_type;
+    std::list<std::shared_ptr<Type>> _args;
+};
+
+using QualTypePtr = std::shared_ptr<QualType>;
+
+static std::string ToString(const std::list<Type::TypePtr>& types) {
+    std::string ret = "(";
+    for (const auto& type : types) {
+        ret += type->to_str() + ",";
+    }
+    return ret.replace(ret.size() - 1, 1, ")");
 }
 
-ALWAYS_INLINE TypePtr GetNumericalTypeOf(PrimitiveType type) {
+template <PrimitiveType type>
+static QualTypePtr GetNumericalTypeOf() {
+    const static QualTypePtr char_type =
+        std::make_shared<QualType>(std::make_shared<NumericalType>(type));
+    return char_type;
+}
+
+ALWAYS_INLINE QualTypePtr GetNumericalTypeOf(PrimitiveType type) {
     switch (type) {
         case PrimitiveType::kInt:
             return GetNumericalTypeOf<PrimitiveType::kInt>();
@@ -208,166 +380,10 @@ ALWAYS_INLINE TypePtr GetNumericalTypeOf(PrimitiveType type) {
     }
 }
 
-class ArrayType : public Type {
-  public:
-    ArrayType(std::shared_ptr<Type> base_type,          // NOLINT
-              std::unique_ptr<Expr> array_size,         // NOLINT
-              const std::list<Attribute>& attrs = {});  // NOLINT
-
-    [[nodiscard]] bool is_arr() const override;
-
-    [[nodiscard]] std::shared_ptr<ast::Type> GetBaseType() const {
-        return _base_type;
-    }
-
-    [[nodiscard]] bool HasDeduceSize();
-
-    [[nodiscard]] uint64_t GetSize() const;
-
-    [[nodiscard]] const std::unique_ptr<ast::Expr>& GetArraySizeNode() const;
-
-    [[nodiscard]] bool is_same(const Type& type) const override;
-
-    /**
-     * @brief Get the declare name of the type.
-     * @param without_attr If true, the attribute will not be included in the
-     * name.
-     * @return std::string The declare name of the type.
-     */
-    [[nodiscard]] std::string Name() const override;
-
-  private:
-    const std::shared_ptr<ast::Type> _base_type;
-    const std::unique_ptr<ast::Expr> _size_node;
-};
-
-class PointerType : public Type {
-  public:
-    /**
-     * @brief Construct a new PointerType object.
-     *
-     * @param base_type The base type of the pointer.
-     * @param attrs The attributes of the pointer.
-     */
-    explicit PointerType(std::shared_ptr<Type> base_type,
-                         const std::list<Attribute>& attrs = {});
-
-    /**
-     * @brief Check if the type is a pointer type
-     * @return True if the type is a pointer type, false otherwise.
-     */
-    [[nodiscard]] bool is_ptr() const override { return true; };
-
-    /**
-     * @brief Get the base type of the pointer type.
-     * @return std::shared_ptr<Type> The base type of the pointer type.
-     */
-    [[nodiscard]] std::shared_ptr<Type> GetBaseType() const {
-        return _base_type;
-    };
-
-    /**
-     * @brief Get the declare name of the type.
-     * name.
-     * @return std::string The declare name of the type.
-     */
-    [[nodiscard]] std::string Name() const override;
-  protected:
-    /**
-     * @brief Check if the type is the same as another type.
-     * @return True if the type is the same as another type, false otherwise.
-     */
-    [[nodiscard]] bool is_same(const Type& rhs) const override;
-
-  private:
-    std::shared_ptr<Type> _base_type;
-};
-
-class IRecordType : public Type {
-  public:
-    /**
-     * @brief Construct a new IRecordType object.
-     * @param typeCategory The category of the type.
-     * @param attr_list The attributes of the type.
-     */
-    explicit IRecordType(TypeCategory typeCategory,  // NOLINT
-                         const std::list<Attribute>& attr_list = {})
-        : Type(typeCategory, attr_list) {
-#ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, typeCategory != TypeCategory::kStruct ||
-                                   typeCategory != TypeCategory::kUnion)
-            << "The type category must be kStruct or kUnion if you want to "
-               "construct a IRecordType.";
-#endif
-    }
-
-    /**
-     * @brief add the record to the record type.
-     * @param name The name of the record.
-     * @param type The type of the record.
-     */
-    virtual void add_record(std::string_view name, const TypePtr& type) = 0;
-};
-
-class StructType : public IRecordType {
-  public:
-    explicit StructType(std::string_view name,                        // NOLINT
-                        const std::list<Attribute>& attr_list = {});  // NOLINT
-
-    /**
-     * @brief Check if the type is a Struct.
-     * @return True if the type is a Struct, false otherwise.
-     */
-    [[nodiscard]] bool is_struct() const override;
-
-    /**
-     * @brief Get the declare name of the type.
-     * @param without_attr If true, the attribute will not be included in the
-     * name.
-     * @return std::string The declare name of the type.
-     */
-    [[nodiscard]] std::string Name() const override;
-
-    void add_record(std::string_view name,                        // NOLINT
-                    const std::shared_ptr<Type>& type) override;  // NOLINT
-
-    std::shared_ptr<Type> field_type(std::string_view name);
-
-  protected:
-    /**
-     * @brief Check if the type is the same as another type. This is the
-     * internal logic of IsSame. All comparison should use "==", not "is_same".
-     * @return True if the type is the same as another type, false otherwise.
-     */
-    [[nodiscard]] bool is_same(const Type& rhs) const override;
-
-  private:
-    const std::string _name;
-    std::list<std::tuple<std::string, std::shared_ptr<Type>>> _localTypeList;
-};
-
-using StructTypePtr = std::shared_ptr<StructType>;
-
-static std::string ToString(const std::list<Type::TypePtr>& types) {
-    std::string ret = "(";
-    for (const auto& type : types) {
-        ret += type->Name() + ",";
-    }
-    return ret.replace(ret.size() - 1, 1, ")");
+template <PrimitiveType T>
+static bool IsTypeOf(const QualTypePtr& type) {
+    return type == GetNumericalTypeOf<T>();
 }
-
-class FuncPtrType : public Type {
-  public:
-    FuncPtrType(std::shared_ptr<Type>& return_type,
-                std::list<std::shared_ptr<Type>> args)
-        : Type({}), _args(std::move(args)), _return_type(return_type) {}
-
-    [[nodiscard]] bool is_func_ptr() const override { return true; }
-
-  private:
-    std::shared_ptr<Type> _return_type;
-    std::list<std::shared_ptr<Type>> _args;
-};
 
 }  // namespace hzcc::ast
 

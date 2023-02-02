@@ -13,6 +13,7 @@
 #include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
 #include "enums.h"
+#include "options.h"
 #include "utils/status/status.h"
 #include "utils/status/statusor.h"
 
@@ -39,11 +40,9 @@ class CompilationUnit {
 
     [[nodiscard]] std::string GetFileName() const;
 
-    /**
-     * ################################################################
+    /** ---------------------------------------------------------------
      * #################   Scope related Functions  ###################
-     * ################################################################
-     */
+     *--------------------------------------------------------------- */
 
     /**
      * @brief Leave the current scope
@@ -63,11 +62,11 @@ class CompilationUnit {
 
     /**
      * @brief Create a new function scope
-     * @param name the name of the function
+     * @param name the to_str of the function
      * @param return_type the return type of the function
      * @return
      */
-    void create_func(std::string_view name, const TypePtr& return_type);
+    void create_func(std::string_view name, const QualTypePtr& return_type);
 
     /**
      * @brief Get the return type of the current scope
@@ -75,42 +74,50 @@ class CompilationUnit {
      * function scope if the current scope is not a function scope. std::nullopt
      * if at root scope
      */
-    [[nodiscard]] std::optional<ast::TypePtr> ret_type() const;
+    [[nodiscard]] std::optional<QualTypePtr> ret_type() const;
 
-    /**
-     * ################################################################
+    /**---------------------------------------------------------------
      * #################   Type related Functions  ####################
-     * ################################################################
-     */
+     *--------------------------------------------------------------- */
     bool has_type(std::string_view name);
 
-    TypePtr get_type(std::string_view name,
-                     std::list<Attribute> attr_list = {});
+    QualTypePtr get_type(std::string_view name,
+                         std::list<Qualifier> qualifiers = {});
 
-    StructTypePtr add_struct_type(std::string_view name,
-                                  std::list<Attribute> attr);
+    QualTypePtr add_struct_type(std::string_view struct_name,
+                                  std::list<Qualifier> attr_list = {});
 
-    StructTypePtr get_struct_type(std::string_view name);
-
+    /** ---------------------------------------------------------------
+     * ## Variable related Functions                              ###
+     * -------------------------------------------------------------- */
     bool has_var(std::string_view name, bool current_scope);
+
+    /** ---------------------------------------------------------------
+     * ## Function related Functions                               ###
+     * -------------------------------------------------------------- */
+
+    bool has_func(std::string_view name);
+
+    bool has_body(std::string_view name);
+
+    QualTypePtr func_ret_type(std::string_view name);
+
+    std::vector<QualTypePtr> func_param_types(std::string_view name);
 
     /**
      * @brief Add a new Declare Node to the ast
      *
-     * @Note: if the Declare Node has a duplicate name, it will be replaced the
-     * old one
+     * @Note: if the Declare Node has a duplicate to_str, it will be replaced
+     * the old one
      * @param node
      * @return
      */
     void addDecl(std::unique_ptr<IDeclStmt> node);
 
-    std::list<std::pair<std::string, std::unique_ptr<ast::IDeclStmt>>>&
-    GetDecls();
-
-    void new_scope(const std::string& name, const TypePtr& return_type);
+    void new_scope(const std::string& name, const QualTypePtr & return_type);
 
     std::shared_ptr<ast::StructType> add_type(std::string_view name,
-                                              std::list<Attribute>& attr_list);
+                                              std::list<QualType>& attr_list);
 
     /**
      * @brief decl node visitor
@@ -137,7 +144,7 @@ class CompilationUnit {
         Func visit_function,
         Verifier verifier = [](auto) -> bool { return true; }) {
         std::list<FuncRet> ret;
-        for (auto& decl : _global_decl) {
+        for (auto& decl : _var_tbl) {
             auto visit_result = visit_function(decl.second.get());
             if (verifier(visit_result)) {
                 ret.push_back(visit_result);
@@ -151,8 +158,6 @@ class CompilationUnit {
   protected:
     const std::string _file_name;
 
-    TypePtr search_type(std::string_view name);
-
   private:
     std::weak_ptr<SymbTbl> _current_context;
 
@@ -163,9 +168,33 @@ class CompilationUnit {
     absl::flat_hash_map<std::string, std::shared_ptr<SymbTbl>>
         _scoped_symbol_table;
 
-    std::list<std::pair<std::string, std::unique_ptr<ast::IDeclStmt>>>
-        _global_decl;
+    absl::flat_hash_map<std::string, IDeclStmtPtr> _var_tbl;
+    absl::flat_hash_map<std::string, FuncDeclStmtPtr> _func_tbl;
 };
+
+/** ---------------------------------------------------------------
+ * ## Inlined Function Implementations                          ###
+ *  --------------------------------------------------------------- */
+ALWAYS_INLINE bool CompilationUnit::has_func(std::string_view name) {
+    return _func_tbl.find(name) != _func_tbl.end() &&
+           (Options::Global_allow_same_name_for_func_val ||
+            !has_var(name, true));
+};
+
+ALWAYS_INLINE bool CompilationUnit::has_body(std::string_view name) {
+    if (has_func(name)) {
+        return _func_tbl[name]->has_body();
+    }
+    return false;
+}
+
+ALWAYS_INLINE QualTypePtr
+CompilationUnit::func_ret_type(std::string_view name) {
+    if (has_func(name)) {
+        return _func_tbl[name]->type();
+    }
+    return nullptr;
+}
 
 }  // namespace hzcc::ast
 
