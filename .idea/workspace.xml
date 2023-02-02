@@ -22,6 +22,7 @@
       <config projectName="hzcc" targetName="documentation" />
       <config projectName="hzcc" targetName="omp_gen" />
       <config projectName="hzcc" targetName="acc_gen" />
+      <config projectName="hzcc" targetName="hzcc_e2e_test" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -29,710 +30,41 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2a186403-fc0f-43d8-a82c-50cf70816857" name="Changes" comment="Changes">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/.clang-format" beforeDir="false" afterPath="$PROJECT_DIR$/test/.clang-format" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_assign1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_assign1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_assign1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_assign1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_assign2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_assign2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_assign2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_assign2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_assign3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_assign3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_assign3.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_assign3.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_init1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_init1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_init1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_init1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_init2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_init2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_init2.c.backup" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_init2.c.backup" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_init2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_init2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_init3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_init3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_init3.c.backup" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_init3.c.backup" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_init3.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_init3.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_param1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_param1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_param1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_param1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_param2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_param2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_param2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_param2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_param3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_param3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_param3.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_param3.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_read1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_read1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_read1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_read1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_read2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_read2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_read2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_read2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_read3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_read3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_read3.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_read3.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_string_nc.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_string_nc.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_string_nc.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_string_nc.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_string_yc.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_string_yc.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_string_yc.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_string_yc.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_update1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_update1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_update1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_update1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_update2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_update2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_update2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_update2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_update3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_update3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/A_update3.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/A_update3.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/CheckR_5.sh" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/CheckR_5.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/Check_5.sh" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/Check_5.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/clinit_arr.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/clinit_arr.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/clinit_arr.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/clinit_arr.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/clinit_both.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/clinit_both.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/clinit_both.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/clinit_both.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/clinit_omit1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/clinit_omit1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/clinit_omit1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/clinit_omit1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/clinit_omit2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/clinit_omit2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/clinit_omit2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/clinit_omit2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/clinit_var.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/clinit_var.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/clinit_var.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/clinit_var.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/dead1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/dead1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/dead1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/dead1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/dead2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/dead2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/dead2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/dead2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_g1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_g1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_g1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_g1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_g2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_g2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_g2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_g2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_literal1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_literal1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_literal1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_literal1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_literal2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_literal2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_literal2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_literal2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_literal3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_literal3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_literal3.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_literal3.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_locals1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_locals1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_locals1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_locals1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_locals2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_locals2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/expr_locals2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/expr_locals2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/fcall1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/fcall1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/fcall1.input1" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/fcall1.input1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/fcall1.input2" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/fcall1.input2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/fcall1.output1" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/fcall1.output1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/fcall1.output2" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/fcall1.output2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/fcall2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/fcall2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/fcall2.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/fcall2.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/fcall3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/fcall3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/fcall3.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/fcall3.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/fcall4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/fcall4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/fcall4.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/fcall4.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/libc.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/libc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/minimal.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/minimal.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/minimal.instructor" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/minimal.instructor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/minimal.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/minimal.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/mycc" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/mycc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/noreturn1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/noreturn1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/noreturn1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/noreturn1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/noreturn1.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/noreturn1.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/noreturn2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/noreturn2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/noreturn2.error" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/noreturn2.error" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/noreturn2.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/noreturn2.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/noreturn3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/noreturn3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/noreturn3.error" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/noreturn3.error" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/noreturn3.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/noreturn3.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/ops_binary1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/ops_binary1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/ops_binary1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/ops_binary1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/ops_binary2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/ops_binary2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/ops_binary2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/ops_binary2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/ops_binary3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/ops_binary3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/ops_binary3.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/ops_binary3.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/ops_unary1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/ops_unary1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/ops_unary1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/ops_unary1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/ops_unary2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/ops_unary2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/ops_unary2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/ops_unary2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/ops_unary3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/ops_unary3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/ops_unary3.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/ops_unary3.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/user.annotations" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/user.annotations" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/user.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/user.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_assign1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_assign1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_assign1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_assign1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_assign2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_assign2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_assign2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_assign2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_assign3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_assign3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_assign3.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_assign3.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_assign4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_assign4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_assign4.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_assign4.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_incdec1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_incdec1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_incdec1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_incdec1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_incdec2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_incdec2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_incdec2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_incdec2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_incdec3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_incdec3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_incdec3.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_incdec3.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_incdec4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_incdec4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_incdec4.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_incdec4.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_init1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_init1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_init1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_init1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_init2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_init2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_init2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_init2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_init3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_init3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_init3.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_init3.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_update1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_update1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_update1.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_update1.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_update2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_update2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_update2.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_update2.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_update3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_update3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5/wr_update3.key" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5/wr_update3.key" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/CheckJ_5.sh" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/CheckJ_5.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/CheckR_5.sh" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/CheckR_5.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/fact.basic.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/fact.basic.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/fact.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/fact.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/fact.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/fact.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/fact.smart.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/fact.smart.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/foo.basic.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/foo.basic.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/foo.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/foo.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/foo.smart.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/foo.smart.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/fullpage.sty" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/fullpage.sty" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/libc.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/libc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/mycc" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/mycc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/pascal.basic.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/pascal.basic.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/pascal.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/pascal.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/pascal.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/pascal.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/pascal.smart.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/pascal.smart.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/post.tex" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/post.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.basic.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.basic.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.input1" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.input1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.input2" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.input2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.input3" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.input3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.input4" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.input4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.input5" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.input5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.output1" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.output1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.output2" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.output2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.output3" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.output3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.output5" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.output5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.smart.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.smart.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/sum.smart.jexpr" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/sum.smart.jexpr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy1.basic.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy1.basic.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy1.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy1.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy2.basic.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy2.basic.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy2.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy2.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy2.smart.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy2.smart.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy3.basic.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy3.basic.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy3.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy3.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy3.smart.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy3.smart.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy4.basic.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy4.basic.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy4.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy4.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy4.smart.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy4.smart.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy5.basic.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy5.basic.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy5.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy5.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy5.smart.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy5.smart.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy6.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy6.error" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy6.error" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part5_1/toy6.student.j" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part5_1/toy6.student.j" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/CheckR_6.sh" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/CheckR_6.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/badif.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/badif.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/badif.error" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/badif.error" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/break1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/break1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/break1.j.instr" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/break1.j.instr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/break1.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/break1.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/break2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/break2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/break2.error" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/break2.error" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/fact.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/fact.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/fact.j.instr" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/fact.j.instr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/fact.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/fact.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/fib.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/fib.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/fib.j.instr" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/fib.j.instr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/fib.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/fib.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/fullpage.sty" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/fullpage.sty" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/hello.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/hello.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/hello.j.instr" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/hello.j.instr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/hello.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/hello.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/libc.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/libc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/mycc" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/mycc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/post.tex" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/post.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/short.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/short.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/short.j.instr" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/short.j.instr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/short.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/short.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/test.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/test.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/unary.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/unary.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/codegen/part6/unary.output" beforeDir="false" afterPath="$PROJECT_DIR$/test/codegen/part6/unary.output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/compiler_info/lit.cfg.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/compiler_info/lit.cfg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/compiler_info/version_message.test" beforeDir="false" afterPath="$PROJECT_DIR$/test/compiler_info/version_message.test" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/comments_1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/comments_1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/comments_2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/comments_2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/comments_3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/comments_3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/comments_4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/comments_4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/comments_5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/comments_5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/comments_6.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/comments_6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/dollar_sign.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/dollar_sign.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_char1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_char1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_char2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_char2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_char3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_char3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_char4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_char4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_char5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_char5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_int1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_int1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_int2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_int2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_int3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_int3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_int4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_int4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_real1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_real1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_real2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_real2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_real3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_real3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_real4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_real4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_str1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_str1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_str2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_str2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_str3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_str3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_str4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_str4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_trunc1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_trunc1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_trunc2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_trunc2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_trunc3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_trunc3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/ex_trunc4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_trunc4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/extra.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/extra.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/hello.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/hello.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/invalid1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/invalid1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/invalid2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/invalid2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/invalid2.c.error1" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/invalid2.c.error1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/invalid2.c.extra.error1" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/invalid2.c.extra.error1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_01.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_01.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_02.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_02.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_03.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_03.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_04.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_04.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_05.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_05.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_06.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_06.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_07.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_07.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_08.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_08.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_09.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_09.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_10.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_10.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_11.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_11.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_12.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_12.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_13.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_13.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_14.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_14.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/keywords_15.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_15.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/lineno1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/lineno1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/lineno2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/lineno2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/lit.cfg.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/lit.cfg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_01.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_01.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_02.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_02.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_03.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_03.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_04.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_04.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_05.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_05.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_06.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_06.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_07.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_07.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_08.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_08.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_09.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_09.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_09.c.error1" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_09.c.error1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_09.c.extra.error1" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_09.c.extra.error1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_10.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_10.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_11.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_11.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_12.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_12.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_12.c.error1" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_12.c.error1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/literals_12.c.extra.error1" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_12.c.extra.error1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/pi.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/pi.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_01.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_01.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_02.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_02.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_03.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_03.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_04.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_04.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_05.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_05.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_06.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_06.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_07.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_07.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_08.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_08.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_09.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_09.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_10.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_10.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_11.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_11.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_12.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_12.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_13.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_13.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_14.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_14.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/symbols_15.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_15.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/test1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/test1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/test2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/test2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/tricky.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/tricky.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lexical/unclosed_comment.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/unclosed_comment.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/lit.site.cfg.py.in" beforeDir="false" afterPath="$PROJECT_DIR$/test/lit.site.cfg.py.in" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/extra.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/extra.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/Check_4.sh" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/Check_4.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith1.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith1.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith1.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith1.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith2.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith2.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith3.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith3.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith4.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith4.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith5.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith5.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith5.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith5.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith6.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith6.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith6.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/arith6.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/arith6.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/array1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/array1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/array1.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/array1.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/array2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/array2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/array2.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/array2.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/array3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/array3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/array3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/array3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/array4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/array4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/array4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/array4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/assign1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/assign1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/assign1.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/assign1.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/assign2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/assign2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/assign2.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/assign2.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/assign3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/assign3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/assign3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/assign3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/assign3.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/assign3.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/assign4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/assign4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/assign4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/assign4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/assign4.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/assign4.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/cast1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/cast1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/cast1.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/cast1.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/cast1.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/cast1.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/cast2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/cast2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/cast2.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/cast2.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/cast3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/cast3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/cast3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/cast3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/cast3.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/cast3.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/cast4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/cast4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/cast4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/cast4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/cast4.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/cast4.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra1.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra1.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra1.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra1.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra2.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra2.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra2.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra2.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra3.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra3.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra4.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra4.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra5.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra5.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/extra5.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/extra5.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall1.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall1.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall2.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall2.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall2.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall2.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall3.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall3.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall5.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall5.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall6.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall6.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall6.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall6.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall6.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall7.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall7.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall7.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall7.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall7.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall7.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall8.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall8.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall8.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall8.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall8.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall8.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall9.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall9.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall9.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall9.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/fcall9.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/fcall9.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents1.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents1.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents1.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents1.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents2.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents2.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents3.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents3.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents4.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents4.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents5.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents5.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents6.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents6.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents6.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents6.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents6.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents7.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents7.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents7.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents7.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents7.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents7.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents8.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents8.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents8.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents8.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents9.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents9.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/idents9.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/idents9.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/inc1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/inc1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/inc1.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/inc1.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/inc2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/inc2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/inc2.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/inc2.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/inc3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/inc3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/inc3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/inc3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/inc3.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/inc3.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/inc4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/inc4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/inc4.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/inc4.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/lit.cfg.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/lit.cfg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/literals1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/literals1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/literals1.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/literals1.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/literals1.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/literals1.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/literals2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/literals2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/literals2.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/literals2.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/literals2.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/literals2.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/literals3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/literals3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/literals3.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/literals3.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/literals3.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/literals3.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/literals4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/literals4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/literals4.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/literals4.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/literals4.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/literals4.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic1.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic1.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic2.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic2.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic3.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic3.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic4.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic4.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic4.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic4.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic5.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic5.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic5.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic5.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic6.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic6.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic6.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/logic6.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/logic6.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/mycc" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/mycc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/proto1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/proto1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/proto1.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/proto1.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/proto1.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/proto1.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/proto2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/proto2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/proto2.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/proto2.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/proto2.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/proto2.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/proto3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/proto3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/proto3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/proto3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/proto3.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/proto3.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/proto4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/proto4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/proto4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/proto4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/proto4.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/proto4.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/return1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/return1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/return1.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/return1.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/return2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/return2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/return2.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/return2.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/return2.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/return2.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/return3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/return3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/return3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/return3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/return3.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/return3.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/return4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/return4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/return4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/return4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/return4.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/return4.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/ternary1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/ternary1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/ternary1.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/ternary1.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/ternary2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/ternary2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/ternary2.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/ternary2.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/ternary3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/ternary3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/ternary3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/ternary3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/ternary3.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/ternary3.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/ternary4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/ternary4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/ternary4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/ternary4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/ternary4.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/ternary4.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/test1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/test1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/test1.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/test1.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/test2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/test2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/test2.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/test2.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/test3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/test3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/test3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/test3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/test3.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/test3.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/test4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/test4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/test4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/test4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/test4.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/test4.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/unary1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/unary1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/unary1.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/unary1.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/unary1.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/unary1.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/unary2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/unary2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/unary2.c.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/unary2.c.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/unary3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/unary3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/unary3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/unary3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/unary3.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/unary3.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/unary4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/unary4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/unary4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/unary4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/unary4.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/unary4.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const1.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const1.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const1.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const1.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const2.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const2.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const2.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const2.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const3.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const3.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const4.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const4.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const5.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const5.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_const5.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_const5.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init1.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init1.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init1.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init1.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init2.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init2.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init2.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init2.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init3.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init3.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init4.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init4.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init5.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init5.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_init5.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_init5.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member1.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member1.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member1.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member1.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member2.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member2.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member2.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member2.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member3.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member3.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member4.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member4.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member5.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member5.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_member5.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_member5.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct1.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct1.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct1.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct1.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct2.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct2.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct2.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct2.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct3.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct3.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct4.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct4.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct5.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct5.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct5.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct5.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct6.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct6.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct6.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct6.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct6.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct7.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct7.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct7.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct7.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct7.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct7.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct8.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct8.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct8.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct8.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct8.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct8.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct9.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct9.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct9.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct9.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_struct9.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_struct9.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_structA.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_structA.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_structA.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_structA.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_structA.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_structA.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen1.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen1.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen1.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen1.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen2.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen2.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen2.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen2.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen3.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen3.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen3.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen3.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen4.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen4.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen4.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen4.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen5.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen5.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen5.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen5.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen6.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen6.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen6.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen6.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen6.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen7.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen7.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen7.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen7.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen7.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen7.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen8.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen8.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen8.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen8.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen8.c.extra.output4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen8.c.extra.output4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen9.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen9.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen9.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen9.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widen9.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widen9.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widenA.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widenA.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widenA.c.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widenA.c.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/part4/xc_widenA.c.extra.error4" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/part4/xc_widenA.c.extra.error4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/array1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/array1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/array2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/array2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/array3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/array3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/array4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/array4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/array5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/array5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/assign1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/assign1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/assign2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/assign2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/assign3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/assign3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/assign4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/assign4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/assign5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/assign5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/call1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/call1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/call2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/call2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/call3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/call3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/call4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/call4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/call5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/call5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/exprs1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/exprs1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/exprs2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/exprs2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/exprs3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/exprs3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/exprs4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/exprs4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/exprs5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/exprs5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/exprs6.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/exprs6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/exprs7.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/exprs7.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/exprs8.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/exprs8.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/exprs9.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/exprs9.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/exprsA.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/exprsA.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/funcbody1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/funcbody1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/funcbody2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/funcbody2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/funcbody3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/funcbody3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/funcbody4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/funcbody4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/funcbody5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/funcbody5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/funcproto1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/funcproto1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/funcproto2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/funcproto2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/funcproto3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/funcproto3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/funcproto4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/funcproto4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/funcproto5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/funcproto5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/global1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/global1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/global2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/global2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/global3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/global3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/global4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/global4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/global5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/global5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/ite1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/ite1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/ite2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/ite2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/ite3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/ite3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/ite4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/ite4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/ite5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/ite5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/lit.cfg.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/lit.cfg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/loop1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/loop1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/loop2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/loop2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/loop3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/loop3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/loop4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/loop4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/loop5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/loop5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/loop6.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/loop6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/loop7.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/loop7.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/loop8.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/loop8.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/loop9.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/loop9.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/loopA.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/loopA.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/stmt1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/stmt1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/stmt2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/stmt2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/stmt3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/stmt3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/stmt4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/stmt4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/stmt5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/stmt5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_const1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_const1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_const2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_const2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_const3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_const3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_const4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_const4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_const5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_const5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_init1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_init1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_init2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_init2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_init3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_init3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_init4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_init4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_init5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_init5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_member1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_member1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_member2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_member2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_member3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_member3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_member4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_member4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_member5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_member5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_struct1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_struct1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_struct2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_struct2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_struct3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_struct3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_struct4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_struct4.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_struct5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_struct5.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_struct6.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_struct6.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_struct7.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_struct7.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_struct8.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_struct8.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_struct9.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_struct9.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/test/syntax/test_set_0/xc_structA.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/syntax/test_set_0/xc_structA.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/SymbTbl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/SymbTbl.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/cast/Cast.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/cast/Cast.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/FuncDeclStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/stmt/FuncDeclStmt.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/main.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/main.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/Token.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/Token.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/Preprocessor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/Preprocessor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/semantic_analyzer.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/semantic_analyzer.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/Ctx.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/decl_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/decl_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/parser_factory.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/parser_factory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statement_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/for_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/for_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/syntax_impl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/syntax_impl.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/utils/logging.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/logging.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/utils/logging.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/logging.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/utils/status/status.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/status/status.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lit.site.cfg.py.in" beforeDir="false" afterPath="$PROJECT_DIR$/test/lit.site.cfg.py.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/FileCheck.cc" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/FileCheck.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/check.cc" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/check.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/check.h" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/check.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/cursor.h" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/cursor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/diagnostic.h" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/diagnostic.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/effcee.h" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/effcee.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/make_unique.h" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/make_unique.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/match.cc" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/match.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/to_string.h" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/to_string.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/llvm_lit.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vcpkg.json" beforeDir="false" afterPath="$PROJECT_DIR$/vcpkg.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -775,6 +107,7 @@
     "cf.advertisement.text.overridden": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
+    "ctest.advertisement.all.test.configuration.is.created": "true",
     "last_opened_file_path": "//wsl$/Ubuntu/home/hanzech/hzcc",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -782,7 +115,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.rainbow.brackets",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "structure.view.defaults.are.configured": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -796,11 +129,11 @@
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source\parser\antlr" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\third_party" />
+      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\third_party\FileCheck\effcee\test" />
+      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\third_party\FileCheck\effcee" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\Projects\hzcc\hzcc" />
-      <recent name="\\wsl$\Ubuntu\home\hanzech\Projects\hzcc\hzcc\parser\syntax\parser" />
-      <recent name="\\wsl$\Ubuntu\home\hanzech\Projects\hzcc" />
-      <recent name="\\wsl$\Ubuntu\home\hanzech\Projects\hzcc\hzcc\ast" />
     </key>
   </component>
   <component name="RunManager" selected="CMake 应用程序.hzcc">
@@ -835,7 +168,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="hzcc" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="hzcc" CONFIG_NAME="Debug-WSL" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="hzcc">
+    <configuration name="hzcc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="--flexical_only test/lexical/comments_1.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="hzcc" CONFIG_NAME="Debug-WSL" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="hzcc">
+      <envs>
+        <env name="GLOG_logtostderr" value="1" />
+        <env name="GLOG_v" value="10" />
+      </envs>
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -855,6 +192,12 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="所有 CTest" type="CTestRunConfiguration" factoryName="CTestRun" PROGRAM_PARAMS="--extra-verbose" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$CMakeCurrentLocalGenerationDir$" PASS_PARENT_ENVS_2="true" RUN_PATH="$CTestCurrentExecutableName$" EXPLICIT_BUILD_TARGET_NAME="all" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="CMake 应用程序.acc_gen" />
       <item itemvalue="CMake 应用程序.hzcc_e2e_test" />
@@ -864,6 +207,7 @@
       <item itemvalue="CMake 应用程序.documentation" />
       <item itemvalue="CMake 应用程序.hzcc" />
       <item itemvalue="CMake 应用程序.HZCC_FileCheck" />
+      <item itemvalue="CTest 应用程序.所有 CTest" />
       <item itemvalue="Google Test.hzcc_test" />
     </list>
   </component>
@@ -987,7 +331,7 @@
       <workItem from="1675046359506" duration="542000" />
       <workItem from="1675107022506" duration="23950000" />
       <workItem from="1675148199484" duration="21179000" />
-      <workItem from="1675286652477" duration="24148000" />
+      <workItem from="1675286652477" duration="34934000" />
     </task>
     <servers />
   </component>
@@ -1013,10 +357,10 @@
           <line>122</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/hzcc/main.cc</url>
-          <line>57</line>
-          <option name="timeStamp" value="9" />
+        <line-breakpoint enabled="true" type="CMakeLineBreakpoint">
+          <url>file://$PROJECT_DIR$/test/CMakeLists.txt</url>
+          <line>14</line>
+          <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/hzcc/parser/parser.h</url>
@@ -1032,6 +376,11 @@
           <url>file://$PROJECT_DIR$/hzcc/ast/SymbTbl.h</url>
           <line>63</line>
           <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc</url>
+          <line>450</line>
+          <option name="timeStamp" value="33" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

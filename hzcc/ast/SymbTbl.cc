@@ -85,7 +85,7 @@ void SymbTbl::add_var(Position pos,             // NOLINT
         << " Variable " << name << " is already defined as a type";
     DLOG_ASSERT(!has_var(name, true))
         << " Variable " << name << " has already been defined";
-    DVLOG(SYNTAX_LOG_LEVEL) << "Adding variable " << name;
+    DVLOG(SYNTAX_LOG) << "Adding variable " << name;
     _variable_lookup_table.emplace(
         std::make_pair(name, std::make_pair(pos, type)));
 }

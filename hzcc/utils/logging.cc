@@ -17,6 +17,7 @@
 #include "options.h"
 
 namespace hzcc {
+
 void initLogging(char argv[]) {
     google::InitGoogleLogging(argv);
     google::SetStderrLogging(google::GLOG_INFO);
@@ -24,11 +25,6 @@ void initLogging(char argv[]) {
 
 namespace message {
 static std::string CURRENT_FILE_NAME;
-
-static constexpr const char* KEnableRed = "\033[1;31m";
-static constexpr const char* KEnableGreen = "\033[1;32m";
-static constexpr const char* KEnableYellow = "\033[1;33m";
-static constexpr const char* KDisableColor = "\033[0m";
 
 void set_current_file_name(const std::string& file_name) {
     CURRENT_FILE_NAME = file_name;

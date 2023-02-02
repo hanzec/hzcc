@@ -56,6 +56,9 @@ if (RUNTIME_CHECK MATCHES "ON")
     add_compile_definitions(HZCC_ENABLE_RUNTIME_CHECK)
 endif ()
 
+# set thrid-party base path
+set(THIRD_PARTY_BASE_PATH ${CMAKE_SOURCE_DIR}/third_party)
+
 ###############################################################################
 ## Prepare VCPKG ##############################################################
 ###############################################################################
@@ -125,7 +128,17 @@ add_subdirectory(hzcc)
 ###############################################################################
 if (E2E_TESTING MATCHES "ON")
     message(STATUS "Enable E2E testing")
-    add_custom_target(hzcc_e2e_test COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS hzcc)
+
+    # set ctest build flags
+    include(ProcessorCount)
+    ProcessorCount(N)
+    if(NOT N EQUAL 0)
+        set(CTEST_BUILD_FLAGS -j${N})
+        set(ctest_test_args ${ctest_test_args} PARALLEL_LEVEL ${N})
+    endif()
+
+    # add e2e test
+    enable_testing()
     add_subdirectory(test)
 endif ()
 

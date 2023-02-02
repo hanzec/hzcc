@@ -3,7 +3,6 @@
   "name": "mycc",
   "version": "0.0.1",
   "dependencies": [
-    "glog",
     "gtest",
     "cli11",
     "re2",
@@ -13,6 +12,13 @@
       "name": "abseil",
       "features": [
         "cxx17"
+      ]
+    },
+    {
+      "name": "glog",
+      "features": [
+        "unwind",
+        "customprefix"
       ]
     }
   ]

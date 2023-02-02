@@ -67,12 +67,14 @@
 #include "utils/status/internal/status_internal.h"
 
 namespace hzcc {
-#define HZCC_CHECK_OK_OR_RETURN(expr) \
-    do {                              \
-        auto status = (expr);         \
-        if (!status.ok()) {           \
-            return status;            \
-        }                             \
+#define HZCC_CHECK_OK_OR_RETURN(expr)                             \
+    do {                                                          \
+        auto status = (expr);                                     \
+        if (!status.ok()) {                                       \
+            return status;                                        \
+        } else {                                                  \
+            DEBUG_LOG() << " \"" #expr "\" return no error"; \
+        }                                                         \
     } while (0)
 
 // hzcc::StatusCode
@@ -537,10 +539,10 @@ class Status final {
     // Status::ToString()
     //
     // Returns a string based on the `mode`. By default, it returns combination
-    // of the error code to_str, the message and any associated payload messages.
-    // This string is designed simply to be human readable and its exact format
-    // should not be load bearing. Do not depend on the exact format of the
-    // result of `ToString()` which is subject to change.
+    // of the error code to_str, the message and any associated payload
+    // messages. This string is designed simply to be human readable and its
+    // exact format should not be load bearing. Do not depend on the exact
+    // format of the result of `ToString()` which is subject to change.
     //
     // The printed code to_str and the message are generally substrings of the
     // result, and the payload to be printed use the status payload printer

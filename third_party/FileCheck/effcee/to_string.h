@@ -16,14 +16,13 @@
 #define EFFCEE_TO_STRING_H
 
 #include <string>
-
 #include "effcee.h"
 
 namespace effcee {
 
 // Returns a copy of a StringPiece, as a std::string.
 inline std::string ToString(effcee::StringPiece s) {
-    return {s.data(), s.size()};
+  return std::string(s.data(), s.size());
 }
 }  // namespace effcee
 

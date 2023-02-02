@@ -48,7 +48,7 @@ StatusOr<ast::StmtPtr> Statement::parse_impl(SyntaxCtx ctx, TokenList& tokens) {
                 return std::make_unique<ast::ReturnStmt>(token.loc(),
                                                          std::move(ret_expr));
             } else {
-                DVLOG(SYNTAX_LOG_LEVEL)
+                DVLOG(SYNTAX_LOG)
                     << "ignore ';' since return stmt is empty";
                 return std::make_unique<ast::ReturnStmt>(
                     token.loc(), std::make_unique<ast::EmptyExpr>());

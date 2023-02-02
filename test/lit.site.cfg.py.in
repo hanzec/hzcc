@@ -14,7 +14,7 @@ config.environment['PYTHON_EXECUTABLE'] = '${Python3_EXECUTABLE}'
 binary_root = '${CMAKE_BINARY_DIR}/bin'
 
 # e2e_file_check tools
-FileCheck_executable = os.path.join(binary_root, 'FileCheck')
+FileCheck_executable = os.path.join(binary_root, 'HZCC_FileCheck')
 config.substitutions.append(('%FileCheck',FileCheck_executable))
 if not lit.util.which(FileCheck_executable):
     lit_config.fatal('Cannot find OutputCheck executable in your PATH')
@@ -22,3 +22,4 @@ if not lit.util.which(FileCheck_executable):
 # compiler executables
 hzcc_executable = os.path.join(binary_root, 'hzcc')
 config.substitutions.append(('%mycc',hzcc_executable))
+

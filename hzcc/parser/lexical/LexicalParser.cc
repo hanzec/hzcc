@@ -1,11 +1,9 @@
 //
 // Created by chen_ on 2022/1/26.
 //
-#include <stddef.h>
-
 #include <cctype>
+#include <cstddef>
 #include <cstdint>
-#include <functional>
 #include <istream>
 #include <limits>
 #include <magic_enum.hpp>
@@ -27,13 +25,6 @@
 #include "utils/logging.h"
 #include "utils/status/status.h"
 #include "utils/status/statusor.h"
-
-namespace hzcc {
-namespace lexical {
-struct AnalyzeCtx_t;
-}  // namespace lexical
-}  // namespace hzcc
-
 namespace hzcc::lexical {
 #define LIMIT_REGEX_CHECK(REGEX, INPUT, REQUIRED_TYPE, ERROR_STATUS)           \
     {                                                                          \
@@ -94,6 +85,8 @@ typedef struct AnalyzeCtx_t {
 ALWAYS_INLINE static Status SymbolHandler(TokenList& tokens,
                                           const std::string_view& line,
                                           std::shared_ptr<AnalyzeCtx>& ctx) {
+    INTERNAL_VLOG(LEXICAL_LOG)
+        << "SymbolHandler: Start at line:" << ctx->row << " col:" << ctx->col;
     auto type = SymbolUtils::GetSymbolType(line.substr(ctx->col, 2).data());
     /**
      * Here is not add the second symbol to token stream
@@ -105,9 +98,8 @@ ALWAYS_INLINE static Status SymbolHandler(TokenList& tokens,
      * special logic here since only redo one symbol
      * would not influence the performance very much.
      */
-    if (magic_enum::enum_integer(type) >
-        300) {       // symbols except single char will
-                     // have value larger then 300
+    if (magic_enum::enum_integer(type) > 300) {
+        // symbols except single char will have value larger then 300
         ctx->col++;  // back to the last digit
     }
     tokens.emplace_back(type, ctx->row, ctx->col);
@@ -118,8 +110,13 @@ ALWAYS_INLINE static Status SymbolHandler(TokenList& tokens,
 ALWAYS_INLINE static Status CommentHandler(TokenList& tokens,
                                            const std::string_view& line,
                                            std::shared_ptr<AnalyzeCtx>& ctx) {
+    INTERNAL_VLOG(LEXICAL_LOG)
+        << "CommentHandler: Start at line:" << ctx->row << " col:" << ctx->col;
+
     size_t col = ctx->col;
     if (line[col + 1] == '/') {
+        INTERNAL_VLOG(LEXICAL_LOG) << "CommentHandler: Single line comment";
+        ctx->col = line.length();  // skip to the end of line
         return NoError();
     } else if (line[col + 1] == '*') {
         // a special case where multiple line comment is used as
@@ -140,6 +137,8 @@ ALWAYS_INLINE static Status CommentHandler(TokenList& tokens,
 ALWAYS_INLINE static Status StrLitHandler(TokenList& tokens,
                                           const std::string_view& line,
                                           std::shared_ptr<AnalyzeCtx>& ctx) {
+    INTERNAL_VLOG(LEXICAL_LOG)
+        << "StrLitHandler: Start at line:" << ctx->row << " col:" << ctx->col;
     char new_char;
     size_t start = ctx->col;
     std::string tmp_string;
@@ -188,6 +187,9 @@ ALWAYS_INLINE static Status StrLitHandler(TokenList& tokens,
 ALWAYS_INLINE static Status CharLitHandler(TokenList& tokens,
                                            const std::string_view& line,
                                            std::shared_ptr<AnalyzeCtx>& ctx) {
+    INTERNAL_VLOG(LEXICAL_LOG)
+        << "CharLitHandler: Start at line:" << ctx->row << " col:" << ctx->col;
+
     auto row = ctx->row;
     auto start = ctx->col + 1;
     ctx->col = ctx->col + (line[ctx->col + 1] == '\\' ? 3 : 2);
@@ -231,6 +233,9 @@ ALWAYS_INLINE static Status CharLitHandler(TokenList& tokens,
 ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
                                           const std::string_view& line,
                                           std::shared_ptr<AnalyzeCtx>& ctx) {
+    INTERNAL_VLOG(LEXICAL_LOG)
+        << "NumLitHandler: Start at line:" << ctx->row << " col:" << ctx->col;
+
     auto start = ctx->col;
     TokenType type = TokenType::kInteger;
     ctx->col = line.find_first_not_of("0123456789", start);
@@ -443,6 +448,8 @@ ALWAYS_INLINE static Status AnalyzeLine(TokenList& tokens,
 }
 
 StatusOr<TokenList> ParseToToken(std::istream& source) noexcept {
+    INTERNAL_VLOG(LEXICAL_LOG) << "Start lexical analysis, reading source file";
+
     TokenList tokens([](const Token& a) -> bool { return a.IsAttribute(); });
 
     std::shared_ptr<AnalyzeCtx> ctx = std::make_shared<AnalyzeCtx>();
@@ -476,6 +483,8 @@ StatusOr<TokenList> ParseToToken(std::istream& source) noexcept {
         }
 
         // analyze current line
+        INTERNAL_VLOG(LEXICAL_LOG)
+            << "Analyzing line " << ctx->row << ": [" << line << "]";
         HZCC_CHECK_OK_OR_RETURN(AnalyzeLine(tokens, line, ctx));
     }
 

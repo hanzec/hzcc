@@ -121,7 +121,7 @@ Status analyzer::visit(hzcc::ast::AssignExpr* p_expr) {
 
     // LHS cannot be const variable
     if (p_expr->lhs()->type()->is<Qualifier::CONST>()) {
-        VLOG(SYNTAX_LOG_LEVEL)
+        VLOG(SYNTAX_LOG)
             << "Left hand side [" << p_expr->lhs()->UniqueName()
             << "is not assignable";
         return CompileError(p_expr->lhs()->loc(),

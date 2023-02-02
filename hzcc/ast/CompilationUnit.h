@@ -85,7 +85,7 @@ class CompilationUnit {
                          std::list<Qualifier> qualifiers = {});
 
     QualTypePtr add_struct_type(std::string_view struct_name,
-                                  std::list<Qualifier> attr_list = {});
+                                std::list<Qualifier> attr_list = {});
 
     /** ---------------------------------------------------------------
      * ## Variable related Functions                              ###
@@ -113,11 +113,6 @@ class CompilationUnit {
      * @return
      */
     void addDecl(std::unique_ptr<IDeclStmt> node);
-
-    void new_scope(const std::string& name, const QualTypePtr & return_type);
-
-    std::shared_ptr<ast::StructType> add_type(std::string_view name,
-                                              std::list<QualType>& attr_list);
 
     /**
      * @brief decl node visitor

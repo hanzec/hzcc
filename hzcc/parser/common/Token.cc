@@ -24,7 +24,7 @@
         if (ref != _global_val_storage.end()) {                            \
             (ASSIGN_TO) = ref->second;                                     \
         } else {                                                           \
-            DVLOG(LEXICAL_LOG_LEVEL)                                       \
+            DVLOG(LEXICAL_LOG)                                       \
                 << "insert new source (NEW_CACHE) cache: [" << (NEW_CACHE) \
                 << "]";                                                    \
             auto new_item = std::make_shared<std::string>((NEW_CACHE));    \
@@ -46,7 +46,7 @@ Token::Token(TokenType token_type,                           // NOLINT
     if (!token_string.empty()) {
         HZCC_INSERT_TO_CACHE(token_string, _token_val_ref)
     } else {
-        LOG(ERROR) << "token string is empty";
+        LOG(FATAL) << "token string is empty";
     }
 #else
     HZCC_INSERT_TO_CACHE(token_string, _token_val_ref);

@@ -325,8 +325,8 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
                                              "' already defined"));
         }
 
-        // create a new named scope
-        context->new_scope(func_name.to_str(), return_type);
+        // create a new function scope
+        context->create_func(func_name.to_str(), return_type);
 
         // trying to syntax the function body
         HZCC_CHECK_OR_ASSIGN(func_body,

@@ -79,7 +79,7 @@
 //                auto new_include_file = std::ifstream(final_file_name);
 //
 //                Status result(Status::StatusCode::OK);
-//                DVLOG(LEXICAL_LOG_LEVEL)
+//                DVLOG(LEXICAL_LOG)
 //                    << "Including file: " << final_file_name.string();
 //                if (!(result = PreprocessSourceInternal(
 //                          new_include_file, output, included_files, table))

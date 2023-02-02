@@ -73,7 +73,7 @@ class ParserFactoryReporter {
     template <class name>
     StatusOr<std::unique_ptr<name>> Parse(SyntaxCtx ctx,
                                           TokenList& tokens) const {
-        DVLOG(SYNTAX_LOG_LEVEL)
+        DVLOG(SYNTAX_LOG)
             << "\nRequest parser From: [" << _caller << "] " << _file << ":"
             << _line << "\n"
             << "\tAST: " << TypeNameUtil::name_pretty<name>() << "\n"

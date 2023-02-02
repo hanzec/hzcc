@@ -142,7 +142,7 @@ QualTypePtr CompilationUnit::add_struct_type(std::string_view struct_name,
             LOG(FATAL) << "Struct " << name << " already exists";
             return nullptr;
         } else {
-            DVLOG(AST_LOG_LEVEL)
+            DVLOG(AST_LOG)
                 << "Add new Struct type [" << name << "] to global scope";
             auto new_type = std::make_shared<ast::StructType>(struct_name);
             _named_types.insert(std::make_pair(name, new_type));
@@ -159,7 +159,7 @@ QualTypePtr CompilationUnit::add_struct_type(std::string_view struct_name,
             LOG(FATAL) << "type " << name << " already exists";
             return nullptr;
         } else {
-            DVLOG(AST_LOG_LEVEL)
+            DVLOG(AST_LOG)
                 << "Trying to add new type [" << name << "] to local scope";
 
             // when leaving this function all attrs should be consumed

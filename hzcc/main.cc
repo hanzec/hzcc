@@ -2,31 +2,13 @@
 // Created by Hanze Chen on 2022/1/23.
 //
 
-#include <magic_enum.hpp>
-#include <CLI/App.hpp>
-#include <CLI/Option.hpp>
-#include <CLI/Validators.hpp>
-#include <CLI/impl/Option_inl.hpp>
-#include <iostream>
-#include <algorithm>
-#include <iomanip>
-#include <list>
-#include <memory>
-#include <stdexcept>
-#include <string>
-#include <utility>
-#include <vector>
+#include <CLI/CLI.hpp>
 
 #include "ast/CompilationUnit.h"
 #include "const_msg.h"
 #include "options.h"
 #include "parser/parser.h"
-#include "macro.h"
-#include "parser/common/Token.h"
-#include "utils/cached_list.h"
 #include "utils/logging.h"
-#include "utils/status/status.h"
-#include "utils/status/statusor.h"
 
 int main(int argc, char* argv[]) {
     hzcc::initLogging(argv[0]);
@@ -121,8 +103,8 @@ int main(int argc, char* argv[]) {
                 std::fstream outfile(output_file, std::fstream::out);
                 for (const auto& token : tokens.value()) {
                     outfile << "File " << input_files[i] << " Line "
-                            << std::setw(5) << token.loc().first
-                            << std::setw(0) << " Token " << std::setw(3)
+                            << std::setw(5) << token.loc().first << std::setw(0)
+                            << " Token " << std::setw(3)
                             << magic_enum::enum_integer(token.Type())
                             << std::setw(0) << " Text " << token.to_str(true)
                             << std::endl;
@@ -146,10 +128,10 @@ int main(int argc, char* argv[]) {
         // print syntax analysis result
         if (syntax_only) {
             if (output_file.empty()) {
-//                compilation_unit->Dump(std::cout);
+                //                compilation_unit->Dump(std::cout);
             } else {
                 std::fstream outfile(output_file, std::fstream::out);
-//                compilation_unit->Dump(outfile);
+                //                compilation_unit->Dump(outfile);
                 outfile.close();
             }
 

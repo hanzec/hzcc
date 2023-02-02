@@ -1,6 +1,11 @@
 ###############################################################################
 ## hzcc E2E Testing ###########################################################
 ###############################################################################
+ProcessorCount(N)
+add_custom_target(hzcc_e2e_test
+                  DEPENDS hzcc HZCC_FileCheck
+                  COMMAND ${CMAKE_CTEST_COMMAND} --rerun-failed --output-on-failure)
+
 # set-up xunit output folder
 set(TEST_OUTPUT_FOLDER "${CMAKE_CURRENT_BINARY_DIR}/test_output")
 
@@ -10,7 +15,7 @@ if (NOT EXISTS "${TEST_OUTPUT_FOLDER}")
 endif ()
 
 # llvm-lit executable
-set(LLVM_LIT_EXECUTABLE "../third_party/llvm_lit.py")
+set(LLVM_LIT_EXECUTABLE "${THIRD_PARTY_BASE_PATH}/lit/lit.py")
 
 ###############################################################################
 ## Helper Function ############################################################
@@ -19,7 +24,7 @@ function(add_lit_test_set name directory)
     message(STATUS "Add lit test set [${name}]")
 
     # check existence of test directory
-    if (NOT EXISTS ${directory})
+    if (NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}")
         message(FATAL_ERROR "Directory ${directory} does not exist.")
     endif ()
 
@@ -38,7 +43,7 @@ function(add_lit_test_set name directory)
         if (FILE_EXTENSION STREQUAL ".disabled")
             message(STATUS "Ignore test case [${name}]:${file} in  since it is mark as disabled.")
         else ()
-            message(STATUS "Discover test [${name}]:${file}")
+            message(VERBOSE "Discover test [${name}]:${file}")
             configure_file(${file} "${CURRENT_TEST_ROOT}/" COPYONLY)
         endif ()
     endforeach ()
@@ -49,8 +54,8 @@ function(add_lit_test_set name directory)
     # add test targets
     set(TEST_TARGET_OUTPUT_FILE "${TEST_OUTPUT_FOLDER}/${name}.xunit.xml")
     add_test(NAME ${name}
-            WORKING_DIRECTORY ${CURRENT_TEST_ROOT}
-            COMMAND ${Python3_EXECUTABLE} ${LLVM_LIT_EXECUTABLE} --xunit-xml-output "${TEST_TARGET_OUTPUT_FILE}" ${CURRENT_TEST_ROOT})
+             WORKING_DIRECTORY ${CURRENT_TEST_ROOT}
+             COMMAND ${Python3_EXECUTABLE} ${LLVM_LIT_EXECUTABLE}  --timeout 5 --xunit-xml-output "${TEST_TARGET_OUTPUT_FILE}" ${CURRENT_TEST_ROOT})
 endfunction()
 
 ###############################################################################
@@ -85,11 +90,11 @@ enable_testing()
 
 message(STATUS "E2E testing is enabled.")
 
-## add compiler_info test set
-#add_lit_test_set(compiler_info compiler_info)
-#
-## add lexical test set
-#add_lit_test_set(lexical lexical)
-#
-## add test_set_0 test set
-#add_lit_test_set(lexical_part3 syntax/test_set_0)
+# add compiler_info test set
+add_lit_test_set(compiler_info compiler_info)
+
+# add lexical test set
+add_lit_test_set(lexical lexical)
+
+# add test_set_0 test set
+add_lit_test_set(lexical_part3 syntax/test_set_0)

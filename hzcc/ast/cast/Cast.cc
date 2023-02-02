@@ -29,11 +29,11 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
 
     // LvalueToRvalueCast
     if (require_rvalue) {
-        VLOG_IF(SYNTAX_LOG_LEVEL, !ret->IsReturnLValue())
+        VLOG_IF(SYNTAX_LOG, !ret->IsReturnLValue())
             << "No need to apply <LvalueToRvalueCast>cast since the expression "
                "is already an rvalue.";
         if (ret->IsReturnLValue()) {
-            VLOG(SYNTAX_LOG_LEVEL) << "Applying <LvalueToRvalueCast>cast";
+            VLOG(SYNTAX_LOG) << "Applying <LvalueToRvalueCast>cast";
             ret = std::make_unique<LvalueToRvalueCast>(ret->loc(),
                                                        std::move(ret));
         }
@@ -52,7 +52,7 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
             }
 
             if (rule->second->CouldApplyTo(ret, ret->type())) {
-                VLOG(SYNTAX_LOG_LEVEL) << "Applying <" << cast_id << "> cast";
+                VLOG(SYNTAX_LOG) << "Applying <" << cast_id << "> cast";
                 auto move_ret =
                     std::move(rule->second->Apply(std::move(ret), lhs_type));
 
@@ -70,7 +70,7 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
 
         // prevent infinite loop
         if (!changed) {
-            VLOG(HZCC_VLOG_DEBUG_LEVEL)
+            VLOG(DEBUG_INFO)
                 << "Could not apply any Cast Rule rhs node "
                 << ret->UniqueName() << " because it's not match";
             return Status(StatusCode::kCastStage,
@@ -79,7 +79,7 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
             changed = false;
 
             // print Debug message
-            if (VLOG_IS_ON(HZCC_VLOG_DEBUG_LEVEL)) {
+            if (VLOG_IS_ON(DEBUG_INFO)) {
                 std::stringstream ss;
 
                 ss << "Trying to apply cast rules from ["
@@ -92,7 +92,7 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
                     }
                 }
 
-                VLOG(HZCC_VLOG_DEBUG_LEVEL) << ss.str();
+                VLOG(DEBUG_INFO) << ss.str();
             }
         }
     }
