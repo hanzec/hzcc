@@ -84,14 +84,6 @@ include_directories("${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}
 project(hzcc VERSION 0.1.0)
 
 ###############################################################################
-## Prepare LLVM ###############################################################
-###############################################################################
-find_package(LLVM REQUIRED CONFIG)
-
-message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
-message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-
-###############################################################################
 ## Third-Party ###############################################################
 ###############################################################################
 add_subdirectory(third_party)

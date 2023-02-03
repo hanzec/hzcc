@@ -18,24 +18,29 @@
 
 namespace hzcc {
 
-void initLogging(char argv[]) {
-    google::InitGoogleLogging(argv);
+void custom_prefix_callback(std::ostream &out_stream,  // NOLINT
+                            const google::LogMessageInfo &info, void *) {
+    out_stream << info.filename << ":" << info.line_number << ": " << info.severity;
+}
+
+void initLogging(char* argv[]) {
+    google::InitGoogleLogging(argv[0], &custom_prefix_callback);
     google::SetStderrLogging(google::GLOG_INFO);
 }
 
 namespace message {
 static std::string CURRENT_FILE_NAME;
 
-void set_current_file_name(const std::string& file_name) {
+void set_current_file_name(const std::string &file_name) {
     CURRENT_FILE_NAME = file_name;
 }
 
 void print_message(CompileErrorLevel level,              // NOLINT
                    std::string_view errorMessage,        // NOLINT
                    std::pair<uint64_t, uint64_t> loc) {  // NOLINT
-    static constexpr std::array<const char*, 3> kLevelColorTable = {
+    static constexpr std::array<const char *, 3> kLevelColorTable = {
         KEnableRed, KEnableYellow, KEnableGreen};
-    static constexpr std::array<const char*, 3> kLevelStringTable = {
+    static constexpr std::array<const char *, 3> kLevelStringTable = {
         "error: ", "warning: ", "info: "};
 
     if (FsUtils::is_readable(CURRENT_FILE_NAME)) {

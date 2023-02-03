@@ -11,7 +11,7 @@
 #include "utils/logging.h"
 
 int main(int argc, char* argv[]) {
-    hzcc::initLogging(argv[0]);
+    hzcc::initLogging(argv);
 
     // command line arguments
     CLI::App app{"hzcc - A C compiler"};

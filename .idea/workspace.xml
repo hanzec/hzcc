@@ -32,39 +32,10 @@
     <list default="true" id="2a186403-fc0f-43d8-a82c-50cf70816857" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/SymbTbl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/SymbTbl.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/cast/Cast.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/cast/Cast.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/FuncDeclStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/stmt/FuncDeclStmt.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/main.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/main.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/Token.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/Token.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/Preprocessor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/Preprocessor.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/semantic_analyzer.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/semantic_analyzer.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/Ctx.cc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/decl_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/decl_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/parser_factory.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/parser_factory.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statement_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/for_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/for_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/syntax_impl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/syntax_impl.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/utils/logging.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/logging.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/utils/logging.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/logging.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/utils/status/status.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/status/status.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/lit.site.cfg.py.in" beforeDir="false" afterPath="$PROJECT_DIR$/test/lit.site.cfg.py.in" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/FileCheck.cc" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/FileCheck.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/check.cc" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/check.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/check.h" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/check.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/cursor.h" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/cursor.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/diagnostic.h" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/diagnostic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/effcee.h" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/effcee.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/make_unique.h" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/make_unique.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/match.cc" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/match.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/third_party/FileCheck/effcee/to_string.h" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/FileCheck/effcee/to_string.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/third_party/llvm_lit.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vcpkg.json" beforeDir="false" afterPath="$PROJECT_DIR$/vcpkg.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,28 +69,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "cf.advertisement.text.overridden": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "ctest.advertisement.all.test.configuration.is.created": "true",
-    "last_opened_file_path": "//wsl$/Ubuntu/home/hanzech/hzcc",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
-    "structure.view.defaults.are.configured": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;cf.advertisement.text.overridden&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;ctest.advertisement.all.test.configuration.is.created&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/hanzech/hzcc&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="\\wsl$\Ubuntu\home\hanzech\Projects\hzcc\hzcc\ast\expr\grammar" />
@@ -137,11 +108,6 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake 应用程序.hzcc">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="hzcc_test" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="hzcc_test" CONFIG_NAME="Debug-WSL" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="hzcc_test" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -153,7 +119,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="acc_gen" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="acc_gen" CONFIG_NAME="Debug-WSL">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -182,27 +148,14 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="intrinsics_gen" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="intrinsics_gen" CONFIG_NAME="Debug-WSL">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="omp_gen" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="omp_gen" CONFIG_NAME="Debug-WSL">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="所有 CTest" type="CTestRunConfiguration" factoryName="CTestRun" PROGRAM_PARAMS="--extra-verbose" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$CMakeCurrentLocalGenerationDir$" PASS_PARENT_ENVS_2="true" RUN_PATH="$CTestCurrentExecutableName$" EXPLICIT_BUILD_TARGET_NAME="all" TEST_MODE="SUITE_TEST">
+    <configuration name="所有 CTest" type="CTestRunConfiguration" factoryName="CTestRun" PROGRAM_PARAMS="--extra-verbose" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$CMakeCurrentLocalGenerationDir$" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug-WSL" RUN_PATH="$CTestCurrentExecutableName$" EXPLICIT_BUILD_TARGET_NAME="all" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
         <option name="BeforeTestRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="CMake 应用程序.acc_gen" />
       <item itemvalue="CMake 应用程序.hzcc_e2e_test" />
-      <item itemvalue="CMake 应用程序.intrinsics_gen" />
-      <item itemvalue="CMake 应用程序.omp_gen" />
       <item itemvalue="CMake 应用程序.doc_doxygen" />
       <item itemvalue="CMake 应用程序.documentation" />
       <item itemvalue="CMake 应用程序.hzcc" />
@@ -332,6 +285,7 @@
       <workItem from="1675107022506" duration="23950000" />
       <workItem from="1675148199484" duration="21179000" />
       <workItem from="1675286652477" duration="34934000" />
+      <workItem from="1675381032516" duration="4348000" />
     </task>
     <servers />
   </component>

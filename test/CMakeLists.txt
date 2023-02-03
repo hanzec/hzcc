@@ -62,8 +62,7 @@ endfunction()
 ## FileCheckTool ##############################################################
 ###############################################################################
 # testing target required this target
-add_dependencies(hzcc_e2e_test FileCheck)
-
+add_dependencies(hzcc_e2e_test HZCC_FileCheck)
 
 ###############################################################################
 ## Testing Dependence #########################################################

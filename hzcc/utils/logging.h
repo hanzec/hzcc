@@ -11,7 +11,7 @@
 #ifndef HZCC_UTILS_LOGGING_H_
 #define HZCC_UTILS_LOGGING_H_
 namespace hzcc {
-void initLogging(char argv[]);
+void initLogging(char* argv[]);
 
 /**
  * ------------------------------------------------------------------------
