@@ -115,10 +115,10 @@ class Stmt {
           _node_location(std::move(loc)) {
         // NOLINT
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(
-            FATAL, !(_node_location.first >= 0 && _node_location.second >= 0))
+        LOG_IF(ERROR,
+               !(_node_location.first >= 0 && _node_location.second >= 0))
             << "location invalid (should be greater than 0)";
-        INTERNAL_LOG_IF(FATAL, _node_name.empty()) << "node to_str empty";
+        LOG_IF(ERROR, _node_name.empty()) << "node to_str empty";
 #endif
     }
 
@@ -199,7 +199,9 @@ class TypeProxyExpr : public Expr {
      * @brief Get the type of the expression.
      * @return the type of the expression.
      */
-    [[nodiscard]] std::shared_ptr<QualType> type() const override { return _type; }
+    [[nodiscard]] std::shared_ptr<QualType> type() const override {
+        return _type;
+    }
 
   private:
     std::shared_ptr<QualType> _type;
@@ -251,10 +253,8 @@ class CompoundStmt : public Stmt {
      * @param statement statement to be added
      */
     void add_stmt(std::unique_ptr<Stmt> statement) {
-        HZCC_RUNTIME_CHECK_BLOCK({
-            INTERNAL_LOG_IF(FATAL, statement == nullptr)
-                << "statement is nullptr";
-        });
+        HZCC_RUNTIME_CHECK_BLOCK(
+            { LOG_IF(FATAL, statement == nullptr) << "statement is nullptr"; });
         statements_.push_back(std::move(statement));
     };
 
@@ -350,7 +350,7 @@ class IDeclStmt : public Stmt {
          *  #####################################################################
          */
         HZCC_RUNTIME_CHECK_BLOCK({
-            INTERNAL_LOG_IF(FATAL, !_decl_name.empty())
+            LOG_IF(FATAL, !_decl_name.empty())
                 << this->UniqueName() << "decl to_str is empty";
         })
     }
@@ -383,9 +383,8 @@ class DoStmt : public Stmt {
          *  ### Runtime Assertion ###
          *  ################################################################# */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _body != nullptr)
-            << UniqueName() << "body is nullptr";
-        INTERNAL_LOG_IF(FATAL, _cond != nullptr)
+        LOG_IF(FATAL, _body != nullptr) << UniqueName() << "body is nullptr";
+        LOG_IF(FATAL, _cond != nullptr)
             << UniqueName() << "condition is nullptr";
 #endif
     }
@@ -479,7 +478,7 @@ class ForStmt : public Stmt {
      */
     void set_init(std::unique_ptr<Stmt> init) {
         HZCC_RUNTIME_CHECK_BLOCK({
-            INTERNAL_LOG_IF(FATAL, init == nullptr)
+            LOG_IF(FATAL, init == nullptr)
                 << UniqueName() << "init stmt is nullptr";
         })
         this->_init = std::move(init);
@@ -497,7 +496,7 @@ class ForStmt : public Stmt {
      */
     void set_cond(std::unique_ptr<Stmt> cond) {
         HZCC_RUNTIME_CHECK_BLOCK({
-            INTERNAL_LOG_IF(FATAL, cond == nullptr)
+            LOG_IF(FATAL, cond == nullptr)
                 << UniqueName() << "cond stmt is nullptr";
         })
         this->_cond = std::move(cond);
@@ -515,7 +514,7 @@ class ForStmt : public Stmt {
      */
     void set_incr(std::unique_ptr<Stmt> incr) {
         HZCC_RUNTIME_CHECK_BLOCK({
-            INTERNAL_LOG_IF(FATAL, incr == nullptr)
+            LOG_IF(FATAL, incr == nullptr)
                 << UniqueName() << "incr stmt is nullptr";
         })
         this->_incr = std::move(incr);
@@ -533,7 +532,7 @@ class ForStmt : public Stmt {
      */
     void set_body(std::unique_ptr<Stmt> body) {
         HZCC_RUNTIME_CHECK_BLOCK({
-            INTERNAL_LOG_IF(FATAL, body == nullptr)
+            LOG_IF(FATAL, body == nullptr)
                 << UniqueName() << "body stmt is nullptr";
         })
         this->_body = std::move(body);
@@ -567,9 +566,8 @@ class IfStmt : public Stmt {
          *  ### Runtime Assertion ###
          *  ################################################################# */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, body != nullptr)
-            << UniqueName() << "body is nullptr";
-        INTERNAL_LOG_IF(FATAL, cond != nullptr)
+        LOG_IF(FATAL, body != nullptr) << UniqueName() << "body is nullptr";
+        LOG_IF(FATAL, cond != nullptr)
             << UniqueName() << "condition is nullptr";
 #endif
     };
@@ -601,7 +599,7 @@ class IfStmt : public Stmt {
      */
     void set_else(std::unique_ptr<Stmt> else_body) {
         HZCC_RUNTIME_CHECK_BLOCK({
-            INTERNAL_LOG_IF(FATAL, else_body == nullptr)
+            LOG_IF(FATAL, else_body == nullptr)
                 << UniqueName() << "else is nullptr";
         })
         _else_statement_ = std::move(else_body);
@@ -644,9 +642,9 @@ class IfStmt : public Stmt {
      */
     void add_else_if(std::unique_ptr<Stmt> Cond, std::unique_ptr<Stmt> Body) {
         HZCC_RUNTIME_CHECK_BLOCK({
-            INTERNAL_LOG_IF(FATAL, Cond == nullptr)
+            LOG_IF(FATAL, Cond == nullptr)
                 << UniqueName() << "Cond statement is nullptr";
-            INTERNAL_LOG_IF(FATAL, Body == nullptr)
+            LOG_IF(FATAL, Body == nullptr)
                 << UniqueName() << "Body statement is nullptr";
         })
         _else_ifs.emplace_back(std::move(Cond), std::move(Body));
@@ -686,9 +684,8 @@ class WhileStmt : public Stmt {
          *  ### Runtime Assertion ###
          *  ################################################################# */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _body != nullptr)
-            << UniqueName() << "body is nullptr";
-        INTERNAL_LOG_IF(FATAL, _cond != nullptr)
+        LOG_IF(FATAL, _body != nullptr) << UniqueName() << "body is nullptr";
+        LOG_IF(FATAL, _cond != nullptr)
             << UniqueName() << "condition is nullptr";
 #endif
     }
@@ -746,8 +743,7 @@ class ParamVarDecl : public IDeclStmt {
          *  ### Runtime Assertion                                   ###
          *  ###########################################################*/
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _type != nullptr)
-            << UniqueName() << "type is nullptr";
+        LOG_IF(FATAL, _type != nullptr) << UniqueName() << "type is nullptr";
 #endif
     };
 
@@ -795,8 +791,7 @@ class FieldDecl : public IDeclStmt {
         : IDeclStmt(DeclType::FIELD, "FieldDecl", name, loc),
           _type(std::move(type)) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _type != nullptr)
-            << UniqueName() << "type is nullptr";
+        LOG_IF(FATAL, _type != nullptr) << UniqueName() << "type is nullptr";
 #endif
     }
 
@@ -896,7 +891,7 @@ class VarDecl : public IDeclStmt {
          */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
         // to_str and type is checked in DeclStmt
-        INTERNAL_LOG_IF(FATAL, _init_expr != nullptr)
+        LOG_IF(FATAL, _init_expr != nullptr)
             << UniqueName() << "init expression is nullptr";
 #endif
     }
@@ -964,7 +959,7 @@ class DeclStmt : public IDeclStmt {
          *  ### Runtime Assertion ###
          *  ################################################################# */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _decl_list.empty())
+        LOG_IF(FATAL, _decl_list.empty())
             << UniqueName() << "decl list is empty";
 #endif
     }
@@ -1067,7 +1062,7 @@ class ReturnStmt : public Stmt {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _ret_expr != nullptr)
+        LOG_IF(FATAL, _ret_expr != nullptr)
             << UniqueName() << "return statement is nullptr";
 #endif
     }

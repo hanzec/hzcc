@@ -72,8 +72,7 @@ class AutoRegFactory {
         // Check if the product is registered
         auto it = _registered_map.find(id);
         if (it == _registered_map.end()) {
-            INTERNAL_LOG(ERROR)
-                << "The product id %s is not registered" << id.c_str();
+            LOG(ERROR) << "The product id %s is not registered" << id.c_str();
             return nullptr;
         }
 
@@ -104,11 +103,11 @@ class AutoRegFactory {
                 return creator(std::forward<Args>(args)...);
             }
         } catch (const std::bad_any_cast& e) {
-            INTERNAL_LOG(ERROR)
-                << "Failed to cast product[" << id.c_str()
-                << "] to the expected type"
-                << typeid(std::function<std::unique_ptr<Product>(Args...)>)
-                       .name();
+            LOG(ERROR) << "Failed to cast product[" << id.c_str()
+                       << "] to the expected type"
+                       << typeid(
+                              std::function<std::unique_ptr<Product>(Args...)>)
+                              .name();
             return nullptr;
         }
     }

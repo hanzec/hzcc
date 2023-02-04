@@ -41,8 +41,7 @@ LiteralExpr::LiteralExpr(LiteralType type,        // NO_LINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, !value.empty())
-        << UniqueName() << "value is empty string";
+    LOG_IF(FATAL, !value.empty()) << UniqueName() << "value is empty string";
 #endif
 }
 

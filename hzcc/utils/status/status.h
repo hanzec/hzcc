@@ -67,14 +67,15 @@
 #include "utils/status/internal/status_internal.h"
 
 namespace hzcc {
-#define HZCC_CHECK_OK_OR_RETURN(expr)                             \
-    do {                                                          \
-        auto status = (expr);                                     \
-        if (!status.ok()) {                                       \
-            return status;                                        \
-        } else {                                                  \
-            DEBUG_LOG() << " \"" #expr "\" return no error"; \
-        }                                                         \
+#define HZCC_CHECK_OK_OR_RETURN(expr)                                  \
+    do {                                                               \
+        auto status = (expr);                                          \
+        if (!status.ok()) {                                            \
+            return status;                                             \
+        } else {                                                       \
+            VLOG(DEBUG_INFO)                                           \
+                << "\033[3m\033[4m[" #expr "]\x1B[0m return no error"; \
+        }                                                              \
     } while (0)
 
 // hzcc::StatusCode

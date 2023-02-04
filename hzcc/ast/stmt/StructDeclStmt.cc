@@ -21,10 +21,9 @@ RecordDecl::RecordDecl(const Position& loc,                  // NO_LINT
      * ### Runtime Assertion                                             ###
      * ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, _type != nullptr)
-        << this->UniqueName() << "type is nullptr";
-    INTERNAL_LOG_IF(FATAL, _type->type()->is<TypeCategory::Struct>() ||
-                               _type->type()->is<TypeCategory::Union>())
+    LOG_IF(FATAL, _type != nullptr) << this->UniqueName() << "type is nullptr";
+    LOG_IF(FATAL, _type->type()->is<TypeCategory::Struct>() ||
+                      _type->type()->is<TypeCategory::Union>())
         << this->UniqueName() << "type is not struct or union";
 #endif
 }

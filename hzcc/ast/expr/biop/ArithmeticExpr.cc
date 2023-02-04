@@ -2,6 +2,7 @@
 // Created by Hanze Chen on 2022/3/29.
 //
 #include <glog/logging.h>
+
 #include <memory>
 #include <optional>
 #include <ostream>
@@ -10,8 +11,8 @@
 #include <utility>
 
 #include "ast/DeduceValue.h"
-#include "ast/expr/Expr.h"
 #include "ast/Stmt.h"
+#include "ast/expr/Expr.h"
 #include "ast/visitor.h"
 #include "enums.h"
 #include "macro.h"
@@ -30,10 +31,8 @@ ArithmeticExpr::ArithmeticExpr(const Position& loc,        // NOLINT
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cert-oop50-cpp"
-    INTERNAL_LOG_IF(FATAL, !type.empty())
-        << UniqueName() << "type string empty";
-    INTERNAL_LOG_IF(FATAL, type.length() == 1)
-        << UniqueName() << "type len mismatch";
+    LOG_IF(FATAL, !type.empty()) << UniqueName() << "type string empty";
+    LOG_IF(FATAL, type.length() == 1) << UniqueName() << "type len mismatch";
 #pragma clang diagnostic pop
 #endif
 
@@ -57,9 +56,8 @@ ArithmeticExpr::ArithmeticExpr(const Position& loc,        // NOLINT
             this->_type = ArithmeticType::MOD;
             break;
         default:
-            INTERNAL_LOG(FATAL)
-                << UniqueName()
-                << "type: [" + std::string(type) + "] not supported";
+            LOG(FATAL) << UniqueName()
+                       << "type: [" + std::string(type) + "] not supported";
     }
 }
 

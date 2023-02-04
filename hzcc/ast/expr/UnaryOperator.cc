@@ -2,6 +2,7 @@
 // Created by chen_ on 2022/3/29.
 //
 #include <glog/logging.h>
+
 #include <memory>
 #include <ostream>
 #include <string>
@@ -25,10 +26,8 @@ UnaryOperator::UnaryOperator(const Position& loc,    // NOLINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, _expr != nullptr)
-        << UniqueName() << "cast is nullptr";
-    INTERNAL_LOG_IF(FATAL, !type.empty())
-        << UniqueName() << "type is empty string";
+    LOG_IF(FATAL, _expr != nullptr) << UniqueName() << "cast is nullptr";
+    LOG_IF(FATAL, !type.empty()) << UniqueName() << "type is empty string";
 #endif
 
     /** #####################################################################
@@ -72,9 +71,8 @@ UnaryOperator::UnaryOperator(const Position& loc,    // NOLINT
             _type = UnaryType::BIT_NOT;
             break;
         default:
-            INTERNAL_LOG(FATAL)
-                << UniqueName()
-                << "type: [" + std::string(type) + "] not supported ";
+            LOG(FATAL) << UniqueName()
+                       << "type: [" + std::string(type) + "] not supported ";
     }
 }
 }  // namespace hzcc::ast

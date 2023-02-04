@@ -17,9 +17,10 @@
 #include "utils/status/statusor.h"
 
 #include <glog/logging.h>
+
 #include <cstdlib>
-#include <utility>
 #include <ostream>
+#include <utility>
 
 #include "utils/logging.h"
 
@@ -76,24 +77,22 @@ void Helper::HandleInvalidStatusCtorArg(hzcc::Status* status) {
 #ifdef NDEBUG
     INTERNAL_LOG(ERROR) << kMessage;
 #else
-    INTERNAL_LOG(FATAL) << kMessage;
+    LOG(FATAL) << kMessage;
 #endif
     // In optimized builds, we will fall back to InternalError.
     *status = hzcc::InternalError(kMessage);
 }
 
 void Helper::Crash(const hzcc::Status& status) {
-    INTERNAL_LOG(FATAL)
-        << "Attempting to fetch value instead of handling error "
-           "StatusOr<T> containing: "
-        << status.ToString();
+    LOG(FATAL) << "Attempting to fetch value instead of handling error "
+                  "StatusOr<T> containing: "
+               << status.ToString();
 }
 
 void ThrowBadStatusOrAccess(const hzcc::Status& status) {
-    INTERNAL_LOG(FATAL)
-        << "Attempting to fetch value instead of handling error "
-           "StatusOr<T> containing: "
-        << status.ToString();
+    LOG(FATAL) << "Attempting to fetch value instead of handling error "
+                  "StatusOr<T> containing: "
+               << status.ToString();
     std::abort();
 }
 

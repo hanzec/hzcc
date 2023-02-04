@@ -6,33 +6,32 @@
 #define HZCC_LEXICAL_STATIC_TOKEN_TYPE_H
 namespace hzcc {
 enum class PACKED TokenType {
-    kEND = 0,
-    kAdd = '+',
-    kSub = '-',
-    kMul = '*',
-    kDiv = '/',
-    kMod = '%',
-    kAssign = '=',
-    kLogicalNot = '!',
-    kLParentheses = '(',
-    kRParentheses = ')',
-    kLBracket = '[',
-    kRBracket = ']',
-    kComma = ',',
-    kSemiColon = ';',
-    kColon = ':',
-    kDot = '.',
-    kGreater = '>',
-    kLess = '<',
-    kLBrace = '{',
-    kRBrace = '}',
-    kQuestionMark = '?',
-    kBitwiseAnd = '&',
-    kBitwiseOr = '|',
-    kBitWiseNot = '~',
-    kBitwiseXor = '^',
-    kReference = '*',
-    kDereference = '&',
+    Add = '+',
+    Sub = '-',
+    Mul = '*',
+    Div = '/',
+    Mod = '%',
+    Assign = '=',
+    LogicalNot = '!',
+    LParentheses = '(',
+    RParentheses = ')',
+    LBracket = '[',
+    RBracket = ']',
+    Comma = ',',
+    SemiColon = ';',
+    Colon = ':',
+    Dot = '.',
+    Greater = '>',
+    Less = '<',
+    LBrace = '{',
+    RBrace = '}',
+    QuestionMark = '?',
+    BitwiseAnd = '&',
+    BitwiseOr = '|',
+    BitWiseNot = '~',
+    BitwiseXor = '^',
+    Reference = '*',
+    Dereference = '&',
 
     /* Stuff with attributes */
 
@@ -104,5 +103,5 @@ enum class PACKED TokenType {
 
     kUnknown = 999
 };
-}  // namespace hzcc::parser_common
+}  // namespace hzcc
 #endif

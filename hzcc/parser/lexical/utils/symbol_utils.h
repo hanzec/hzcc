@@ -28,15 +28,28 @@ namespace hzcc::lexical::SymbolUtils {
 #pragma GCC push_options
 #pragma GCC optimize("unroll-loops")
 #endif
-template <class Type, int N>
-constexpr ALWAYS_INLINE unsigned int Iserch_table(
-    const std::array<Type, N> &table, Type str) {
+template <class CType, class AType, unsigned long ASize,  // NOLINT
+          std::enable_if_t<                               // NOLINT
+              std::disjunction_v<                         // NOLINT
+                  std::is_convertible<AType, CType>,      // NOLINT
+                  std::is_convertible<CType, AType>>,     // NOLINT
+              int> = 0>                                   // NOLINT
+constexpr ALWAYS_INLINE int Iserch_table(const std::array<AType, ASize> &table,
+                                         CType str) {
+    static_assert(ASize > 0, "Array size must be greater than 0");
+    static_assert(ASize <= std::numeric_limits<int>::max(),
+                  "Array size must be less than INT_MAX");
+
 #ifdef __clang__
 #pragma clang loop unroll(full)
 #endif
-    for (size_t i = 0; i < N; ++i) {
-        if constexpr (std::is_same_v<Type, const char *>) {
-            if (strcmp(table[i], str) == 0) {
+    for (size_t i = 0; i < ASize; ++i) {
+        if constexpr (std::is_same_v<AType, std::string_view>) {
+            if (table[i].compare(str) == 0) {
+                return i;
+            }
+        } else if constexpr (std::is_convertible_v<AType, std::string_view>) {
+            if (std::string_view(table[i]).compare(str) == 0) {
                 return i;
             }
         } else {
@@ -57,9 +70,7 @@ constexpr ALWAYS_INLINE unsigned int Iserch_table(
  * @return the index of the symbol in symbol table, and -1 if not found.
  */
 ALWAYS_INLINE TokenType GetSymbolType(const char str) {
-    auto ret =
-        Iserch_table<const char, parser_common::kSingleCharSymbolTableSize>(
-            parser_common::kSingleCharSymbol, str);
+    auto ret = Iserch_table(parser_common::kSingleCharSymbol, str);
 
     if (ret == -1) {
         return TokenType::kUnknown;
@@ -83,8 +94,7 @@ ALWAYS_INLINE bool IsOperator(const char str) {
  * @return true if the char is the special symbol, false otherwise.
  */
 ALWAYS_INLINE bool IsPrimitiveType(const char *str) {
-    return Iserch_table<const char *, parser_common::KPermittedTypeTableSize>(
-               ::hzcc::parser_common::kPrimitiveTypeTable, str) != -1;
+    return Iserch_table(::hzcc::parser_common::kPrimitiveTypeTable, str) != -1;
 }
 
 /**
@@ -98,12 +108,8 @@ ALWAYS_INLINE TokenType GetSymbolType(const char str[2]) {
         return GetSymbolType(str[0]);
     }
 
-    // create a tmp string
-    std::string tmp(str, 2);
-
-    auto ret =
-        Iserch_table<const char *, parser_common::kDoubleCharSymbolTableSize>(
-            parser_common::kDoubleCharSymbol, tmp.c_str());
+    auto ret = Iserch_table(parser_common::kDoubleCharSymbol,
+                            std::string_view(str).substr(0, 2));
 
     if (ret == -1) {
         return GetSymbolType(str[0]);
@@ -193,8 +199,7 @@ ALWAYS_INLINE const char *ASCIIControlCodeToString(const char str) {
  */
 ALWAYS_INLINE TokenType GetStringKeywordType(const std::string &keyword) {
     auto ret =
-        Iserch_table<const char *, ::hzcc::parser_common::kKeywordTableSize>(
-            ::hzcc::parser_common::kKeywordTable, keyword.c_str());
+        Iserch_table(::hzcc::parser_common::kKeywordTable, keyword.c_str());
 
     if (ret == -1) {
         return TokenType::kUnknown;

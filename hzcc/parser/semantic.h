@@ -144,8 +144,7 @@ ALWAYS_INLINE bool Ctx::has_func(std::string_view name) {
 }
 
 ALWAYS_INLINE ast::FuncDeclStmtPtr& Ctx::get_func(std::string_view name) {
-    INTERNAL_LOG_IF(FATAL, !has_func(name))
-        << "Function " << name << " is not defined";
+    LOG_IF(FATAL, !has_func(name)) << "Function " << name << " is not defined";
     return this->_compilationUnit->_func_tbl[name];
 }
 

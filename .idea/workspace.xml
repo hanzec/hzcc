@@ -16,12 +16,9 @@
     <generated>
       <config projectName="hzcc" targetName="hzcc" />
       <config projectName="hzcc" targetName="hzcc_test" />
-      <config projectName="hzcc" targetName="intrinsics_gen" />
       <config projectName="hzcc" targetName="HZCC_FileCheck" />
       <config projectName="hzcc" targetName="doc_doxygen" />
       <config projectName="hzcc" targetName="documentation" />
-      <config projectName="hzcc" targetName="omp_gen" />
-      <config projectName="hzcc" targetName="acc_gen" />
       <config projectName="hzcc" targetName="hzcc_e2e_test" />
     </generated>
   </component>
@@ -31,11 +28,44 @@
   <component name="ChangeListManager">
     <list default="true" id="2a186403-fc0f-43d8-a82c-50cf70816857" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/main.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/main.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/Stmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/Stmt.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/SymbTbl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/SymbTbl.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/cast/Cast.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/cast/Cast.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/Expr.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/Expr.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/LiteralExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/LiteralExpr.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/UnaryOperator.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/UnaryOperator.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/ArithmeticExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/ArithmeticExpr.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/AssignExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/AssignExpr.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/BitwiseExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/BitwiseExpr.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/LogicalExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/LogicalExpr.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/RelationalExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/RelationalExpr.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/FuncDeclStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/stmt/FuncDeclStmt.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/StructDeclStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/stmt/StructDeclStmt.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/type/StructType.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/type/StructType.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/type/Type.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/type/Type.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/enums.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/enums.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/Token.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/Token.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/keywords.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/keywords.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/name_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/name_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/token_type.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/token_type.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/utils/symbol_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/utils/symbol_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/semantic.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/semantic.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/semantic_analyzer.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/semantic_analyzer.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/common_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/common_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/decl_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/decl_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statement_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/compound_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/compound_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/for_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/for_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/if_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/if_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/while_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/while_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/syntax_impl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/syntax_impl.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/utils/factory.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/factory.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/utils/logging.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/logging.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hzcc/utils/logging.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/logging.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/utils/status/status.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/status/status.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/utils/status/statusor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/status/statusor.cc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +137,7 @@
       <recent name="\\wsl$\Ubuntu\home\hanzech\Projects\hzcc\hzcc" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake 应用程序.hzcc">
+  <component name="RunManager" selected="CMake 应用程序.hzcc_e2e_test">
     <configuration name="hzcc_test" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="hzcc_test" CONFIG_NAME="Debug-WSL" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="hzcc_test" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -134,7 +164,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="hzcc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="--flexical_only test/lexical/comments_1.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="hzcc" CONFIG_NAME="Debug-WSL" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="hzcc">
+    <configuration name="hzcc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="--flexical_only test/lexical/comments_2.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="hzcc" CONFIG_NAME="Debug-WSL" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="hzcc">
       <envs>
         <env name="GLOG_logtostderr" value="1" />
         <env name="GLOG_v" value="10" />
@@ -285,7 +315,7 @@
       <workItem from="1675107022506" duration="23950000" />
       <workItem from="1675148199484" duration="21179000" />
       <workItem from="1675286652477" duration="34934000" />
-      <workItem from="1675381032516" duration="4348000" />
+      <workItem from="1675381032516" duration="16511000" />
     </task>
     <servers />
   </component>
@@ -334,7 +364,12 @@
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc</url>
           <line>450</line>
-          <option name="timeStamp" value="33" />
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc</url>
+          <line>445</line>
+          <option name="timeStamp" value="35" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

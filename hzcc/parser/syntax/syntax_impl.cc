@@ -24,7 +24,7 @@ Status GenerateAST(TokenList& tokens,
     // function prototypes and variables declarations
     while (!tokens.empty()) {
         // Ignore single line comments
-        if (tokens.peek().Type() == TokenType::kSemiColon) {
+        if (tokens.peek().Type() == TokenType::SemiColon) {
             DVLOG(SYNTAX_LOG) << "ignore single semicolon at location: "
                                     << tokens.peek().loc().first << ":"
                                     << tokens.peek().loc().second;

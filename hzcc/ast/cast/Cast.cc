@@ -70,9 +70,8 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
 
         // prevent infinite loop
         if (!changed) {
-            VLOG(DEBUG_INFO)
-                << "Could not apply any Cast Rule rhs node "
-                << ret->UniqueName() << " because it's not match";
+            VLOG(DEBUG_INFO) << "Could not apply any Cast Rule rhs node "
+                             << ret->UniqueName() << " because it's not match";
             return Status(StatusCode::kCastStage,
                           "Cannot find any suitable cast rule");
         } else {
@@ -83,8 +82,8 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
                 std::stringstream ss;
 
                 ss << "Trying to apply cast rules from ["
-                   << ret->type()->to_str() << "] to ["
-                   << lhs_type->to_str() << "]:" << std::endl;
+                   << ret->type()->to_str() << "] to [" << lhs_type->to_str()
+                   << "]:" << std::endl;
 
                 for (auto&& statue : status) {
                     if (!statue.ok()) {
@@ -98,7 +97,7 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
     }
 
     // return the final node
-    INTERNAL_LOG_IF(ERROR, ret == nullptr || ret->type() != lhs_type)
+    LOG_IF(ERROR, ret == nullptr || ret->type() != lhs_type)
         << "Failed rhs resolve Cast Rule lhs: " << ret->UniqueName() << "("
         << ret->type()->to_str() << ") rhs type: "
         << "(" << lhs_type->to_str() << ")";

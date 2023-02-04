@@ -100,7 +100,7 @@ std::shared_ptr<SymbTbl> SymbTbl::enter_scope() {
 // NOLINTNEXTLINE(misc-no-recursion)
 Position SymbTbl::var_def_pos(std::string_view name) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, has_var(name, false))
+    LOG_IF(FATAL, has_var(name, false))
         << "Variable " << name << " has not been defined";
 #endif
 

@@ -27,20 +27,20 @@ StatusOr<ast::StmtPtr> CompoundStatement::parse_impl(SyntaxCtx context,
                                                      TokenList& tokens) {
     // check if the next token is '{'
     auto prev_token = tokens.peek();
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kLBrace, tokens);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::LBrace, tokens);
 
     // create new block node
     auto block_node = std::make_unique<ast::CompoundStmt>(prev_token.loc());
 
     // parse statements
-    while (!tokens.empty() && tokens.peek().Type() != TokenType::kRBrace) {
+    while (!tokens.empty() && tokens.peek().Type() != TokenType::RBrace) {
         HZCC_CHECK_OR_ASSIGN(stmt,  // NOLINT
                              Parser::Parse<ast::Stmt>(context, tokens))
         block_node->add_stmt(std::move(stmt));
 
         if (!block_node->last_stmt()->has_body()) {
             // stmt need end with ';'
-            HZCC_CheckAndConsume_ReturnErr(TokenType::kSemiColon, tokens);
+            HZCC_CheckAndConsume_ReturnErr(TokenType::SemiColon, tokens);
         }
     }
 
@@ -48,7 +48,7 @@ StatusOr<ast::StmtPtr> CompoundStatement::parse_impl(SyntaxCtx context,
     if (tokens.empty()) {
         return syntax::utils::TokenErr(prev_token, "Unmatched '{', need '}'");
     } else {
-        HZCC_CheckAndConsume_ReturnErr(TokenType::kRBrace, tokens);
+        HZCC_CheckAndConsume_ReturnErr(TokenType::RBrace, tokens);
     }
 
     return block_node;

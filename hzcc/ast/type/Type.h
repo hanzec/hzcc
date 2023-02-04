@@ -277,7 +277,7 @@ class IRecordType : public Type {
      */
     explicit IRecordType(TypeCategory typeCategory) : Type(typeCategory) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, typeCategory != TypeCategory::Struct ||
+        LOG_IF(FATAL, typeCategory != TypeCategory::Struct ||
                                    typeCategory != TypeCategory::Union)
             << "The type category must be Struct or Union if you want to "
                "construct a IRecordType.";

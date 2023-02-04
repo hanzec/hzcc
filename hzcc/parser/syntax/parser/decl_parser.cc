@@ -35,7 +35,7 @@ StatusOr<VarPack> DeclStatement::parse_type(TokenList& tokens,
                                             SyntaxCtx& context,
                                             ast::QualTypePtr& base_type) {
     // for *
-    while (tokens.peek().Type() == TokenType::kMul) {
+    while (tokens.peek().Type() == TokenType::Mul) {
         if (base_type->is<TypeCategory::Ptr>()) {
             tokens.pop();
             base_type = std::make_shared<ast::QualType>(
@@ -53,14 +53,14 @@ StatusOr<VarPack> DeclStatement::parse_type(TokenList& tokens,
     auto decl_name = tokens.pop();
 
     // for []
-    if (tokens.peek().Type() == TokenType::kLBracket) {
+    if (tokens.peek().Type() == TokenType::LBracket) {
         tokens.pop();
-        if (tokens.peek().Type() != TokenType::kRBracket) {
+        if (tokens.peek().Type() != TokenType::RBracket) {
             HZCC_CHECK_OR_ASSIGN(size_expr,
                                  Parser::Parse<ast::Expr>(context, tokens))
 
             // check match ]
-            if (tokens.peek().Type() != TokenType::kRBracket) {
+            if (tokens.peek().Type() != TokenType::RBracket) {
                 return syntax::utils::TokenErr(tokens.peek(), "except a ']'");
             }
 
@@ -87,7 +87,7 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_impl(SyntaxCtx context,
                                                  TokenList& tokens) {
     // handle the case enum/struct/union since they don't include * or & on
     // their declaration
-    if (tokens.peek3().Type() == TokenType::kLBrace) {
+    if (tokens.peek3().Type() == TokenType::LBrace) {
         if (tokens.peek().Type() == TokenType::kEnum ||
             tokens.peek().Type() == TokenType::kUnion) {
             return syntax::utils::TokenErr(
@@ -119,7 +119,7 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_impl(SyntaxCtx context,
     // for vardecl and funcdecl, we need to consume the *
     auto base_type = context->get_type(base_type_str)->type_of(ret_attr_list);
     ast::QualTypePtr final_type(base_type);
-    while (tokens.peek().Type() == TokenType::kMul) {
+    while (tokens.peek().Type() == TokenType::Mul) {
         if (base_type->is<TypeCategory::Array>()) {
             tokens.pop();
             final_type = std::make_shared<ast::QualType>(
@@ -131,7 +131,7 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_impl(SyntaxCtx context,
     }
 
     // parse rest of the declaration
-    if (tokens.peek2().Type() == TokenType::kLParentheses) {
+    if (tokens.peek2().Type() == TokenType::LParentheses) {
         // function declaration
         return parse_func(tokens, context, final_type);
     } else {
@@ -154,7 +154,7 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_var(TokenList& tokens,
 
     // check if current variable has initializer
     std::list<std::unique_ptr<ast::VarDecl>> var_list;
-    if (tokens.peek().Type() == TokenType::kAssign) {
+    if (tokens.peek().Type() == TokenType::Assign) {
         tokens.pop();
         // parse initializer
         HZCC_CHECK_OR_ASSIGN(init_expr,
@@ -170,13 +170,13 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_var(TokenList& tokens,
     }
 
     // add all new variable to the current scope
-    while (tokens.peek().Type() == TokenType::kComma) {
+    while (tokens.peek().Type() == TokenType::Comma) {
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(var_pack,  // NOLINT
                              parse_type(tokens, context, base_type))
 
         // try parse initializer
-        if (tokens.peek().Type() == TokenType::kAssign) {
+        if (tokens.peek().Type() == TokenType::Assign) {
             tokens.pop();
             // parse initializer
             HZCC_CHECK_OR_ASSIGN(init_expr,
@@ -232,9 +232,9 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
      * Parse Argument List
      */
     // consume '('
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kLParentheses, tokens)
+    HZCC_CheckAndConsume_ReturnErr(TokenType::LParentheses, tokens)
         // next token should not be ',', if it is, it means empty argument list
-        if (tokens.peek().Type() == TokenType::kComma) {
+        if (tokens.peek().Type() == TokenType::Comma) {
         return syntax::utils::TokenErr(tokens, "Expected type to_str");
     }
 
@@ -248,11 +248,11 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
     std::list<VarPack> arg_type_list;
     do {
         // consume ',' if available
-        if (tokens.peek().Type() == TokenType::kComma) {
+        if (tokens.peek().Type() == TokenType::Comma) {
             tokens.pop();
         } else {
             // directly break if ')'
-            if (tokens.peek().Type() == TokenType::kRParentheses) {
+            if (tokens.peek().Type() == TokenType::RParentheses) {
                 break;
             } else if (first) {
                 return syntax::utils::TokenErr(tokens, "Expected ','");
@@ -291,7 +291,7 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
             std::make_unique<ast::TypeProxyExpr>(var_pack.second.loc(),
                                                  var_pack.first)));
     } while (!tokens.empty() &&
-             tokens.peek().Type() != TokenType::kRParentheses);
+             tokens.peek().Type() != TokenType::RParentheses);
 
     // check argument list is matched with previous definition
     if (context->has_func(func_name.to_str())) {
@@ -313,10 +313,10 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
     }
 
     // check ')'  and consume
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::RParentheses, tokens);
 
     // trying to parse the function body if it exists
-    if (tokens.peek().Type() == TokenType::kLBrace) {
+    if (tokens.peek().Type() == TokenType::LBrace) {
         // we do not allow multiple implementation of the same function
         if (context->has_func(func_name.to_str()) &&
             context->has_body(func_name.to_str())) {
@@ -339,7 +339,7 @@ StatusOr<ast::StmtPtr> DeclStatement::parse_func(TokenList& tokens,
     }
 
     // if the function body is not exits, then we need to check the ";"
-    else if (tokens.peek().Type() == TokenType::kSemiColon) {
+    else if (tokens.peek().Type() == TokenType::SemiColon) {
         tokens.pop();
     }
 
@@ -366,7 +366,7 @@ StatusOr<ast::RecordDEclPtr> DeclStatement::parse_struct(SyntaxCtx& context,
     auto struct_name = tokens.pop();
 
     // consume {
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kLBrace, tokens);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::LBrace, tokens);
 
     // add struct to context first to avoid recursive struct definition
     // convert all token type to Attr
@@ -386,9 +386,9 @@ StatusOr<ast::RecordDEclPtr> DeclStatement::parse_struct(SyntaxCtx& context,
         std::make_unique<ast::TypeProxyExpr>(struct_name.loc(), struct_type));
 
     // parse struct body
-    while (tokens.peek().Type() != TokenType::kRBrace) {
+    while (tokens.peek().Type() != TokenType::RBrace) {
         if (tokens.peek().Type() == TokenType::kStruct &&
-            tokens.peek3().Type() == TokenType::kLBrace) {
+            tokens.peek3().Type() == TokenType::LBrace) {
             // parse nested struct
             HZCC_CHECK_OR_ASSIGN(inner_struct,                   // NOLINT
                                  parse_struct(context, tokens))  // NOLINT;
@@ -433,13 +433,13 @@ StatusOr<ast::RecordDEclPtr> DeclStatement::parse_struct(SyntaxCtx& context,
                                                      var_decl.first)));
 
             // struct cannot have initializer
-            if (tokens.peek().Type() == TokenType::kAssign) {
+            if (tokens.peek().Type() == TokenType::Assign) {
                 return syntax::utils::TokenErr(
                     tokens, "Struct cannot have initializer");
             }
 
             // if define multiple value, we need to consume ','
-            while (tokens.peek().Type() == TokenType::kComma) {
+            while (tokens.peek().Type() == TokenType::Comma) {
                 tokens.pop();
 
                 HZCC_CHECK_OR_ASSIGN(                       // NOLINT
@@ -481,19 +481,19 @@ StatusOr<ast::RecordDEclPtr> DeclStatement::parse_struct(SyntaxCtx& context,
                             var_decl_inner.first)));
 
                 // struct cannot have initializer
-                if (tokens.peek().Type() == TokenType::kAssign) {
+                if (tokens.peek().Type() == TokenType::Assign) {
                     return syntax::utils::TokenErr(
                         tokens, "Struct cannot have initializer");
                 }
             }
 
             // consume ;
-            HZCC_CheckAndConsume_ReturnErr(TokenType::kSemiColon, tokens)
+            HZCC_CheckAndConsume_ReturnErr(TokenType::SemiColon, tokens)
         }
     }
 
     // consume }
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kRBrace, tokens);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::RBrace, tokens);
 
     return std::move(struct_node);
 }

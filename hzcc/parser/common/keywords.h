@@ -38,7 +38,7 @@ static constexpr const int KLiteralsTypeTableSize = 6;
  * Literals type's table.
  */
 constexpr static std::array<const char *, KLiteralsTypeTableSize>
-    kLiteralsSymbol{"type",    "Char",   "Integer",
+    kLiteralsSymbol{"type",       "Char",   "Integer",
                     "RealNumber", "String", "Identity"};
 
 /**
@@ -48,7 +48,7 @@ constexpr std::array<const char, kSingleCharSymbolTableSize> kSingleCharSymbol{
     '+', '-', '*', '/', '%', '&', '|', '!', '=', '.', ',', '~',
     '<', '>', '?', ':', ';', '{', '}', '(', ')', '[', ']'};
 
-constexpr std::array<const char *, kDoubleCharSymbolTableSize>
+constexpr std::array<std::string_view, kDoubleCharSymbolTableSize>
     kDoubleCharSymbol{
         "==", "!=", ">=", "<=", "++", "--", "||", "&&", "<<", ">>",
         "+=", "-=", "*=", "/=", "->", "%=", "&=", "|=", "^="};
@@ -61,12 +61,11 @@ constexpr std::array<TokenType, kKeywordTableSize> kReversedKeywordTable{
     TokenType::kGoto,   TokenType::kSizeOf,   TokenType::kUnion,
     TokenType::kEnum,   TokenType::kReturn};
 
-constexpr std::array<TokenType, 10>
-    kReversedAttributeTable{TokenType::kConst,    TokenType::kExtern,
-                            TokenType::kStatic,   TokenType::kAuto,
-                            TokenType::kVolatile, TokenType::kInline,
-                            TokenType::kRestrict, TokenType::kSigned,
-                            TokenType::kUnsigned, TokenType::kRegister};
+constexpr std::array<TokenType, 10> kReversedAttributeTable{
+    TokenType::kConst,    TokenType::kExtern,   TokenType::kStatic,
+    TokenType::kAuto,     TokenType::kVolatile, TokenType::kInline,
+    TokenType::kRestrict, TokenType::kSigned,   TokenType::kUnsigned,
+    TokenType::kRegister};
 }  // namespace hzcc::parser_common
 
 #endif  // HZCC_COMMON_KEYWORDS_H

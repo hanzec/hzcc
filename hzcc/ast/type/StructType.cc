@@ -23,7 +23,7 @@ StructType::StructType(std::string_view name)
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, !name.empty())
+    LOG_IF(FATAL, !name.empty())
         << UniqueName() << "cast cast is nullptr";
 #endif
 }
@@ -39,9 +39,9 @@ bool StructType::is_same(const Type &rhs) const {
 void StructType::add_record(std::string_view name,      // NOLINT
                             const QualTypePtr &type) {  // NOLINT
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, !name.empty())  // NOLINT
+    LOG_IF(FATAL, !name.empty())  // NOLINT
         << UniqueName() << "to_str is empty";
-    INTERNAL_LOG_IF(FATAL, type != nullptr)  // NOLINT
+    LOG_IF(FATAL, type != nullptr)  // NOLINT
         << UniqueName() << "type is nullptr";
 #endif
     _localTypeList.emplace_back(name, type);

@@ -168,7 +168,7 @@ ALWAYS_INLINE constexpr PrimitiveType to_primitive_type(
     } else if (type == "long_double") {
         return PrimitiveType::kLong_double;
     } else {
-        INTERNAL_LOG(FATAL) << "Unknown primitive type: " << type;
+        LOG(FATAL) << "Unknown primitive type: " << type;
     }
 }
 
@@ -183,8 +183,8 @@ ALWAYS_INLINE constexpr Qualifier to_attr(TokenType attr) {
         case TokenType::kAtomic:
             return Qualifier::ATOMIC;
         default:
-            INTERNAL_LOG(FATAL) << "Token: " << magic_enum::enum_name(attr)
-                                << " is not a qualifier";
+            LOG(FATAL) << "Token: " << magic_enum::enum_name(attr)
+                       << " is not a qualifier";
     }
 }
 

@@ -35,7 +35,7 @@ StatusOr<ast::StmtPtr> ForStatement::parse_impl(SyntaxCtx context,
 
     // check next token is (
     auto left_paren_loc = tokens.peek().loc();
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kLParentheses, tokens);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::LParentheses, tokens);
 
     // parse
     auto for_node = std::make_unique<ast::ForStmt>(for_loc);
@@ -44,37 +44,37 @@ StatusOr<ast::StmtPtr> ForStatement::parse_impl(SyntaxCtx context,
     context->enter_scope();
 
     // parse initializer
-    if (tokens.peek().Type() != TokenType::kSemiColon) {
+    if (tokens.peek().Type() != TokenType::SemiColon) {
         HZCC_CHECK_OR_ASSIGN(initializer,  // NOLINT
                              Parser::Parse<ast::Stmt>(context, tokens));
         for_node->set_init(std::move(initializer));
 
         // check ';'  and consume
-        HZCC_CheckAndConsume_ReturnErr(TokenType::kSemiColon, tokens)
+        HZCC_CheckAndConsume_ReturnErr(TokenType::SemiColon, tokens)
     }
 
     // parse condition
-    if (tokens.peek().Type() != TokenType::kSemiColon) {
+    if (tokens.peek().Type() != TokenType::SemiColon) {
         HZCC_CHECK_OR_ASSIGN(condition,  // NOLINT
                              Parser::Parse<ast::Stmt>(context, tokens))
         for_node->set_cond(std::move(condition));
 
         // check ';'  and consume
-        HZCC_CheckAndConsume_ReturnErr(TokenType::kSemiColon, tokens);
+        HZCC_CheckAndConsume_ReturnErr(TokenType::SemiColon, tokens);
     }
 
     // parse increment
-    if (tokens.peek().Type() != TokenType::kRParentheses) {
+    if (tokens.peek().Type() != TokenType::RParentheses) {
         HZCC_CHECK_OR_ASSIGN(increment,  // NOLINT
                              Parser::Parse<ast::Stmt>(context, tokens));
         for_node->set_incr(std::move(increment));
 
         // check next token is )
-        HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
+        HZCC_CheckAndConsume_ReturnErr(TokenType::RParentheses, tokens);
     }
 
     // parse body and return
-    if (tokens.peek().Type() != TokenType::kSemiColon) {
+    if (tokens.peek().Type() != TokenType::SemiColon) {
         HZCC_CHECK_OR_ASSIGN(body,  // NOLINT
                              utils::ParseBodyStatement(context, false, tokens))
         for_node->set_body(std::move(body));
@@ -84,7 +84,7 @@ StatusOr<ast::StmtPtr> ForStatement::parse_impl(SyntaxCtx context,
     context->leave_scope();
 
     // push a semicolon for easier parsing
-    tokens.push(TokenType::kSemiColon, -1, -1);
+    tokens.push(TokenType::SemiColon, -1, -1);
 
     ExitLoop();  // exit loop
     return for_node;

@@ -28,7 +28,7 @@ ALWAYS_INLINE PrimitiveType GetPrimitiveType(std::string_view str) {
     auto ret = magic_enum::enum_cast<PrimitiveType>(::hzcc::utils::search_table(
         str.data(), hzcc::parser_common::kPrimitiveTypeTable));
 
-    INTERNAL_LOG_IF(FATAL, !ret.has_value()) << "Invalid PrimitiveType";
+    LOG_IF(FATAL, !ret.has_value()) << "Invalid PrimitiveType";
 
     return ret.value();
 }

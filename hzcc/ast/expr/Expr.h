@@ -82,13 +82,11 @@ class OperatorBase : public Expr {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _lhs != nullptr)
-            << UniqueName() << "lhs is nullptr";
-        INTERNAL_LOG_IF(FATAL, _rhs != nullptr)
-            << UniqueName() << "rhs is nullptr";
-        INTERNAL_LOG_IF(FATAL, !_lhs->type()->is<TypeCategory::Array>())
+        LOG_IF(FATAL, _lhs != nullptr) << UniqueName() << "lhs is nullptr";
+        LOG_IF(FATAL, _rhs != nullptr) << UniqueName() << "rhs is nullptr";
+        LOG_IF(FATAL, !_lhs->type()->is<TypeCategory::Array>())
             << UniqueName() << "lhs could not be array";
-        INTERNAL_LOG_IF(FATAL, !_rhs->type()->is<TypeCategory::Array>())
+        LOG_IF(FATAL, !_rhs->type()->is<TypeCategory::Array>())
             << UniqueName() << "rhs could not be array";
 #endif
     }
@@ -171,7 +169,7 @@ class CastExpr : public Expr {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _expr != nullptr)
+        LOG_IF(FATAL, _expr != nullptr)
             << UniqueName() << "cast cast is nullptr";
 #endif
     }
@@ -267,11 +265,11 @@ class TernaryExpr : public Expr {
          * #####################################################################
          */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _cond != nullptr)
+        LOG_IF(FATAL, _cond != nullptr)
             << this->UniqueName() << "cond is nullptr";
-        INTERNAL_LOG_IF(FATAL, _true_expr != nullptr)
+        LOG_IF(FATAL, _true_expr != nullptr)
             << this->UniqueName() << "true_expr is nullptr";
-        INTERNAL_LOG_IF(FATAL, _false_expr != nullptr)
+        LOG_IF(FATAL, _false_expr != nullptr)
             << this->UniqueName() << "false_expr is nullptr";
 #endif
     }
@@ -383,8 +381,7 @@ class SizeofExpr : public Expr {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _expr != nullptr)
-            << UniqueName() << "cast is nullptr";
+        LOG_IF(FATAL, _expr != nullptr) << UniqueName() << "cast is nullptr";
 #endif
     }
 
@@ -517,14 +514,13 @@ class FuncCallStmt : public Expr {
  *  #####################################################################
  */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _name.empty())
-            << UniqueName() << "to_str is empty";
-        INTERNAL_LOG_IF(FATAL, _ret_type != nullptr)
+        LOG_IF(FATAL, _name.empty()) << UniqueName() << "to_str is empty";
+        LOG_IF(FATAL, _ret_type != nullptr)
             << UniqueName() << "return type is nullptr";
         {
             uint_fast32_t args_count = 0;
             for (auto& arg : _func_args) {
-                INTERNAL_LOG_IF(FATAL, arg != nullptr)
+                LOG_IF(FATAL, arg != nullptr)
                     << UniqueName()
                     << "argument " + std::to_string(args_count) + " is nullptr";
             }
@@ -586,8 +582,8 @@ class DeclRefExpr : public Expr {
  *  ### Runtime Assertion ###
  *  #####################################################################*/
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _type != nullptr) << "type is nullptr";
-        INTERNAL_LOG_IF(FATAL, !_name.empty()) << "to_str is empty string";
+        LOG_IF(FATAL, _type != nullptr) << "type is nullptr";
+        LOG_IF(FATAL, !_name.empty()) << "to_str is empty string";
 #endif
     }
 
@@ -650,11 +646,10 @@ class ArraySubscriptExpr : public Expr {
  *  ### Runtime Assertion ###
  *  #####################################################################*/
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _array != nullptr)
-            << UniqueName() << "array is nullptr";
-        INTERNAL_LOG_IF(FATAL, _subscript != nullptr)
+        LOG_IF(FATAL, _array != nullptr) << UniqueName() << "array is nullptr";
+        LOG_IF(FATAL, _subscript != nullptr)
             << UniqueName() << "subscript is nullptr";
-        INTERNAL_LOG_IF(FATAL, _array->type()->is<TypeCategory::Array>())
+        LOG_IF(FATAL, _array->type()->is<TypeCategory::Array>())
             << UniqueName() << "not accessing array";
 #endif
     }
@@ -745,11 +740,10 @@ class MemberExpr : public Expr {
  *  ### Runtime Assertion ###
  *  #####################################################################*/
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, !field.empty())
-            << UniqueName() << "field string empty";
-        INTERNAL_LOG_IF(FATAL, _variable != nullptr)
+        LOG_IF(FATAL, !field.empty()) << UniqueName() << "field string empty";
+        LOG_IF(FATAL, _variable != nullptr)
             << UniqueName() << "chain_access is nullptr";
-        INTERNAL_LOG_IF(FATAL, _variable->type()->is<TypeCategory::Struct>())
+        LOG_IF(FATAL, _variable->type()->is<TypeCategory::Struct>())
             << UniqueName() << "chain_access is not struct";
 #endif
     }
@@ -1180,9 +1174,9 @@ class ExplicitCastExpr : public CastExpr {
  *  ### Runtime Assertion ###
  *  #####################################################################*/
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _cast_type != nullptr)
+        LOG_IF(FATAL, _cast_type != nullptr)
             << UniqueName() << "cast type is nullptr";
-        INTERNAL_LOG_IF(WARNING, cast_expr()->type() != _cast_type->type())
+        LOG_IF(WARNING, cast_expr()->type() != _cast_type->type())
             << UniqueName() << "cast type is not equal to cast cast type";
 #endif
     }
@@ -1225,9 +1219,9 @@ class ImplicitCastExpr : public CastExpr {
  *  ### Runtime Assertion ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, !_name.empty())
+        LOG_IF(FATAL, !_name.empty())
             << UniqueName() << "cast to_str is empty string";
-        INTERNAL_LOG_IF(FATAL, cast_expr()->type() != nullptr)
+        LOG_IF(FATAL, cast_expr()->type() != nullptr)
             << UniqueName() << "cast cast have a nullptr type";
 #endif
     }
@@ -1263,7 +1257,7 @@ class LvalueToRvalueCast : public ImplicitCastExpr {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, cast_expr()->IsReturnLValue())
+        LOG_IF(FATAL, cast_expr()->IsReturnLValue())
             << "has to return left value";
 #endif
     }
@@ -1315,12 +1309,11 @@ class IntegralCast : public ImplicitCastExpr {
          *  #####################################################################
          */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, _type != nullptr)
+        LOG_IF(FATAL, _type != nullptr)
             << UniqueName() << "cast type is nullptr";
-        INTERNAL_LOG_IF(WARNING, (*cast_expr()->type()) != *_type)
+        LOG_IF(WARNING, (*cast_expr()->type()) != *_type)
             << UniqueName() << "cast type is not equal to cast cast type";
-        INTERNAL_LOG_IF(WARNING,
-                        (_type->is<TypeCategory::Numerical>() ||
+        LOG_IF(WARNING, (_type->is<TypeCategory::Numerical>() ||
                          cast_expr()->type()->is<TypeCategory::Numerical>()))
             << UniqueName()
             << "cast type or expression type is not builtin type";
@@ -1364,11 +1357,11 @@ class ArrayToPointerDecayCast : public ImplicitCastExpr {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        INTERNAL_LOG_IF(FATAL, cast_expr()->type()->is<TypeCategory::Ptr>())
+        LOG_IF(FATAL, cast_expr()->type()->is<TypeCategory::Ptr>())
             << UniqueName() << "has to be a pointer type";
 
-        INTERNAL_LOG_IF(FATAL, strcmp(cast_expr()->NodeName().data(),
-                                      "ArraySubscriptExpr") == 0)
+        LOG_IF(FATAL, strcmp(cast_expr()->NodeName().data(),
+                             "ArraySubscriptExpr") == 0)
             << UniqueName() << "cast has to be a ArraySubscriptExpr";
 #endif
     }

@@ -2,15 +2,16 @@
 // Created by Hanze Chen on 2022/3/29.
 //
 #include <glog/logging.h>
+
 #include <memory>
 #include <ostream>
 #include <string>
 #include <string_view>
 #include <utility>
 
+#include "ast/Stmt.h"
 #include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
-#include "ast/Stmt.h"
 #include "ast/visitor.h"
 #include "enums.h"
 #include "macro.h"
@@ -26,10 +27,8 @@ RelationalExpr::RelationalExpr(const Position& loc, std::string_view type,
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, !type.empty())
-        << UniqueName() << "type string empty";
-    INTERNAL_LOG_IF(FATAL, type.length() == 2)
-        << UniqueName() << "type len mismatch";
+    LOG_IF(FATAL, !type.empty()) << UniqueName() << "type string empty";
+    LOG_IF(FATAL, type.length() == 2) << UniqueName() << "type len mismatch";
 #endif
 
     /** #####################################################################
@@ -55,9 +54,8 @@ RelationalExpr::RelationalExpr(const Position& loc, std::string_view type,
                 this->_type = RelationalType::GT;
             break;
         default:
-            INTERNAL_LOG(FATAL)
-                << UniqueName()
-                << "type: [" + std::string(type) + "] not supported";
+            LOG(FATAL) << UniqueName()
+                       << "type: [" + std::string(type) + "] not supported";
     }
 }
 }  // namespace hzcc::ast

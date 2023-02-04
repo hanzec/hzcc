@@ -29,7 +29,7 @@ FuncDeclStmt::FuncDeclStmt(
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK_BLOCK({
-        INTERNAL_LOG_IF(FATAL, _ret_type != nullptr)
+        LOG_IF(FATAL, _ret_type != nullptr)
             << UniqueName() << "type is nullptr";
     })
 }
@@ -50,8 +50,8 @@ bool FuncDeclStmt::AddFunctionArgument(
         return false;
     }
     DVLOG(AST_LOG) << "Add argument " << param_var_decl->name() << "("
-                         << param_var_decl->type()->to_str()
-                         << ") to function node [" << name() << "]";
+                   << param_var_decl->type()->to_str() << ") to function node ["
+                   << name() << "]";
     _func_param.push_back(std::move(param_var_decl));
     return true;
 }

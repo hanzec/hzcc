@@ -33,23 +33,22 @@ Statement::Statement() noexcept
 
 StatusOr<ast::StmtPtr> Statement::parse_impl(SyntaxCtx ctx, TokenList& tokens) {
     switch (tokens.peek().Type()) {
-        case TokenType::kSemiColon:
+        case TokenType::SemiColon:
             return std::make_unique<ast::EmptyStmt>();
         case TokenType::kStruct:
-            if (tokens.peek3().Type() == TokenType::kLBrace) {
+            if (tokens.peek3().Type() == TokenType::LBrace) {
                 return Parser::Parse<ast::DeclStmt>(ctx, tokens);
             } else {
                 return ParseCommaExpr(tokens, ctx);
             }
         case TokenType::kReturn: {
             auto token = tokens.pop();
-            if (tokens.peek().Type() != TokenType::kSemiColon) {
+            if (tokens.peek().Type() != TokenType::SemiColon) {
                 HZCC_CHECK_OR_ASSIGN(ret_expr, ParseCommaExpr(tokens, ctx))
                 return std::make_unique<ast::ReturnStmt>(token.loc(),
                                                          std::move(ret_expr));
             } else {
-                DVLOG(SYNTAX_LOG)
-                    << "ignore ';' since return stmt is empty";
+                DVLOG(SYNTAX_LOG) << "ignore ';' since return stmt is empty";
                 return std::make_unique<ast::ReturnStmt>(
                     token.loc(), std::make_unique<ast::EmptyExpr>());
             }
@@ -96,7 +95,7 @@ StatusOr<ast::ExprPtr> Statement::ParseCommaExpr(TokenList& tokens,
 
     // if we have a comma, we should parse the next expression
     auto next = tokens.peek();
-    if (tokens.peek().Type() == TokenType::kComma) {
+    if (tokens.peek().Type() == TokenType::Comma) {
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseCommaExpr(tokens, context))
         return std::make_unique<ast::CommaExpr>(next.loc(), std::move(lhs),
@@ -114,7 +113,7 @@ StatusOr<ast::ExprPtr> Statement::ParseAssignExpr(TokenList& tokens,
     HZCC_CHECK_OR_ASSIGN(lhs, ParseConditionalExpr(tokens, ctx))
 
     // if we have a assign cast, we should parse the right-hand side
-    if (tokens.peek().Type() == TokenType::kAssign ||
+    if (tokens.peek().Type() == TokenType::Assign ||
         tokens.peek().Type() == TokenType::kAddAssign ||
         tokens.peek().Type() == TokenType::kSubAssign ||
         tokens.peek().Type() == TokenType::kMulAssign ||
@@ -145,7 +144,7 @@ StatusOr<ast::ExprPtr> Statement::ParseConditionalExpr(TokenList& tokens,
                                                        const SyntaxCtx& ctx) {
     HZCC_CHECK_OR_ASSIGN(lhs, ParseLogicalOrExpr(tokens, ctx))
 
-    if (tokens.peek().Type() == TokenType::kQuestionMark) {
+    if (tokens.peek().Type() == TokenType::QuestionMark) {
         auto cond_loc = tokens.peek().loc();
         tokens.pop();  // pop '?'
 
@@ -153,7 +152,7 @@ StatusOr<ast::ExprPtr> Statement::ParseConditionalExpr(TokenList& tokens,
         HZCC_CHECK_OR_ASSIGN(true_expr, ParseConditionalExpr(tokens, ctx))
 
         // pop ':'
-        HZCC_CheckAndConsume_ReturnErr(TokenType::kColon, tokens);
+        HZCC_CheckAndConsume_ReturnErr(TokenType::Colon, tokens);
 
         // parse false expression
         HZCC_CHECK_OR_ASSIGN(false_expr, ParseConditionalExpr(tokens, ctx))
@@ -211,7 +210,7 @@ StatusOr<ast::ExprPtr> Statement::ParseBitwiseOrExpr(TokenList& tokens,
     HZCC_CHECK_OR_ASSIGN(lhs, ParseBitwiseXorExpr(tokens, ctx))
 
     // if we have a bitwise or, we should parse the next expression
-    if (tokens.peek().Type() == TokenType::kBitwiseOr) {
+    if (tokens.peek().Type() == TokenType::BitwiseOr) {
         auto op = tokens.peek();
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseBitwiseOrExpr(tokens, ctx))
@@ -231,7 +230,7 @@ StatusOr<ast::ExprPtr> Statement::ParseBitwiseXorExpr(TokenList& tokens,
     HZCC_CHECK_OR_ASSIGN(lhs, ParseBitwiseAndExpr(tokens, ctx))
 
     // if we have a bitwise xor, we should parse the next expression
-    if (tokens.peek().Type() == TokenType::kBitwiseXor) {
+    if (tokens.peek().Type() == TokenType::BitwiseXor) {
         auto op = tokens.peek();
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseBitwiseXorExpr(tokens, ctx))
@@ -249,7 +248,7 @@ StatusOr<ast::ExprPtr> Statement::ParseBitwiseAndExpr(TokenList& tokens,
                                                       const SyntaxCtx& ctx) {
     HZCC_CHECK_OR_ASSIGN(lhs, ParseEqualityExpr(tokens, ctx))
 
-    if (tokens.peek().Type() == TokenType::kBitwiseAnd) {
+    if (tokens.peek().Type() == TokenType::BitwiseAnd) {
         auto op = tokens.peek();
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseBitwiseAndExpr(tokens, ctx))
@@ -286,8 +285,8 @@ StatusOr<ast::ExprPtr> Statement::ParseRelationalExpr(TokenList& tokens,
                                                       const SyntaxCtx& ctx) {
     HZCC_CHECK_OR_ASSIGN(lhs, ParseShiftExpr(tokens, ctx))
 
-    if (tokens.peek().Type() == TokenType::kLess ||
-        tokens.peek().Type() == TokenType::kGreater ||
+    if (tokens.peek().Type() == TokenType::Less ||
+        tokens.peek().Type() == TokenType::Greater ||
         tokens.peek().Type() == TokenType::kLessEqual ||
         tokens.peek().Type() == TokenType::kGreaterEqual) {
         auto op_type = tokens.peek();
@@ -329,8 +328,8 @@ StatusOr<ast::ExprPtr> Statement::ParseAdditiveExpr(TokenList& tokens,
 
     // if we have a additive, we should parse the next
     // expression
-    if (tokens.peek().Type() == TokenType::kAdd ||
-        tokens.peek().Type() == TokenType::kSub) {
+    if (tokens.peek().Type() == TokenType::Add ||
+        tokens.peek().Type() == TokenType::Sub) {
         auto type = tokens.peek();
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseAdditiveExpr(tokens, ctx))
@@ -350,9 +349,9 @@ StatusOr<ast::ExprPtr> Statement::ParseMultiplicativeExpr(
 
     // if we have a multiplicative, we should parse the next
     // expression
-    if (tokens.peek().Type() == TokenType::kMul ||
-        tokens.peek().Type() == TokenType::kDiv ||
-        tokens.peek().Type() == TokenType::kMod) {
+    if (tokens.peek().Type() == TokenType::Mul ||
+        tokens.peek().Type() == TokenType::Div ||
+        tokens.peek().Type() == TokenType::Mod) {
         auto type = tokens.peek();
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseMultiplicativeExpr(tokens, ctx))
@@ -395,7 +394,7 @@ StatusOr<ast::TypeProxyExprPtr> Statement::ParseTypeName(TokenList& tokens,
     }
 
     // handle pointer(*)
-    while (tokens.peek().Type() == TokenType::kMul) {
+    while (tokens.peek().Type() == TokenType::Mul) {
         tokens.pop();
         type_ptr = std::make_shared<ast::QualType>(
             std::make_shared<ast::PointerType>(type_ptr));
@@ -409,14 +408,14 @@ StatusOr<ast::TypeProxyExprPtr> Statement::ParseTypeName(TokenList& tokens,
 #pragma ide diagnostic ignored "misc-no-recursion"
 StatusOr<ast::ExprPtr> Statement::ParseCastExpr(TokenList& tokens,
                                                 const SyntaxCtx& ctx) {
-    if (tokens.peek().Type() == TokenType::kRParentheses ||
+    if (tokens.peek().Type() == TokenType::RParentheses ||
         ctx->has_type(tokens.peek2().to_str())) {
         auto loc = tokens.peek().loc();
         tokens.pop();
 
         // type to_str
         HZCC_CHECK_OR_ASSIGN(type, ParseTypeName(tokens, ctx))
-        HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
+        HZCC_CheckAndConsume_ReturnErr(TokenType::RParentheses, tokens);
 
         // cast expr
         HZCC_CHECK_OR_ASSIGN(expr, ParseCastExpr(tokens, ctx))
@@ -434,11 +433,11 @@ StatusOr<ast::ExprPtr> Statement::ParseCastExpr(TokenList& tokens,
 StatusOr<ast::ExprPtr> Statement::ParseUnaryExpr(TokenList& tokens,
                                                  const SyntaxCtx& ctx) {
     // some of unary expression does not have LHS
-    if (tokens.peek().Type() == TokenType::kSub ||
-        tokens.peek().Type() == TokenType::kReference ||
-        tokens.peek().Type() == TokenType::kBitWiseNot ||
-        tokens.peek().Type() == TokenType::kLogicalNot ||
-        tokens.peek().Type() == TokenType::kDereference) {
+    if (tokens.peek().Type() == TokenType::Sub ||
+        tokens.peek().Type() == TokenType::Reference ||
+        tokens.peek().Type() == TokenType::BitWiseNot ||
+        tokens.peek().Type() == TokenType::LogicalNot ||
+        tokens.peek().Type() == TokenType::Dereference) {
         auto op_type = tokens.peek();
         tokens.pop();
         HZCC_CHECK_OR_ASSIGN(rhs, ParseCastExpr(tokens, ctx))
@@ -449,12 +448,12 @@ StatusOr<ast::ExprPtr> Statement::ParseUnaryExpr(TokenList& tokens,
     // cast expression
     else if (tokens.peek().Type() == TokenType::kSizeOf) {
         auto size_of = tokens.pop();
-        if (tokens.peek().Type() == TokenType::kLParentheses &&
+        if (tokens.peek().Type() == TokenType::LParentheses &&
             (tokens.peek().Type() == TokenType::kStruct ||
              ctx->has_type(tokens.peek2().to_str()))) {
             tokens.pop();
             HZCC_CHECK_OR_ASSIGN(type, ParseTypeName(tokens, ctx))
-            HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
+            HZCC_CheckAndConsume_ReturnErr(TokenType::RParentheses, tokens);
             return std::make_unique<ast::SizeofExpr>(size_of.loc(),
                                                      std::move(type));
         } else {
@@ -490,13 +489,13 @@ StatusOr<ast::ExprPtr> Statement::ParsePostfixExpr(TokenList& tokens,
                                                    const SyntaxCtx& ctx) {
     // first handle priority expression ("()")
     std::unique_ptr<ast::Expr> final_expr = nullptr;
-    if (tokens.peek().Type() == TokenType::kLParentheses) {
+    if (tokens.peek().Type() == TokenType::LParentheses) {
         tokens.pop();  // consume the '('
 
         HZCC_CHECK_OR_ASSIGN(expr, ParseCommaExpr(tokens, ctx))
 
         // consume the ')'
-        HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
+        HZCC_CheckAndConsume_ReturnErr(TokenType::RParentheses, tokens);
 
         final_expr = std::move(expr);
     } else {
@@ -506,19 +505,19 @@ StatusOr<ast::ExprPtr> Statement::ParsePostfixExpr(TokenList& tokens,
 
     // should never be null
     HZCC_RUNTIME_CHECK_BLOCK({
-        INTERNAL_LOG_IF(FATAL, final_expr == nullptr)
+        LOG_IF(FATAL, final_expr == nullptr)
             << "final_expr should not be nullptr";
     })
 
-    if (tokens.peek().Type() == TokenType::kLBracket) {
+    if (tokens.peek().Type() == TokenType::LBracket) {
         // handle the case that have multiple [] after the ()
-        while (tokens.peek().Type() == TokenType::kLBracket) {
+        while (tokens.peek().Type() == TokenType::LBracket) {
             auto loc = tokens.pop().loc();  // consume the '['
 
             HZCC_CHECK_OR_ASSIGN(expr, ParseCommaExpr(tokens, ctx))
 
             // consume the ']'
-            HZCC_CheckAndConsume_ReturnErr(TokenType::kRBracket, tokens);
+            HZCC_CheckAndConsume_ReturnErr(TokenType::RBracket, tokens);
 
             final_expr = std::make_unique<ast::ArraySubscriptExpr>(
                 loc, std::move(final_expr), std::move(expr));
@@ -528,10 +527,10 @@ StatusOr<ast::ExprPtr> Statement::ParsePostfixExpr(TokenList& tokens,
 
     // member access
     else if (tokens.peek().Type() == TokenType::kArrow ||
-             tokens.peek().Type() == TokenType::kDot) {
+             tokens.peek().Type() == TokenType::Dot) {
         // handle the case that have multiple . or -> after the ()
         while (tokens.peek().Type() == TokenType::kArrow ||
-               tokens.peek().Type() == TokenType::kDot) {
+               tokens.peek().Type() == TokenType::Dot) {
             auto loc = tokens.pop().loc();  // consume the '.' or '->'
             bool isPtr = tokens.pop().Type() == TokenType::kArrow;
 
@@ -574,21 +573,21 @@ StatusOr<ast::ExprPtr> Statement::ParseAccessExpr(const SyntaxCtx& ctx,
         auto ident = tokens.pop();
 
         // function caller or variable
-        if (tokens.peek().Type() == TokenType::kLParentheses) {
+        if (tokens.peek().Type() == TokenType::LParentheses) {
             tokens.pop();  // consume the '('
 
             // parse arguments
             std::list<std::unique_ptr<ast::Expr>> args_expr;
-            while (tokens.peek().Type() != TokenType::kRParentheses) {
+            while (tokens.peek().Type() != TokenType::RParentheses) {
                 HZCC_CHECK_OR_ASSIGN(arg, ParseAssignExpr(tokens, ctx))
 
                 // consume the ',' if have other arguments
-                if (tokens.peek().Type() != TokenType::kRParentheses) {
-                    HZCC_CheckAndConsume_ReturnErr(TokenType::kComma, tokens);
+                if (tokens.peek().Type() != TokenType::RParentheses) {
+                    HZCC_CheckAndConsume_ReturnErr(TokenType::Comma, tokens);
 
                     // after consume the ',', we should have a
                     // valid argument
-                    if (tokens.peek().Type() == TokenType::kRParentheses) {
+                    if (tokens.peek().Type() == TokenType::RParentheses) {
                         return syntax::utils::TokenErr(tokens.peek(),
                                                        "term expected");
                     }
@@ -597,7 +596,7 @@ StatusOr<ast::ExprPtr> Statement::ParseAccessExpr(const SyntaxCtx& ctx,
             }
 
             // consume the ')'
-            HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
+            HZCC_CheckAndConsume_ReturnErr(TokenType::RParentheses, tokens);
 
             return std::make_unique<ast::FuncCallStmt>(
                 ident.loc(), ident.to_str(), std::move(args_expr));

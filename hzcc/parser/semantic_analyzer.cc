@@ -121,9 +121,8 @@ Status analyzer::visit(hzcc::ast::AssignExpr* p_expr) {
 
     // LHS cannot be const variable
     if (p_expr->lhs()->type()->is<Qualifier::CONST>()) {
-        VLOG(SYNTAX_LOG)
-            << "Left hand side [" << p_expr->lhs()->UniqueName()
-            << "is not assignable";
+        VLOG(SYNTAX_LOG) << "Left hand side [" << p_expr->lhs()->UniqueName()
+                         << "is not assignable";
         return CompileError(p_expr->lhs()->loc(),
                             "Left hand side is not assignable");
     }
@@ -505,10 +504,10 @@ Status analyzer::visit(hzcc::ast::FuncDeclStmt* p_expr) {
 
 void Ctx::add_var(Position pos, ast::QualTypePtr type, std::string_view name) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, _compilationUnit->_current_context.lock() != nullptr)
+    LOG_IF(FATAL, _compilationUnit->_current_context.lock() != nullptr)
         << " should never call add_var when in root context";
-    INTERNAL_LOG_IF(
-        FATAL, !_compilationUnit->_current_context.lock()->has_var(name, true))
+    LOG_IF(FATAL,
+           !_compilationUnit->_current_context.lock()->has_var(name, true))
         << "variable already exists";
 #endif
 
@@ -517,10 +516,8 @@ void Ctx::add_var(Position pos, ast::QualTypePtr type, std::string_view name) {
 
 std::pair<bool, Position> Ctx::var_def_pos(std::string_view name) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, name.empty() == false)
-        << "Variable to_str cannot be empty";
-    INTERNAL_LOG_IF(FATAL, has_var(name, false))
-        << "Variable " << name << " not found";
+    LOG_IF(FATAL, name.empty() == false) << "Variable to_str cannot be empty";
+    LOG_IF(FATAL, has_var(name, false)) << "Variable " << name << " not found";
 #endif
 
     if (_compilationUnit->_current_context.lock() != nullptr &&

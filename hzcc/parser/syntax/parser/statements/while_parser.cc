@@ -39,7 +39,7 @@ StatusOr<ast::StmtPtr> WhileStatement::parse_impl(SyntaxCtx context,
                          utils::ParseBodyStatement(context, false, tokens));
 
     // push a semicolon for easier parsing
-    tokens.push(TokenType::kSemiColon, -1, -1);
+    tokens.push(TokenType::SemiColon, -1, -1);
 
     ExitLoop();  // exit loop
     return std::make_unique<ast::WhileStmt>(while_loc, std::move(condition),

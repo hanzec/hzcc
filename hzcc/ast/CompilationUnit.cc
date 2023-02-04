@@ -36,12 +36,12 @@ bool CompilationUnit::at_root() const {
 
 void CompilationUnit::enter_scope(std::string_view name) {
     if (name.empty()) {
-        INTERNAL_LOG_IF(FATAL, _scoped_symbol_table.find(name) ==
-                                   _scoped_symbol_table.end())
+        LOG_IF(FATAL,
+               _scoped_symbol_table.find(name) == _scoped_symbol_table.end())
             << "cannot enter scope " << name << ", not found";
         _current_context = _scoped_symbol_table[name];
     } else {
-        INTERNAL_LOG_IF(FATAL, at_root())
+        LOG_IF(FATAL, at_root())
             << "cannot enter unnamed scope, if already at root";
 
         auto new_context = _current_context.lock()->enter_scope();
@@ -142,8 +142,8 @@ QualTypePtr CompilationUnit::add_struct_type(std::string_view struct_name,
             LOG(FATAL) << "Struct " << name << " already exists";
             return nullptr;
         } else {
-            DVLOG(AST_LOG)
-                << "Add new Struct type [" << name << "] to global scope";
+            DVLOG(AST_LOG) << "Add new Struct type [" << name
+                           << "] to global scope";
             auto new_type = std::make_shared<ast::StructType>(struct_name);
             _named_types.insert(std::make_pair(name, new_type));
 
@@ -159,8 +159,8 @@ QualTypePtr CompilationUnit::add_struct_type(std::string_view struct_name,
             LOG(FATAL) << "type " << name << " already exists";
             return nullptr;
         } else {
-            DVLOG(AST_LOG)
-                << "Trying to add new type [" << name << "] to local scope";
+            DVLOG(AST_LOG) << "Trying to add new type [" << name
+                           << "] to local scope";
 
             // when leaving this function all attrs should be consumed
             DLOG_IF(FATAL, !attr_list.empty())
@@ -194,7 +194,7 @@ std::vector<QualTypePtr> CompilationUnit::func_param_types(
         }
         return ret;
     } else {
-        INTERNAL_LOG(ERROR) << "Function " << name << " does not exist";
+        LOG(ERROR) << "Function " << name << " does not exist";
         return {};
     }
 }
@@ -219,12 +219,12 @@ void CompilationUnit::addDecl(std::unique_ptr<IDeclStmt> node) {
 
                     // if the function body is already defined, then it's a
                     // redefinition
-                    INTERNAL_LOG_IF(FATAL, func_old->has_body())
+                    LOG_IF(FATAL, func_old->has_body())
                         << "Function " << node->name() << " already defined !";
 
                     // check number of arguments
-                    INTERNAL_LOG_IF(FATAL, func_old->params().size() !=
-                                               func_new->params().size())
+                    LOG_IF(FATAL, func_old->params().size() !=
+                                      func_new->params().size())
                         << "Function " << node->name()
                         << " has different number of arguments !";
 
@@ -234,8 +234,7 @@ void CompilationUnit::addDecl(std::unique_ptr<IDeclStmt> node) {
                     auto c_arg = func_new->params().begin();
                     while (d_arg != func_old->params().end() &&
                            c_arg != func_new->params().end()) {
-                        INTERNAL_LOG_IF(FATAL,
-                                        (*d_arg)->type() != (*c_arg)->type())
+                        LOG_IF(FATAL, (*d_arg)->type() != (*c_arg)->type())
                             << "Function " << node->name()
                             << " has different argument type !";
                         ++d_arg;

@@ -18,9 +18,50 @@
 
 namespace hzcc {
 
-void custom_prefix_callback(std::ostream &out_stream,  // NOLINT
-                            const google::LogMessageInfo &info, void *) {
-    out_stream << info.filename << ":" << info.line_number << ": " << info.severity;
+namespace {
+constexpr const char* KEnableRed = "\033[1;31m";
+constexpr const char* KEnableGreen = "\033[1;32m";
+constexpr const char* KEnableYellow = "\033[1;33m";
+constexpr const char* KDisableColor = "\033[0m";
+}  // namespace
+
+void custom_prefix_callback(std::ostream& out_stream,  // NOLINT
+                            const google::LogMessageInfo& info, void*) {
+    // print date with format: YYYY-MM-DD HH:MM:SS
+    out_stream << std::put_time(std::localtime(&info.time.timestamp()), "%F %T")
+               << " ";
+
+    // print thread id
+    out_stream << std::setw(5) << std::left << info.thread_id << " ";
+
+    // print color log
+    if (!Options::Global_disable_color) {
+        switch (info.severity[0]) {
+            case 'I':
+                out_stream << KEnableGreen;
+                break;
+            case 'W':
+                out_stream << KEnableYellow;
+                break;
+            case 'E':
+            case 'F':
+                out_stream << KEnableRed;
+                break;
+            default:
+                break;
+        }
+    }
+
+    out_stream << "[" << info.severity[0] << info.severity[1]
+               << info.severity[2] << info.severity[3] << "] " << std::setw(0)
+               << std::right;
+
+    if (!Options::Global_disable_color) {
+        out_stream << KDisableColor;
+    }
+
+    // print file name and line number
+    out_stream << info.filename << ":" << info.line_number << "]";
 }
 
 void initLogging(char* argv[]) {
@@ -31,16 +72,16 @@ void initLogging(char* argv[]) {
 namespace message {
 static std::string CURRENT_FILE_NAME;
 
-void set_current_file_name(const std::string &file_name) {
+void set_current_file_name(const std::string& file_name) {
     CURRENT_FILE_NAME = file_name;
 }
 
 void print_message(CompileErrorLevel level,              // NOLINT
                    std::string_view errorMessage,        // NOLINT
                    std::pair<uint64_t, uint64_t> loc) {  // NOLINT
-    static constexpr std::array<const char *, 3> kLevelColorTable = {
+    static constexpr std::array<const char*, 3> kLevelColorTable = {
         KEnableRed, KEnableYellow, KEnableGreen};
-    static constexpr std::array<const char *, 3> kLevelStringTable = {
+    static constexpr std::array<const char*, 3> kLevelStringTable = {
         "error: ", "warning: ", "info: "};
 
     if (FsUtils::is_readable(CURRENT_FILE_NAME)) {
@@ -89,7 +130,7 @@ void print_message(CompileErrorLevel level,              // NOLINT
                   << std::flush;
 
     } else {
-        INTERNAL_LOG(FATAL) << "file " + CURRENT_FILE_NAME + " is not readable";
+        LOG(FATAL) << "file " + CURRENT_FILE_NAME + " is not readable";
     }
 }
 }  // namespace message

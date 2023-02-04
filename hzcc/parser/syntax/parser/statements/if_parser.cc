@@ -56,7 +56,7 @@ StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
     while (tokens.peek().Type() == TokenType::kElse) {
         auto prev_else = tokens.pop();  // consume else;
         // if this is single else stmt
-        if (tokens.peek().Type() == TokenType::kLBrace) {
+        if (tokens.peek().Type() == TokenType::LBrace) {
             if (ifNode->has_else()) {
                 return syntax::utils::TokenErr(
                     prev_else, "If stmt cannot have multiple else statements");
@@ -78,15 +78,15 @@ StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
         // else-if statements
         else if (tokens.peek().Type() == TokenType::kIf) {
             tokens.pop();  // consume if
-            HZCC_CheckAndConsume_ReturnErr(TokenType::kLParentheses, tokens);
+            HZCC_CheckAndConsume_ReturnErr(TokenType::LParentheses, tokens);
 
             auto else_if_token = tokens.peek();
-            HZCC_CheckAndConsume_ReturnErr(TokenType::kLParentheses, tokens);
+            HZCC_CheckAndConsume_ReturnErr(TokenType::LParentheses, tokens);
 
             HZCC_CHECK_OR_ASSIGN(else_if_condition,
                                  Parser::Parse<ast::Expr>(context, tokens))
             // next token is ')'
-            HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
+            HZCC_CheckAndConsume_ReturnErr(TokenType::RParentheses, tokens);
 
             // check if else-if condition is valid
             if (else_if_condition->type()->is<TypeCategory::Numerical>()) {

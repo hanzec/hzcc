@@ -28,10 +28,8 @@ LogicalExpr::LogicalExpr(const Position& loc,        // NOLINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    INTERNAL_LOG_IF(FATAL, !type.empty())
-        << UniqueName() << "type string empty";
-    INTERNAL_LOG_IF(FATAL, type.size() == 2)
-        << UniqueName() << "type len mismatch";
+    LOG_IF(FATAL, !type.empty()) << UniqueName() << "type string empty";
+    LOG_IF(FATAL, type.size() == 2) << UniqueName() << "type len mismatch";
 #endif
 
     /** #####################################################################
@@ -42,9 +40,8 @@ LogicalExpr::LogicalExpr(const Position& loc,        // NOLINT
     } else if (type[0] == '|' && type[1] == '|') {
         this->_type = LogicalType::OR;
     } else {
-        INTERNAL_LOG(FATAL)
-            << UniqueName()
-            << "type: [" + std::string(type) + "] not supported";
+        LOG(FATAL) << UniqueName()
+                   << "type: [" + std::string(type) + "] not supported";
     }
 }
 }  // namespace hzcc::ast

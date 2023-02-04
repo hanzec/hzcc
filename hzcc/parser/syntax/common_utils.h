@@ -89,12 +89,12 @@ ALWAYS_INLINE StatusOr<TypeNamePair> get_base_type(
 ALWAYS_INLINE StatusOr<ast::ExprPtr> ParseCondition(
     std::shared_ptr<ast::CompilationUnit>& context, TokenList& tokens) {
     // next token is (
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kLParentheses, tokens);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::LParentheses, tokens);
 
     HZCC_CHECK_OR_ASSIGN(condition,  // NOLINT
                          Parser::Parse<ast::Expr>(context, tokens))
     // next token is ')'
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kRParentheses, tokens);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::RParentheses, tokens);
 
     return condition;
 }
@@ -102,7 +102,7 @@ ALWAYS_INLINE StatusOr<ast::ExprPtr> ParseCondition(
 ALWAYS_INLINE StatusOr<std::unique_ptr<ast::CompoundStmt>> ParseBodyStatement(
     std::shared_ptr<ast::CompilationUnit>& context, bool add_semicolon,
     TokenList& tokens) {
-    if (tokens.peek().Type() == TokenType::kLBrace) {
+    if (tokens.peek().Type() == TokenType::LBrace) {
         // enter new scope
         context->enter_scope();
 
@@ -113,7 +113,7 @@ ALWAYS_INLINE StatusOr<std::unique_ptr<ast::CompoundStmt>> ParseBodyStatement(
 
         if (add_semicolon) {
             // push a semicolon for easier parsing
-            tokens.push(TokenType::kSemiColon, -1, -1);
+            tokens.push(TokenType::SemiColon, -1, -1);
         }
 
         return body_statement;
@@ -123,7 +123,7 @@ ALWAYS_INLINE StatusOr<std::unique_ptr<ast::CompoundStmt>> ParseBodyStatement(
 
         if (!body_statement->has_body()) {
             // consume ';'
-            HZCC_CheckAndConsume_ReturnErr(TokenType::kSemiColon, tokens)
+            HZCC_CheckAndConsume_ReturnErr(TokenType::SemiColon, tokens)
         }
 
         // pack into a compound statement

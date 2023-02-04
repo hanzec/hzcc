@@ -5,18 +5,19 @@
 #include "Token.h"
 
 #include <glog/logging.h>
+
+#include <cctype>
 #include <magic_enum.hpp>
+#include <ostream>
 #include <string>
 #include <utility>
-#include <cctype>
-#include <ostream>
 
-#include "parser/lexical/utils/symbol_utils.h"
-#include "utils/logging.h"
 #include "enums.h"
 #include "parser/common/keywords.h"
 #include "parser/common/token_type.h"
+#include "parser/lexical/utils/symbol_utils.h"
 #include "utils/constexpr_utils.h"
+#include "utils/logging.h"
 
 #define HZCC_INSERT_TO_CACHE(NEW_CACHE, ASSIGN_TO)                         \
     {                                                                      \
@@ -24,9 +25,8 @@
         if (ref != _global_val_storage.end()) {                            \
             (ASSIGN_TO) = ref->second;                                     \
         } else {                                                           \
-            DVLOG(LEXICAL_LOG)                                       \
-                << "insert new source (NEW_CACHE) cache: [" << (NEW_CACHE) \
-                << "]";                                                    \
+            DVLOG(DEBUG_INFO) << "insert new source (NEW_CACHE) cache: ["  \
+                              << (NEW_CACHE) << "]";                       \
             auto new_item = std::make_shared<std::string>((NEW_CACHE));    \
             (ASSIGN_TO) = _global_val_storage.emplace(*new_item, new_item) \
                               .first->second;                              \

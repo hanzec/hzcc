@@ -2,14 +2,15 @@
 // Created by Hanze Chen on 2022/3/29.
 //
 #include <glog/logging.h>
+
 #include <memory>
 #include <ostream>
 #include <string>
 #include <string_view>
 #include <utility>
 
-#include "ast/expr/Expr.h"
 #include "ast/Stmt.h"
+#include "ast/expr/Expr.h"
 #include "ast/visitor.h"
 #include "macro.h"
 #include "utils/logging.h"
@@ -26,11 +27,11 @@ BitwiseExpr::BitwiseExpr(const Position& loc,               // NOLINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK_BLOCK({
-        INTERNAL_LOG_IF(FATAL, type.length() != 0)
+        LOG_IF(FATAL, type.length() != 0)
             << UniqueName() << "type string empty";
-        INTERNAL_LOG_IF(
-            FATAL, type.length() == 1 || (type.length() == 2 &&
-                                          (type[0] == '<' || type[0] == '>')))
+        LOG_IF(FATAL,
+               type.length() == 1 ||
+                   (type.length() == 2 && (type[0] == '<' || type[0] == '>')))
             << UniqueName() << "type len mismatch";
     })
 
@@ -54,9 +55,8 @@ BitwiseExpr::BitwiseExpr(const Position& loc,               // NOLINT
             this->_type = BitwiseType::RSHIFT;
             break;
         default:
-            INTERNAL_LOG(FATAL)
-                << UniqueName()
-                << "type: [" + std::string(type) + "] not supported";
+            LOG(FATAL) << UniqueName()
+                       << "type: [" + std::string(type) + "] not supported";
     }
 }
 }  // namespace hzcc::ast
