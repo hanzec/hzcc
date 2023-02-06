@@ -15,7 +15,7 @@ variables:
 #####################################################################################################
 build_llvm_latest:
   tags:
-    - docker
+    - docker_small
   stage: dependency_build
   before_script:
     - docker info
@@ -41,7 +41,7 @@ build_llvm_latest:
 
 push_llvm_latest:
   tags:
-    - docker
+    - docker_small
   variables:
     GIT_STRATEGY: none
   stage: dependency_push
@@ -62,7 +62,7 @@ push_llvm_latest:
 
 build_gcc_10_3_latest:
   tags:
-    - docker
+    - docker_small
   stage: dependency_build
   before_script:
     - docker info
@@ -88,7 +88,7 @@ build_gcc_10_3_latest:
 
 push_gcc_10_latest:
   tags:
-    - docker
+    - docker_small
   variables:
     GIT_STRATEGY: none
   stage: dependency_push
@@ -114,7 +114,7 @@ build_gcc_10_3_ninja_debug:
   stage: build
   image: $CI_REGISTRY_IMAGE/gcc_10_3:latest
   tags:
-    - docker
+    - docker_small
   script:
     - cd $CI_PROJECT_DIR
     - >
@@ -140,7 +140,7 @@ build_llvm_latest_ninja_debug:
   stage: build
   image: $CI_REGISTRY_IMAGE/llvm_latest:latest
   tags:
-    - docker
+    - docker_small
   script:
     - cd $CI_PROJECT_DIR
     - >
@@ -169,7 +169,7 @@ test_gcc_10_3_debug:
   image: $CI_REGISTRY_IMAGE/gcc_10_3:latest
   stage: unit_test
   tags:
-    - docker
+    - docker_small
   variables:
     GTEST_OUTPUT: "xml:$CI_PROJECT_DIR/gtest_report.xml"
   script:
@@ -204,7 +204,7 @@ test_llvm_latest_debug:
   image: $CI_REGISTRY_IMAGE/llvm_latest:latest
   stage: unit_test
   tags:
-    - docker
+    - docker_small
   variables:
     GTEST_OUTPUT: "xml:$CI_PROJECT_DIR/gtest_report.xml"
   script:
@@ -239,7 +239,7 @@ test_gcc_10_3_release:
   image: $CI_REGISTRY_IMAGE/gcc_10_3:latest
   stage: unit_test
   tags:
-    - docker
+    - docker_small
   variables:
     GTEST_OUTPUT: "xml:$CI_PROJECT_DIR/gtest_report.xml"
   script:
@@ -274,7 +274,7 @@ test_llvm_latest_release:
   image: $CI_REGISTRY_IMAGE/llvm_latest:latest
   stage: unit_test
   tags:
-    - docker
+    - docker_small
   variables:
     GTEST_OUTPUT: "xml:$CI_PROJECT_DIR/gtest_report.xml"
   script:
@@ -312,7 +312,7 @@ e2e_test_gcc_10_3_release:
   image: $CI_REGISTRY_IMAGE/gcc_10_3:latest
   stage: end_to_end_test
   tags:
-    - docker
+    - docker_small
   script:
     - cd $CI_PROJECT_DIR
     - |
@@ -339,7 +339,7 @@ e2e_test_llvm_latest_release:
   image: $CI_REGISTRY_IMAGE/llvm_latest:latest
   stage: end_to_end_test
   tags:
-    - docker
+    - docker_small
   script:
     - cd $CI_PROJECT_DIR
     - |
@@ -369,7 +369,7 @@ build_latex_documentation:
   image: $CI_REGISTRY_IMAGE/llvm_latest:latest
   stage: documentation
   tags:
-    - docker
+    - docker_small
   only:
     - main
   script:
@@ -399,7 +399,7 @@ pages:
   image: $CI_REGISTRY_IMAGE/llvm_latest:latest
   stage: documentation
   tags:
-    - docker
+    - docker_small
   only:
     - main
   script:
