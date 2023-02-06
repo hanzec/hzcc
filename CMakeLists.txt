@@ -71,6 +71,9 @@ FetchContent_Declare(
         GIT_REPOSITORY https://github.com/microsoft/vcpkg.git)
 FetchContent_MakeAvailable(vcpkg)
 
+# we only need releas build
+set(VCPKG_BUILD_TYPE release)
+
 # Add VCPKG to CMake
 set(CMAKE_TOOLCHAIN_FILE ${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake
         CACHE STRING "CMake toolchain file")

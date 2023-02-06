@@ -16,8 +16,16 @@
     },
     {
       "name": "glog",
+      "platform": "!osx",
       "features": [
         "unwind",
+        "customprefix"
+      ]
+    },
+    {
+      "name": "glog",
+      "platform": "osx",
+      "features": [
         "customprefix"
       ]
     }
