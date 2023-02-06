@@ -27,45 +27,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2a186403-fc0f-43d8-a82c-50cf70816857" name="Changes" comment="Changes">
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/Stmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/Stmt.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/SymbTbl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/SymbTbl.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/cast/Cast.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/cast/Cast.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/Expr.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/Expr.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/LiteralExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/LiteralExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/UnaryOperator.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/UnaryOperator.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/ArithmeticExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/ArithmeticExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/AssignExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/AssignExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/BitwiseExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/BitwiseExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/LogicalExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/LogicalExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/biop/RelationalExpr.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/biop/RelationalExpr.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/FuncDeclStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/stmt/FuncDeclStmt.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/stmt/StructDeclStmt.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/stmt/StructDeclStmt.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/type/StructType.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/type/StructType.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/ast/type/Type.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/type/Type.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/enums.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/enums.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/Token.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/Token.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/keywords.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/keywords.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/name_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/name_utils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/token_type.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/token_type.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/utils/symbol_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/utils/symbol_utils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/semantic.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/semantic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/semantic_analyzer.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/semantic_analyzer.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/common_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/common_utils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/decl_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/decl_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statement_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/compound_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/compound_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/for_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/for_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/if_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/if_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/while_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/while_parser.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/syntax_impl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/syntax_impl.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/utils/factory.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/factory.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/utils/logging.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/logging.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/utils/logging.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/logging.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/utils/status/status.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/status/status.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hzcc/utils/status/statusor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/status/statusor.cc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,6 +46,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../../usr/include/c++/11/type_traits" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../../usr/include/string.h" root0="SKIP_INSPECTION" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -99,28 +66,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;cf.advertisement.text.overridden&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;ctest.advertisement.all.test.configuration.is.created&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/hanzech/hzcc&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.advertisement.text.overridden": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "ctest.advertisement.all.test.configuration.is.created": "true",
+    "last_opened_file_path": "//wsl$/Ubuntu/home/hanzech/hzcc",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.C/C++",
+    "structure.view.defaults.are.configured": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="\\wsl$\Ubuntu\home\hanzech\Projects\hzcc\hzcc\ast\expr\grammar" />
@@ -137,7 +104,12 @@
       <recent name="\\wsl$\Ubuntu\home\hanzech\Projects\hzcc\hzcc" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake 应用程序.hzcc_e2e_test">
+  <component name="RunManager" selected="CMake 应用程序.hzcc">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="hzcc_test" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="hzcc_test" CONFIG_NAME="Debug-WSL" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="hzcc_test" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -145,11 +117,6 @@
       </method>
     </configuration>
     <configuration name="HZCC_FileCheck" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="HZCC_FileCheck" CONFIG_NAME="Debug-WSL" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="HZCC_FileCheck">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -315,7 +282,11 @@
       <workItem from="1675107022506" duration="23950000" />
       <workItem from="1675148199484" duration="21179000" />
       <workItem from="1675286652477" duration="34934000" />
-      <workItem from="1675381032516" duration="16511000" />
+      <workItem from="1675381032516" duration="17174000" />
+      <workItem from="1675635123225" duration="395000" />
+      <workItem from="1675635527329" duration="1250000" />
+      <workItem from="1675646927404" duration="95000" />
+      <workItem from="1675647031620" duration="2305000" />
     </task>
     <servers />
   </component>

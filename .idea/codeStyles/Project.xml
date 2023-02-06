@@ -10,5 +10,10 @@
         <pair source="cu" header="cuh" fileNamingConvention="NONE" />
       </extensions>
     </files>
+    <codeStyleSettings language="ObjectiveC">
+      <indentOptions>
+        <option name="SMART_TABS" value="true" />
+      </indentOptions>
+    </codeStyleSettings>
   </code_scheme>
 </component>
