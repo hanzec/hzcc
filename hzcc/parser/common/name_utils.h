@@ -7,10 +7,8 @@
 #include "keywords.h"
 #include "utils/constexpr_utils.h"
 namespace hzcc ::parser_common {
-
-ALWAYS_INLINE bool IsPrimitiveType(std::string_view str) {
-    return ::hzcc::utils::search_table(
-               str.data(), hzcc::parser_common::kPrimitiveTypeTable) != -1;
+ALWAYS_INLINE bool is_primitive_type(std::string_view str) {
+    return ::hzcc::utils::search_table(str.data(), hzcc::kTypeSpecifier) != -1;
 }
 
 /**
@@ -20,13 +18,12 @@ ALWAYS_INLINE bool IsPrimitiveType(std::string_view str) {
  */
 template <std::size_t N>
 constexpr ALWAYS_INLINE bool IsPrimitiveType(const char (&str)[N]) {
-    return ::hzcc::utils::search_table(
-               str, hzcc::parser_common::kPrimitiveTypeTable) != -1;
+    return ::hzcc::utils::search_table(str, hzcc::kTypeSpecifier) != -1;
 }
 
 ALWAYS_INLINE PrimitiveType GetPrimitiveType(std::string_view str) {
-    auto ret = magic_enum::enum_cast<PrimitiveType>(::hzcc::utils::search_table(
-        str.data(), hzcc::parser_common::kPrimitiveTypeTable));
+    auto ret = magic_enum::enum_cast<PrimitiveType>(
+        ::hzcc::utils::search_table(str.data(), hzcc::kTypeSpecifier));
 
     LOG_IF(FATAL, !ret.has_value()) << "Invalid PrimitiveType";
 
@@ -35,9 +32,8 @@ ALWAYS_INLINE PrimitiveType GetPrimitiveType(std::string_view str) {
 
 template <std::size_t N>
 constexpr ALWAYS_INLINE PrimitiveType GetPrimitiveType(const char (&str)[N]) {
-    constexpr auto ret =
-        magic_enum::enum_cast<PrimitiveType>(::hzcc::utils::search_table(
-            str, hzcc::parser_common::kPrimitiveTypeTable));
+    constexpr auto ret = magic_enum::enum_cast<PrimitiveType>(
+        ::hzcc::utils::search_table(str, hzcc::kTypeSpecifier));
 
     static_assert(ret.has_value(), "Invalid PrimitiveType");
     return ret.value();

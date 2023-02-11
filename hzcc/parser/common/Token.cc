@@ -19,18 +19,18 @@
 #include "utils/constexpr_utils.h"
 #include "utils/logging.h"
 
-#define HZCC_INSERT_TO_CACHE(NEW_CACHE, ASSIGN_TO)                         \
-    {                                                                      \
-        auto ref = _global_val_storage.find((NEW_CACHE));                  \
-        if (ref != _global_val_storage.end()) {                            \
-            (ASSIGN_TO) = ref->second;                                     \
-        } else {                                                           \
-            DVLOG(DEBUG_INFO) << "insert new source (NEW_CACHE) cache: ["  \
-                              << (NEW_CACHE) << "]";                       \
-            auto new_item = std::make_shared<std::string>((NEW_CACHE));    \
-            (ASSIGN_TO) = _global_val_storage.emplace(*new_item, new_item) \
-                              .first->second;                              \
-        }                                                                  \
+#define HZCC_INSERT_TO_CACHE(NEW_CACHE, ASSIGN_TO)                                       \
+    {                                                                                    \
+        auto ref = _global_val_storage.find((NEW_CACHE));                                \
+        if (ref != _global_val_storage.end()) {                                          \
+            (ASSIGN_TO) = ref->second;                                                   \
+        } else {                                                                         \
+            DVLOG(DEBUG_INFO) << "insert new source (NEW_CACHE) cache: [" << (NEW_CACHE) \
+                              << "]";                                                    \
+            auto new_item = std::make_shared<std::string>((NEW_CACHE));                  \
+            (ASSIGN_TO) =                                                                \
+                _global_val_storage.emplace(*new_item, new_item).first->second;          \
+        }                                                                                \
     }
 
 namespace hzcc {
@@ -43,41 +43,72 @@ Token::Token(TokenType token_type,                           // NOLINT
              uint_fast32_t row, uint_fast32_t col) noexcept  // NOLINT
     : Token(token_type, row, col) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    if (!token_string.empty()) {
-        HZCC_INSERT_TO_CACHE(token_string, _token_val_ref)
-    } else {
-        LOG(FATAL) << "token string is empty";
-    }
-#else
-    HZCC_INSERT_TO_CACHE(token_string, _token_val_ref);
+    LOG_IF(WARNING, token_string.empty()) << "token string is empty";
 #endif
-}
-
-bool Token::IsSymbol() const noexcept {
-    return magic_enum::enum_integer(_token_type) < 400;
-}
-
-bool Token::IsKeyword() const noexcept {
-    return magic_enum::enum_integer(_token_type) > 400;
-}
-
-bool Token::IsAttribute() const noexcept {
-    return utils::search_table(_token_type,
-                               parser_common::kReversedAttributeTable) != -1;
+    HZCC_INSERT_TO_CACHE(token_string, _token_val_ref)
 }
 
 void Token::Type(TokenType new_type) noexcept { _token_type = new_type; }
 
-TokenType Token::Type() const noexcept { return _token_type; }
+TokenType Token::type() const noexcept { return _token_type; }
 
 std::string Token::to_str(bool escape) const noexcept {
     if (_token_val_ref == nullptr) {
-        return to_string(_token_type);
+        auto idx = magic_enum::enum_integer(_token_type);
+
+        // 0-128 is ascii
+        if (idx <= 128) {
+            // convert to char then to string
+            return std::string(1, static_cast<char>(idx));
+        }
+
+        // literal
+        else if (idx >= magic_enum::enum_integer(TokenType::LitType_START) &&
+                 idx <= magic_enum::enum_integer(TokenType::LitType_END)) {
+            return kLiteralsSymbol[idx -
+                                   magic_enum::enum_integer(TokenType::LitType_START)];
+        }
+
+        // type specifier
+        else if (idx >= magic_enum::enum_integer(TokenType::TypeSpec_START) &&
+                 idx <= magic_enum::enum_integer(TokenType::TypeSpec_END)) {
+            return kTypeSpecifier[idx -
+                                  magic_enum::enum_integer(TokenType::TypeSpec_START)];
+        }
+
+        // operators
+        else if (idx >= magic_enum::enum_integer(TokenType::Op_START) &&
+                 idx <= magic_enum::enum_integer(TokenType::Op_END)) {
+            return kOperatorTable[idx - magic_enum::enum_integer(TokenType::Op_START)];
+        }
+
+        // qualifiers
+        else if (idx >= magic_enum::enum_integer(TokenType::Qual_START) &&
+                 idx <= magic_enum::enum_integer(TokenType::Qual_END)) {
+            return kQualifierTable[idx - magic_enum::enum_integer(TokenType::Qual_START)];
+        }
+
+        // keywords
+        else if (idx >= magic_enum::enum_integer(TokenType::Keyword_START) &&
+                 idx <= magic_enum::enum_integer(TokenType::Keyword_END)) {
+            return kKeywordTable[idx -
+                                 magic_enum::enum_integer(TokenType::Keyword_START)];
+        }
+
+        // others
+        else {
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+            LOG(WARNING) << "unknown token type: "
+                         << magic_enum::enum_integer(_token_type);
+#endif
+            return "unknown token";
+        }
+
     } else {
         if (escape) {
             std::stringstream ss;
-            if (_token_type == TokenType::kChar) ss << "\'";
-            if (_token_type == TokenType::kString) ss << "\"";
+            if (_token_type == TokenType::Char_Lit) ss << "\'";
+            if (_token_type == TokenType::Str_Lit) ss << "\"";
             for (auto& c : *_token_val_ref) {
                 if (std::iscntrl(c)) {
                     ss << lexical::SymbolUtils::ASCIIControlCodeToString(c);
@@ -85,8 +116,8 @@ std::string Token::to_str(bool escape) const noexcept {
                     ss << c;
                 }
             }
-            if (_token_type == TokenType::kChar) ss << "\'";
-            if (_token_type == TokenType::kString) ss << "\"";
+            if (_token_type == TokenType::Char_Lit) ss << "\'";
+            if (_token_type == TokenType::Str_Lit) ss << "\"";
             return ss.str();
         } else {
             return {*_token_val_ref};

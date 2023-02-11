@@ -36,25 +36,6 @@ class Token {
           uint_fast32_t row, uint_fast32_t col) noexcept;  // NOLINT
 
     /**
-     * @brief Check whether the current LexicalToken is a reserved keyword
-     * @return true if the current LexicalToken is a reserved keyword, otherwise
-     * false
-     */
-    [[nodiscard]] bool IsSymbol() const noexcept;
-
-    /**
-     * @brief Check whether the current LexicalToken is a symbol
-     * @return true if the current LexicalToken is a symbol, otherwise false
-     */
-    [[nodiscard]] bool IsKeyword() const noexcept;
-
-    /**
-     * @brief Check whether the current LexicalToken is a attribute
-     * @return true if the current LexicalToken is a attribute, otherwise false
-     */
-    [[nodiscard]] bool IsAttribute() const noexcept;
-
-    /**
      * @brief Change the token type of current LexicalToken
      * @param token_type the new token type of current LexicalToken
      */
@@ -64,7 +45,7 @@ class Token {
      * @brief Get the token type of the token
      * @return TokenType the token type of the token
      */
-    [[nodiscard]] TokenType Type() const noexcept;
+    [[nodiscard]] TokenType type() const noexcept;
 
     /**
      * @brief Get the location of the token in the source file
@@ -95,7 +76,7 @@ class Token {
 };
 
 inline bool operator==(const Token& lhs, const Token& rhs) {
-    return lhs.Type() == rhs.Type() && lhs.loc() == rhs.loc();
+    return lhs.type() == rhs.type() && lhs.loc() == rhs.loc();
 }
 
 }  // namespace hzcc

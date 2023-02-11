@@ -20,7 +20,7 @@ TEST(LEXICAL_PARSER, string_iteral_1) {
 
     ASSERT_TRUE(result.Ok());
     EXPECT_EQ(token_stream.size(), 1);
-    EXPECT_EQ(token_stream.front().Type(), kString);
+    EXPECT_EQ(token_stream.front().type(), kString);
     EXPECT_EQ(token_stream.front().to_str(), "Hello, World!");
 }
 
@@ -33,7 +33,7 @@ TEST(LEXICAL_PARSER, string_iteral_2) {
 
     ASSERT_TRUE(result.Ok());
     EXPECT_EQ(token_stream.size(), 1);
-    EXPECT_EQ(token_stream.front().Type(), kString);
+    EXPECT_EQ(token_stream.front().type(), kString);
     EXPECT_EQ(token_stream.front().to_str(), "Hello, world!\n");
 }
 
@@ -46,7 +46,7 @@ TEST(LEXICAL_PARSER, string_iteral_3) {
 
     ASSERT_TRUE(result.Ok());
     EXPECT_EQ(token_stream.size(), 1);
-    EXPECT_EQ(token_stream.front().Type(), kString);
+    EXPECT_EQ(token_stream.front().type(), kString);
     EXPECT_EQ(token_stream.front().to_str(), "I said, \\\"Hello, world!\\\"");
 }
 
@@ -59,7 +59,7 @@ TEST(LEXICAL_PARSER, string_iteral_4) {
 
     ASSERT_TRUE(result.Ok());
     EXPECT_EQ(token_stream.size(), 1);
-    EXPECT_EQ(token_stream.front().Type(), kString);
+    EXPECT_EQ(token_stream.front().type(), kString);
     EXPECT_EQ(token_stream.front().to_str(), "This is evil \\\\");
 }
 
@@ -72,7 +72,7 @@ TEST(LEXICAL_PARSER, string_iteral_5) {
 
     ASSERT_FALSE(result.Ok());
     EXPECT_EQ(token_stream.size(), 1);
-    EXPECT_EQ(token_stream.front().Type(), kString);
+    EXPECT_EQ(token_stream.front().type(), kString);
     EXPECT_EQ(token_stream.front().to_str(), "This is evil \\\\");
 }
 

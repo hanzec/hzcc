@@ -36,23 +36,19 @@ bool CompilationUnit::at_root() const {
 
 void CompilationUnit::enter_scope(std::string_view name) {
     if (name.empty()) {
-        LOG_IF(FATAL,
-               _scoped_symbol_table.find(name) == _scoped_symbol_table.end())
+        LOG_IF(FATAL, _scoped_symbol_table.find(name) == _scoped_symbol_table.end())
             << "cannot enter scope " << name << ", not found";
         _current_context = _scoped_symbol_table[name];
     } else {
-        LOG_IF(FATAL, at_root())
-            << "cannot enter unnamed scope, if already at root";
+        LOG_IF(FATAL, at_root()) << "cannot enter unnamed scope, if already at root";
 
         auto new_context = _current_context.lock()->enter_scope();
         _current_context = new_context;
     }
 }
 
-void CompilationUnit::create_func(std::string_view name,
-                                  const QualTypePtr &return_type) {
-    DLOG_IF(WARNING, return_type == nullptr)
-        << "scope " << name << " has no return type";
+void CompilationUnit::create_func(std::string_view name, const QualTypePtr &return_type) {
+    DLOG_IF(WARNING, return_type == nullptr) << "scope " << name << " has no return type";
     if (!at_root()) {
         DLOG(FATAL) << "Only root context can enter a named scope";
     } else {
@@ -71,9 +67,8 @@ std::optional<QualTypePtr> CompilationUnit::ret_type() const {
 }
 
 /** ---------------------------------------------------------------
- * #################   Type related Functions  ####################
+ * #################   type related Functions  ####################
  *--------------------------------------------------------------- */
-
 bool CompilationUnit::has_type(std::string_view name) {
     if (name.empty()) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
@@ -84,7 +79,9 @@ bool CompilationUnit::has_type(std::string_view name) {
     }
 
     // directly return true if the type is PrimitiveType
-    if (parser_common::IsPrimitiveType(name)) {
+    if (__builtin_expect(parser_common::is_primitive_type(name), false)) {
+        LOG(WARNING) << "Primitive type " << name
+                     << " is not a named type, should use its TokenType instead";
         return true;
     } else {
         // we fist check our global scope
@@ -104,15 +101,17 @@ bool CompilationUnit::has_type(std::string_view name) {
 }
 
 QualTypePtr CompilationUnit::get_type(std::string_view name,
-                                      std::list<Qualifier> qualifiers) {
+                                      const std::vector<Qualifier> &qualifiers) {
     // directly return true if the type is PrimitiveType
-    if (parser_common::IsPrimitiveType(name.data())) {
+    if (parser_common::is_primitive_type(name.data())) {
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+        LOG(WARNING) << "Primitive type " << name
+                     << " is not a named type, should use its TokenType instead";
+#endif
         if (qualifiers.empty()) {
-            return ast::GetNumericalTypeOf(
-                parser_common::GetPrimitiveType(name));
+            return ast::GetNumericalTypeOf(parser_common::GetPrimitiveType(name));
         } else {
-            return ast::GetNumericalTypeOf(
-                       parser_common::GetPrimitiveType(name))
+            return ast::GetNumericalTypeOf(parser_common::GetPrimitiveType(name))
                 ->type_of(qualifiers);
         }
     } else {
@@ -133,7 +132,7 @@ QualTypePtr CompilationUnit::get_type(std::string_view name,
 }
 
 QualTypePtr CompilationUnit::add_struct_type(std::string_view struct_name,
-                                             std::list<Qualifier> attr_list) {
+                                             const std::vector<Qualifier> &attr_list) {
     auto name = "struct " + std::string(struct_name);
 
     // if we are adding global type
@@ -142,15 +141,13 @@ QualTypePtr CompilationUnit::add_struct_type(std::string_view struct_name,
             LOG(FATAL) << "Struct " << name << " already exists";
             return nullptr;
         } else {
-            DVLOG(AST_LOG) << "Add new Struct type [" << name
-                           << "] to global scope";
+            DVLOG(AST_LOG) << "Add new Struct type [" << name << "] to global scope";
             auto new_type = std::make_shared<ast::StructType>(struct_name);
             _named_types.insert(std::make_pair(name, new_type));
 
             // when leaving this function all attrs should be consumed
-            DLOG_IF(FATAL, !attr_list.empty())
-                << "When constructing new struct " << name
-                << "its attributes should be consumed";
+            DLOG_IF(FATAL, !attr_list.empty()) << "When constructing new struct " << name
+                                               << "its attributes should be consumed";
 
             return std::make_shared<QualType>(new_type, attr_list);
         }
@@ -159,17 +156,14 @@ QualTypePtr CompilationUnit::add_struct_type(std::string_view struct_name,
             LOG(FATAL) << "type " << name << " already exists";
             return nullptr;
         } else {
-            DVLOG(AST_LOG) << "Trying to add new type [" << name
-                           << "] to local scope";
+            DVLOG(AST_LOG) << "Trying to add new type [" << name << "] to local scope";
 
             // when leaving this function all attrs should be consumed
-            DLOG_IF(FATAL, !attr_list.empty())
-                << "When constructing new struct " << name
-                << "its attributes should be consumed";
+            DLOG_IF(FATAL, !attr_list.empty()) << "When constructing new struct " << name
+                                               << "its attributes should be consumed";
 
             return std::make_shared<QualType>(
-                _current_context.lock()->add_struct_type(struct_name),
-                attr_list);
+                _current_context.lock()->add_struct_type(struct_name), attr_list);
         }
     }
 }
@@ -185,8 +179,7 @@ bool CompilationUnit::has_var(std::string_view name, bool current_scope) {
  * ## Function related Functions                               ###
  * -------------------------------------------------------------- */
 
-std::vector<QualTypePtr> CompilationUnit::func_param_types(
-    std::string_view name) {
+std::vector<QualTypePtr> CompilationUnit::func_param_types(std::string_view name) {
     if (has_func(name)) {
         std::vector<QualTypePtr> ret;
         for (auto &param : _func_tbl[name]->params()) {
@@ -214,8 +207,7 @@ void CompilationUnit::addDecl(std::unique_ptr<IDeclStmt> node) {
 
                 if (node->has_body()) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-                    auto func_new =
-                        static_cast<ast::FuncDeclStmt *>(node.get());
+                    auto func_new = static_cast<ast::FuncDeclStmt *>(node.get());
 
                     // if the function body is already defined, then it's a
                     // redefinition
@@ -223,8 +215,7 @@ void CompilationUnit::addDecl(std::unique_ptr<IDeclStmt> node) {
                         << "Function " << node->name() << " already defined !";
 
                     // check number of arguments
-                    LOG_IF(FATAL, func_old->params().size() !=
-                                      func_new->params().size())
+                    LOG_IF(FATAL, func_old->params().size() != func_new->params().size())
                         << "Function " << node->name()
                         << " has different number of arguments !";
 
@@ -242,8 +233,8 @@ void CompilationUnit::addDecl(std::unique_ptr<IDeclStmt> node) {
                     }
 #endif
                     // otherwise we just add the body to the function
-                    func_old->set_body(std::move(
-                        static_cast<FuncDeclStmt *>(node.get())->body_stmt()));
+                    func_old->set_body(
+                        std::move(static_cast<FuncDeclStmt *>(node.get())->body_stmt()));
                 }
                 // if the function body is not defined for new function node and
                 // the same definition is already defined before then we just
@@ -253,10 +244,9 @@ void CompilationUnit::addDecl(std::unique_ptr<IDeclStmt> node) {
             // otherwise we just add the function to the global scope
             else {
                 // add function to global scope
-                _func_tbl.emplace(
-                    node->name(),
-                    std::make_unique<FuncDeclStmt>(std::move(
-                        *static_cast<FuncDeclStmt *>(node.release()))));
+                _func_tbl.emplace(node->name(),
+                                  std::make_unique<FuncDeclStmt>(std::move(
+                                      *static_cast<FuncDeclStmt *>(node.release()))));
             }
         } break;
     }

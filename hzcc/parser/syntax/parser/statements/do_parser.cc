@@ -26,14 +26,14 @@ StatusOr<ast::StmtPtr> DoStatement::parse_impl(SyntaxCtx context,
 
     // check if the next token is [do]
     auto do_loc = tokens.peek().loc();
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kDo, tokens);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::Do, tokens);
 
     // parse body stmt
     HZCC_CHECK_OR_ASSIGN(condition,  // NOLINT
                          utils::ParseBodyStatement(context, false, tokens));
 
     // check if the next token is [while]
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kWhile, tokens);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::While, tokens);
 
     // parse condition
     HZCC_CHECK_OR_ASSIGN(body,  // NOLINT

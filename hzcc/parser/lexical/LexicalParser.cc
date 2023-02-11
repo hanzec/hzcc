@@ -16,7 +16,6 @@
 #include <utility>
 #include <vector>
 
-#include "lexical_limit.h"
 #include "macro.h"
 #include "parser/common/Token.h"
 #include "parser/common/token_type.h"
@@ -26,55 +25,46 @@
 #include "utils/status/status.h"
 #include "utils/status/statusor.h"
 namespace hzcc::lexical {
-#define LIMIT_REGEX_CHECK(REGEX, INPUT, REQUIRED_TYPE, ERROR_STATUS)           \
-    {                                                                          \
-        if (!std::regex_match((INPUT).data(), (REGEX))) {                      \
-            do {                                                               \
-                ERROR_STATUS                                                   \
-            } while (0);                                                       \
-        }                                                                      \
-        try {                                                                  \
-            if constexpr (std::is_same_v<REQUIRED_TYPE, int64_t>) {            \
-                if (std::stoll((INPUT).data()) >                               \
-                    std::numeric_limits<int64_t>::max()) {                     \
-                    message::print_message(CompileErrorLevel::Error,           \
-                                           "integer number overflow",          \
-                                           std::make_pair(ctx->row, start));   \
-                    return {StatusCode::kLexicalAnalysisStage,                 \
-                            "integer number overflow"};                        \
-                }                                                              \
-            } else if constexpr (std::is_same_v<REQUIRED_TYPE, long double>) { \
-                if (std::stod((INPUT).data()) >                                \
-                        std::numeric_limits<long double>::max() ||             \
-                    std::stod((INPUT).data()) <                                \
-                        std::numeric_limits<long double>::lowest()) {          \
-                    message::print_message(CompileErrorLevel::Error,           \
-                                           "real number literal out of range", \
-                                           std::make_pair(ctx->row, start));   \
-                    return {StatusCode::kLexicalAnalysisStage,                 \
-                            "real number literal out of range"};               \
-                }                                                              \
-                                                                               \
-                auto dot_pos = tmp_numbers.find('.');                          \
-                if (((INPUT).length() - dot_pos) >= kMaxSignificantDigits) {   \
-                    auto tmp_str = std::string(INPUT);                         \
-                    tmp_str.erase(dot_pos + kMaxSignificantDigits + 1,         \
-                                  (INPUT).length());                           \
-                    message::print_message(                                    \
-                        CompileErrorLevel::Warning,                            \
-                        "real number is greater than most possible "           \
-                        "significant digits, will truncating to " +            \
-                            tmp_str,                                           \
-                        std::make_pair(ctx->row, start));                      \
-                }                                                              \
-            }                                                                  \
-        } catch (const std::out_of_range& e) {                                 \
-            message::print_message(CompileErrorLevel::Error,                   \
-                                   "number out of range",                      \
-                                   std::make_pair(ctx->row, start));           \
-            return {StatusCode::kLexicalAnalysisStage, "number out of range"}; \
-        }                                                                      \
-    }
+
+namespace {
+inline bool regex_match(
+    std::string_view sv,  // NOLINT
+    const std::regex& e,  // NOLINT
+    std::regex_constants::match_flag_type flags = std::regex_constants::match_default) {
+    return std::regex_match(sv.data(), sv.data() + sv.size(), e, flags);
+}
+}  // namespace
+
+#define LIMIT_REGEX_CHECK(REGEX, INPUT, REQUIRED_TYPE, BASE, ERROR_STATUS)          \
+    do {                                                                            \
+        static std::regex regex(REGEX);                                             \
+        if (!regex_match((INPUT), regex)) {                                         \
+            ERROR_STATUS;                                                           \
+            return {StatusCode::kLexicalAnalysisStage,                              \
+                    absl::StrCat("Number :", INPUT,                                 \
+                                 "failed verified with regex"                       \
+                                 "" #REGEX "")};                                    \
+        }                                                                           \
+        try {                                                                       \
+            if constexpr (std::is_integral_v<REQUIRED_TYPE>) {                      \
+                if constexpr (BASE == 2) {                                          \
+                    std::stoll(std::string((INPUT).substr(1)), nullptr, BASE);      \
+                } else {                                                            \
+                    std::stoll(std::string((INPUT)), nullptr, BASE);                \
+                }                                                                   \
+            } else if constexpr (std::is_floating_point_v<REQUIRED_TYPE>) {         \
+                std::stold(std::string((INPUT)));                                   \
+            }                                                                       \
+        } catch (const std::out_of_range& e) {                                      \
+            message::print_message(CompileErrorLevel::Error, "number out of range", \
+                                   std::make_pair(ctx->row, start));                \
+            return {StatusCode::kLexicalAnalysisStage, "number out of range"};      \
+        } catch (const std::invalid_argument& e) {                                  \
+            return {StatusCode::kInternal,                                          \
+                    "failed to parse string to number even if regex check is "      \
+                    " passed"};                                                     \
+        }                                                                           \
+    } while (0);
 
 typedef struct AnalyzeCtx_t {
     size_t row = 1, col = 0;
@@ -82,12 +72,11 @@ typedef struct AnalyzeCtx_t {
     std::pair<int, int> multiple_line_comment_start = {0, 0};
 } AnalyzeCtx;
 
-ALWAYS_INLINE static Status SymbolHandler(TokenList& tokens,
-                                          const std::string_view& line,
+ALWAYS_INLINE static Status SymbolHandler(TokenList& tokens, const std::string_view& line,
                                           std::shared_ptr<AnalyzeCtx>& ctx) {
     VLOG(LEXICAL_LOG) << "SymbolHandler: Start at line:" << ctx->row
                       << " col:" << ctx->col;
-    auto type = SymbolUtils::GetSymbolType(line.substr(ctx->col, 2).data());
+    auto type = SymbolUtils::GetSymbolType(line.substr(ctx->col, 2));
     /**
      * Here is not add the second symbol to token stream
      * in this loop is because there is a special
@@ -103,11 +92,9 @@ ALWAYS_INLINE static Status SymbolHandler(TokenList& tokens,
         ctx->col++;  // back to the last digit
     }
 
-    VLOG(LEXICAL_LOG) << "SymbolHandler: Symbol type: ["
-                      << magic_enum::enum_name(type) << "]";
+    VLOG(LEXICAL_LOG) << "SymbolHandler: Symbol type: [" << magic_enum::enum_name(type)
+                      << "]";
     tokens.emplace_back(type, ctx->row, ctx->col);
-
-    ctx->col++;
     return NoError();
 }
 
@@ -126,8 +113,9 @@ ALWAYS_INLINE static Status CommentHandler(TokenList& tokens,
         // a special case where multiple line comment is used as
         // single line comment
         if (std::string::npos == line.find("*/", col + 2)) {
+            ctx->col = line.length();
             ctx->multi_line_comment = true;
-            ctx->multiple_line_comment_start = {ctx->row - 1, col};
+            ctx->multiple_line_comment_start = {ctx->row, col};
             return NoError();
         } else {
             ctx->col = line.find("*/", col + 2) + 1;
@@ -138,8 +126,7 @@ ALWAYS_INLINE static Status CommentHandler(TokenList& tokens,
     return NoError();
 }
 
-ALWAYS_INLINE static Status StrLitHandler(TokenList& tokens,
-                                          const std::string_view& line,
+ALWAYS_INLINE static Status StrLitHandler(TokenList& tokens, const std::string_view& line,
                                           std::shared_ptr<AnalyzeCtx>& ctx) {
     VLOG(LEXICAL_LOG) << "StrLitHandler: Start at line:" << ctx->row
                       << " col:" << ctx->col;
@@ -160,8 +147,8 @@ ALWAYS_INLINE static Status StrLitHandler(TokenList& tokens,
 
         // handle escape character
         if (line[ctx->col] == '\\') {
-            if ((new_char = SymbolUtils::ToASCIIControlCode(
-                     line[ctx->col + 1])) != (char)0xFF) {
+            if ((new_char = SymbolUtils::ToASCIIControlCode(line[ctx->col + 1])) !=
+                (char)0xFF) {
                 ctx->col++;
                 tmp_string += new_char;
             } else {
@@ -183,7 +170,7 @@ ALWAYS_INLINE static Status StrLitHandler(TokenList& tokens,
     }
 
     // add token
-    tokens.emplace_back(TokenType::kString, tmp_string, ctx->row, start);
+    tokens.emplace_back(TokenType::Str_Lit, tmp_string, ctx->row, start);
 
     return NoError();
 }
@@ -202,8 +189,7 @@ ALWAYS_INLINE static Status CharLitHandler(TokenList& tokens,
     if (line[ctx->col] != '\'') {
         if (line.find_first_of('\'', ctx->col) == std::string::npos) {
             ctx->col = line.length();
-            message::print_message(CompileErrorLevel::Error,
-                                   "unclosed char literal",
+            message::print_message(CompileErrorLevel::Error, "unclosed char literal",
                                    std::make_pair(row, start - 1));
             return {StatusCode::kLexicalAnalysisStage, "unclosed char literal"};
         } else {
@@ -217,43 +203,39 @@ ALWAYS_INLINE static Status CharLitHandler(TokenList& tokens,
     } else {
         // handling ASCII escape sequence
         char new_char;
-        std::string tmp_string =
-            std::string(line.substr(start, ctx->col - start));
+        std::string tmp_string = std::string(line.substr(start, ctx->col - start));
         for (int i = 0; i < tmp_string.length(); ++i) {
-            if (tmp_string[i] == '\\' &&
-                (new_char = SymbolUtils::ToASCIIControlCode(
-                     tmp_string[i + 1])) != (char)0xFF) {
+            if (tmp_string[i] == '\\' && (new_char = SymbolUtils::ToASCIIControlCode(
+                                              tmp_string[i + 1])) != (char)0xFF) {
                 tmp_string.replace(i, 2, 1, new_char);
             }
         }
 
         // add token
-        tokens.emplace_back(TokenType::kChar, tmp_string, row, start - 1);
+        tokens.emplace_back(TokenType::Char_Lit, tmp_string, row, start - 1);
     }
 
     return NoError();
 }
 
-ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
-                                          const std::string_view& line,
+ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens, const std::string_view& line,
                                           std::shared_ptr<AnalyzeCtx>& ctx) {
     VLOG(LEXICAL_LOG) << "NumLitHandler: Start at line:" << ctx->row
                       << " col:" << ctx->col;
 
     auto start = ctx->col;
-    TokenType type = TokenType::kInteger;
+    TokenType type = TokenType::Int_Lit;
     ctx->col = line.find_first_not_of("0123456789", start);
 
     if (ctx->col != std::string::npos) {
         // skip hex literal and binary literal
-        if (std::tolower(line[ctx->col]) == 'b' ||
-            std::tolower(line[ctx->col]) == 'x') {
+        if (std::tolower(line[ctx->col]) == 'b' || std::tolower(line[ctx->col]) == 'x') {
             ctx->col++;
         }
 
         // if real number change type to real
         if (line[ctx->col] == '.') {
-            type = TokenType::kReal_number;
+            type = TokenType::Real_Lit;
             ctx->col++;
         }
     } else {
@@ -264,31 +246,28 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
     // correctness will be checked in syntax test_set_0.
     // Here we want to escape Dot(.) because it could be
     // test_set_0 of real number
-    while (
-        ctx->col <= line.length() &&
-        (line[ctx->col] == '.' || (!std::isspace(line[ctx->col]) &&
-                                   !SymbolUtils::IsOperator(line[ctx->col])))) {
+    while (ctx->col <= line.length() &&
+           (line[ctx->col] == '.' || (!std::isspace(line[ctx->col]) &&
+                                      !SymbolUtils::is_operator(line[ctx->col])))) {
         // we want to escape Minus(-) directly after [E]
         // because it could be test_set_0 of real number
         // (e.g. 1.0E-2)
         if (std::tolower(line[ctx->col]) == 'e' &&
             (line[ctx->col + 1] == '-' || line[ctx->col + 1] == '+')) {
             ctx->col++;
-            type = TokenType::kReal_number;
+            type = TokenType::Real_Lit;
         }
         ctx->col++;
     }
 
     // do number format check
     auto tmp_numbers = line.substr(start, ctx->col - start);
-    if (type == TokenType::kInteger) {
+    if (type == TokenType::Int_Lit) {
         // decimal number
         if (tmp_numbers[0] != '0' ||
             (tmp_numbers[0] == '0' && tmp_numbers.length() == 1)) {
-            static std::regex int_regex("^[0-9]+$");
-            LIMIT_REGEX_CHECK(int_regex, tmp_numbers, int64_t, {
-                message::print_message(CompileErrorLevel::Error,
-                                       "invalid integer number",
+            LIMIT_REGEX_CHECK("^[0-9]+$", tmp_numbers, int64_t, 10, {
+                message::print_message(CompileErrorLevel::Error, "invalid integer number",
                                        std::make_pair(ctx->row, start));
             })
 
@@ -296,7 +275,7 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
         // hex number
         else if (std::tolower(tmp_numbers[1]) == 'x') {
             static std::regex hex_regex("^0[xX][0-9a-fA-F]+$");
-            LIMIT_REGEX_CHECK(hex_regex, tmp_numbers, int64_t, {
+            LIMIT_REGEX_CHECK(hex_regex, tmp_numbers, int64_t, 16, {
                 auto error_pos =
                     tmp_numbers.find_first_not_of("0123456789abcdefABCDEF", 2);
 
@@ -310,8 +289,8 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
                     message::print_message(
                         CompileErrorLevel::Error,
                         "Invalid suffix '" +
-                            std::string(line.substr(
-                                error_pos, line.length() - error_pos)) +
+                            std::string(
+                                line.substr(error_pos, line.length() - error_pos)) +
                             "' on integer constant",
                         std::make_pair(ctx->row, error_pos));
                 }
@@ -321,7 +300,7 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
         // binary number
         else if (std::tolower(tmp_numbers[1]) == 'b') {
             static std::regex binary_regex("^0[bB][01]+$");
-            LIMIT_REGEX_CHECK(binary_regex, tmp_numbers, int64_t, {
+            LIMIT_REGEX_CHECK(binary_regex, tmp_numbers, int64_t, 2, {
                 message::print_message(
                     CompileErrorLevel::Error,
                     "invalid binary number: [" + std::string(tmp_numbers) + "]",
@@ -331,10 +310,9 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
         // octo number
         else {
             static std::regex octo_regex("^0[0-7]+$");
-            LIMIT_REGEX_CHECK(octo_regex, tmp_numbers, int64_t, {
+            LIMIT_REGEX_CHECK(octo_regex, tmp_numbers, int64_t, 8, {
                 // looking for which digit is invalid
-                auto invalid_digit =
-                    tmp_numbers.find_first_not_of("01234567", 1);
+                auto invalid_digit = tmp_numbers.find_first_not_of("01234567", 1);
 
                 if (invalid_digit == std::string::npos) {
                     message::print_message(CompileErrorLevel::Error,
@@ -345,8 +323,7 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
                 } else {
                     message::print_message(
                         CompileErrorLevel::Error,
-                        "Invalid digit '" +
-                            std::string(1, tmp_numbers[invalid_digit]) +
+                        "Invalid digit '" + std::string(1, tmp_numbers[invalid_digit]) +
                             "' in octal constant",
                         std::make_pair(ctx->row, start + invalid_digit));
                 }
@@ -354,26 +331,36 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
         }
     } else {
         static std::regex real_number("[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$");
-        LIMIT_REGEX_CHECK(real_number, tmp_numbers, long double, {
-            auto error_pos =
-                tmp_numbers.find_first_not_of("0123456789.eE+-", 0);
+        LIMIT_REGEX_CHECK(real_number, tmp_numbers, long double, 10, {
+            auto error_pos = tmp_numbers.find_first_not_of("0123456789.eE+-", 0);
 
             if (error_pos == std::string::npos) {
-                message::print_message(CompileErrorLevel::Error,
-                                       "Invalid string '" +
-                                           std::string(tmp_numbers) +
-                                           "' for real constant",
-                                       std::make_pair(ctx->row, start));
+                message::print_message(
+                    CompileErrorLevel::Error,
+                    "Invalid string '" + std::string(tmp_numbers) + "' for real constant",
+                    std::make_pair(ctx->row, start));
             } else {
                 message::print_message(
                     CompileErrorLevel::Error,
                     "Invalid suffix '" +
-                        std::string(
-                            line.substr(error_pos, line.length() - error_pos)) +
+                        std::string(line.substr(error_pos, line.length() - error_pos)) +
                         "' on integer constant",
                     std::make_pair(ctx->row, error_pos));
             }
         })
+
+        // turncoat the real number to 10 digits
+        auto dot_pos = tmp_numbers.find('.');
+        if ((tmp_numbers.length() - dot_pos) >= Options::kMaxSignificantDigits) {
+            tmp_numbers =
+                tmp_numbers.substr(0, dot_pos + Options::kMaxSignificantDigits + 1);
+            message::print_message(
+                CompileErrorLevel::Warning,
+                absl::StrCat("real number is greater than most possible "
+                             "significant digits, will truncating to ",
+                             tmp_numbers),
+                std::make_pair(ctx->row, start));
+        }
     }
 
     tokens.emplace_back(type, tmp_numbers, ctx->row, start);
@@ -382,11 +369,10 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens,
     return NoError();
 }
 
-ALWAYS_INLINE static Status AnalyzeLine(TokenList& tokens,
-                                        const std::string_view& line,
+ALWAYS_INLINE static Status AnalyzeLine(TokenList& tokens, const std::string_view& line,
                                         std::shared_ptr<AnalyzeCtx>& ctx) {
-    size_t col = ctx->col;
-    for (; ctx->col < line.length(); col++) {
+    for (; ctx->col < line.length(); ctx->col++) {
+        size_t col = ctx->col;
         switch (line[col]) {
             case ' ':
             case '\t':
@@ -395,7 +381,8 @@ ALWAYS_INLINE static Status AnalyzeLine(TokenList& tokens,
             case '@':   // skip @
             case '`':
                 message::print_message(CompileErrorLevel::Warning,
-                                       "Unexpected symbol, ignoring.",
+                                       absl::StrCat("Ignoring unexpected symbol: ",
+                                                    std::string(1, line[col])),
                                        std::make_pair(ctx->row, col));
                 break;
             case '/': {  // handling comment
@@ -410,13 +397,12 @@ ALWAYS_INLINE static Status AnalyzeLine(TokenList& tokens,
             default: {
                 if (std::isdigit(line[col])) {
                     HZCC_CHECK_OK_OR_RETURN(NumLitHandler(tokens, line, ctx));
-                } else if (TokenType::kUnknown ==
-                           SymbolUtils::GetSymbolType(line[col])) {
+                } else if (TokenType::kUnknown == SymbolUtils::GetSymbolType(line[col])) {
                     size_t start = col;
 
                     // find the next closest symbol
                     while (col != std::string::npos && col < line.length() &&
-                           !SymbolUtils::IsOperator(line[col]))
+                           !SymbolUtils::is_operator(line[col]))
                         col++;
 
                     // handling if at line end
@@ -425,23 +411,27 @@ ALWAYS_INLINE static Status AnalyzeLine(TokenList& tokens,
                     }
 
                     auto word = line.substr(start, col - start);
-                    auto type = SymbolUtils::GetStringKeywordType(word.data());
+                    auto type = TokenType::kUnknown;
 
-                    // splitting keyword
-                    if (type != TokenType::kUnknown) {
+                    // keyword
+                    if (TokenType::kUnknown != (type = SymbolUtils::is_keyword(word))) {
                         tokens.emplace_back(type, ctx->row, start);
                     }
-                    // splitting primitive type
-                    else if (SymbolUtils::IsPrimitiveType(word.data())) {
-                        tokens.emplace_back(TokenType::kType, word, ctx->row,
-                                            start);
+                    // type specifier
+                    else if (TokenType::kUnknown !=
+                             (type = SymbolUtils::is_type_specifier(word))) {
+                        tokens.emplace_back(type, ctx->row, start);
+                    }
+                    // qualifier
+                    else if (TokenType::kUnknown !=
+                             (type = SymbolUtils::is_qualifier(word))) {
+                        tokens.emplace_back(type, ctx->row, start);
                     }
                     // identifier
                     else {
-                        tokens.emplace_back(TokenType::kIdentity, word,
-                                            ctx->row, start);
+                        tokens.emplace_back(TokenType::kIdentity, word, ctx->row, start);
                     }
-                    col--;  // back to the last digit
+                    ctx->col = col - 1;  // back to the last digit
                 } else {
                     HZCC_CHECK_OK_OR_RETURN(SymbolHandler(tokens, line, ctx));
                 }
@@ -454,7 +444,7 @@ ALWAYS_INLINE static Status AnalyzeLine(TokenList& tokens,
 StatusOr<TokenList> ParseToToken(std::istream& source) noexcept {
     VLOG(LEXICAL_LOG) << "Start lexical analysis, reading source file";
 
-    TokenList tokens([](const Token& a) -> bool { return a.IsAttribute(); });
+    TokenList tokens([](const Token& a) -> bool { return is_qualifier(a.type()); });
 
     std::shared_ptr<AnalyzeCtx> ctx = std::make_shared<AnalyzeCtx>();
 
@@ -463,8 +453,7 @@ StatusOr<TokenList> ParseToToken(std::istream& source) noexcept {
 
     // check stream is valid
     if (!source.good()) {
-        message::print_message(CompileErrorLevel::Error,
-                               "source file is not readable",
+        message::print_message(CompileErrorLevel::Error, "source file is not readable",
                                std::make_pair(0, 0));
         return NotFoundError("source file not found");
     }
@@ -475,6 +464,8 @@ StatusOr<TokenList> ParseToToken(std::istream& source) noexcept {
 
         // skip empty line
         if (line.empty()) continue;
+
+        VLOG(LEXICAL_LOG) << "Analyzing line " << ctx->row << ": [" << line << "]";
 
         // detect end of symbol for multiple line comment
         if (ctx->multi_line_comment) {
@@ -487,16 +478,16 @@ StatusOr<TokenList> ParseToToken(std::istream& source) noexcept {
         }
 
         // analyze current line
-        VLOG(LEXICAL_LOG) << "Analyzing line " << ctx->row << ": [" << line
-                          << "]";
         HZCC_CHECK_OK_OR_RETURN(AnalyzeLine(tokens, line, ctx));
     }
 
     // if line finished without multi-line comment closed
     if (ctx->multi_line_comment) {
-        message::print_message(CompileErrorLevel::Error, "Unclosed comment",
+        message::print_message(CompileErrorLevel::Error,
+                               "Unclosed comment, expected to match this '/*'",
                                ctx->multiple_line_comment_start);
-        return Status(StatusCode::kLexicalAnalysisStage, "Unclosed comment");
+        return Status(StatusCode::kLexicalAnalysisStage,
+                      "Unclosed comment at end of file");
     }
 
     return tokens;

@@ -67,15 +67,16 @@
 #include "utils/status/internal/status_internal.h"
 
 namespace hzcc {
-#define HZCC_CHECK_OK_OR_RETURN(expr)                                  \
-    do {                                                               \
-        auto status = (expr);                                          \
-        if (!status.ok()) {                                            \
-            return status;                                             \
-        } else {                                                       \
-            VLOG(DEBUG_INFO)                                           \
-                << "\033[3m\033[4m[" #expr "]\x1B[0m return no error"; \
-        }                                                              \
+#define HZCC_CHECK_OK_OR_RETURN(expr)                                                 \
+    do {                                                                              \
+        auto status = (expr);                                                         \
+        if (!status.ok()) {                                                           \
+            DLOG(WARNING) << "\"" #expr "\""                                          \
+                          << " return with error: " << status.message();              \
+            return status;                                                            \
+        } else {                                                                      \
+            VLOG(DEBUG_INFO) << "\033[3m\033[4m[ " #expr " ]\x1B[0m return no error"; \
+        }                                                                             \
     } while (0)
 
 // hzcc::StatusCode
@@ -336,34 +337,28 @@ enum class StatusToStringMode : int {
 // following operations must be provided:
 inline constexpr StatusToStringMode operator&(StatusToStringMode lhs,
                                               StatusToStringMode rhs) {
-    return static_cast<StatusToStringMode>(static_cast<int>(lhs) &
-                                           static_cast<int>(rhs));
+    return static_cast<StatusToStringMode>(static_cast<int>(lhs) & static_cast<int>(rhs));
 }
 inline constexpr StatusToStringMode operator|(StatusToStringMode lhs,
                                               StatusToStringMode rhs) {
-    return static_cast<StatusToStringMode>(static_cast<int>(lhs) |
-                                           static_cast<int>(rhs));
+    return static_cast<StatusToStringMode>(static_cast<int>(lhs) | static_cast<int>(rhs));
 }
 inline constexpr StatusToStringMode operator^(StatusToStringMode lhs,
                                               StatusToStringMode rhs) {
-    return static_cast<StatusToStringMode>(static_cast<int>(lhs) ^
-                                           static_cast<int>(rhs));
+    return static_cast<StatusToStringMode>(static_cast<int>(lhs) ^ static_cast<int>(rhs));
 }
 inline constexpr StatusToStringMode operator~(StatusToStringMode arg) {
     return static_cast<StatusToStringMode>(~static_cast<int>(arg));
 }
-inline StatusToStringMode& operator&=(StatusToStringMode& lhs,
-                                      StatusToStringMode rhs) {
+inline StatusToStringMode& operator&=(StatusToStringMode& lhs, StatusToStringMode rhs) {
     lhs = lhs & rhs;
     return lhs;
 }
-inline StatusToStringMode& operator|=(StatusToStringMode& lhs,
-                                      StatusToStringMode rhs) {
+inline StatusToStringMode& operator|=(StatusToStringMode& lhs, StatusToStringMode rhs) {
     lhs = lhs | rhs;
     return lhs;
 }
-inline StatusToStringMode& operator^=(StatusToStringMode& lhs,
-                                      StatusToStringMode rhs) {
+inline StatusToStringMode& operator^=(StatusToStringMode& lhs, StatusToStringMode rhs) {
     lhs = lhs ^ rhs;
     return lhs;
 }
@@ -618,8 +613,7 @@ class Status final {
     static bool EqualsSlow(const hzcc::Status& a, const hzcc::Status& b);
 
     // MSVC 14.0 limitation requires the const.
-    static constexpr const char kMovedFromString[] =
-        "Status accessed after move.";
+    static constexpr const char kMovedFromString[] = "Status accessed after move.";
 
     static const std::string* EmptyString();
     static const std::string* MovedFromString();
@@ -771,9 +765,7 @@ inline Status& Status::operator=(const Status& x) {
     return *this;
 }
 
-inline Status::Status(Status&& x) noexcept : rep_(x.rep_) {
-    x.rep_ = MovedFromRep();
-}
+inline Status::Status(Status&& x) noexcept : rep_(x.rep_) { x.rep_ = MovedFromRep(); }
 
 inline Status& Status::operator=(Status&& x) noexcept {
     uintptr_t old_rep = rep_;
@@ -799,29 +791,23 @@ inline void Status::Update(Status&& new_status) {
 
 inline Status::~Status() { Unref(rep_); }
 
-inline bool Status::ok() const {
-    return rep_ == CodeToInlinedRep(hzcc::StatusCode::kOk);
-}
+inline bool Status::ok() const { return rep_ == CodeToInlinedRep(hzcc::StatusCode::kOk); }
 
 inline std::string_view Status::message() const {
-    return !IsInlined(rep_)
-               ? RepToPointer(rep_)->message
-               : (IsMovedFrom(rep_) ? std::string_view(kMovedFromString)
-                                    : std::string_view());
+    return !IsInlined(rep_) ? RepToPointer(rep_)->message
+                            : (IsMovedFrom(rep_) ? std::string_view(kMovedFromString)
+                                                 : std::string_view());
 }
 
 inline bool operator==(const Status& lhs, const Status& rhs) {
     return lhs.rep_ == rhs.rep_ || Status::EqualsSlow(lhs, rhs);
 }
 
-inline bool operator!=(const Status& lhs, const Status& rhs) {
-    return !(lhs == rhs);
-}
+inline bool operator!=(const Status& lhs, const Status& rhs) { return !(lhs == rhs); }
 
 inline std::string Status::ToString(StatusToStringMode mode) const {
     return ok() ? "OK"
-                : (hzcc::StatusCodeToString(code()) + ": " +
-                   std::string(message()));
+                : (hzcc::StatusCodeToString(code()) + ": " + std::string(message()));
 }
 
 inline void Status::IgnoreError() const {

@@ -38,8 +38,7 @@ int main(int argc, char* argv[]) {
     app.add_option("-I,--include", included_files, "include file")
         ->check(CLI::ExistingFile);
     // input files [THIS REQUIRED AT LEAST ONE]
-    app.add_option("file, -c", input_files, "hzcc StatusCode")
-        ->check(CLI::ExistingFile);
+    app.add_option("file, -c", input_files, "hzcc StatusCode")->check(CLI::ExistingFile);
 
     // parse command line arguments
     CLI11_PARSE(app, argc, argv);
@@ -78,39 +77,45 @@ int main(int argc, char* argv[]) {
          * lexical analysis #
          * ##################################################################*/
         std::ifstream infile(input_files[i]);
+        hzcc::message::set_current_file_name(input_files[i]);
 
         // run lexical analysis
         auto tokens = hzcc::lexical::ParseToToken(infile);
 
         // print tokens
         if (!tokens.ok()) {
-            std::cerr << tokens.status().ToString() << std::endl;
-            return 1;
+            DLOG(ERROR) << "Lexical analysis failed: " << tokens.status().message();
+            return magic_enum::enum_integer(tokens.status().code());
         }
 
         // show lexical analysis result
         if (lexical_only) {
-            if (output_file.empty()) {
-                for (const auto& token : tokens.value()) {
-                    std::cout << "File " << input_files[i] << " Line "
-                              << std::setw(5) << token.loc().first
-                              << std::setw(0) << " Token " << std::setw(3)
-                              << magic_enum::enum_integer(token.Type())
-                              << std::setw(0) << " Text " << token.to_str(true)
-                              << std::endl;
+            try {
+                if (output_file.empty()) {
+                    for (const auto& token : tokens.value()) {
+                        std::cout << "File " << input_files[i] << " Line " << std::setw(5)
+                                  << token.loc().first << std::setw(0) << " Token "
+                                  << std::setw(3)
+                                  << magic_enum::enum_integer(token.type())
+                                  << std::setw(0) << " Text " << token.to_str(true)
+                                  << std::endl;
+                    }
+                } else {
+                    std::fstream outfile(output_file, std::fstream::out);
+                    for (const auto& token : tokens.value()) {
+                        outfile << "File " << input_files[i] << " Line " << std::setw(5)
+                                << token.loc().first << std::setw(0) << " Token "
+                                << std::setw(3) << magic_enum::enum_integer(token.type())
+                                << std::setw(0) << " Text " << token.to_str(true)
+                                << std::endl;
+                    }
+                    outfile.close();
                 }
-            } else {
-                std::fstream outfile(output_file, std::fstream::out);
-                for (const auto& token : tokens.value()) {
-                    outfile << "File " << input_files[i] << " Line "
-                            << std::setw(5) << token.loc().first << std::setw(0)
-                            << " Token " << std::setw(3)
-                            << magic_enum::enum_integer(token.Type())
-                            << std::setw(0) << " Text " << token.to_str(true)
-                            << std::endl;
-                }
-                outfile.close();
+            } catch (const std::exception& e) {
+                DLOG(ERROR) << "Lexical analysis failed to print output: " << e.what();
+                return magic_enum::enum_integer(hzcc::StatusCode::kInternal);
             }
+
             return 0;
         }
 

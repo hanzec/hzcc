@@ -31,7 +31,7 @@ StatusOr<ast::StmtPtr> ForStatement::parse_impl(SyntaxCtx context,
 
     // check first token is for
     auto for_loc = tokens.peek().loc();
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kFor, tokens);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::For, tokens);
 
     // check next token is (
     auto left_paren_loc = tokens.peek().loc();
@@ -44,7 +44,7 @@ StatusOr<ast::StmtPtr> ForStatement::parse_impl(SyntaxCtx context,
     context->enter_scope();
 
     // parse initializer
-    if (tokens.peek().Type() != TokenType::SemiColon) {
+    if (tokens.peek().type() != TokenType::SemiColon) {
         HZCC_CHECK_OR_ASSIGN(initializer,  // NOLINT
                              Parser::Parse<ast::Stmt>(context, tokens));
         for_node->set_init(std::move(initializer));
@@ -54,7 +54,7 @@ StatusOr<ast::StmtPtr> ForStatement::parse_impl(SyntaxCtx context,
     }
 
     // parse condition
-    if (tokens.peek().Type() != TokenType::SemiColon) {
+    if (tokens.peek().type() != TokenType::SemiColon) {
         HZCC_CHECK_OR_ASSIGN(condition,  // NOLINT
                              Parser::Parse<ast::Stmt>(context, tokens))
         for_node->set_cond(std::move(condition));
@@ -64,7 +64,7 @@ StatusOr<ast::StmtPtr> ForStatement::parse_impl(SyntaxCtx context,
     }
 
     // parse increment
-    if (tokens.peek().Type() != TokenType::RParentheses) {
+    if (tokens.peek().type() != TokenType::RParentheses) {
         HZCC_CHECK_OR_ASSIGN(increment,  // NOLINT
                              Parser::Parse<ast::Stmt>(context, tokens));
         for_node->set_incr(std::move(increment));
@@ -74,7 +74,7 @@ StatusOr<ast::StmtPtr> ForStatement::parse_impl(SyntaxCtx context,
     }
 
     // parse body and return
-    if (tokens.peek().Type() != TokenType::SemiColon) {
+    if (tokens.peek().type() != TokenType::SemiColon) {
         HZCC_CHECK_OR_ASSIGN(body,  // NOLINT
                              utils::ParseBodyStatement(context, false, tokens))
         for_node->set_body(std::move(body));

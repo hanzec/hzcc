@@ -59,6 +59,11 @@ endif ()
 # set thrid-party base path
 set(THIRD_PARTY_BASE_PATH ${CMAKE_SOURCE_DIR}/third_party)
 
+# print warning if inlining is applied
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-Winline)
+endif ()
+
 ###############################################################################
 ## Prepare VCPKG ##############################################################
 ###############################################################################

@@ -32,8 +32,8 @@ enum class PrimitiveType {
     kBool,
     kComplex,
     kImaginary,
-    kLonglong,
-    kLong_double,
+    Signed,
+    Unsigned,
 };
 
 enum class LiteralType {
@@ -128,21 +128,32 @@ constexpr std::array<const char *, KLiteralsTypeTableSize> kLiteralsSymbol{
 constexpr const std::array<const char[10], magic_enum::enum_count<Qualifier>()>
     kQualifierTable{"const", "volatile", "restrict", "_Atomic"};
 
-constexpr const std::array<const char[15],
-                           magic_enum::enum_count<PrimitiveType>()>
-    kPrimitiveTypeTable{"int",     "char",      "float",    "double",
-                        "void",    "long",      "short",    "bool",
-                        "complex", "imaginary", "longlong", "long double"};
+constexpr const std::array<const char[15], magic_enum::enum_count<PrimitiveType>()>
+    kPrimitiveTypeTable{"int",     "char",      "float",     "double",
+                        "void",    "long",      "short",     "bool",
+                        "complex", "imaginary", "long long", "long double"};
 
-constexpr const int kDoubleCharSymbolTableSize = 19;
-constexpr std::array<const char *, kDoubleCharSymbolTableSize>
-    kDoubleCharSymbol{
-        "==", "!=", ">=", "<=", "++", "--", "||", "&&", "<<", ">>",
-        "+=", "-=", "*=", "/=", "->", "%=", "&=", "|=", "^="};
+constexpr const std::array<const char[4],                                 // NOLINT
+                           magic_enum::enum_integer(TokenType::Op_END) -  // NOLINT
+                               magic_enum::enum_integer(TokenType::Op_START) +
+                               1>  // NOLINT
+    kOperatorTable{"==", "!=", ">=", "<=", "++", "--",  "||",  "&&", "<<", ">>", "+=",
+                   "-=", "*=", "/=", "->", "%=", ">>=", ">>=", "&=", "^=", "|="};
+
+constexpr const std::array<const char *,
+                           magic_enum::enum_integer(TokenType::TypeSpec_END) -  // NOLINT
+                               magic_enum::enum_integer(TokenType::TypeSpec_START) + 1>
+    kTypeSpecifier{"int",    "char",     "float", "double",   "void",
+                   "long",   "short",    "_Bool", "_Complex", "_Imaginary",
+                   "signed", "unsigned", "auto"};
+
+constexpr const std::array<const char *, 20> kKeywordTable{
+    "break",  "case",    "continue", "default", "do",       "else",    "enum",
+    "extern", "for",     "goto",     "if",      "return",   "sizeof",  "struct",
+    "switch", "typedef", "union",    "while",   "_Alignas", "_Alignof"};
 }  // namespace
 
-ALWAYS_INLINE constexpr PrimitiveType to_primitive_type(
-    const std::string &type) {
+ALWAYS_INLINE constexpr PrimitiveType to_primitive_type(const std::string_view type) {
     if (type == "int") {
         return PrimitiveType::kInt;
     } else if (type == "char") {
@@ -164,9 +175,9 @@ ALWAYS_INLINE constexpr PrimitiveType to_primitive_type(
     } else if (type == "imaginary") {
         return PrimitiveType::kImaginary;
     } else if (type == "longlong") {
-        return PrimitiveType::kLonglong;
+        return PrimitiveType::Signed;
     } else if (type == "long_double") {
-        return PrimitiveType::kLong_double;
+        return PrimitiveType::Unsigned;
     } else {
         LOG(FATAL) << "Unknown primitive type: " << type;
     }
@@ -174,13 +185,13 @@ ALWAYS_INLINE constexpr PrimitiveType to_primitive_type(
 
 ALWAYS_INLINE constexpr Qualifier to_attr(TokenType attr) {
     switch (attr) {
-        case TokenType::kConst:
+        case TokenType::Const:
             return Qualifier::CONST;
-        case TokenType::kVolatile:
+        case TokenType::Volatile:
             return Qualifier::VOLATILE;
-        case TokenType::kRestrict:
+        case TokenType::Restrict:
             return Qualifier::RESTRICT;
-        case TokenType::kAtomic:
+        case TokenType::Atomic:
             return Qualifier::ATOMIC;
         default:
             LOG(FATAL) << "Token: " << magic_enum::enum_name(attr)
@@ -192,30 +203,13 @@ ALWAYS_INLINE constexpr auto to_string(Qualifier attr) -> const char (&)[10] {
     return kQualifierTable[magic_enum::enum_integer(attr)];
 }
 
-ALWAYS_INLINE constexpr auto to_string(PrimitiveType attr) -> const
-    char (&)[15] {
+ALWAYS_INLINE constexpr auto to_string(PrimitiveType attr) -> const char (&)[15] {
     return kPrimitiveTypeTable[magic_enum::enum_integer(attr)];
 }
 
-ALWAYS_INLINE constexpr auto to_string(ArithmeticType attr) -> const
-    char (&)[2] {
+ALWAYS_INLINE constexpr auto to_string(ArithmeticType attr) -> const char (&)[2] {
     return kArithmeticStr[magic_enum::enum_integer(attr)];
 }
 
-ALWAYS_INLINE std::string to_string(TokenType tokenType) {
-    if ((int)tokenType >= 401 && (int)tokenType <= 500) {
-        return parser_common::kKeywordTable[magic_enum::enum_integer(
-                                                tokenType) -
-                                            401];
-    } else if ((int)tokenType >= 351 && (int)tokenType <= 400) {
-        return kDoubleCharSymbol[magic_enum::enum_integer(tokenType) - 351];
-    } else if ((int)tokenType <= 0xFF) {
-        return std::string(1, (char)tokenType);  // NOLINT
-    } else if ((int)tokenType >= 301 && (int)tokenType <= 306) {
-        return kLiteralsSymbol[magic_enum::enum_integer(tokenType) - 301];
-    } else {
-        return "Unknown";
-    }
-}
 }  // namespace hzcc
 #endif  // HZCC_ENUMS_H

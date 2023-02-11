@@ -160,7 +160,7 @@
 //        return ::hzcc::parser_common::kKeywordTable[tokenType - 401];
 //
 //    } else if (tokenType >= 351 && tokenType <= 400) {
-//        return parser_common::kDoubleCharSymbol[tokenType - 351];
+//        return parser_common::kOperatorTable[tokenType - 351];
 //
 //    } else if (tokenType <= 0xFF) {
 //        return std::string(1, (char)tokenType);  // NOLINT

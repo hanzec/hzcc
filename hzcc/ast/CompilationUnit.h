@@ -77,15 +77,19 @@ class CompilationUnit {
     [[nodiscard]] std::optional<QualTypePtr> ret_type() const;
 
     /**---------------------------------------------------------------
-     * #################   Type related Functions  ####################
+     * #################   type related Functions  ####################
      *--------------------------------------------------------------- */
+
+    bool has_type(TokenType type);
+
     bool has_type(std::string_view name);
 
+
     QualTypePtr get_type(std::string_view name,
-                         std::list<Qualifier> qualifiers = {});
+                         const std::vector<Qualifier>& qualifiers = {});
 
     QualTypePtr add_struct_type(std::string_view struct_name,
-                                std::list<Qualifier> attr_list = {});
+                                const std::vector<Qualifier>& attr_list = {});
 
     /** ---------------------------------------------------------------
      * ## Variable related Functions                              ###

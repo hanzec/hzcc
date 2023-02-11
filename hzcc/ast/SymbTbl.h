@@ -48,11 +48,11 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
      * first, if not found, then we will search the upper symbol table. Until
      * reaching root symbol table.
      *
-     * @return std::shared_ptr<Type> The type with the given to_str or nullptr
+     * @return std::shared_ptr<type> The type with the given to_str or nullptr
      * if not found.
      */
     QualTypePtr get_type(std::string_view name,
-                         const std::list<Qualifier>& qualifiers = {});
+                         const std::vector<Qualifier>& qualifiers = {});
 
     /**
      * @brief Register a type to the symbol table.

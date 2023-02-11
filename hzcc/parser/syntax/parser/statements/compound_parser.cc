@@ -33,7 +33,7 @@ StatusOr<ast::StmtPtr> CompoundStatement::parse_impl(SyntaxCtx context,
     auto block_node = std::make_unique<ast::CompoundStmt>(prev_token.loc());
 
     // parse statements
-    while (!tokens.empty() && tokens.peek().Type() != TokenType::RBrace) {
+    while (!tokens.empty() && tokens.peek().type() != TokenType::RBrace) {
         HZCC_CHECK_OR_ASSIGN(stmt,  // NOLINT
                              Parser::Parse<ast::Stmt>(context, tokens))
         block_node->add_stmt(std::move(stmt));

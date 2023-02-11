@@ -12,7 +12,7 @@ TRICKY-IDENTS
 
 //RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
-//CHECK: File __FILE__ Line     1 Token 306 Text tricky_idents
+//CHECK:      File __FILE__ Line     1 Token 306 Text tricky_idents
 //CHECK-NEXT: File __FILE__ Line     2 Token 306 Text _
 //CHECK-NEXT: File __FILE__ Line     3 Token 306 Text __
 //CHECK-NEXT: File __FILE__ Line     4 Token 306 Text ___

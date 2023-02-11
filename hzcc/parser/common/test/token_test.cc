@@ -23,7 +23,7 @@ TEST(PARSER_COMMON_TOKEN, construct_one_with_string_test) {  // NOLINT
 
     // token should be constructed
     EXPECT_EQ(new_token->to_str(), "test");
-    EXPECT_EQ(new_token->Type(), kIdentity);
+    EXPECT_EQ(new_token->type(), kIdentity);
     EXPECT_EQ(new_token->loc(), std::make_pair(0, 0));
 
     delete new_token;
@@ -42,7 +42,7 @@ TEST(PARSER_COMMON_TOKEN, construct_one_without_string_test) {  // NOLINT
 
     // token should be constructed
     EXPECT_EQ(new_token->to_str(), "+");
-    EXPECT_EQ(new_token->Type(), kAdd);
+    EXPECT_EQ(new_token->type(), kAdd);
     EXPECT_EQ(new_token->loc(), std::make_pair(0, 0));
 
     delete new_token;
@@ -63,7 +63,7 @@ TEST(PARSER_COMMON_TOKEN, construct_two_with_same_string_test) {  // NOLINT
 
     // token should be constructed
     EXPECT_EQ(new_token_0->to_str(), "test");
-    EXPECT_EQ(new_token_0->Type(), kIdentity);
+    EXPECT_EQ(new_token_0->type(), kIdentity);
     EXPECT_EQ(new_token_0->loc(), std::make_pair(0, 0));
 
     auto* new_token_1 = new Token("test", kIdentity, 0, 1);
@@ -75,7 +75,7 @@ TEST(PARSER_COMMON_TOKEN, construct_two_with_same_string_test) {  // NOLINT
 
     // token should be constructed
     EXPECT_EQ(new_token_1->to_str(), "test");
-    EXPECT_EQ(new_token_1->Type(), kIdentity);
+    EXPECT_EQ(new_token_1->type(), kIdentity);
     EXPECT_EQ(new_token_1->loc(), std::make_pair(0, 1));
 
     delete new_token_0;
@@ -107,7 +107,7 @@ TEST(PARSER_COMMON_TOKEN, construct_three_string_test) {  // NOLINT
 
     // token should be constructed
     EXPECT_EQ(new_token_0->to_str(), "test");
-    EXPECT_EQ(new_token_0->Type(), kIdentity);
+    EXPECT_EQ(new_token_0->type(), kIdentity);
     EXPECT_EQ(new_token_0->loc(), std::make_pair(0, 0));
 
     auto* new_token_1 = new Token("test_other", kIdentity, 0, 1);
@@ -119,7 +119,7 @@ TEST(PARSER_COMMON_TOKEN, construct_three_string_test) {  // NOLINT
 
     // token should be constructed
     EXPECT_EQ(new_token_1->to_str(), "test_other");
-    EXPECT_EQ(new_token_1->Type(), kIdentity);
+    EXPECT_EQ(new_token_1->type(), kIdentity);
     EXPECT_EQ(new_token_1->loc(), std::make_pair(0, 1));
 
     auto* new_token_2 = new Token("test", kIdentity, 0, 1);
@@ -131,7 +131,7 @@ TEST(PARSER_COMMON_TOKEN, construct_three_string_test) {  // NOLINT
 
     // token should be constructed
     EXPECT_EQ(new_token_2->to_str(), "test");
-    EXPECT_EQ(new_token_2->Type(), kIdentity);
+    EXPECT_EQ(new_token_2->type(), kIdentity);
     EXPECT_EQ(new_token_2->loc(), std::make_pair(0, 1));
 
     delete new_token_0;

@@ -11,7 +11,7 @@ set_property(TARGET hzcc PROPERTY CXX_STANDARD_REQUIRED ON)
 # testing target
 if (UNIT_TESTING MATCHES "ON")
     message(STATUS "Enable testing...")
-    add_executable(hzcc_test)
+    add_executable(hzcc_test parser/common/test/keyword_test.cc)
 
     # required cpp 17 since hzcc require cpp 17
     set_property(TARGET hzcc_test PROPERTY CXX_STANDARD 17)
@@ -34,6 +34,10 @@ endif ()
 ###############################################################################
 ## Shared Dependency ##########################################################
 ###############################################################################
+# google re2
+find_package(re2 CONFIG REQUIRED)
+target_link_libraries(hzcc re2::re2)
+
 # google log
 find_package(glog CONFIG REQUIRED)
 target_link_libraries(hzcc glog::glog)

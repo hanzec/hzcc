@@ -11,7 +11,7 @@ class Expr;
 class QualType;
 
 /**
- * @class Type
+ * @class type
  * @brief This class is the base class of all language types.
  */
 class Type : public std::enable_shared_from_this<Type> {
@@ -89,8 +89,8 @@ class QualType : public std::enable_shared_from_this<QualType> {
      * @param base_type The base type of the qualifier type.
      * @param attrs The attributes of the qualifier type.
      */
-    QualType(std::shared_ptr<Type> base_type,         // NOLINT
-             const std::list<Qualifier>& attrs = {})  // NOLINT
+    QualType(std::shared_ptr<Type> base_type,           // NOLINT
+             const std::vector<Qualifier>& attrs = {})  // NOLINT
         : _base_type(std::move(base_type)) {
         for (const auto& attr : attrs) {
             _qualifier[magic_enum::enum_integer(attr)] = true;
@@ -101,7 +101,7 @@ class QualType : public std::enable_shared_from_this<QualType> {
      * @brief Get QualType with same base type but different qualifiers.
      * @return TypePtr The base type of the qualifier type.
      */
-    std::shared_ptr<QualType> type_of(const std::list<Qualifier>& attrs) const {
+    std::shared_ptr<QualType> type_of(const std::vector<Qualifier>& attrs) const {
         auto ret = std::make_shared<QualType>(_base_type);
         for (const auto& attr : attrs) {
             ret->_qualifier[magic_enum::enum_integer(attr)] = true;
@@ -245,11 +245,9 @@ class PointerType : public Type {
 
     /**
      * @brief Get the base type of the pointer type.
-     * @return std::shared_ptr<Type> The base type of the pointer type.
+     * @return std::shared_ptr<type> The base type of the pointer type.
      */
-    [[nodiscard]] QualTypePtr base_type() const {
-        return _base_type;
-    };
+    [[nodiscard]] QualTypePtr base_type() const { return _base_type; };
 
     /**
      * @brief Get the declare to_str of the type.
@@ -278,7 +276,7 @@ class IRecordType : public Type {
     explicit IRecordType(TypeCategory typeCategory) : Type(typeCategory) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
         LOG_IF(FATAL, typeCategory != TypeCategory::Struct ||
-                                   typeCategory != TypeCategory::Union)
+                          typeCategory != TypeCategory::Union)
             << "The type category must be Struct or Union if you want to "
                "construct a IRecordType.";
 #endif
@@ -351,6 +349,16 @@ static QualTypePtr GetNumericalTypeOf() {
     return char_type;
 }
 
+template <TokenType type>
+static QualTypePtr GetNumericalTypeOf() {
+    static_assert(
+        type >= TokenType::TypeSpec_START && type <= TokenType::TypeSpec_END,
+        "The type must be a numerical type.");
+    return GetNumericalTypeOf<magic_enum::enum_cast<PrimitiveType>(
+        magic_enum::enum_integer(type) -
+        magic_enum::enum_integer(TokenType::TypeSpec_START))>();
+}
+
 ALWAYS_INLINE QualTypePtr GetNumericalTypeOf(PrimitiveType type) {
     switch (type) {
         case PrimitiveType::kInt:
@@ -373,11 +381,29 @@ ALWAYS_INLINE QualTypePtr GetNumericalTypeOf(PrimitiveType type) {
             return GetNumericalTypeOf<PrimitiveType::kComplex>();
         case PrimitiveType::kImaginary:
             return GetNumericalTypeOf<PrimitiveType::kImaginary>();
-        case PrimitiveType::kLonglong:
-            return GetNumericalTypeOf<PrimitiveType::kLonglong>();
-        case PrimitiveType::kLong_double:
-            return GetNumericalTypeOf<PrimitiveType::kLong_double>();
+        case PrimitiveType::Signed:
+            return GetNumericalTypeOf<PrimitiveType::Signed>();
+        case PrimitiveType::Unsigned:
+            return GetNumericalTypeOf<PrimitiveType::Unsigned>();
     }
+}
+
+ALWAYS_INLINE QualTypePtr GetNumericalTypeOf(TokenType type) {
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+    auto type_cast = magic_enum::enum_cast<PrimitiveType>(
+        magic_enum::enum_integer(type) -
+        magic_enum::enum_integer(TokenType::TypeSpec_START));
+
+    LOG_IF(FATAL, !type_cast.has_value())
+        << "The type must be a numerical type.";
+    return GetNumericalTypeOf(type_cast.value());
+#elif
+    return GetNumericalTypeOf(
+        magic_enum::enum_cast<PrimitiveType>(
+            magic_enum::enum_integer(type) -
+            magic_enum::enum_integer(TokenType::TypeSpec_START))
+            .value_or(PrimitiveType::kVoid));
+#endif
 }
 
 template <PrimitiveType T>

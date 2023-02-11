@@ -50,13 +50,12 @@ class CachedList : protected std::list<T> {
      * @brief peek the next token
      * @return the next token
      */
-    [[nodiscard]] T peek() {
-        while (_filter(this->front())) {
-            auto token = this->front();
-            this->pop_front();
-            _cached_attributes.push_back(token);
+    [[nodiscard]] T peek() const{
+        auto token = this->front();
+        while (_filter(token)) {
+            token = this->front();
         }
-        return this->front();
+        return token;
     };
 
     /**

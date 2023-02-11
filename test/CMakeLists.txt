@@ -3,8 +3,8 @@
 ###############################################################################
 ProcessorCount(N)
 add_custom_target(hzcc_e2e_test
-                  DEPENDS hzcc HZCC_FileCheck
-                  COMMAND ${CMAKE_CTEST_COMMAND} --rerun-failed --output-on-failure)
+        DEPENDS hzcc HZCC_FileCheck
+        COMMAND ${CMAKE_CTEST_COMMAND} --rerun-failed --output-on-failure)
 
 # set-up xunit output folder
 set(TEST_OUTPUT_FOLDER "${CMAKE_CURRENT_BINARY_DIR}/test_output")
@@ -54,8 +54,8 @@ function(add_lit_test_set name directory)
     # add test targets
     set(TEST_TARGET_OUTPUT_FILE "${TEST_OUTPUT_FOLDER}/${name}.xunit.xml")
     add_test(NAME ${name}
-             WORKING_DIRECTORY ${CURRENT_TEST_ROOT}
-             COMMAND ${Python3_EXECUTABLE} ${LLVM_LIT_EXECUTABLE}  --timeout 5 --xunit-xml-output "${TEST_TARGET_OUTPUT_FILE}" ${CURRENT_TEST_ROOT})
+            WORKING_DIRECTORY ${CURRENT_TEST_ROOT}
+            COMMAND ${Python3_EXECUTABLE} ${LLVM_LIT_EXECUTABLE} --no-progress-bar --timeout 5 --xunit-xml-output "${TEST_TARGET_OUTPUT_FILE}" ${CURRENT_TEST_ROOT})
 endfunction()
 
 ###############################################################################

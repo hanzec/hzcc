@@ -10,4 +10,4 @@ const
 //CHECK-NEXT: File __FILE__ Line     2 Token 306 Text co
 //CHECK-NEXT: File __FILE__ Line     3 Token 306 Text con
 //CHECK-NEXT: File __FILE__ Line     4 Token 306 Text cons
-//CHECK-NEXT: File __FILE__ Line     5 Token 401 Text const
+//CHECK-NEXT: File __FILE__ Line     5 Token 400 Text const

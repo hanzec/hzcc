@@ -34,9 +34,9 @@ constexpr int DEBUG_INFO = 6;
  */
 #define HZCC_PRETTY_PRINT_TOKEN(token)                                        \
     std::setfill(' ') << "\033[0;33m[" << std::setw(8) << std::right          \
-                      << ((int)(token).Type() <= 0xFF                         \
+                      << ((int)(token).type() <= 0xFF                         \
                               ? "Symbol"                                      \
-                              : "" + ::hzcc::to_string((token).Type()))       \
+                              : magic_enum::enum_name((token).type()))        \
                       << "]<" << std::setw(3) << (token).loc().first + 1      \
                       << "," << std::setw(3) << (token).loc().second << ">"   \
                       << std::setw(-1) << ":@ " << std::left << std::setw(10) \
@@ -85,7 +85,7 @@ enum class CompileErrorLevel {
 
 namespace message {
 
-void setFilename(const std::string& filename);
+void set_current_file_name(const std::string& filename);
 
 void print_message(CompileErrorLevel level,             // NOLINT
                    std::string_view errorMessage,       // NOLINT

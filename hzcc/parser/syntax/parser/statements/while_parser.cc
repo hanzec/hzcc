@@ -28,7 +28,7 @@ StatusOr<ast::StmtPtr> WhileStatement::parse_impl(SyntaxCtx context,
 
     // check if the next token is [while]
     auto while_loc = tokens.peek().loc();
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kWhile, tokens);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::While, tokens);
 
     // parse condition
     HZCC_CHECK_OR_ASSIGN(condition,  // NOLINT

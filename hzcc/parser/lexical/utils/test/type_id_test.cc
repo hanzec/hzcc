@@ -49,18 +49,18 @@ TEST(LEXICAL_UTILS_TOKEN_ID, double_char) {  // NOLINT
 }
 
 TEST(LEXICAL_UTILS_TOKEN_ID, special_keywords) {  // NOLINT
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("const"), kConst);
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("struct"), kStruct);
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("for"), kFor);
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("while"), kWhile);
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("if"), kIf);
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("else"), kElse);
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("return"), kReturn);
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("break"), kBreak);
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("continue"), kContinue);
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("switch"), kSwitch);
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("case"), kCase);
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("default"), kDefault);
-    ASSERT_EQ(SymbolUtils::GetStringKeywordType("do"), kDo);
+    ASSERT_EQ(SymbolUtils::is_keyword("const"), kConst);
+    ASSERT_EQ(SymbolUtils::is_keyword("struct"), kStruct);
+    ASSERT_EQ(SymbolUtils::is_keyword("for"), kFor);
+    ASSERT_EQ(SymbolUtils::is_keyword("while"), kWhile);
+    ASSERT_EQ(SymbolUtils::is_keyword("if"), kIf);
+    ASSERT_EQ(SymbolUtils::is_keyword("else"), kElse);
+    ASSERT_EQ(SymbolUtils::is_keyword("return"), kReturn);
+    ASSERT_EQ(SymbolUtils::is_keyword("break"), kBreak);
+    ASSERT_EQ(SymbolUtils::is_keyword("continue"), kContinue);
+    ASSERT_EQ(SymbolUtils::is_keyword("switch"), kSwitch);
+    ASSERT_EQ(SymbolUtils::is_keyword("case"), kCase);
+    ASSERT_EQ(SymbolUtils::is_keyword("default"), kDefault);
+    ASSERT_EQ(SymbolUtils::is_keyword("do"), kDo);
 }
 }  // namespace hzcc::lexical

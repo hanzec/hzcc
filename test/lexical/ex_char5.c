@@ -2,6 +2,7 @@
 'a'
 'aa
 
-//RUN: %mycc --flexical_only -fno_color "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
+//RUN: %mycc --flexical_only --fno_color "%s" 2>&1 | %FileCheck --test_rules="%s" --fsymbol_replacement
 
-//CHECK: unclosed char literal
+//CHECK: __FILE__:3:0: error: unclosed char literal
+//CHECK-NEXT: 3 | 'aa

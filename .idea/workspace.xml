@@ -20,10 +20,103 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2a186403-fc0f-43d8-a82c-50cf70816857" name="Changes" comment="Changes">
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/.idea/cmake.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cmake.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vcpkg.json" beforeDir="false" afterPath="$PROJECT_DIR$/vcpkg.json" afterDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/hzcc/parser/common/test/keyword_test.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.clang-format" beforeDir="false" afterPath="$PROJECT_DIR$/.clang-format" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/developers.tex" beforeDir="false" afterPath="$PROJECT_DIR$/doc/developers.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/figure/frontend_structure.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/CompilationUnit.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/SymbTbl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/SymbTbl.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/SymbTbl.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/SymbTbl.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/expr/Expr.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/expr/Expr.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/type/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/type/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/ast/type/Type.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/ast/type/Type.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/enums.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/enums.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/main.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/main.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/options.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/options.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/Token.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/Token.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/Token.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/Token.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/keywords.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/keywords.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/name_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/name_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/test/token_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/test/token_test.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/common/token_type.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/common/token_type.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/lexical_limit.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/test/parser_comment_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/test/parser_comment_test.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/test/parser_number_literal_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/test/parser_number_literal_test.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/test/parser_string_literal_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/test/parser_string_literal_test.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/utils/keywords_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/utils/keywords_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/utils/symbol_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/utils/symbol_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/lexical/utils/test/type_id_test.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/lexical/utils/test/type_id_test.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/common_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/common_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/decl_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/decl_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statement_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statement_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/compound_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/compound_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/do_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/do_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/for_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/for_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/if_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/if_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/while_parser.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/parser/statements/while_parser.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/parser/syntax/syntax_impl.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/parser/syntax/syntax_impl.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/utils/cached_list.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/cached_list.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/utils/logging.cc" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/logging.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/utils/logging.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/logging.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hzcc/utils/status/status.h" beforeDir="false" afterPath="$PROJECT_DIR$/hzcc/utils/status/status.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/ex_char3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_char3.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/ex_char4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_char4.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/ex_char5.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_char5.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/ex_int1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_int1.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/ex_int4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_int4.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/ex_real3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_real3.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/ex_real4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_real4.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/ex_str4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_str4.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/ex_trunc3.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_trunc3.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/ex_trunc4.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/ex_trunc4.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/extra.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/extra.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/hello.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/hello.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/invalid1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/invalid1.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/invalid2.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/invalid2.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/invalid2.c.error1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/invalid2.c.extra.error1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_01.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_01.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_02.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_02.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_03.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_03.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_04.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_04.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_05.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_05.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_06.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_06.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_07.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_07.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_08.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_08.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_09.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_09.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_10.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_10.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_11.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_11.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_12.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_12.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_13.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_13.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_14.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_14.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/keywords_15.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/keywords_15.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/literals_05.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_05.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/literals_09.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_09.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/literals_09.c.error1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/literals_09.c.extra.error1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/literals_12.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/literals_12.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/literals_12.c.error1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/literals_12.c.extra.error1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/pi.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/pi.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/symbols_07.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/symbols_07.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/test1.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/test1.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/tricky.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/tricky.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lexical/unclosed_comment.c" beforeDir="false" afterPath="$PROJECT_DIR$/test/lexical/unclosed_comment.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/lit.site.cfg.py.in" beforeDir="false" afterPath="$PROJECT_DIR$/test/lit.site.cfg.py.in" afterDir="false" />
+>>>>>>> 4f9b6b0 (fix to pass lexical test)
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +150,7 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< HEAD
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
@@ -77,8 +171,56 @@
     "settings.editor.selected.configurable": "CMakeSettings",
     "structure.view.defaults.are.configured": "true",
     "vue.rearranger.settings.migration": "true"
+=======
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;cf.advertisement.text.overridden&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;ctest.advertisement.all.test.configuration.is.created&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/hanzech/hzcc&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+>>>>>>> 4f9b6b0 (fix to pass lexical test)
   }
-}]]></component>
+}</component>
+  <component name="RdControllerToolWindowsLayoutState" isNewUi="true">
+    <layout>
+      <window_info id="Space Code Reviews" />
+      <window_info id="Bookmarks" />
+      <window_info id="Commit_Guest" show_stripe_button="false" />
+      <window_info id="Pull Requests" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.17825069" />
+      <window_info id="Commit" order="1" weight="0.25" />
+      <window_info id="Structure" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Python Packages" />
+      <window_info anchor="bottom" id="CMake" />
+      <window_info anchor="bottom" id="File Transfer" />
+      <window_info anchor="bottom" id="Database Changes" />
+      <window_info anchor="bottom" id="TypeScript" />
+      <window_info anchor="bottom" id="Services" />
+      <window_info anchor="bottom" id="Vcpkg" />
+      <window_info anchor="bottom" id="clangd" />
+      <window_info anchor="bottom" id="Version Control" order="0" />
+      <window_info anchor="bottom" id="Problems View" order="2" weight="0.33014113" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.33014113" />
+      <window_info anchor="right" id="make" />
+      <window_info anchor="right" content_ui="combo" id="Notifications" order="0" weight="0.25" />
+      <window_info anchor="right" id="Database" order="1" weight="0.25" />
+    </layout>
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="\\wsl$\Ubuntu\home\hanzech\Projects\hzcc\hzcc\ast\expr\grammar" />
@@ -88,20 +230,30 @@
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\Source\parser\antlr" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\hzcc" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\third_party" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\third_party\FileCheck\effcee\test" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc\third_party\FileCheck\effcee" />
       <recent name="\\wsl$\Ubuntu\home\hanzech\hzcc" />
-      <recent name="\\wsl$\Ubuntu\home\hanzech\Projects\hzcc\hzcc" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake 应用程序.hzcc">
+  <component name="RunManager" selected="CMake 应用程序.hzcc_e2e_test">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
+<<<<<<< HEAD
     <configuration name="hzcc_test" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="hzcc_test" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="hzcc_test" TEST_MODE="SUITE_TEST">
+=======
+    <configuration name="PARSER_COMMON_TOKENTYPE.literal" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="hzcc_test" CONFIG_NAME="Debug-WSL" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="hzcc_test" TEST_CLASS="PARSER_COMMON_TOKENTYPE" TEST_METHOD="literal" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="hzcc_test" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="hzcc_test" CONFIG_NAME="Debug-WSL" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="hzcc_test" TEST_MODE="SUITE_TEST">
+>>>>>>> 4f9b6b0 (fix to pass lexical test)
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
         <option name="BeforeTestRunTask" enabled="true" />
@@ -122,7 +274,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+<<<<<<< HEAD
     <configuration name="hzcc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="--flexical_only test/lexical/comments_2.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="hzcc" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="hzcc">
+=======
+    <configuration name="hzcc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="--flexical_only test/lexical/unclosed_comment.c" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="hzcc" TARGET_NAME="hzcc" CONFIG_NAME="Debug-WSL" RUN_TARGET_PROJECT_NAME="hzcc" RUN_TARGET_NAME="hzcc">
+>>>>>>> 4f9b6b0 (fix to pass lexical test)
       <envs>
         <env name="GLOG_logtostderr" value="1" />
         <env name="GLOG_v" value="10" />
@@ -143,14 +299,28 @@
       </method>
     </configuration>
     <list>
+<<<<<<< HEAD
       <item itemvalue="CMake 应用程序.doc_doxygen" />
       <item itemvalue="CMake 应用程序.documentation" />
       <item itemvalue="CMake 应用程序.hzcc" />
       <item itemvalue="CMake 应用程序.hzcc_e2e_test" />
       <item itemvalue="CMake 应用程序.HZCC_FileCheck" />
+=======
+      <item itemvalue="CMake 应用程序.hzcc" />
+      <item itemvalue="CMake 应用程序.hzcc_e2e_test" />
+      <item itemvalue="CMake 应用程序.HZCC_FileCheck" />
+      <item itemvalue="CMake 应用程序.doc_doxygen" />
+      <item itemvalue="CMake 应用程序.documentation" />
+>>>>>>> 4f9b6b0 (fix to pass lexical test)
       <item itemvalue="CTest 应用程序.所有 CTest" />
       <item itemvalue="Google Test.hzcc_test" />
+      <item itemvalue="Google Test.PARSER_COMMON_TOKENTYPE.literal" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Google Test.PARSER_COMMON_TOKENTYPE.literal" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -277,12 +447,32 @@
       <workItem from="1675635123225" duration="395000" />
       <workItem from="1675635527329" duration="1250000" />
       <workItem from="1675646927404" duration="95000" />
-      <workItem from="1675647031620" duration="2914000" />
+      <workItem from="1675647031620" duration="2942000" />
+      <workItem from="1675883545254" duration="5000" />
+      <workItem from="1675884049683" duration="65000" />
+      <workItem from="1675884170956" duration="246000" />
+      <workItem from="1675884510577" duration="48000" />
+      <workItem from="1675884842281" duration="534000" />
+      <workItem from="1675893066882" duration="1000" />
+      <workItem from="1675911905550" duration="28000" />
+      <workItem from="1675978990670" duration="325000" />
+      <workItem from="1675979325391" duration="4557000" />
+      <workItem from="1675983898141" duration="46000" />
+      <workItem from="1675983960441" duration="3334000" />
+      <workItem from="1675988998309" duration="5807000" />
+      <workItem from="1676052823094" duration="2744000" />
+      <workItem from="1676055577875" duration="25783000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VCPKGProject">
+    <isAutomaticEditVcpkgJson value="false" />
+    <isAutomaticCheckingOnLaunch value="false" />
+    <isAutomaticFoundErrors value="true" />
+    <isAutomaticFoundErrors value="true" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -300,7 +490,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="CMakeLineBreakpoint">
           <url>file://$PROJECT_DIR$/hzcc/CMakeLists.txt</url>
-          <line>122</line>
+          <line>126</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="CMakeLineBreakpoint">
@@ -324,14 +514,29 @@
           <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc</url>
-          <line>450</line>
-          <option name="timeStamp" value="34" />
+          <url>file://$PROJECT_DIR$/hzcc/utils/logging.cc</url>
+          <line>101</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/hzcc/utils/logging.cc</url>
+          <line>123</line>
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/hzcc/parser/common/Token.cc</url>
+          <line>60</line>
+          <option name="timeStamp" value="55" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc</url>
-          <line>445</line>
-          <option name="timeStamp" value="35" />
+          <line>475</line>
+          <option name="timeStamp" value="58" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/hzcc/parser/lexical/LexicalParser.cc</url>
+          <line>467</line>
+          <option name="timeStamp" value="59" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

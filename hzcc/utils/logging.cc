@@ -28,8 +28,7 @@ constexpr const char* KDisableColor = "\033[0m";
 void custom_prefix_callback(std::ostream& out_stream,  // NOLINT
                             const google::LogMessageInfo& info, void*) {
     // print date with format: YYYY-MM-DD HH:MM:SS
-    out_stream << std::put_time(std::localtime(&info.time.timestamp()), "%F %T")
-               << " ";
+    out_stream << std::put_time(std::localtime(&info.time.timestamp()), "%F %T") << " ";
 
     // print thread id
     out_stream << std::setw(5) << std::left << info.thread_id << " ";
@@ -52,9 +51,8 @@ void custom_prefix_callback(std::ostream& out_stream,  // NOLINT
         }
     }
 
-    out_stream << "[" << info.severity[0] << info.severity[1]
-               << info.severity[2] << info.severity[3] << "] " << std::setw(0)
-               << std::right;
+    out_stream << "[" << info.severity[0] << info.severity[1] << info.severity[2]
+               << info.severity[3] << "] " << std::setw(0) << std::right;
 
     if (!Options::Global_disable_color) {
         out_stream << KDisableColor;
@@ -84,20 +82,24 @@ void print_message(CompileErrorLevel level,              // NOLINT
     static constexpr std::array<const char*, 3> kLevelStringTable = {
         "error: ", "warning: ", "info: "};
 
+#ifdef HZCC_ENABLE_RUNTIME_CHECK
+    LOG_IF(ERROR, CURRENT_FILE_NAME.empty()) << "CURRENT_FILE_NAME is empty";
+    LOG_IF(ERROR, loc.first <= 0) << "line number is less than 1";
+    LOG_IF(ERROR, loc.second <= 0) << "column number is less than 1";
+#endif
+
     if (FsUtils::is_readable(CURRENT_FILE_NAME)) {
         std::fstream file(CURRENT_FILE_NAME);
         file.seekg(std::ios::beg);
-        for (int i = 0; i < loc.first; i++) {
-            file.ignore(std::numeric_limits<std::streamsize>::max(),
-                        file.widen('\n'));
+        for (int i = 0; i < loc.first - 1; i++) {
+            file.ignore(std::numeric_limits<std::streamsize>::max(), file.widen('\n'));
         }
         std::string line;
         std::getline(file, line);
 
         // print colored message header
         // we add 1 to line_info.first because in code we count from 0.
-        std::cerr << CURRENT_FILE_NAME << ":" << loc.first << ":" << loc.second
-                  << ": ";
+        std::cerr << CURRENT_FILE_NAME << ":" << loc.first << ":" << loc.second << ": ";
 
         if (Options::Global_disable_color) {
             std::cerr << kLevelStringTable[magic_enum::enum_integer(level)];
@@ -113,8 +115,7 @@ void print_message(CompileErrorLevel level,              // NOLINT
         // print source code line
         for (int i = 0; i < line.length(); ++i) {
             if (loc.second == i && !Options::Global_disable_color) {
-                std::cerr << kLevelColorTable[magic_enum::enum_integer(level)]
-                          << line[i];
+                std::cerr << kLevelColorTable[magic_enum::enum_integer(level)] << line[i];
             } else {
                 std::cerr << line[i];
             }
@@ -126,8 +127,7 @@ void print_message(CompileErrorLevel level,              // NOLINT
         std::cerr << std::endl;
 
         // print narrow point to error position
-        std::cerr << std::string(loc.second + 10, ' ') << "^" << std::endl
-                  << std::flush;
+        std::cerr << std::string(loc.second + 10, ' ') << "^" << std::endl << std::flush;
 
     } else {
         LOG(FATAL) << "file " + CURRENT_FILE_NAME + " is not readable";

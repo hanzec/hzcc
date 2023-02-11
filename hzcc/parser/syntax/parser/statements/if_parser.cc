@@ -31,7 +31,7 @@ StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
 
     // check first if
     auto if_loc = tokens.peek().loc();
-    HZCC_CheckAndConsume_ReturnErr(TokenType::kIf, tokens);
+    HZCC_CheckAndConsume_ReturnErr(TokenType::If, tokens);
 
     // parsing condition
     auto cond_token = tokens.peek();
@@ -53,10 +53,10 @@ StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
                                                 std::move(body));
 
     // parsing [else] and [else if] stmt
-    while (tokens.peek().Type() == TokenType::kElse) {
+    while (tokens.peek().type() == TokenType::Else) {
         auto prev_else = tokens.pop();  // consume else;
         // if this is single else stmt
-        if (tokens.peek().Type() == TokenType::LBrace) {
+        if (tokens.peek().type() == TokenType::LBrace) {
             if (ifNode->has_else()) {
                 return syntax::utils::TokenErr(
                     prev_else, "If stmt cannot have multiple else statements");
@@ -76,7 +76,7 @@ StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
         }
 
         // else-if statements
-        else if (tokens.peek().Type() == TokenType::kIf) {
+        else if (tokens.peek().type() == TokenType::If) {
             tokens.pop();  // consume if
             HZCC_CheckAndConsume_ReturnErr(TokenType::LParentheses, tokens);
 

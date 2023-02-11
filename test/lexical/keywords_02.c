@@ -7,7 +7,7 @@ t
 
 //RUN: %mycc --flexical_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
-//CHECK: File __FILE__ Line     1 Token 402 Text struct
+//CHECK: File __FILE__ Line     1 Token 513 Text struct
 //CHECK-NEXT: File __FILE__ Line     2 Token 306 Text truct
 //CHECK-NEXT: File __FILE__ Line     3 Token 306 Text ruct
 //CHECK-NEXT: File __FILE__ Line     4 Token 306 Text uct

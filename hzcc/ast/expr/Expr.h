@@ -458,7 +458,7 @@ class LiteralExpr : public Expr {
     [[nodiscard]] QualTypePtr type() const override;
 
     /**
-     * @brief Get the Literal Type object
+     * @brief Get the Literal type object
      * @return the literal type of the literal expression
      */
     [[nodiscard]] LiteralType literal_type() const { return _type; };

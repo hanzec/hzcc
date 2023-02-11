@@ -84,8 +84,41 @@ ALWAYS_INLINE TokenType GetSymbolType(const char str) {
  * @param str the char to be checked.
  * @return true if the char is the special symbol, false otherwise.
  */
-ALWAYS_INLINE bool IsOperator(const char str) {
+ALWAYS_INLINE bool is_operator(const char str) {
     return str == ' ' || TokenType::kUnknown != GetSymbolType(str);
+}
+
+/**
+ * @Brief: Check if the string is the special keyword.
+ * @param keyword the string to be checked.
+ * @return the index of the keyword in keyword table, and -1 if not found.
+ */
+ALWAYS_INLINE TokenType is_keyword(std::string_view keyword) {
+    auto ret = Iserch_table(::hzcc::kKeywordTable, keyword);
+
+    if (__builtin_expect(ret == -1, 0)) {
+        return TokenType::kUnknown;
+    } else {
+        return static_cast<TokenType>(ret +
+                                      magic_enum::enum_integer(TokenType::Keyword_START));
+    }
+}
+
+/**
+ * @Brief: Check if the giving char is the qualifier.
+ * @param str the char to be checked.
+ * @return TokenType::kUnknown if the char is not the qualifier, otherwise
+ * return the corresponding TokenType.
+ */
+constexpr ALWAYS_INLINE TokenType is_qualifier(std::string_view str) {
+    auto ret = Iserch_table(hzcc::kQualifierTable, str);
+
+    if (__builtin_expect(ret == -1, 0)) {
+        return TokenType::kUnknown;
+    } else {
+        return static_cast<TokenType>(ret +
+                                      magic_enum::enum_integer(TokenType::Qual_START));
+    }
 }
 
 /**
@@ -93,8 +126,15 @@ ALWAYS_INLINE bool IsOperator(const char str) {
  * @param str the char to be checked.
  * @return true if the char is the special symbol, false otherwise.
  */
-ALWAYS_INLINE bool IsPrimitiveType(const char *str) {
-    return Iserch_table(::hzcc::parser_common::kPrimitiveTypeTable, str) != -1;
+constexpr ALWAYS_INLINE TokenType is_type_specifier(std::string_view str) {
+    auto ret = Iserch_table(hzcc::kTypeSpecifier, str);
+
+    if (__builtin_expect(ret == -1, 0)) {
+        return TokenType::kUnknown;
+    } else {
+        return static_cast<TokenType>(
+            ret + magic_enum::enum_integer(TokenType::TypeSpec_START));
+    }
 }
 
 /**
@@ -102,14 +142,13 @@ ALWAYS_INLINE bool IsPrimitiveType(const char *str) {
  * @param str the double char to be searched.
  * @return the index of the symbol in symbol table, and -1 if not found.
  */
-ALWAYS_INLINE TokenType GetSymbolType(const char str[2]) {
+ALWAYS_INLINE TokenType GetSymbolType(std::string_view str) {
     // handle if the char is a single char symbol
     if (GetSymbolType(str[1]) == TokenType::kUnknown) {
         return GetSymbolType(str[0]);
     }
 
-    auto ret = Iserch_table(parser_common::kDoubleCharSymbol,
-                            std::string_view(str).substr(0, 2));
+    auto ret = Iserch_table(hzcc::kOperatorTable, str);
 
     if (ret == -1) {
         return GetSymbolType(str[0]);
@@ -189,22 +228,6 @@ ALWAYS_INLINE const char *ASCIIControlCodeToString(const char str) {
             return "\\v";
         default:
             return "";
-    }
-}
-
-/**
- * @Brief: Check if the string is the special keyword.
- * @param keyword the string to be checked.
- * @return the index of the keyword in keyword table, and -1 if not found.
- */
-ALWAYS_INLINE TokenType GetStringKeywordType(const std::string &keyword) {
-    auto ret =
-        Iserch_table(::hzcc::parser_common::kKeywordTable, keyword.c_str());
-
-    if (ret == -1) {
-        return TokenType::kUnknown;
-    } else {
-        return static_cast<TokenType>(ret + 401);
     }
 }
 }  // namespace hzcc::lexical::SymbolUtils
