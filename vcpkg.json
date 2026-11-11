@@ -21,10 +21,6 @@
     "tests": {
       "description": "Build the GoogleTest unit test suite",
       "dependencies": ["gtest"]
-    },
-    "antlr": {
-      "description": "Build the experimental ANTLR frontend",
-      "dependencies": ["antlr4"]
     }
   }
 }

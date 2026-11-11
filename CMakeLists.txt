@@ -12,7 +12,6 @@ endif()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-option(ENABLE_ANTLR "Build the experimental ANTLR frontend" OFF)
 option(UNIT_TESTING "Build GoogleTest unit tests" ON)
 option(E2E_TESTING "Register lit end-to-end tests" OFF)
 option(RUNTIME_CHECK "Enable compiler runtime assertions" ON)

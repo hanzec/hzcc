@@ -3,8 +3,8 @@
 [![CI](https://github.com/hanzec/hzcc/actions/workflows/ci.yml/badge.svg)](https://github.com/hanzec/hzcc/actions/workflows/ci.yml)
 [![Documentation](https://github.com/hanzec/hzcc/actions/workflows/docs.yml/badge.svg)](https://github.com/hanzec/hzcc/actions/workflows/docs.yml)
 
-An experimental C compiler written in C++17. The default build uses a handwritten
-lexer and parser. JVM code generation and optimization code are present in the
+An experimental C compiler written in C++17. A handwritten lexer and parser form
+its only frontend. JVM code generation and optimization code are present in the
 repository but are not currently enabled in the compiler target.
 
 ## Prerequisites
@@ -20,7 +20,6 @@ repository but are not currently enabled in the compiler target.
 - Python 3.10 or newer for source-documentation checks and coverage reports.
 - Doxygen only when building documentation; `pdflatex` and `makeindex` additionally
   enable the developer guide PDF. Graphviz is optional.
-- Java only for the optional, experimental ANTLR parser.
 
 CMake downloads vcpkg automatically on the first configure unless you supply an
 external `CMAKE_TOOLCHAIN_FILE`. The repository pins vcpkg and its package baseline
@@ -28,7 +27,7 @@ so dependency resolution is reproducible. Initial setup needs network access and
 can take considerably longer than subsequent builds.
 
 Dependencies are declared in `vcpkg.json`: Abseil, CLI11, gflags, glog, magic_enum,
-and RE2, with GoogleTest and ANTLR selected by the corresponding build options.
+and RE2, with GoogleTest selected by the `UNIT_TESTING` build option.
 The integration suite uses the bundled lit runner and `HZCC_FileCheck`; installing
 lit with pip is unnecessary. Its per-test timeout support requires the pinned
 `psutil` dependency in `requirements-test.txt`.
@@ -50,7 +49,6 @@ The `#` suffix is a vcpkg port revision.
 | magic_enum | `0.9.8` | Enum reflection |
 | RE2 | `2025-11-05` | Regular expressions |
 | GoogleTest | `1.18.0` | Optional unit tests |
-| ANTLR4 | `4.13.2#1` | Optional experimental frontend |
 
 ## Build
 
@@ -105,13 +103,11 @@ removed from registered source and test directories.
 | `UNIT_TESTING` | `ON` | Build GoogleTest unit tests. |
 | `E2E_TESTING` | `OFF` | Register the lit/FileCheck integration suites. |
 | `RUNTIME_CHECK` | `ON` | Enable `HZCC_ENABLE_RUNTIME_CHECK` blocks. |
-| `ENABLE_ANTLR` | `OFF` | Select the experimental ANTLR parser path. |
 | `GENERATE_DOCUMENTATION` | `OFF` | Configure Doxygen and optional LaTeX documentation. |
 | `ENABLE_COVERAGE` | `OFF` | Instrument unit tests for coverage. |
 
 Pass options during configuration, for example
-`cmake --preset debug -DE2E_TESTING=ON`. The ANTLR path remains experimental; selecting
-it does not imply that it implements all behavior of the handwritten parser.
+`cmake --preset debug -DE2E_TESTING=ON`.
 The JVM and optimization modules still reference older AST APIs and cannot currently
 be enabled as working backends; their source documentation is included in the API audit.
 
