@@ -21,6 +21,10 @@ env:
   CMAKE_BUILD_PARALLEL_LEVEL: '2'
   VCPKG_MAX_CONCURRENCY: '2'
   VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/.cache/vcpkg,readwrite
+  CCACHE_DIR: ${{ github.workspace }}/.cache/ccache
+  CCACHE_BASEDIR: ${{ github.workspace }}
+  CCACHE_COMPILERCHECK: content
+  CCACHE_MAXSIZE: 512M
 
 jobs:
   core:
@@ -48,6 +52,14 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Restore compiler cache
+        id: ccache_restore
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/ccache
+          key: linux-x64-ccache-v1-${{ matrix.compiler }}-${{ matrix.preset }}-${{ hashFiles('.github/scripts/setup-build.sh') }}-${{ github.run_id }}-${{ github.run_attempt }}-core
+          restore-keys: |
+            linux-x64-ccache-v1-${{ matrix.compiler }}-${{ matrix.preset }}-${{ hashFiles('.github/scripts/setup-build.sh') }}-
       - name: Set up the stable toolchain
         uses: ./.github/actions/setup-build
         with:
@@ -68,6 +80,7 @@ jobs:
             -DGENERATE_DOCUMENTATION=OFF -DENABLE_COVERAGE="$HZCC_COVERAGE" \
             -DCMAKE_C_COMPILER="$CC" \
             -DCMAKE_CXX_COMPILER="$CXX" -DPython3_EXECUTABLE="$HZCC_PYTHON" \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             2>&1 | tee "build/$HZCC_PRESET/configure.log"
       - name: Build
         env:
@@ -90,6 +103,22 @@ jobs:
         run: |
           cmake --build --preset debug --target ccov-export-hzcc_test \
             2>&1 | tee build/debug/coverage.log
+      - name: Show compiler cache statistics
+        id: ccache_stats
+        if: always()
+        run: |
+          if command -v ccache >/dev/null 2>&1; then
+            ccache --show-stats
+            if [ -d "$CCACHE_DIR" ]; then
+              printf 'ready=true\n' >> "$GITHUB_OUTPUT"
+            fi
+          fi
+      - name: Save compiler cache even when tests fail
+        if: always() && steps.ccache_restore.outcome == 'success' && steps.ccache_restore.outputs.cache-hit != 'true' && steps.ccache_stats.outputs.ready == 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/ccache
+          key: ${{ steps.ccache_restore.outputs.cache-primary-key }}
       - name: Upload test results and build logs
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -120,6 +149,14 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Restore compiler cache
+        id: ccache_restore
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/ccache
+          key: linux-x64-ccache-v1-gcc-release-${{ hashFiles('.github/scripts/setup-build.sh') }}-${{ github.run_id }}-${{ github.run_attempt }}-syntax
+          restore-keys: |
+            linux-x64-ccache-v1-gcc-release-${{ hashFiles('.github/scripts/setup-build.sh') }}-
       - name: Set up the stable toolchain
         uses: ./.github/actions/setup-build
         with:
@@ -135,6 +172,7 @@ jobs:
           cmake --preset release -DUNIT_TESTING=OFF -DE2E_TESTING=ON \
             -DGENERATE_DOCUMENTATION=OFF -DCMAKE_C_COMPILER="$CC" \
             -DCMAKE_CXX_COMPILER="$CXX" -DPython3_EXECUTABLE="$HZCC_PYTHON" \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             2>&1 | tee build/release/configure.log
           cmake --build --preset release 2>&1 | tee build/release/build.log
       - name: Run the complete syntax suite
@@ -142,6 +180,22 @@ jobs:
           printf '%s\n' 'Migration baseline: 85 syntax fixtures fail because the parser is unfinished.' >> "$GITHUB_STEP_SUMMARY"
           ctest --preset release -L e2e -R '^lexical_part3$' \
             --output-junit "$PWD/build/release/syntax-tests.xml"
+      - name: Show compiler cache statistics
+        id: ccache_stats
+        if: always()
+        run: |
+          if command -v ccache >/dev/null 2>&1; then
+            ccache --show-stats
+            if [ -d "$CCACHE_DIR" ]; then
+              printf 'ready=true\n' >> "$GITHUB_OUTPUT"
+            fi
+          fi
+      - name: Save compiler cache even when syntax tests fail
+        if: always() && steps.ccache_restore.outcome == 'success' && steps.ccache_restore.outputs.cache-hit != 'true' && steps.ccache_stats.outputs.ready == 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/ccache
+          key: ${{ steps.ccache_restore.outputs.cache-primary-key }}
       - name: Upload syntax failures and build logs
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

@@ -26,6 +26,10 @@ env:
   CMAKE_BUILD_PARALLEL_LEVEL: '2'
   VCPKG_MAX_CONCURRENCY: '2'
   VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/.cache/vcpkg,readwrite
+  CCACHE_DIR: ${{ github.workspace }}/.cache/ccache
+  CCACHE_BASEDIR: ${{ github.workspace }}
+  CCACHE_COMPILERCHECK: content
+  CCACHE_MAXSIZE: 512M
 
 jobs:
   build:
@@ -43,6 +47,14 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Restore compiler cache
+        id: ccache_restore
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/ccache
+          key: linux-x64-ccache-v1-gcc-docs-${{ hashFiles('.github/scripts/setup-build.sh') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            linux-x64-ccache-v1-gcc-docs-${{ hashFiles('.github/scripts/setup-build.sh') }}-
       - name: Cache the pinned Doxygen build
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -67,6 +79,7 @@ jobs:
           cmake --preset default -DUNIT_TESTING=OFF -DE2E_TESTING=OFF \
             -DGENERATE_DOCUMENTATION=ON -DCMAKE_C_COMPILER="$CC" \
             -DCMAKE_CXX_COMPILER="$CXX" -DPython3_EXECUTABLE="$HZCC_PYTHON" \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             2>&1 | tee build/docs-configure.log
       - name: Check Doxygen XML coverage
         run: cmake --build --preset default --target check_doxygen 2>&1 | tee build/docs-doxygen-check.log
@@ -83,6 +96,22 @@ jobs:
             2>&1 | tee build/docs-build.log
           test -s build/default/doxygen_html/index.html
           test -s build/default/doc/developers.pdf
+      - name: Show compiler cache statistics
+        id: ccache_stats
+        if: always()
+        run: |
+          if command -v ccache >/dev/null 2>&1; then
+            ccache --show-stats
+            if [ -d "$CCACHE_DIR" ]; then
+              printf 'ready=true\n' >> "$GITHUB_OUTPUT"
+            fi
+          fi
+      - name: Save compiler cache even when documentation checks fail
+        if: always() && steps.ccache_restore.outcome == 'success' && steps.ccache_restore.outputs.cache-hit != 'true' && steps.ccache_stats.outputs.ready == 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/ccache
+          key: ${{ steps.ccache_restore.outputs.cache-primary-key }}
       - name: Upload documentation and audit reports
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

@@ -174,8 +174,10 @@ build/coverage-venv/bin/python scripts/coverage_smoke.py \
 [CI](.github/workflows/ci.yml) runs the latest stable GCC 16.2.0 and LLVM 23.1.5
 with CMake 4.4.5 in Debug and Release configurations. Compiler archives, container
 images, and external actions are pinned to verified digests or commits. Both the
-project and vcpkg inherit the selected `CC` and `CXX`. Core jobs run all unit tests
-and the compiler-information/lexical suites; GCC Debug also exports coverage.
+project and vcpkg inherit the selected `CC` and `CXX`. The runner caches C and C++
+compilation with ccache and reports its statistics. vcpkg uses its own binary cache.
+Core jobs run all unit tests and the compiler-information and lexical suites.
+The GCC Debug job also exports coverage.
 The separate syntax job preserves the actual failures of the incomplete parser,
 so the overall CI result will remain failing until those cases are implemented.
 Logs and test results are retained as workflow artifacts.
