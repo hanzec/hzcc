@@ -6,54 +6,70 @@
 #ifndef HZCC_CODEGEN_JVM_JVM_TYPE_H
 #define HZCC_CODEGEN_JVM_JVM_TYPE_H
 namespace Hzcc::Codegen::JVM {
+/**
+ * @brief Represent a legacy AST type in JVM descriptors and instruction type prefixes.
+ */
 class Type {
   public:
+    /**
+     * @brief Initialize Type with the supplied backend state.
+     * @param type_name Borrowed AST type handle; it must outlive this object.
+     */
     explicit Type(const std::shared_ptr<AST::Type>& type_name);
 
+    /**
+     * @brief Return the JVM descriptor for the retained AST type.
+     * @param replace_char Use the integer representation for character values when true.
+     * @return JVM type character, prefixed with [ for an array.
+     */
     std::string GetTypeIdentifier(bool replace_char);
 
     /**
-     * @brief Check if the type is void
-     * @return True if the type is void, false otherwise.
+     * @brief Test whether the retained AST type is void.
+     * @return True when the stated condition holds; otherwise false.
      */
     [[nodiscard]] bool IsVoid() const;
 
     /**
-     * @brief Check if the type is character
-     * @return True if the type is character, false otherwise.
+     * @brief Test whether the retained AST type is char.
+     * @return True when the stated condition holds; otherwise false.
      */
     [[nodiscard]] bool IsChar() const;
 
     /**
-     * @brief Check if the type is Float
-     * @return True if the type is Float, false otherwise.
+     * @brief Test whether the retained AST type is float.
+     * @return True when the stated condition holds; otherwise false.
      */
     [[nodiscard]] bool IsFloat() const;
 
     /**
-     * @brief Check if the type is Double
-     * @return True if the type is Double, false otherwise.
+     * @brief Test whether the retained AST type is double.
+     * @return True when the stated condition holds; otherwise false.
      */
     [[nodiscard]] bool IsDouble() const;
 
     /**
-     * @brief Check if the type is Integer
-     * @return True if the type is Integer, false otherwise.
+     * @brief Test whether the retained AST type is int.
+     * @return True when the stated condition holds; otherwise false.
      */
     [[nodiscard]] bool IsInt() const;
 
     /**
-     * @brief Check if the type is Long
-     * @return True if the type is Long, false otherwise.
+     * @brief Test whether the retained AST type is long.
+     * @return True when the stated condition holds; otherwise false.
      */
     [[nodiscard]] bool IsLong() const;
 
     /**
-     * @brief Check if the type is Short
-     * @return True if the type is Short, false otherwise.
+     * @brief Test whether the retained AST type is short.
+     * @return True when the stated condition holds; otherwise false.
      */
     [[nodiscard]] bool IsShort() const;
 
+    /**
+     * @brief Return the retained AST type name.
+     * @return The original AST type spelling.
+     */
     [[nodiscard]] std::string GetName() const;
 
   private:

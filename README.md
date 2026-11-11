@@ -1,194 +1,294 @@
-# mycc
+# HZCC
 
-[![pipeline Status](https://gitlab.hanzec.com/personalproject/hzcc/badges/main/pipeline.svg)](https://gitlab.hanzec.com/personalproject/hzcc/-/commits/main)
-[![coverage report](https://gitlab.hanzec.com/personalproject/hzcc/badges/main/coverage.svg)](https://gitlab.hanzec.com/personalproject/hzcc/-/commits/main)
-[![Latest Release](https://gitlab.hanzec.com/personalproject/hzcc/-/badges/release.svg)](https://gitlab.hanzec.com/personalproject/hzcc/-/releases)
+[![CI](https://github.com/hanzec/hzcc/actions/workflows/ci.yml/badge.svg)](https://github.com/hanzec/hzcc/actions/workflows/ci.yml)
+[![Documentation](https://github.com/hanzec/hzcc/actions/workflows/docs.yml/badge.svg)](https://github.com/hanzec/hzcc/actions/workflows/docs.yml)
 
-My awesome the c programming language compiler implementation with C++ 17
+An experimental C compiler written in C++17. The default build uses a handwritten
+lexer and parser. JVM code generation and optimization code are present in the
+repository but are not currently enabled in the compiler target.
 
-## Dependency
+## Prerequisites
 
-Currently, most project dependencies are managed by [VCPKG](https://github.com/microsoft/vcpkg), a cross-platform
-package manager for C++. VCPKG will be downloaded and configured automatically after CMake scripts are configured. The
-documentation is required of the LATEX compiler.
+- A C++17 compiler. CI pins the current stable toolchains,
+  [GCC 16.2.0](https://gcc.gnu.org/gcc-16/) and
+  [LLVM 23.1.5](https://github.com/llvm/llvm-project/releases/tag/llvmorg-23.1.5).
+  On macOS, install the Xcode command-line tools for the platform SDK.
+- CMake 3.25 or newer; [CMake 4.4.5](https://cmake.org/download/) is the current
+  recommended stable release. Ninja is required for the supplied presets.
+- Git, a C/C++ build toolchain, curl, zip, unzip, tar, and pkg-config for vcpkg.
+- Python 3.6 or newer and psutil when running the integration tests.
+- Python 3.10 or newer for source-documentation checks and coverage reports.
+- Doxygen only when building documentation; `pdflatex` and `makeindex` additionally
+  enable the developer guide PDF. Graphviz is optional.
+- Java only for the optional, experimental ANTLR parser.
 
-### Install VCPKG Dependencies(Build in pyrite Machine could skip this step)
+CMake downloads vcpkg automatically on the first configure unless you supply an
+external `CMAKE_TOOLCHAIN_FILE`. The repository pins vcpkg and its package baseline
+so dependency resolution is reproducible. Initial setup needs network access and
+can take considerably longer than subsequent builds.
 
-On Debian and Ubuntu derivatives:
+Dependencies are declared in `vcpkg.json`: Abseil, CLI11, gflags, glog, magic_enum,
+and RE2, with GoogleTest and ANTLR selected by the corresponding build options.
+The integration suite uses the bundled lit runner and `HZCC_FileCheck`; installing
+lit with pip is unnecessary. Its per-test timeout support requires the pinned
+`psutil` dependency in `requirements-test.txt`.
 
-```bash
-sudo apt-get install curl zip unzip tar pkg-config cmake
-```
+The registry is pinned to the latest vcpkg commit verified on 2026-11-11,
+[`e54ef0fcc9a82033a61e51002552a910a5d57282`](https://github.com/microsoft/vcpkg/commit/e54ef0fcc9a82033a61e51002552a910a5d57282).
+It selects the [vcpkg tool 2026-10-29](https://github.com/microsoft/vcpkg-tool/releases/tag/2026-10-29)
+and the latest port versions in that
+[package baseline](https://github.com/microsoft/vcpkg/blob/e54ef0fcc9a82033a61e51002552a910a5d57282/versions/baseline.json).
+Dependency updates follow vcpkg ports rather than separate upstream overrides.
+The `#` suffix is a vcpkg port revision.
 
-On recent Red Hat and Fedora derivatives:
-
-```bash
-sudo dnf install curl zip unzip tar pkg-config cmake
-```
-
-On older Red Hat and Fedora derivatives:
-
-```bash
-sudo yum install curl zip unzip tar pkg-config cmake
-```
-
-On SUSE Linux and derivatives:
-
-```bash
-sudo zypper install curl zip unzip tar pkg-config cmake
-```
-
-On Alpine:
-
-```bash
-apk add build-base cmake ninja zip unzip curl git pkg-config cmake
-```
-
-### Install VCPKG
-
-**No Need, will be installed automatically**
-
-### Install LATEX (Build in pyrite Machine could skip this step)
-
-On Debian and Ubuntu derivatives:
-
-```bash
-sudo apt-get install -y texlive-base texlive-latex-recommended texlive-latex-extra
-```
-
-### Install FLEX (only need when using JVM Bytecode Testing)
-
-On Debian and Ubuntu derivatives:
-
-```bash
-sudo apt-get install flex
-```
-
-### External Dependency Managed by VCPKG (Will automatically compile and linking by CMake)
-
-- **Glog**: for logging(FileCheck Tools only)
-- **cli11**: for command line parsing(mycc only)
-- **Gtest**: for unit testing (this will be only used in test target) .
-- **Gflags**: for parsing command line flags.
+| Dependency | Baseline version | Used for |
+| --- | --- | --- |
+| Abseil | `20260107.1#3` | Containers, strings, status utilities |
+| CLI11 | `2.7.2` | Compiler command-line parsing |
+| gflags | `2.3.0` | FileCheck command-line parsing |
+| glog | `0.7.1#3` | Logging |
+| magic_enum | `0.9.8` | Enum reflection |
+| RE2 | `2025-11-05` | Regular expressions |
+| GoogleTest | `1.18.0` | Optional unit tests |
+| ANTLR4 | `4.13.2#1` | Optional experimental frontend |
 
 ## Build
 
-The project is build by cmake and required to use out-of-source build. Both Ninja and Makefile are supported and tested.
+Run these commands from the repository root:
 
-### Available build targets
-
-- **mycc**: the compiler target
-- **mycc_test**: testing target for **mycc** target.
-- **mycc_e2e_test**: end to end testing target for **mycc** target.
-- **documentation**: documentation target which will compile the documentation from latex to PDF
-
-### Available build options
-
-- **-DENABLE_ASAN**: enable address sanitizer, default is disabled
-- **-DENABLE_TSAN**: enable thread sanitizer, default is disabled
-- **-DENABLE_MSAN**: enable memory sanitizer, default is disabled
-- **-DENABLE_UBSAN**: enable undefined behavior sanitizer, default is disabled
-- **-DENABLE_TESTING**: enable unit testing, default is disabled
-- **-DENABLE_COVERAGE**: enable code coverage, default is disabled
-- **-DENABLE_DOCUMENTATION**: enable documentation, default is enabled
-- **-DENABLE_E2E_TESTING**: enable end to end testing, default is disabled
-
-### Special Notes for building in Pyrite
-
-**Pyrite's user home folder's IO is really slow**. I suggest you can create a folder under `/tmp` which have 700
-permission and use it as the build root. This will significantly improve the build speed (almost 10x).
-
-### Release build
-
-In release build, we will use `-O3` optimization level. In order to compile, you need to run following command at the
-**root folder of git repository**:
-
-```bash
-cmake . -B./build/ && cd ./build && make mycc documentation -j$(nproc)
+```sh
+cmake --preset debug
+cmake --build --preset debug --parallel
+./build/debug/bin/hzcc --help
 ```
 
-The build will be done in `./build` directory. The document will be generated to `./build/Documentation/developers.pdf`.
-And the executable will be generated to `./build/Source/mycc`.
+To select a compiler explicitly, export `CC` and `CXX` before configuring and keep
+them set for subsequent configuration commands. This gives the project and vcpkg
+the same compiler pair. Use a fresh build directory when changing compilers.
 
-### Debug Build
+All presets use Ninja and separate `build/<preset>` directories:
 
-In debug mode, the compiler will be built with debug symbols and assertions enabled with '-g -O0' and ASAN enabled. In
-order to compile, you need to run following command at the **root folder of git repository**:
+| Preset | Build type | Tests |
+| --- | --- | --- |
+| `default` | `RelWithDebInfo` | Unit tests |
+| `debug` | `Debug` | Unit tests; AddressSanitizer with Clang/GCC on Unix |
+| `release` | `Release` | Unit tests |
+| `e2e` | `RelWithDebInfo` | Unit and integration tests |
 
-```bash
- cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug && cd ./build && make mycc documentation -j$(nproc)
- ```
+Use `cmake --preset release` followed by `cmake --build --preset release --parallel`
+for a release build. Build and test presets share their configure preset's name.
 
-The build will be done in `./build` directory. The document will be generated to `./build/Documentation/developers.pdf`.
-And the executable will be generated to `./build/bin/` directory.
+The repository's vcpkg overlay triplets enable AddressSanitizer for Debug
+dependencies on x64/arm64 Linux and macOS, matching the project targets. Abseil
+[requires consistent sanitizer instrumentation](https://github.com/abseil/abseil-cpp/blob/master/FAQ.md#how-do-i-use-the-llvm-sanitizers-with-abseil).
+Keep manifest installation enabled when changing these triplets so vcpkg rebuilds
+the affected libraries. Custom triplets or external dependency installations must
+provide the same Debug sanitizer flags; do not reuse uninstrumented Abseil libraries.
 
-## Testing
+Without presets, choose an out-of-source build directory and your preferred CMake
+generator:
 
-There will be two part of testing which split into two different targets:
-
-- **mycc_test**: unit testing
-- **mycc_e2e_test**: end to end testing
-
-Both of executable target `mycc_test` and `mycc_e2e_test` will be located in `./build/bin/` directory.
-
-### Unit Testing
-
-Unit testing is done by `gtest` with following command in git root directory:
-
-```bash
- cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug && cd ./build && make mycc_test -j$(nproc) && ./hzcc/mycc_test
- ```
-
-### StatusCode Coverage
-
-StatusCode coverage is supported both llvm-cov and gcov, currently code coverage is only supported for `mycc_test` target. For
-building with llvm, you need to install `llvm-cov`, for building with gcc, you need to install `gcovr`
-
-For summary report to stdout, Run:
-
-```bash
- cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug -DENABLE_TESTING -DENABLE_COVERAGE && cd ./build && make ccov-report-mycc_test -j$(nproc)
- ```
-
-For exporting report to cobertura xml format, Run:
-
-```bash
- cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug -DENABLE_TESTING -DENABLE_COVERAGE && cd ./build && make ccov-export-mycc_test -j$(nproc)
- ```
-
-### End to End Testing
-
-End-to-end testing is done by `llvm-lit`, LLVM testing tool and [FileCheck tools](utils/FileCHeck/README.md). The test
-compares the output of the compiler with the expected output rules. The rules files support string matching and regex
-matching.
-
-You could install `llvm-lit` via python pip:
-
-```bash
-pip install lit
+```sh
+cmake -S . -B build/local -DCMAKE_BUILD_TYPE=Debug -DUNIT_TESTING=ON
+cmake --build build/local --parallel
 ```
 
-Then you could run the test by following command in git root directory:
+Executables are written to `<build-directory>/bin/`, and CMake generates
+`compile_commands.json` in the build directory. The source helper uses
+`CONFIGURE_DEPENDS`, so CMake automatically reconfigures when files are added to or
+removed from registered source and test directories.
 
-```bash
- cmake . -B./build/ -DCMAKE_BUILD_TYPE=Debug && cd ./build && make mycc_e2e_test -j$(nproc)
- ```
+### Build options
+
+| Option | Default | Purpose |
+| --- | --- | --- |
+| `UNIT_TESTING` | `ON` | Build GoogleTest unit tests. |
+| `E2E_TESTING` | `OFF` | Register the lit/FileCheck integration suites. |
+| `RUNTIME_CHECK` | `ON` | Enable `HZCC_ENABLE_RUNTIME_CHECK` blocks. |
+| `ENABLE_ANTLR` | `OFF` | Select the experimental ANTLR parser path. |
+| `GENERATE_DOCUMENTATION` | `OFF` | Configure Doxygen and optional LaTeX documentation. |
+| `ENABLE_COVERAGE` | `OFF` | Instrument unit tests for coverage. |
+
+Pass options during configuration, for example
+`cmake --preset debug -DE2E_TESTING=ON`. The ANTLR path remains experimental; selecting
+it does not imply that it implements all behavior of the handwritten parser.
+The JVM and optimization modules still reference older AST APIs and cannot currently
+be enabled as working backends; their source documentation is included in the API audit.
+
+## Tests
+
+Unit tests live beside their implementation under `hzcc/**/test/`. Configure and
+run them with:
+
+```sh
+cmake --preset debug -DUNIT_TESTING=ON
+cmake --build --preset debug --parallel
+ctest --preset debug -L unit
+```
+
+You can also run `./build/debug/bin/hzcc_test` directly, including GoogleTest filters
+such as `--gtest_filter='PARSER_COMMON_TOKENTYPE.*'`.
+
+Integration fixtures live under `test/` and check compiler information, lexical
+analysis, and syntax analysis. Enable them before building:
+
+```sh
+python3 -m venv build/e2e-venv
+./build/e2e-venv/bin/python -m pip install -r requirements-test.txt
+cmake --preset e2e -DPython3_EXECUTABLE="$PWD/build/e2e-venv/bin/python"
+cmake --build --preset e2e --parallel
+ctest --preset e2e -L e2e
+```
+
+The `hzcc_e2e_test` build target also runs all enabled integration suites. Run
+`ctest --preset e2e` without a label filter to run both unit and integration tests.
+Preserve fixture whitespace and expected diagnostic text when making unrelated edits.
+
+The current handwritten syntax parser is incomplete: the `lexical_part3` suite
+actually contains 85 legacy syntax cases, all of which currently fail. The compiler
+information checks and 81 lexical cases pass. These failures remain visible in
+CTest; passing unit tests does not imply full C syntax support.
+
+Coverage is optional. Install the reporting tools in a virtual environment and
+select that interpreter when configuring:
+
+```sh
+python3 -m venv build/coverage-venv
+build/coverage-venv/bin/python -m pip install -r requirements-coverage.txt
+cmake --preset debug -DENABLE_COVERAGE=ON \
+  -DPython3_EXECUTABLE="$PWD/build/coverage-venv/bin/python"
+cmake --build --preset debug --target ccov-export-hzcc_test
+```
+
+`ccov-hzcc_test` runs and captures the tests; `ccov-report-hzcc_test` prints a
+summary; `ccov-export-hzcc_test` writes `build/debug/ccov/hzcc_test.xml` in Cobertura
+format. Multi-config generators add the configuration name under `ccov/`.
+The module selects LLVM coverage tools or gcov that match the C++ compiler and
+rejects a version mismatch. Reports include the shared compiler objects and
+exclude generated, external, and vendored dependency sources. The reusable smoke
+check covers both CMake generators and failure cleanup:
+
+```sh
+build/coverage-venv/bin/python scripts/coverage_smoke.py \
+  --compiler clang++ --python build/coverage-venv/bin/python
+```
+
+## GitHub Actions
+
+[CI](.github/workflows/ci.yml) runs the latest stable GCC 16.2.0 and LLVM 23.1.5
+with CMake 4.4.5 in Debug and Release configurations. Compiler archives, container
+images, and external actions are pinned to verified digests or commits. Both the
+project and vcpkg inherit the selected `CC` and `CXX`. Core jobs run all unit tests
+and the compiler-information/lexical suites; GCC Debug also exports coverage.
+The separate syntax job preserves the actual failures of the incomplete parser,
+so the overall CI result will remain failing until those cases are implemented.
+Logs and test results are retained as workflow artifacts.
+
+[Documentation](.github/workflows/docs.yml) independently runs both documentation
+audits and builds HTML/PDF with Doxygen 1.18.0. A manual run on `main` with
+`publish_pages` enabled can deploy the verified HTML to GitHub Pages; the repository
+must have GitHub Actions selected as its Pages source. The GitLab pipeline and
+its private registry images have been removed.
 
 ## Usage
 
-### VLOG CompileErrorLevel
+```sh
+./build/debug/bin/hzcc --version
+./build/debug/bin/hzcc --flexical_only test/lexical/hello.c
+./build/debug/bin/hzcc --fsyntax_only path/to/source.c
+```
 
-- **0**: only internal_status warning and error will be printed
-- **1**: used for print current Status
-- **2**: print debug information
-- **3**: print all information including pass output/input
+Use `--help` for the command-line options. `--flexical_only` prints tokens;
+`--fsyntax_only` performs syntax analysis. These modes are mutually exclusive.
+`--fno_color` disables colored diagnostics. Lexical output can be written to a file
+using `-o path/to/tokens.txt`. Code generation is not part of the active build.
 
-### supported arguments
+## Development
 
-- **-c**: specify input file RetClass.
-- **-h,--help**: print usage information and exit.
-- **-v,--version**: print version information and exit.
-- **--fno_color**: disable color output.
-- **--fnice_error**: print error message in nice format.
-- **-o,--output**: specify output file RetClass.
-- **-I,--include**: specify include path.(not support yet)
+See [AGENTS.md](AGENTS.md) for the repository layout, editing conventions, and
+validation workflow. C++ formatting is defined by `.clang-format` (Google-based,
+four-space indentation, 90-column limit). Optional pre-commit hooks are configured
+in `.pre-commit-config.yaml` and require Python 3.9 or newer. They pin
+[pre-commit-hooks v6.0.0](https://github.com/pre-commit/pre-commit-hooks/releases/tag/v6.0.0)
+and [clang-format v23.1.5](https://github.com/pre-commit/mirrors-clang-format/tree/v23.1.5).
+Run hooks on the files you change to avoid unrelated formatting changes.
+
+Documentation sources live under `doc/`, with API configuration in `Doxyfile`.
+CI builds Doxygen 1.18.0 with the
+[upstream scanner fix](https://github.com/doxygen/doxygen/commit/26e908779f448574c6b8918aff21a40565a89a57)
+in `cmake/patches/doxygen-1.18.0-find-guards.patch`. The unpatched release can read
+before its comment buffer when an ordinary command such as `@brief` has no brace
+options, causing an intermittent crash. The patch retains the complete extraction
+scope and all output formats.
+
+To reproduce that tool locally, install Flex and Bison 2.7 or newer, then build the
+verified release archive with the patch. On macOS, install Bison with `brew install
+bison` and add `-DBISON_EXECUTABLE="$(brew --prefix bison)/bin/bison"` to the tool's
+CMake configure command below; the system Bison is too old.
+
+```sh
+mkdir -p build/tools/doxygen-source
+curl --fail --location \
+  https://github.com/doxygen/doxygen/releases/download/Release_1_18_0/doxygen-1.18.0.src.tar.gz \
+  --output build/tools/doxygen-1.18.0.src.tar.gz
+printf '%s  %s\n' a1deed70a6785bbec95a2b2a9e419dc7f7b223a9d74a8644ae611c8e2dcdd354 \
+  build/tools/doxygen-1.18.0.src.tar.gz | shasum -a 256 --check
+tar -xzf build/tools/doxygen-1.18.0.src.tar.gz --strip-components=1 \
+  -C build/tools/doxygen-source
+patch -d build/tools/doxygen-source -p1 \
+  -i "$PWD/cmake/patches/doxygen-1.18.0-find-guards.patch"
+cmake -S build/tools/doxygen-source -B build/tools/doxygen-build -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release -Dbuild_doc=OFF -Dbuild_wizard=OFF -Duse_libclang=OFF
+cmake --build build/tools/doxygen-build --parallel 2
+```
+
+Enable `GENERATE_DOCUMENTATION`, select the patched executable, and build the manual:
+
+```sh
+cmake --preset default -DGENERATE_DOCUMENTATION=ON \
+  -DDOXYGEN_EXECUTABLE="$PWD/build/tools/doxygen-build/bin/doxygen"
+cmake --build --preset default --target documentation
+```
+
+HTML is generated under `build/default/doxygen_html/`. If `pdflatex` and `makeindex`
+are available, the developer guide is also generated at
+`build/default/doc/developers.pdf`; otherwise the target builds HTML only.
+
+All project-owned classes and methods require Doxygen comments, including private
+methods, constructors, destructors, operators, test helper types, and experimental
+modules. A documented declaration also covers its out-of-line definition.
+
+After enabling documentation, install the source-checking dependencies and run
+both coverage gates and their independent checker tests:
+
+```sh
+python3 -m venv build/docs-venv
+build/docs-venv/bin/python -m pip install -r requirements-docs.txt
+cmake --build --preset default --target check_doxygen
+build/docs-venv/bin/python scripts/check_source_doxygen.py hzcc scripts \
+  --xml-dir build/default/doxygen_xml \
+  --review-manifest scripts/source_doxygen_reviews.json \
+  --report build/source-docs.json
+build/docs-venv/bin/python -m unittest discover -s scripts/tests -v
+```
+
+The XML gate checks extracted classes and functions under `hzcc/` and `scripts/`,
+including private, experimental, and test-helper code. It rejects missing comments,
+empty extraction, and incomplete XML. The source gate independently parses C++,
+Java, and Python declarations, including inactive branches and entities omitted
+by Doxygen. A definition can inherit documentation only through a verified
+declaration mapping. Framework-generated and implicit members are not explicit
+source declarations; vendored code is excluded.
+
+Some legacy macros and placeholder syntax cannot be parsed directly. Their
+manually reviewed diagnostics are recorded with exact source hashes in
+`scripts/source_doxygen_reviews.json`; changing the source requires re-review.
+These records never exempt an identified class or method from documentation.
+The checker tests use temporary fixtures and require no compiled compiler targets.
+
+On machines with slow home-directory storage, `./build_pyrite.sh` builds the
+compiler in a unique temporary directory and copies it to `build/pyrite/hzcc`.
+Use `HZCC_BUILD_ROOT` to choose the temporary-build parent, `HZCC_OUTPUT_DIR` to
+choose the artifact destination, and `HZCC_BUILD_DOCUMENTATION=ON` to include
+documentation. Additional script arguments are forwarded to CMake configuration,
+for example `./build_pyrite.sh -DCMAKE_BUILD_TYPE=Debug`.

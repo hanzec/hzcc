@@ -5,6 +5,11 @@
 #include "codegen/jvm/JVMGenerator.h"
 namespace Hzcc::Codegen {
 
+/**
+ * @brief Accept an empty statement without emitting instructions.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status JVMGenerator::visit(Hzcc::AST::EmptyStatement *p_expr) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

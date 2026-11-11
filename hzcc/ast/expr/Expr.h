@@ -66,11 +66,12 @@ class OperatorBase : public Expr {
 
   protected:
     /**
-     * @brief OperatorBase constructor, this abstract class should never
-     * initialized directly.
-     * @param lhs left hand side expression
-     * @param rhs right hand side expression
-     * @param loc location of operator
+     * @brief Own the two operands shared by binary-operator nodes.
+     * @tparam N Extent of the node-name array.
+     * @param loc Source position of the operator.
+     * @param node_name Borrowed node label whose storage outlives this node.
+     * @param lhs Non-null left operand whose ownership is transferred.
+     * @param rhs Non-null right operand whose ownership is transferred.
      */
     template <int N>
     OperatorBase(const Position& loc,         // NOLINT
@@ -143,7 +144,9 @@ class CastExpr : public Expr {
      * @brief Get the deduced value of the cast expression. If the expression is
      * not a deductible, then return std::nullopt. The deduced value of cast is
      * exactly same as deduced value of the expression that is being casted.
-     * @return
+     * @return The operand's deduced value, or std::nullopt if it is unknown.
+     * @note This base implementation does not apply numeric conversion to the
+     * value; casts needing that behavior must override it.
      */
     [[nodiscard]] std::optional<DeduceValue> GetDeducedValue() const override {
         return _expr->GetDeducedValue();
@@ -151,14 +154,11 @@ class CastExpr : public Expr {
 
   protected:
     /**
-     * @brief CastExpr constructor. Will cast expression to the given
-     * type. If runtime assert is enabled, will trigger an error if the given
-     * type is same as the expression's type. This abstract class should never
-     * initialize directly.
-     * @param type the type to cast to
-     * @param expr the expression to cast
-     * @param location location of the cast operator
-     * @param node_name the to_str of the cast node
+     * @brief Initialize a cast node and take ownership of its operand.
+     * @tparam N Extent of the borrowed node-name array.
+     * @param node_name Node label whose storage outlives the cast.
+     * @param location Source position of the cast.
+     * @param expr Non-null expression whose ownership is transferred.
      */
     template <int N>
     CastExpr(const char (&node_name)[N],  // NOLINT
@@ -198,6 +198,12 @@ class CastExpr : public Expr {
  */
 class UnaryOperator : public Expr {
   public:
+    /**
+     * @brief Decode a unary operator spelling and own its operand.
+     * @param loc Source position of the operator.
+     * @param type Unary operator spelling recognized by this constructor.
+     * @param expr Non-null operand whose ownership is transferred here.
+     */
     UnaryOperator(const Position& loc,          // NOLINT
                   std::string_view type,        // NOLINT
                   std::unique_ptr<Expr> expr);  // NOLINT
@@ -222,8 +228,8 @@ class UnaryOperator : public Expr {
     [[nodiscard]] UnaryType GetUnaryType() const { return _type; };
 
     /**
-     * @brief Get the type of the expression
-     * @return
+     * @brief Get the type forwarded from the unary operator's operand.
+     * @return The operand's qualified type.
      */
     [[nodiscard]] QualTypePtr type() const override { return _expr->type(); };
 
@@ -252,6 +258,13 @@ class UnaryOperator : public Expr {
  */
 class TernaryExpr : public Expr {
   public:
+    /**
+     * @brief Construct a conditional expression from its three operands.
+     * @param location Source position of the conditional operator.
+     * @param cond Owned condition expression.
+     * @param true_expr Owned expression for the true branch.
+     * @param false_expr Owned expression for the false branch.
+     */
     TernaryExpr(const Position& location,         // NOLINT
                 std::unique_ptr<Expr> cond,       // NOLINT
                 std::unique_ptr<Expr> true_expr,  // NOLINT
@@ -340,6 +353,9 @@ class TernaryExpr : public Expr {
  */
 class EmptyExpr : public Expr {
   public:
+    /**
+     * @brief Construct a placeholder expression with a default source position.
+     */
     EmptyExpr() : Expr(Position(), "EmptyExpr") {}
 
     /**
@@ -497,11 +513,10 @@ class LiteralExpr : public Expr {
 class FuncCallStmt : public Expr {
   public:
     /**
-     * @brief Constructor of FuncCallStmt
-     * @param type type of the function call
-     * @param name to_str of the function call
-     * @param loc location of the function call
-     * @param args arguments of the function call
+     * @brief Construct a function-call expression with ordered arguments.
+     * @param loc Source position of the call.
+     * @param name Function identifier copied into the node.
+     * @param args Argument expressions whose ownership is transferred.
      */
     FuncCallStmt(const Position& loc,    // NOLINT
                  std::string_view name,  // NOLINT
@@ -569,11 +584,10 @@ class FuncCallStmt : public Expr {
 class DeclRefExpr : public Expr {
   public:
     /**
-     * @brief Constructor of DeclRefExpr. If runtime assert is enabled, will
-     * trigger an error if the given to_str is empty string.
-     * @param loc location of the node
-     * @param type type of the variable
-     * @param name The to_str of the variable.
+     * @brief Create a reference to a named declaration.
+     * @param loc Source position of the identifier use.
+     * @param name Declaration identifier copied into the node.
+     * @note Construction does not populate the stored type-proxy pointer.
      */
     DeclRefExpr(const Position& loc,    // NO_LINT
                 std::string_view name)  // NO_LINT
@@ -965,21 +979,11 @@ class CommaExpr : public OperatorBase {
 class BitwiseExpr : public OperatorBase {
   public:
     /**
-     * @brief Construct a new Bitwise Expr object. Supported operators are
-     * listed in following table: Operator  | Description
-     *   --------- | -----------
-     *   &         | Bitwise AND
-     *   |         | Bitwise OR
-     *   ^         | Bitwise XOR
-     *   <<        | Left Shift
-     *   >>        | Right Shift
-     *   Runtime assertion will be triggered if the operator is not
-     * supported. Or type string has a length > 3
-     *
-     * @param loc loc of the bitwise expression
-     * @param type lexical::Token object for the bitwise type
-     * @param left_expr Left hand side expression
-     * @param right_expr Right hand side expression
+     * @brief Decode a bitwise operator and retain its operands.
+     * @param loc Source position of the operator.
+     * @param type Operator spelling supported by the bitwise parser.
+     * @param left_expr Left operand whose ownership is transferred.
+     * @param right_expr Right operand whose ownership is transferred.
      */
     BitwiseExpr(const Position& loc,                // NOLINT
                 std::string_view type,              // NOLINT
@@ -1034,26 +1038,11 @@ class BitwiseExpr : public OperatorBase {
 class AssignExpr : public OperatorBase {
   public:
     /**
-     * @brief Constructor for Assign Expression ast Node, supported
-     * operators are listed in following table: Operator  | Description
-     *    --------- | -----------
-     *    =         | Assignment
-     *    +=        | Addition Assignment
-     *    -=        | Subtraction Assignment
-     *    *=        | Multiplication Assignment
-     *    /=        | Division Assignment
-     *    %=        | Modulus Assignment
-     *    <<=       | Left Shift Assignment
-     *    >>=       | Right Shift Assignment
-     *    &=        | Bitwise AND Assignment
-     *    |=        | Bitwise OR Assignment
-     *    ^=        | Bitwise XOR Assignment
-     * Runtime assertion will be triggered if the operator is not supported.
-     * Or type string has a length > 3
-     * @param type lexical::Token object for the assign type
-     * @param lhs  Left hand side expression
-     * @param rhs  Right hand side expression
-     * @param loc loc of the assign expression
+     * @brief Decode an assignment operator and retain its operands.
+     * @param loc Source position of the operator.
+     * @param type Assignment-operator spelling.
+     * @param lhs Left operand whose ownership is transferred.
+     * @param rhs Right operand whose ownership is transferred.
      */
     AssignExpr(const Position& loc,         // NOLINT
                std::string_view type,       // NOLINT
@@ -1200,15 +1189,16 @@ class ExplicitCastExpr : public CastExpr {
     const std::unique_ptr<TypeProxyExpr> _cast_type;
 };
 
+/**
+ * @brief Base node for a compiler-inserted conversion that owns its operand.
+ */
 class ImplicitCastExpr : public CastExpr {
   public:
     /**
-     * @brief CastExpr constructor. Will cast expression to the given
-     * to_type. If runtime assert is enabled, will trigger an error if the
-     * given to_type is same as the expression's to_type.
-     * @param to_type the to_type to cast to
-     * @param expr the expression to cast
-     * @param location location of the cast operator
+     * @brief Construct the common wrapper for a compiler-inserted conversion.
+     * @param name Conversion name copied into this node.
+     * @param location Source position used for diagnostics.
+     * @param expr Non-null operand whose ownership is transferred.
      */
     ImplicitCastExpr(std::string name,          // NOLINT
                      const Position& location,  // NOLINT

@@ -7,7 +7,7 @@
 #include <glog/logging.h>
 
 #include <cctype>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 #include <ostream>
 #include <string>
 #include <utility>

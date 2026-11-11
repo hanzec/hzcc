@@ -14,6 +14,12 @@
 #include "utils/logging.h"
 #include "version.h"
 namespace Hzcc::Codegen {
+/**
+ * @brief Initialize JVMGenerator with the supplied backend state.
+ * @param output Requested output path.
+ * @param unit Non-null compilation unit retained through shared ownership.
+ * @param output_c_ret_code Select the legacy entry-wrapper return-code behavior.
+ */
 JVMGenerator::JVMGenerator(const std::string& output,
                            const std::shared_ptr<AST::CompilationUnit>& unit,
                            bool output_c_ret_code)
@@ -27,6 +33,10 @@ JVMGenerator::JVMGenerator(const std::string& output,
         std::filesystem::path(_input_file_name).replace_extension().filename();
 }
 
+/**
+ * @brief Generate output for the compilation unit retained by this generator.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status JVMGenerator::Generate() {
     auto unit = GetCompilationUnit();
     // output file name will be replaced by the input file with .class
@@ -91,18 +101,31 @@ Status JVMGenerator::Generate() {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Pop and return the most recent intermediate result identifier.
+ * @return Most recently pushed result identifier.
+ * @pre The corresponding stack or scope list is nonempty.
+ */
 std::string JVMGenerator::ConsumeReturnStack() {
     auto poped_stack = _return_stack.back();
     _return_stack.pop_back();
     return poped_stack;
 }
 
+/**
+ * @brief Return the class name derived from the input filename.
+ * @return The generator-owned JVM class name.
+ */
 const std::string& JVMGenerator::GetCurrentClassName() {
     DLOG_ASSERT(!_current_class_name.empty())
         << "Call GetInputFileName without setting up the input file name!";
     return _current_class_name;
 }
 
+/**
+ * @brief Push an intermediate result identifier onto the return-value stack.
+ * @param stackID Identifier of the intermediate result to retain.
+ */
 void JVMGenerator::PushReturnStack(const std::string& stackID) {
     _return_stack.push_back(stackID);
 }

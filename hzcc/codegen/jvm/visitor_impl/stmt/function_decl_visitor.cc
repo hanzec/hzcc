@@ -8,6 +8,11 @@
 #include "codegen/jvm/utils/TypeUtils.h"
 #include "utils/message_utils.h"
 namespace Hzcc::Codegen {
+/**
+ * @brief Emit JVM assembly for a FuncDeclStmt node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status JVMGenerator::visit(AST::FuncDeclStmt* p_expr) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

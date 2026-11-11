@@ -25,29 +25,33 @@ template <typename Product,                                          // NOLINT
               std::negation_v<std::is_abstract<Product>>, int> = 0>  // NOLINT
 class AutoRegFactory {
   public:
-    /**
-     * Delete the default constructor and copy constructor to prevent the class
-     * to be copied.
-     */
+    /// @brief Construct a factory handle; registrations are shared statically.
     AutoRegFactory() = default;
+    /// @brief Destroy this handle without removing shared registrations.
     ~AutoRegFactory() = default;
+    /// @brief Factory handles cannot be copied.
     AutoRegFactory(AutoRegFactory&) = delete;
+    /// @brief Factory handles cannot be moved.
     AutoRegFactory(AutoRegFactory&&) = delete;
+    /// @brief Disable copy assignment of factory handles.
     AutoRegFactory& operator=(AutoRegFactory&) = delete;
+    /// @brief Disable move assignment of factory handles.
     AutoRegFactory& operator=(AutoRegFactory&&) = delete;
 
     using ProductType = Product;
     using ProductIDType = ProductID;
 
     /**
-     * @brief Helper class for expose the private method outside
-     *
-     * @param cmd the to_str of the command
-     * @param desc the description of the command
-     * @param obj the reference of std::function for creating the command object
+     * @brief Protected registration bridge for derived registration helpers.
      */
     class RegisterHelper {
       protected:
+        /** @brief Forward a creator to the factory's shared registry.
+         * @param creator Callable producing a product instance.
+         * @param product_id Unique registry key.
+         * @param product_desc Human-readable description used in diagnostics.
+         * @note Duplicate keys terminate the process.
+         */
         template <class ProductCreator>
         static void reg_product(ProductCreator creator,       // NOLINT
                                 const ProductID& product_id,  // NOLINT
@@ -57,10 +61,17 @@ class AutoRegFactory {
     };
 
   protected:
+    /// @brief Internal sample aggregate with a non-trivial string constructor.
     struct Ex1 {
         std::string str;  // member has a non-trivial default ctor
     };
 
+    /** @brief Invoke the registered creator with the requested arguments.
+     * @param id Identifier supplied during registration.
+     * @param args Constructor arguments forwarded to the stored callable.
+     * @return Owned product, or nullptr for an unknown key or callable mismatch.
+     * @note The stored std::function signature must match Args exactly.
+     */
     template <class... Args,           // NOLINT
               std::enable_if_t<        // NOLINT
                   std::disjunction_v<  // NOLINT
@@ -112,6 +123,12 @@ class AutoRegFactory {
         }
     }
 
+    /** @brief Visit registered identifiers in the registry's unspecified order.
+     * @param func Callable accepting an identifier and returning Status.
+     * @param args Additional arguments forwarded on every invocation.
+     * @return One status per registered identifier, in visitation order.
+     * @note Repeated forwarding can consume rvalue arguments more than once.
+     */
     template <class Func, class... Args>
     static auto for_each_product(Func&& func, Args&&... args) noexcept
         -> std::vector<Status> {
@@ -128,6 +145,11 @@ class AutoRegFactory {
     inline static std::vector<std::any> _creator_collection{};
     inline static std::unordered_map<ProductID, ProductMeta> _registered_map{};
 
+    /** @brief Store a creator and its metadata in the shared registry.
+     * @param creator Product-creation callable stored with its concrete type.
+     * @param product_id Unique identifier; duplicates terminate the process.
+     * @param product_desc Description printed in registration diagnostics.
+     */
     template <
         class... PArgs,
         typename ProductCreator =
@@ -174,6 +196,11 @@ template <class Product,  // NOLINT
               std::is_base_of_v<typename Factory::ProductType, Product>>>
 class Register : private Factory::RegisterHelper {
   public:
+    /** @brief Register a product creator when this helper is constructed.
+     * @param name Registry key for the product.
+     * @param desc Human-readable product description.
+     * @tparam PArgs Argument types accepted by the registered creator.
+     */
     template <class... PArgs,    // NOLINT
               std::enable_if_t<  // NOLINT
                   std::is_constructible_v<Product, PArgs&&...>, int> = 0>
@@ -187,6 +214,7 @@ class Register : private Factory::RegisterHelper {
             PASS_NAME, PASS_DESC);
     };
 
+    /// @brief Destroy the helper; its static factory registration remains.
     virtual ~Register() = default;
 
   private:

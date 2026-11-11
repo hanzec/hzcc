@@ -2,8 +2,8 @@
 // Created by hanzech on 12/20/22.
 //
 
-#ifndef HZCC_STATUS_OR_INTERNAL_H
-#define HZCC_STATUS_OR_H
+#ifndef HZCC_UTILS_STATUS_TEST_STATUS_OR_H
+#define HZCC_UTILS_STATUS_TEST_STATUS_OR_H
 // Copyright 2020 The Abseil Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,10 +45,18 @@ using ::testing::VariantWith;
 using ::testing::status::IsOk;
 using ::testing::status::IsOkAndHolds;
 #else  // GTEST_HAS_STATUS_MATCHERS
+/** @brief Inspect a test result through a uniform status accessor.
+ * @param status Status or StatusOr result to inspect.
+ * @return Reference to the caller-owned status.
+ */
 inline const ::hzcc::Status& GetStatus(const ::hzcc::Status& status) {
     return status;
 }
 
+/** @brief Inspect a test result through a uniform status accessor.
+ * @param status Status or StatusOr result to inspect.
+ * @return Reference to the caller-owned status.
+ */
 template <typename T>
 inline const ::hzcc::Status& GetStatus(const ::hzcc::StatusOr<T>& status) {
     return status.status();
@@ -56,6 +64,8 @@ inline const ::hzcc::Status& GetStatus(const ::hzcc::StatusOr<T>& status) {
 
 // Monomorphic implementation of matcher IsOkAndHolds(m).  StatusOrType is a
 // reference to StatusOr<T>.
+/** @brief Typed gMock matcher checking a successful result against an inner value matcher.
+ */
 template <typename StatusOrType>
 class IsOkAndHoldsMatcherImpl
     : public ::testing::MatcherInterface<StatusOrType> {
@@ -63,21 +73,35 @@ class IsOkAndHoldsMatcherImpl
     typedef
         typename std::remove_reference<StatusOrType>::type::value_type value_type;
 
+    /** @brief Capture and adapt the inner value matcher.
+     * @param inner_matcher Matcher applied to the successful contained value.
+     */
     template <typename InnerMatcher>
     explicit IsOkAndHoldsMatcherImpl(InnerMatcher&& inner_matcher)
         : inner_matcher_(::testing::SafeMatcherCast<const value_type&>(
               std::forward<InnerMatcher>(inner_matcher))) {}
 
+    /** @brief Describe the successful match condition.
+     * @param os Stream receiving the matcher description.
+     */
     void DescribeTo(std::ostream* os) const override {
         *os << "is OK and has a value that ";
         inner_matcher_.DescribeTo(os);
     }
 
+    /** @brief Describe the negated match condition.
+     * @param os Stream receiving the mismatch description.
+     */
     void DescribeNegationTo(std::ostream* os) const override {
         *os << "isn't OK or has a value that ";
         inner_matcher_.DescribeNegationTo(os);
     }
 
+    /** @brief Check the result's success state and match its contained value.
+     * @param actual_value Result being tested.
+     * @return Whether the result satisfies this matcher.
+     * @param result_listener Listener receiving status and inner-value failure details.
+     */
     bool MatchAndExplain(
         StatusOrType actual_value,
         ::testing::MatchResultListener* result_listener) const override {
@@ -103,15 +127,23 @@ class IsOkAndHoldsMatcherImpl
 };
 
 // Implements IsOkAndHolds(m) as a polymorphic matcher.
+/** @brief Polymorphic gMock matcher combining success-state and contained-value checks.
+ */
 template <typename InnerMatcher>
 class IsOkAndHoldsMatcher {
   public:
+    /** @brief Capture and adapt the inner value matcher.
+     * @param inner_matcher Matcher applied to the successful contained value.
+     */
     explicit IsOkAndHoldsMatcher(InnerMatcher inner_matcher)
         : inner_matcher_(std::move(inner_matcher)) {}
 
     // Converts this polymorphic matcher to a monomorphic matcher of the
     // given type.  StatusOrType can be either StatusOr<T> or a
     // reference to StatusOr<T>.
+    /** @brief Bind the polymorphic matcher to the requested result type.
+     * @return Typed gMock matcher owning a corresponding matcher implementation.
+     */
     template <typename StatusOrType>
     operator ::testing::Matcher<StatusOrType>() const {  // NOLINT
         return ::testing::Matcher<StatusOrType>(
@@ -124,13 +156,25 @@ class IsOkAndHoldsMatcher {
 
 // Monomorphic implementation of matcher IsOk() for a given type T.
 // T can be Status, StatusOr<>, or a reference to either of them.
+/** @brief Typed gMock matcher checking only the result's success state.
+ */
 template <typename T>
 class MonoIsOkMatcherImpl : public ::testing::MatcherInterface<T> {
   public:
+    /** @brief Describe the successful match condition.
+     * @param os Stream receiving the matcher description.
+     */
     void DescribeTo(std::ostream* os) const override { *os << "is OK"; }
+    /** @brief Describe the negated match condition.
+     * @param os Stream receiving the mismatch description.
+     */
     void DescribeNegationTo(std::ostream* os) const override {
         *os << "is not OK";
     }
+    /** @brief Check the result's success state.
+     * @param actual_value Result being tested.
+     * @return Whether the result satisfies this matcher.
+     */
     bool MatchAndExplain(T actual_value,
                          ::testing::MatchResultListener*) const override {
         return GetStatus(actual_value).ok();
@@ -138,8 +182,13 @@ class MonoIsOkMatcherImpl : public ::testing::MatcherInterface<T> {
 };
 
 // Implements IsOk() as a polymorphic matcher.
+/** @brief Polymorphic gMock matcher accepting successful Status or StatusOr results.
+ */
 class IsOkMatcher {
   public:
+    /** @brief Bind the polymorphic matcher to the requested result type.
+     * @return Typed gMock matcher owning a corresponding matcher implementation.
+     */
     template <typename T>
     operator ::testing::Matcher<T>() const {  // NOLINT
         return ::testing::Matcher<T>(new MonoIsOkMatcherImpl<T>());
@@ -152,6 +201,10 @@ class IsOkMatcher {
 
 // Returns a gMock matcher that matches a StatusOr<> whose status is
 // OK and whose value matches the inner matcher.
+/** @brief Build a matcher for a successful result satisfying an inner value matcher.
+ * @param inner_matcher Matcher applied to the held value.
+ * @return Polymorphic success-and-value matcher.
+ */
 template <typename InnerMatcher>
 IsOkAndHoldsMatcher<typename std::decay<InnerMatcher>::type> IsOkAndHolds(
     InnerMatcher&& inner_matcher) {
@@ -160,21 +213,45 @@ IsOkAndHoldsMatcher<typename std::decay<InnerMatcher>::type> IsOkAndHolds(
 }
 
 // Returns a gMock matcher that matches a Status or StatusOr<> which is OK.
+/** @brief Build a matcher for any successful Status or StatusOr result.
+ * @return Polymorphic success-state matcher.
+ */
 inline IsOkMatcher IsOk() { return IsOkMatcher(); }
 #endif  // GTEST_HAS_STATUS_MATCHERS
 
+/** @brief Value fixture recording whether its latest initialization or assignment copied or moved.
+ */
 struct CopyDetector {
+    /** @brief Create a zero-valued detector with neither copy nor move recorded.
+     */
     CopyDetector() = default;
+    /** @brief Create a detector with an initial integer payload.
+     * @param xx Initial payload value.
+     */
     explicit CopyDetector(int xx) : x(xx) {}
+    /** @brief Copy the integer payload and record move construction.
+     * @param d Source detector; only its payload is read.
+     */
     CopyDetector(CopyDetector&& d) noexcept
         : x(d.x), copied(false), moved(true) {}
+    /** @brief Copy the integer payload and record copy construction.
+     * @param d Source detector; only its payload is read.
+     */
     CopyDetector(const CopyDetector& d) : x(d.x), copied(true), moved(false) {}
+    /** @brief Copy the integer payload and record copy assignment.
+     * @param c Source detector; only its payload is read.
+     * @return Reference to this detector.
+     */
     CopyDetector& operator=(const CopyDetector& c) {
         x = c.x;
         copied = true;
         moved = false;
         return *this;
     }
+    /** @brief Copy the integer payload and record move assignment.
+     * @param c Source detector; only its payload is read.
+     * @return Reference to this detector.
+     */
     CopyDetector& operator=(CopyDetector&& c) noexcept {
         x = c.x;
         copied = false;
@@ -186,39 +263,71 @@ struct CopyDetector {
     bool moved = false;
 };
 
+/** @brief Build a matcher for the detector payload and operation flags.
+ * @param a Expected integer payload.
+ * @param b Expected moved flag.
+ * @param c Expected copied flag.
+ * @return Matcher checking all three fields.
+ */
 testing::Matcher<const CopyDetector&> CopyDetectorHas(int a, bool b, bool c) {
     return AllOf(Field(&CopyDetector::x, a), Field(&CopyDetector::moved, b),
                  Field(&CopyDetector::copied, c));
 }
 
+/** @brief First polymorphic base used to test pointer adjustment through multiple inheritance.
+ */
 class Base1 {
   public:
+    /** @brief Provide polymorphic destruction for the pointer-conversion fixture.
+     */
     virtual ~Base1() {}
     int pad;
 };
 
+/** @brief Second polymorphic base used to test nonzero-offset base-pointer conversions.
+ */
 class Base2 {
   public:
+    /** @brief Provide polymorphic destruction for the pointer-conversion fixture.
+     */
     virtual ~Base2() {}
     int yetotherpad;
 };
 
+/** @brief Multiply inherited fixture used to verify StatusOr pointer conversions.
+ */
 class Derived : public Base1, public Base2 {
   public:
+    /** @brief Provide polymorphic destruction for the pointer-conversion fixture.
+     */
     virtual ~Derived() {}
     int evenmorepad;
 };
 
+/** @brief Value fixture that supports copying but intentionally hides copy assignment.
+ */
 class CopyNoAssign {
   public:
+    /** @brief Initialize the fixture's integer payload.
+     * @param value Initial payload.
+     */
     explicit CopyNoAssign(int value) : foo(value) {}
+    /** @brief Copy the fixture's integer payload.
+     * @param other Source fixture.
+     */
     CopyNoAssign(const CopyNoAssign& other) : foo(other.foo) {}
     int foo;
 
   private:
+    /** @brief Keep assignment inaccessible to exercise non-assignable value constraints.
+     * @note This private declaration has no definition.
+     */
     const CopyNoAssign& operator=(const CopyNoAssign&);
 };
 
+/** @brief Construct a successful result owning an integer initialized to zero.
+ * @return StatusOr carrying a new unique_ptr<int>.
+ */
 hzcc::StatusOr<std::unique_ptr<int>> ReturnUniquePtr() {
     // Uses implicit constructor from T&&
     return std::make_unique<int>(0);
@@ -458,8 +567,13 @@ TEST(StatusOr, TestValueCtor) {
     EXPECT_EQ(kI, *thing);
 }
 
+/** @brief Immutable integer fixture for in-place construction and emplacement tests.
+ */
 struct Foo {
     const int x;
+    /** @brief Initialize the integer fixture.
+     * @param y Initial integer value.
+     */
     explicit Foo(int y) : x(y) {}
 };
 
@@ -468,7 +582,13 @@ TEST(StatusOr, InPlaceConstruction) {
                 IsOkAndHolds(Field(&Foo::x, 10)));
 }
 
+/** @brief Fixture combining initializer-list construction with ownership of a move-only argument.
+ */
 struct InPlaceHelper {
+    /** @brief Copy initializer-list elements and take ownership of the pointer argument.
+     * @param xs Elements copied into the vector.
+     * @param yy Integer pointer whose ownership is moved into the fixture.
+     */
     InPlaceHelper(std::initializer_list<int> xs, std::unique_ptr<int> yy)
         : x(xs), y(std::move(yy)) {}
     const std::vector<int> x;
@@ -653,15 +773,25 @@ TEST(StatusOr, TestAssignmentStatusOKConverting) {
     }
 }
 
+/** @brief Integer-bearing source fixture for implicit and explicit converting constructors.
+ */
 struct A {
     int x;
 };
 
+/** @brief Destination fixture recording implicit conversion from an lvalue or rvalue A.
+ */
 struct ImplicitConstructibleFromA {
     int x;
     bool moved;
+    /** @brief Read A's integer payload and record lvalue construction.
+     * @param a Source fixture whose payload is read.
+     */
     ImplicitConstructibleFromA(const A& a)  // NOLINT
         : x(a.x), moved(false) {}
+    /** @brief Read A's integer payload and record rvalue construction.
+     * @param a Source fixture whose payload is read.
+     */
     ImplicitConstructibleFromA(A&& a)  // NOLINT
         : x(a.x), moved(true) {}
 };
@@ -679,10 +809,18 @@ TEST(StatusOr, ImplicitConvertingConstructor) {
                            Field(&ImplicitConstructibleFromA::moved, false))));
 }
 
+/** @brief Destination fixture requiring explicit conversion and recording A's value category.
+ */
 struct ExplicitConstructibleFromA {
     int x;
     bool moved;
+    /** @brief Read A's integer payload and record lvalue construction.
+     * @param a Source fixture whose payload is read.
+     */
     explicit ExplicitConstructibleFromA(const A& a) : x(a.x), moved(false) {}
+    /** @brief Read A's integer payload and record rvalue construction.
+     * @param a Source fixture whose payload is read.
+     */
     explicit ExplicitConstructibleFromA(A&& a) : x(a.x), moved(true) {}
 };
 
@@ -704,13 +842,26 @@ TEST(StatusOr, ExplicitConvertingConstructor) {
                            Field(&ExplicitConstructibleFromA::moved, false))));
 }
 
+/** @brief Boolean fixture accepting implicit construction for conversion-ranking tests.
+ */
 struct ImplicitConstructibleFromBool {
+    /** @brief Initialize the boolean fixture.
+     * @param y Initial boolean value.
+     */
     ImplicitConstructibleFromBool(bool y) : x(y) {}  // NOLINT
     bool x = false;
 };
 
+/** @brief Boolean fixture with an explicit constructor and implicit conversion back to bool.
+ */
 struct ConvertibleToBool {
+    /** @brief Initialize the boolean fixture.
+     * @param y Initial boolean value.
+     */
     explicit ConvertibleToBool(bool y) : x(y) {}
+    /** @brief Return the stored boolean for implicit-conversion tests.
+     * @return The fixture's x value.
+     */
     operator bool() const { return x; }  // NOLINT
     bool x = false;
 };
@@ -790,8 +941,13 @@ TEST(StatusOr, ConstExplicitConstruction) {
                 IsOkAndHolds(false));
 }
 
+/** @brief Integer fixture requiring explicit construction.
+ */
 struct ExplicitConstructibleFromInt {
     int x;
+    /** @brief Initialize the integer fixture.
+     * @param y Initial integer value.
+     */
     explicit ExplicitConstructibleFromInt(int y) : x(y) {}
 };
 
@@ -867,23 +1023,53 @@ TEST(StatusOr, NestedStatusOrCopyAndMoveAssignment) {
     EXPECT_THAT(a, Not(IsOk()));
 }
 
+/** @brief Empty fixture exposing copy construction and copy assignment.
+ */
 struct Copyable {
+    /** @brief Default-construct the empty trait-test fixture.
+     */
     Copyable() {}
+    /** @brief Allow copy construction of the empty fixture.
+     */
     Copyable(const Copyable&) {}
+    /** @brief Allow copy assignment of the empty fixture.
+     * @return Reference to this fixture.
+     */
     Copyable& operator=(const Copyable&) { return *this; }
 };
 
+/** @brief Empty fixture exposing move operations while implicitly disabling copying.
+ */
 struct MoveOnly {
+    /** @brief Default-construct the empty trait-test fixture.
+     */
     MoveOnly() {}
+    /** @brief Allow move construction of the empty fixture.
+     */
     MoveOnly(MoveOnly&&) {}
+    /** @brief Allow move assignment of the empty fixture.
+     * @return Reference to this fixture.
+     */
     MoveOnly& operator=(MoveOnly&&) { return *this; }
 };
 
+/** @brief Default-constructible fixture with copy and move operations explicitly disabled.
+ */
 struct NonMovable {
+    /** @brief Default-construct the empty trait-test fixture.
+     */
     NonMovable() {}
+    /** @brief Disable copy construction for trait tests.
+     */
     NonMovable(const NonMovable&) = delete;
+    /** @brief Disable move construction for trait tests.
+     */
     NonMovable(NonMovable&&) = delete;
+    /** @brief Disable copy assignment for trait tests.
+     */
     NonMovable& operator=(const NonMovable&) = delete;
+    /** @brief Disable move assignment for trait tests.
+     */
     NonMovable& operator=(NonMovable&&) = delete;
 };
 
@@ -1014,8 +1200,11 @@ TEST(StatusOr, UniquePtrImplicitAssignment) {
 }
 
 TEST(StatusOr, Pointer) {
+    /// @brief Local base type for pointer-conversion trait checks.
     struct A {};
+    /// @brief Local derived fixture permitting conversion of its pointer to A.
     struct B : public A {};
+    /// @brief Privately derived fixture preventing an accessible pointer conversion to A.
     struct C : private A {};
 
     EXPECT_TRUE((std::is_constructible<hzcc::StatusOr<A*>, B*>::value));
@@ -1138,33 +1327,55 @@ TEST(StatusOr, SelfAssignment) {
 // These types form the overload sets of the constructors and the assignment
 // operators of `MockValue`. They distinguish construction from assignment,
 // lvalue from rvalue.
+/** @brief Tag selecting the copy-style construction and assignment paths of MockValue.
+ */
 struct FromConstructibleAssignableLvalue {};
+/** @brief Tag selecting the rvalue construction and assignment paths of MockValue.
+ */
 struct FromConstructibleAssignableRvalue {};
+/** @brief Tag allowing MockValue construction but no direct assignment overload.
+ */
 struct FromImplicitConstructibleOnly {};
+/** @brief Tag allowing MockValue assignment but no construction overload.
+ */
 struct FromAssignableOnly {};
 
 // This class is for testing the forwarding value assignments of `StatusOr`.
 // `from_rvalue` indicates whether the constructor or the assignment taking
 // rvalue reference is called. `from_assignment` indicates whether any
 // assignment is called.
+/** @brief Fixture recording the value category and assignment path selected by forwarding.
+ */
 struct MockValue {
     // Constructs `MockValue` from `FromConstructibleAssignableLvalue`.
+    /** @brief Record lvalue construction selected by the source tag.
+     */
     MockValue(const FromConstructibleAssignableLvalue&)  // NOLINT
         : from_rvalue(false), assigned(false) {}
     // Constructs `MockValue` from `FromConstructibleAssignableRvalue`.
+    /** @brief Record rvalue construction selected by the source tag.
+     */
     MockValue(FromConstructibleAssignableRvalue&&)  // NOLINT
         : from_rvalue(true), assigned(false) {}
     // Constructs `MockValue` from `FromImplicitConstructibleOnly`.
     // `MockValue` is not assignable from `FromImplicitConstructibleOnly`.
+    /** @brief Record lvalue construction selected by the source tag.
+     */
     MockValue(const FromImplicitConstructibleOnly&)  // NOLINT
         : from_rvalue(false), assigned(false) {}
     // Assigns `FromConstructibleAssignableLvalue`.
+    /** @brief Record lvalue assignment selected by the source tag.
+     * @return Reference to this fixture.
+     */
     MockValue& operator=(const FromConstructibleAssignableLvalue&) {
         from_rvalue = false;
         assigned = true;
         return *this;
     }
     // Assigns `FromConstructibleAssignableRvalue` (rvalue only).
+    /** @brief Record rvalue assignment selected by the source tag.
+     * @return Reference to this fixture.
+     */
     MockValue& operator=(FromConstructibleAssignableRvalue&&) {
         from_rvalue = true;
         assigned = true;
@@ -1172,6 +1383,9 @@ struct MockValue {
     }
     // Assigns `FromAssignableOnly`, but not constructible from
     // `FromAssignableOnly`.
+    /** @brief Record lvalue assignment selected by the source tag.
+     * @return Reference to this fixture.
+     */
     MockValue& operator=(const FromAssignableOnly&) {
         from_rvalue = false;
         assigned = true;
@@ -1515,6 +1729,9 @@ TEST(StatusOr, MoveOnlyValueOrDefault) {
                 Pointee(-1));
 }
 
+/** @brief Create a successful integer result for IgnoreError tests.
+ * @return A StatusOr containing 100.
+ */
 static hzcc::StatusOr<int> MakeStatus() { return 100; }
 
 TEST(StatusOr, TestIgnoreError) { MakeStatus().IgnoreError(); }
@@ -1542,7 +1759,12 @@ TEST(StatusOr, EqualityOperator) {
     }
 }
 
+/** @brief Trivial value fixture whose equality is independent of object identity.
+ */
 struct MyType {
+    /** @brief Treat every instance of this value fixture as equal.
+     * @return true regardless of the other instance.
+     */
     bool operator==(const MyType&) const { return true; }
 };
 
@@ -1550,24 +1772,45 @@ enum class ConvTraits { kNone = 0, kImplicit = 1, kExplicit = 2 };
 
 // This class has conversion operator to `StatusOr<T>` based on value of
 // `conv_traits`.
+/** @brief Configure a fixture's implicit, explicit, or absent conversion to StatusOr<T>.
+ * @tparam T Result value type used by the conversion tests.
+ */
 template <typename T, ConvTraits conv_traits = ConvTraits::kNone>
 struct StatusOrConversionBase {};
 
+/** @brief Configure a fixture's implicit, explicit, or absent conversion to StatusOr<T>.
+ * @tparam T Result value type used by the conversion tests.
+ */
 template <typename T>
 struct StatusOrConversionBase<T, ConvTraits::kImplicit> {
+    /** @brief Produce an invalid-argument result to identify the selected StatusOr conversion.
+     * @return The test error identifying this conversion path.
+     */
     operator hzcc::StatusOr<T>() const& {  // NOLINT
         return absl::InvalidArgumentError("conversion to hzcc::StatusOr");
     }
+    /** @brief Produce an invalid-argument result to identify the selected StatusOr conversion.
+     * @return The test error identifying this conversion path.
+     */
     operator hzcc::StatusOr<T>() && {  // NOLINT
         return absl::InvalidArgumentError("conversion to hzcc::StatusOr");
     }
 };
 
+/** @brief Configure a fixture's implicit, explicit, or absent conversion to StatusOr<T>.
+ * @tparam T Result value type used by the conversion tests.
+ */
 template <typename T>
 struct StatusOrConversionBase<T, ConvTraits::kExplicit> {
+    /** @brief Produce an invalid-argument result to identify the selected StatusOr conversion.
+     * @return The test error identifying this conversion path.
+     */
     explicit operator hzcc::StatusOr<T>() const& {
         return absl::InvalidArgumentError("conversion to hzcc::StatusOr");
     }
+    /** @brief Produce an invalid-argument result to identify the selected StatusOr conversion.
+     * @return The test error identifying this conversion path.
+     */
     explicit operator hzcc::StatusOr<T>() && {
         return absl::InvalidArgumentError("conversion to hzcc::StatusOr");
     }
@@ -1575,43 +1818,82 @@ struct StatusOrConversionBase<T, ConvTraits::kExplicit> {
 
 // This class has conversion operator to `T` based on the value of
 // `conv_traits`.
+/** @brief Configure a fixture's implicit, explicit, or absent conversion to a stored T value.
+ * @tparam T Value type exposed by the conversion tests.
+ */
 template <typename T, ConvTraits conv_traits = ConvTraits::kNone>
 struct ConversionBase {};
 
+/** @brief Configure a fixture's implicit, explicit, or absent conversion to a stored T value.
+ * @tparam T Value type exposed by the conversion tests.
+ */
 template <typename T>
 struct ConversionBase<T, ConvTraits::kImplicit> {
+    /** @brief Copy the stored fixture value through the conversion operator.
+     * @return The contained T value.
+     */
     operator T() const& { return t; }         // NOLINT
+    /** @brief Move the stored fixture value through the conversion operator.
+     * @return The contained T value.
+     */
     operator T() && { return std::move(t); }  // NOLINT
     T t;
 };
 
+/** @brief Configure a fixture's implicit, explicit, or absent conversion to a stored T value.
+ * @tparam T Value type exposed by the conversion tests.
+ */
 template <typename T>
 struct ConversionBase<T, ConvTraits::kExplicit> {
+    /** @brief Copy the stored fixture value through the conversion operator.
+     * @return The contained T value.
+     */
     explicit operator T() const& { return t; }
+    /** @brief Move the stored fixture value through the conversion operator.
+     * @return The contained T value.
+     */
     explicit operator T() && { return std::move(t); }
     T t;
 };
 
 // This class has conversion operator to `hzcc::Status` based on the value of
 // `conv_traits`.
+/** @brief Configure a fixture's implicit, explicit, or absent conversion to an error Status.
+ */
 template <ConvTraits conv_traits = ConvTraits::kNone>
 struct StatusConversionBase {};
 
+/** @brief Configure a fixture's implicit, explicit, or absent conversion to an error Status.
+ */
 template <>
 struct StatusConversionBase<ConvTraits::kImplicit> {
+    /** @brief Produce an internal error to identify the selected Status conversion.
+     * @return The test error identifying this conversion path.
+     */
     operator hzcc::Status() const& {  // NOLINT
         return absl::InternalError("conversion to Status");
     }
+    /** @brief Produce an internal error to identify the selected Status conversion.
+     * @return The test error identifying this conversion path.
+     */
     operator hzcc::Status() && {  // NOLINT
         return absl::InternalError("conversion to Status");
     }
 };
 
+/** @brief Configure a fixture's implicit, explicit, or absent conversion to an error Status.
+ */
 template <>
 struct StatusConversionBase<ConvTraits::kExplicit> {
+    /** @brief Produce an internal error to identify the selected Status conversion.
+     * @return The test error identifying this conversion path.
+     */
     explicit operator hzcc::Status() const& {  // NOLINT
         return absl::InternalError("conversion to Status");
     }
+    /** @brief Produce an internal error to identify the selected Status conversion.
+     * @return The test error identifying this conversion path.
+     */
     explicit operator hzcc::Status() && {  // NOLINT
         return absl::InternalError("conversion to Status");
     }
@@ -1622,6 +1904,11 @@ static constexpr int kConvToStatusOr = 2;
 static constexpr int kConvToT = 4;
 static constexpr int kConvExplicit = 8;
 
+/** @brief Decode conversion availability and explicitness from a test configuration.
+ * @param bit Bit selecting a conversion family.
+ * @param config Combined conversion flags.
+ * @return No conversion, implicit conversion, or explicit conversion.
+ */
 constexpr ConvTraits GetConvTraits(int bit, int config) {
     return (config & bit) == 0
                ? ConvTraits::kNone
@@ -1631,13 +1918,22 @@ constexpr ConvTraits GetConvTraits(int bit, int config) {
 
 // This class conditionally has conversion operator to `hzcc::Status`, `T`,
 // `StatusOr<T>`, based on values of the template parameters.
+/** @brief Combine value, status, and StatusOr conversions for overload-ranking tests.
+ * @tparam T Value type participating in conversion.
+ * @tparam config Bit mask selecting available conversions and their explicitness.
+ */
 template <typename T, int config>
 struct CustomType
     : StatusOrConversionBase<T, GetConvTraits(kConvToStatusOr, config)>,
       ConversionBase<T, GetConvTraits(kConvToT, config)>,
       StatusConversionBase<GetConvTraits(kConvToStatus, config)> {};
 
+/** @brief Fixture exposing a templated conversion operator to any StatusOr value type.
+ */
 struct ConvertibleToAnyStatusOr {
+    /** @brief Produce an invalid-argument result to identify the selected StatusOr conversion.
+     * @return The test error identifying this conversion path.
+     */
     template <typename T>
     operator hzcc::StatusOr<T>() const {  // NOLINT
         return absl::InvalidArgumentError("Conversion to hzcc::StatusOr");
@@ -1842,4 +2138,5 @@ TEST(StatusOr, AssignmentFromTypeConvertibleToStatus) {
         EXPECT_EQ(statusor.status(), static_cast<hzcc::Status>(v));
     }
 }
-#endif  // HZCC_STATUS_OR_INTERNAL_H
+}  // namespace
+#endif  // HZCC_UTILS_STATUS_TEST_STATUS_OR_H

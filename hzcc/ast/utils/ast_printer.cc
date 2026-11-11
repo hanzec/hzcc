@@ -8,7 +8,7 @@
 
 #include <algorithm>
 #include <array>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 #include <memory>
 #include <ostream>
 #include <utility>
@@ -413,12 +413,14 @@ Status AstPrinter::visit(BitwiseExpr* p_expr) {
 Status AstPrinter::visit(hzcc::ast::CompilationUnit* p_expr) {
     _out << "Compilation Unit [" << p_expr->GetFileName() << "]";
     auto ret = p_expr->visit_all_decl(
+        // Borrow each declaration and print it with this visitor's indentation.
         [this](IDeclStmt* decl) -> Status {
             add_indent(" |");
             HZCC_CHECK_OK_OR_RETURN(decl->visit(*this));
             remove_indent();
             return NoError();
         },
+        // Stop traversing when a declaration reports an error.
         [](const Status& ret) -> bool { return ret.ok(); });
 
     if (!ret.ok()) {

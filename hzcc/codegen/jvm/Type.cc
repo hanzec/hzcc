@@ -7,6 +7,13 @@
 #include "AST/type/ArrayType.h"
 namespace Hzcc::Codegen::JVM {
 
+/**
+ * @brief Map an already normalized primitive spelling to a JVM instruction prefix.
+ * @param typename_ Unqualified primitive spelling recognized by this helper.
+ * @param replace_char Map char to the integer prefix when true.
+ * @return Lowercase instruction type prefix for the recognized primitive.
+ * @pre typename_ names one of the explicitly supported primitive types.
+ */
 static inline char GetJVMTypename(const std::string &typename_,
                                   bool replace_char = false) {
     // get actual type name
@@ -37,6 +44,12 @@ static inline char GetJVMTypename(const std::string &typename_,
     }
 }
 
+/**
+ * @brief Remove recognized keyword substrings and pointer, reference, and array punctuation.
+ * @param typename_ Type spelling copied before normalization.
+ * @return A copy with each matched keyword occurrence and all *, &, brackets and spaces removed.
+ * @note Keyword removal uses substring matching and is not limited to leading qualifiers.
+ */
 static inline std::string RemoveAttribute(const std::string &typename_) {
     auto final_type = typename_;
 
@@ -73,6 +86,10 @@ static inline std::string RemoveAttribute(const std::string &typename_) {
     return final_type;
 }
 
+/**
+ * @brief Initialize Type with the supplied backend state.
+ * @param type_name Borrowed AST type handle; it must outlive this object.
+ */
 Type::Type(const std::shared_ptr<AST::Type> &type_name)
     : _type_name(type_name),
       _raw_type_name(RemoveAttribute(type_name->GetName())) {
@@ -83,15 +100,52 @@ Type::Type(const std::shared_ptr<AST::Type> &type_name)
         << "type_name is nullptr, please check your code";
 }
 
+/**
+ * @brief Test whether the retained AST type is void.
+ * @return True when the stated condition holds; otherwise false.
+ */
 bool Type::IsVoid() const { return _type_name->IsVoid(); }
+/**
+ * @brief Test whether the retained AST type is char.
+ * @return True when the stated condition holds; otherwise false.
+ */
 bool Type::IsChar() const { return _type_name->IsChar(); }
+/**
+ * @brief Test whether the retained AST type is float.
+ * @return True when the stated condition holds; otherwise false.
+ */
 bool Type::IsFloat() const { return _type_name->IsFloat(); }
+/**
+ * @brief Test whether the retained AST type is double.
+ * @return True when the stated condition holds; otherwise false.
+ */
 bool Type::IsDouble() const { return _type_name->IsDouble(); }
+/**
+ * @brief Test whether the retained AST type is int.
+ * @return True when the stated condition holds; otherwise false.
+ */
 bool Type::IsInt() const { return _type_name->IsInteger(); }
+/**
+ * @brief Test whether the retained AST type is long.
+ * @return True when the stated condition holds; otherwise false.
+ */
 bool Type::IsLong() const { return _type_name->IsLong(); }
+/**
+ * @brief Test whether the retained AST type is short.
+ * @return True when the stated condition holds; otherwise false.
+ */
 bool Type::IsShort() const { return _type_name->IsShort(); }
+/**
+ * @brief Return the retained AST type name.
+ * @return The original AST type spelling.
+ */
 std::string Type::GetName() const { return _type_name->GetName(); }
 
+/**
+ * @brief Return the JVM descriptor for the retained AST type.
+ * @param replace_char Use the integer representation for character values when true.
+ * @return JVM type character, prefixed with [ for an array.
+ */
 std::string Type::GetTypeIdentifier(
     bool replace_char) {  // if type is a array type, return the array
                           // type name

@@ -1,12 +1,13 @@
 //
 // Created by chen_ on 2022/1/26.
 //
+#include <absl/strings/str_cat.h>
 #include <cctype>
 #include <cstddef>
 #include <cstdint>
 #include <istream>
 #include <limits>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 #include <memory>
 #include <regex>
 #include <stdexcept>
@@ -27,6 +28,13 @@
 namespace hzcc::lexical {
 
 namespace {
+/**
+ * @brief Match an entire string view without first allocating a string.
+ * @param sv Character range to match.
+ * @param e Regular expression used for the match.
+ * @param flags Standard regular-expression matching flags.
+ * @return True when the complete range matches the expression.
+ */
 inline bool regex_match(
     std::string_view sv,  // NOLINT
     const std::regex& e,  // NOLINT
@@ -48,7 +56,7 @@ inline bool regex_match(
         try {                                                                       \
             if constexpr (std::is_integral_v<REQUIRED_TYPE>) {                      \
                 if constexpr (BASE == 2) {                                          \
-                    std::stoll(std::string((INPUT).substr(1)), nullptr, BASE);      \
+                    std::stoll(std::string((INPUT).substr(2)), nullptr, BASE);      \
                 } else {                                                            \
                     std::stoll(std::string((INPUT)), nullptr, BASE);                \
                 }                                                                   \
@@ -66,12 +74,23 @@ inline bool regex_match(
         }                                                                           \
     } while (0);
 
+/**
+ * @brief Mutable lexer position and block-comment state shared across source lines.
+ * @note Rows are one-based; columns index the current line from zero.
+ */
 typedef struct AnalyzeCtx_t {
     size_t row = 1, col = 0;
     bool multi_line_comment = false;
     std::pair<int, int> multiple_line_comment_start = {0, 0};
 } AnalyzeCtx;
 
+/**
+ * @brief Append one punctuation or operator token at the current cursor.
+ * @param tokens Destination receiving recognized tokens.
+ * @param line Current source line; its backing storage must remain valid during the call.
+ * @param ctx Non-null shared lexer state. Cursor points to a symbol; it advances to the last character of a multi-character operator.
+ * @return Always OK after appending the classified token.
+ */
 ALWAYS_INLINE static Status SymbolHandler(TokenList& tokens, const std::string_view& line,
                                           std::shared_ptr<AnalyzeCtx>& ctx) {
     VLOG(LEXICAL_LOG) << "SymbolHandler: Start at line:" << ctx->row
@@ -98,6 +117,13 @@ ALWAYS_INLINE static Status SymbolHandler(TokenList& tokens, const std::string_v
     return NoError();
 }
 
+/**
+ * @brief Skip a comment or delegate a non-comment slash to the symbol handler.
+ * @param tokens Destination receiving recognized tokens.
+ * @param line Current source line; its backing storage must remain valid during the call.
+ * @param ctx Non-null shared lexer state. Cursor points to a slash with an accessible following character; block-comment state may be updated.
+ * @return OK after advancing the cursor or processing the slash operator.
+ */
 ALWAYS_INLINE static Status CommentHandler(TokenList& tokens,
                                            const std::string_view& line,
                                            std::shared_ptr<AnalyzeCtx>& ctx) {
@@ -126,6 +152,13 @@ ALWAYS_INLINE static Status CommentHandler(TokenList& tokens,
     return NoError();
 }
 
+/**
+ * @brief Decode a quoted string literal and append its token.
+ * @param tokens Destination receiving recognized tokens.
+ * @param line Current source line; its backing storage must remain valid during the call.
+ * @param ctx Non-null shared lexer state. Cursor points to the opening double quote and advances through the closing quote.
+ * @return OK after appending the literal, or a lexical error for a missing closing quote.
+ */
 ALWAYS_INLINE static Status StrLitHandler(TokenList& tokens, const std::string_view& line,
                                           std::shared_ptr<AnalyzeCtx>& ctx) {
     VLOG(LEXICAL_LOG) << "StrLitHandler: Start at line:" << ctx->row
@@ -175,6 +208,13 @@ ALWAYS_INLINE static Status StrLitHandler(TokenList& tokens, const std::string_v
     return NoError();
 }
 
+/**
+ * @brief Decode a single-character literal and append its token.
+ * @param tokens Destination receiving recognized tokens.
+ * @param line Current source line; its backing storage must remain valid during the call.
+ * @param ctx Non-null shared lexer state. Cursor points to the opening single quote and advances to the closing quote.
+ * @return OK after appending the literal, or a lexical error for an invalid character constant.
+ */
 ALWAYS_INLINE static Status CharLitHandler(TokenList& tokens,
                                            const std::string_view& line,
                                            std::shared_ptr<AnalyzeCtx>& ctx) {
@@ -218,6 +258,13 @@ ALWAYS_INLINE static Status CharLitHandler(TokenList& tokens,
     return NoError();
 }
 
+/**
+ * @brief Scan and validate an integer or real literal, then append its token.
+ * @param tokens Destination receiving recognized tokens.
+ * @param line Current source line; its backing storage must remain valid during the call.
+ * @param ctx Non-null shared lexer state. Cursor points to the first digit and advances to the last consumed character.
+ * @return OK after appending the literal, or a format, range, or conversion error.
+ */
 ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens, const std::string_view& line,
                                           std::shared_ptr<AnalyzeCtx>& ctx) {
     VLOG(LEXICAL_LOG) << "NumLitHandler: Start at line:" << ctx->row
@@ -369,6 +416,13 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens, const std::string_v
     return NoError();
 }
 
+/**
+ * @brief Tokenize one source line from the current cursor.
+ * @param tokens Destination receiving recognized tokens.
+ * @param line Current source line; its backing storage must remain valid during the call.
+ * @param ctx Non-null shared lexer state. Cursor advances as tokens and comments are consumed.
+ * @return OK after scanning the line, or the first handler error.
+ */
 ALWAYS_INLINE static Status AnalyzeLine(TokenList& tokens, const std::string_view& line,
                                         std::shared_ptr<AnalyzeCtx>& ctx) {
     for (; ctx->col < line.length(); ctx->col++) {

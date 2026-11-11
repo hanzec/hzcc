@@ -37,7 +37,7 @@ bool ArrayType::is_same(const Type& type) const {
     if (type.is<TypeCategory::Array>()) {
         auto other = dynamic_cast<const ArrayType*>(&type);
 
-        DLOG_ASSERT(other != nullptr)
+        DCHECK(other != nullptr)
             << "dynamic cast to array type failed when is_arr() is true";
 
         return GetBaseType() == other->GetBaseType();

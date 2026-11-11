@@ -9,6 +9,11 @@ namespace Hzcc::Codegen {
 constexpr std::array<const char*, AST::kAssignType_Max> kAssignOPASM = {
     "add", "sub", "mul", "div", "shl", "shr", "and", "or", "xor"};
 
+/**
+ * @brief Emit JVM assembly for a AssignExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status JVMGenerator::visit(AST::AssignExpr* p_expr) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

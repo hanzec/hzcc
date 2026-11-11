@@ -48,6 +48,9 @@ using StmtPtr = std::unique_ptr<Stmt>;
  */
 class Stmt {
   public:
+    /**
+     * @brief Destroy a concrete AST node through the common statement interface.
+     */
     virtual ~Stmt() = default;
 
     /**
@@ -143,14 +146,17 @@ class Expr : public Stmt {
 
     [[nodiscard]] virtual bool IsReturnLValue() const { return false; }
 
+    /**
+     * @brief Query the expression's compile-time value without evaluating it.
+     * @return A deduced constant, or std::nullopt when no value is available.
+     */
     [[nodiscard]] virtual std::optional<DeduceValue> GetDeducedValue() const {
         return std::nullopt;
     };
 
     /**
-     * @brief Determine whether the node is used to access element in array or
-     * not.
-     * @return
+     * @brief Identify array-element access for code generation.
+     * @return true for an array-subscript expression, false by default.
      */
 
     [[nodiscard]] virtual bool IsDereference() const { return false; }
@@ -163,6 +169,12 @@ class Expr : public Stmt {
     [[nodiscard]] virtual std::shared_ptr<QualType> type() const = 0;
 
   protected:
+    /**
+     * @brief Initialize the common expression-node identity.
+     * @tparam N Extent of the node-name character array.
+     * @param loc Source position of the expression.
+     * @param name Node label whose storage must outlive the expression.
+     */
     template <int N>
     Expr(const Position& loc, const char (&name)[N])
         : Stmt(loc, StmtType::EXPR, name) {}
@@ -177,12 +189,9 @@ using ExprPtr = std::unique_ptr<Expr>;
 class TypeProxyExpr : public Expr {
   public:
     /**
-     * @brief Construct a new TypeProxyExpr object. The TypeProxyExpr is
-     * used to carry the type information. The type information is used to
-     * determine the type of the expression.
-     * @param type the type of the expression
-     * @param expr the expression
-     * @param loc location of the expression
+     * @brief Carry a shared qualified type as an expression node.
+     * @param loc Source position associated with the type.
+     * @param type Shared qualified type retained by the proxy.
      */
     TypeProxyExpr(const Position& loc,  // NO_LINT
                   std::shared_ptr<QualType> type)
@@ -331,11 +340,12 @@ class IDeclStmt : public Stmt {
 
   protected:
     /**
-     * @brief Constructor of DeclStmt, this abstract class should never
-     * initialized directly.
-     * @param node_name to_str of the node
-     * @param name to_str of the declaration
-     * @param location location of the declaration
+     * @brief Initialize the common declaration-node metadata.
+     * @tparam N Extent of the borrowed node-name array.
+     * @param _decl_type Declaration category.
+     * @param node_name Node label whose storage outlives this declaration.
+     * @param name Declaration identifier copied into the node.
+     * @param location Source position of the declaration.
      */
     template <int N>
     IDeclStmt(DeclType _decl_type,         // NOLINT
@@ -350,7 +360,7 @@ class IDeclStmt : public Stmt {
          *  #####################################################################
          */
         HZCC_RUNTIME_CHECK_BLOCK({
-            LOG_IF(FATAL, !_decl_name.empty())
+            LOG_IF(FATAL, _decl_name.empty())
                 << this->UniqueName() << "decl to_str is empty";
         })
     }
@@ -443,12 +453,8 @@ class EmptyStmt : public Stmt {
 class ForStmt : public Stmt {
   public:
     /**
-     * @brief Constructor of ForStmt
-     * @param init initial expression of the for loop
-     * @param cond condition of the for loop
-     * @param step step expression of the for loop
-     * @param body body of the for loop
-     * @param location location of the for loop
+     * @brief Construct a for loop with empty placeholder clauses.
+     * @param location Source position of the for statement.
      */
     explicit ForStmt(const Position& location)
         : Stmt(location, StmtType::CTRL, "ForStmt"){};
@@ -755,8 +761,8 @@ class ParamVarDecl : public IDeclStmt {
     Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
     /**
-     * @brief Get the type proxy expr of the parameter
-     * @return
+     * @brief Get the type proxy expr of the parameter.
+     * @return Reference to the owned type proxy, allowing AST passes to replace it.
      */
     [[nodiscard]] std::unique_ptr<TypeProxyExpr>& type_expr() { return _type; };
 
@@ -778,12 +784,10 @@ class ParamVarDecl : public IDeclStmt {
 class FieldDecl : public IDeclStmt {
   public:
     /**
-     * @brief Construct a new Var Decl object
-     * @note this constructor will causing exit(-1) if type is nullptr when
-     * compiling in debug mode
-     * @param type The type of the variable
-     * @param attrs The attributes of the variable
-     * @param name The to_str of the variable
+     * @brief Construct a named record-field declaration.
+     * @param loc Source position of the field.
+     * @param name Field identifier copied into the node.
+     * @param type Non-null type-proxy expression whose ownership is transferred.
      */
     FieldDecl(const Position& loc,                  // NOLINT
               std::string_view name,                // NOLINT
@@ -804,8 +808,8 @@ class FieldDecl : public IDeclStmt {
     ;
 
     /**
-     * @brief Get the type proxy expr of the field
-     * @return
+     * @brief Get the type proxy expr of the field.
+     * @return Reference to the owned type proxy, allowing AST passes to replace it.
      */
     [[nodiscard]] std::unique_ptr<TypeProxyExpr>& type_expr() { return _type; };
 
@@ -850,8 +854,8 @@ class RecordDecl : public IDeclStmt {
     Status visit(Visitor& visitor) override;
 
     /**
-     * @brief Get the type ptr of the struct
-     * @return
+     * @brief Get the qualified type of the record declaration.
+     * @return The qualified type held by the record's type proxy.
      */
     [[nodiscard]] std::shared_ptr<QualType> type() const override {
         return _type->type();
@@ -870,13 +874,11 @@ using RecordDEclPtr = std::unique_ptr<ast::RecordDecl>;
 class VarDecl : public IDeclStmt {
   public:
     /**
-     * @brief Construct a new Var Decl object
-     * @note this constructor will causing exit(-1) if type is nullptr when
-     * compiling in debug mode
-     * @param type The type of the variable
-     * @param attrs The attributes of the variable
-     * @param name The to_str of the variable
-     * @param init The initial value of the variable (optional)
+     * @brief Construct a variable declaration with an optional initializer.
+     * @param loc Source position of the declaration.
+     * @param name Variable identifier copied into the node.
+     * @param init Initializer expression whose ownership is transferred; may be null.
+     * @param type Non-null type-proxy expression whose ownership is transferred.
      */
     VarDecl(const Position& loc,         // NOLINT
             std::string_view name,       // NOLINT
@@ -919,7 +921,7 @@ class VarDecl : public IDeclStmt {
      */
     [[nodiscard]] std::unique_ptr<Expr>& init_expr() {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        DLOG_ASSERT(_init_expr != nullptr) << "init cast is nullptr";
+        DCHECK(_init_expr != nullptr) << "init cast is nullptr";
 #endif
         return _init_expr;
     };
@@ -951,6 +953,11 @@ class VarDecl : public IDeclStmt {
  */
 class DeclStmt : public IDeclStmt {
   public:
+    /**
+     * @brief Group variable declarations from a single declaration statement.
+     * @param loc Source position of the declaration.
+     * @param decl_list Nonempty declaration list whose ownership is transferred here.
+     */
     DeclStmt(const Position& loc,  // NOLINT
              std::list<std::unique_ptr<VarDecl>> decl_list)
         : IDeclStmt(DeclType::COMB_VAR, "DeclStmt", "NO_NAME", loc),
@@ -1017,10 +1024,23 @@ class FuncDeclStmt : public IDeclStmt {
      */
     Status visit(Visitor& visitor) override;
 
+    /**
+     * @brief Install a function definition body.
+     * @param declaration Body whose ownership is transferred on success.
+     * @return false for nullptr; otherwise true after replacing any previous body.
+     */
     bool set_body(std::unique_ptr<ast::CompoundStmt> declaration);
 
+    /**
+     * @brief Access the function's owned body slot.
+     * @return Mutable reference to the unique pointer; it can be null for a prototype.
+     */
     std::unique_ptr<ast::CompoundStmt>& body_stmt();
 
+    /**
+     * @brief Access parameter declarations in source order.
+     * @return Mutable reference to the owned parameter list.
+     */
     std::list<std::unique_ptr<ParamVarDecl>>& params();
 
     /**
@@ -1029,12 +1049,25 @@ class FuncDeclStmt : public IDeclStmt {
      */
     [[nodiscard]] bool has_body() const override;
 
+    /**
+     * @brief Append one parameter declaration to the function signature.
+     * @param type Parameter whose ownership is transferred on success.
+     * @return false for nullptr, otherwise true after insertion.
+     */
     bool AddFunctionArgument(std::unique_ptr<ParamVarDecl> type);
 
+    /**
+     * @brief Return the function's declared result type.
+     * @return Shared qualified type held by the return-type expression.
+     */
     [[nodiscard]] std::shared_ptr<QualType> type() const override {
         return _ret_type->type();
     }
 
+    /**
+     * @brief Access the expression that stores the function result type.
+     * @return Mutable reference to the owned type-proxy node.
+     */
     [[nodiscard]] std::unique_ptr<TypeProxyExpr>& type_expr() {
         return _ret_type;
     }
@@ -1047,6 +1080,9 @@ class FuncDeclStmt : public IDeclStmt {
 
 using FuncDeclStmtPtr = std::unique_ptr<FuncDeclStmt>;
 
+/**
+ * @brief Own the expression associated with a return statement.
+ */
 class ReturnStmt : public Stmt {
   public:
     /**

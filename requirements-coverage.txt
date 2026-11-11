@@ -1,0 +1,3 @@
+# Coverage reporting tools used by CMake and GitHub Actions. Python 3.10+ is required.
+gcovr==8.8
+lcov-cobertura==2.1.1

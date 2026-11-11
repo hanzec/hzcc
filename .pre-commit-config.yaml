@@ -1,13 +1,13 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v6.0.0
     hooks:
       - id: end-of-file-fixer
         exclude: '^test\/.+$'
       - id: trailing-whitespace
         exclude: '^test\/.+$'
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v15.0.7
+    rev: v23.1.5
     hooks:
       - id: clang-format
         exclude: '(^test\/.+)|(.+\.java$)|(.+\.json$)$'

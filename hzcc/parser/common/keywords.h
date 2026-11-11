@@ -4,7 +4,7 @@
 #ifndef HZCC_COMMON_KEYWORDS_H
 #define HZCC_COMMON_KEYWORDS_H
 #include <array>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 
 #include "macro.h"
 #include "token_type.h"

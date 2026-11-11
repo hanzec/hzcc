@@ -5,512 +5,331 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
+#include <cerrno>
+#include <sstream>
+#include <string>
+#include <string_view>
+#include <utility>
+
 namespace hzcc {
+namespace {
+constexpr std::array<StatusCode, 17> kCodes{StatusCode::kOk,
+                                            StatusCode::kCastStage,
+                                            StatusCode::kUnknown,
+                                            StatusCode::kPreProcessStage,
+                                            StatusCode::kLexicalAnalysisStage,
+                                            StatusCode::kNotFound,
+                                            StatusCode::kAlreadyExists,
+                                            StatusCode::kSyntaxStageErr,
+                                            StatusCode::kSyntaxStageError,
+                                            StatusCode::kCompileError,
+                                            StatusCode::kInvalidArguments,
+                                            StatusCode::kOutOfRange,
+                                            StatusCode::kUnimplemented,
+                                            StatusCode::kInternal,
+                                            StatusCode::kUnavailable,
+                                            StatusCode::kDataLoss,
+                                            StatusCode::kUnauthenticated};
+
+/// @brief Pair a supported error code with its factory and classifier for table-driven tests.
+struct ErrorTest {
+    StatusCode code;
+    Status (*creator)(std::string_view);
+    bool (*classifier)(const Status&);
+};
+constexpr ErrorTest kErrorTests[]{
+    {StatusCode::kUnknown, UnknownError, IsUnknown},
+    {StatusCode::kInvalidArguments, InvalidArgumentError, IsInvalidArgument},
+    {StatusCode::kNotFound, NotFoundError, IsNotFound},
+    {StatusCode::kAlreadyExists, AlreadyExistsError, IsAlreadyExists},
+    {StatusCode::kOutOfRange, OutOfRangeError, IsOutOfRange},
+    {StatusCode::kUnimplemented, UnimplementedError, IsUnimplemented},
+    {StatusCode::kInternal, InternalError, IsInternal},
+    {StatusCode::kUnavailable, UnavailableError, IsUnavailable},
+    {StatusCode::kDataLoss, DataLossError, IsDataLoss},
+    {StatusCode::kUnauthenticated, UnauthenticatedError, IsUnauthenticated}};
+
 TEST(UTILS_STATUS_TEST, status_code_test) {
-    Status status(Status::OK, "ok");
+    Status status(StatusCode::kOk, "ignored on success");
+    EXPECT_TRUE(status.ok());
+    EXPECT_EQ(status.code(), StatusCode::kOk);
+    EXPECT_TRUE(status.message().empty());
 
-    EXPECT_EQ(status.ok(), true);
-    EXPECT_EQ(status.StatusCode(), Status::OK);
-    EXPECT_EQ(status.Message(), "ok");
+    status = Status(StatusCode::kInternal, "internal failure");
+    EXPECT_FALSE(status.ok());
+    EXPECT_EQ(status.code(), StatusCode::kInternal);
+    EXPECT_EQ(status.message(), "internal failure");
 
-    int line_num = __LINE__;
-    std::string source_file = __FILE__;
-    status = Status(Status::INTERNAL, "ok", source_file, line_num);
+    status = Status(StatusCode::kInvalidArguments, "");
+    EXPECT_FALSE(status.ok());
+    EXPECT_EQ(status.code(), StatusCode::kInvalidArguments);
+    EXPECT_TRUE(status.message().empty());
 
-    EXPECT_EQ(status.ok(), false);
-    EXPECT_EQ(status.StatusCode(), Status::INTERNAL);
-    EXPECT_EQ(status.Message(), "ok");
-    EXPECT_EQ(status.SourceFile(), source_file);
-    EXPECT_EQ(status.LineNumber(), line_num);
-
-    status = Status(Status::INVALID_ARGUMENT);
-    EXPECT_EQ(status.ok(), false);
-    EXPECT_EQ(status.StatusCode(), Status::INVALID_ARGUMENT);
-    EXPECT_EQ(status.Message(), "No Message Provided");
-
-    status = Status::NoError();
-    EXPECT_EQ(status.ok(), true);
-    EXPECT_EQ(status.StatusCode(), Status::OK);
-    EXPECT_EQ(status.Message(), "Return ok without error!");
+    status = NoError();
+    EXPECT_TRUE(status.ok());
+    EXPECT_EQ(status.code(), StatusCode::kOk);
+    EXPECT_TRUE(status.message().empty());
 }
-
 
 TEST(StatusCode, InsertionOperator) {
-    const hzcc::StatusCode code = hzcc::StatusCode::kUnknown;
-    std::ostringstream oss;
-    oss << code;
-    EXPECT_EQ(oss.str(), hzcc::StatusCodeToString(code));
+    for (auto code : kCodes) {
+        std::ostringstream stream;
+        stream << code;
+        EXPECT_EQ(stream.str(), StatusCodeToString(code));
+        EXPECT_FALSE(stream.str().empty());
+    }
 }
 
-// This structure holds the details for testing a single error code,
-// its creator, and its classifier.
-struct ErrorTest {
-    hzcc::StatusCode code;
-    using Creator = hzcc::Status (*)(
-        hzcc::string_view
-    );
-    using Classifier = bool (*)(const hzcc::Status&);
-    Creator creator;
-    Classifier classifier;
-};
-
-constexpr ErrorTest kErrorTests[]{
-    {hzcc::StatusCode::kCancelled, hzcc::CancelledError, hzcc::IsCancelled},
-    {hzcc::StatusCode::kUnknown, hzcc::UnknownError, hzcc::IsUnknown},
-    {hzcc::StatusCode::kInvalidArgument, hzcc::InvalidArgumentError,
-     hzcc::IsInvalidArgument},
-    {hzcc::StatusCode::kDeadlineExceeded, hzcc::DeadlineExceededError,
-     hzcc::IsDeadlineExceeded},
-    {hzcc::StatusCode::kNotFound, hzcc::NotFoundError, hzcc::IsNotFound},
-    {hzcc::StatusCode::kAlreadyExists, hzcc::AlreadyExistsError,
-     hzcc::IsAlreadyExists},
-    {hzcc::StatusCode::kPermissionDenied, hzcc::PermissionDeniedError,
-     hzcc::IsPermissionDenied},
-    {hzcc::StatusCode::kResourceExhausted, hzcc::ResourceExhaustedError,
-     hzcc::IsResourceExhausted},
-    {hzcc::StatusCode::kFailedPrecondition, hzcc::FailedPreconditionError,
-     hzcc::IsFailedPrecondition},
-    {hzcc::StatusCode::kAborted, hzcc::AbortedError, hzcc::IsAborted},
-    {hzcc::StatusCode::kOutOfRange, hzcc::OutOfRangeError, hzcc::IsOutOfRange},
-    {hzcc::StatusCode::kUnimplemented, hzcc::UnimplementedError,
-     hzcc::IsUnimplemented},
-    {hzcc::StatusCode::kInternal, hzcc::InternalError, hzcc::IsInternal},
-    {hzcc::StatusCode::kUnavailable, hzcc::UnavailableError,
-     hzcc::IsUnavailable},
-    {hzcc::StatusCode::kDataLoss, hzcc::DataLossError, hzcc::IsDataLoss},
-    {hzcc::StatusCode::kUnauthenticated, hzcc::UnauthenticatedError,
-     hzcc::IsUnauthenticated},
-};
+TEST(Status, EveryDeclaredCodeRoundTrips) {
+    for (auto code : kCodes) {
+        SCOPED_TRACE(static_cast<int>(code));
+        for (std::string_view message : {"", "failure"}) {
+            Status status(code, message);
+            EXPECT_EQ(status.code(), code);
+            EXPECT_EQ(status.raw_code(), static_cast<int>(code));
+            EXPECT_EQ(status.ok(), code == StatusCode::kOk);
+        }
+    }
+}
 
 TEST(Status, CreateAndClassify) {
     for (const auto& test : kErrorTests) {
-        SCOPED_TRACE(hzcc::StatusCodeToString(test.code));
-
-        // Ensure that the creator does, in fact, create status objects with the
-        // expected error code and message.
-        std::string message =
-            hzcc::StrCat("error code ", test.code, " test message");
-        hzcc::Status status = test.creator(
-            message
-        );
-        EXPECT_EQ(test.code, status.code());
-        EXPECT_EQ(message, status.message());
-
-        // Ensure that the classifier returns true for a status produced by the
-        // creator.
+        SCOPED_TRACE(StatusCodeToString(test.code));
+        std::string message = StatusCodeToString(test.code) + " test message";
+        Status status = test.creator(message);
+        EXPECT_EQ(status.code(), test.code);
+        EXPECT_EQ(status.message(), message);
         EXPECT_TRUE(test.classifier(status));
-
-        // Ensure that the classifier returns false for status with a different
-        // code.
-        for (const auto& other : kErrorTests) {
-            if (other.code != test.code) {
-                EXPECT_FALSE(test.classifier(hzcc::Status(other.code, "")))
-                    << " other.code = " << other.code;
-            }
+        for (auto other : kCodes) {
+            EXPECT_EQ(test.classifier(Status(other, "")), other == test.code);
         }
     }
 }
 
 TEST(Status, DefaultConstructor) {
-    hzcc::Status status;
+    Status status;
     EXPECT_TRUE(status.ok());
-    EXPECT_EQ(hzcc::StatusCode::kOk, status.code());
-    EXPECT_EQ("", status.message());
+    EXPECT_EQ(status.code(), StatusCode::kOk);
+    EXPECT_TRUE(status.message().empty());
 }
 
 TEST(Status, NoError) {
-    hzcc::Status status = hzcc::NoError();
+    const Status status = NoError();
+    EXPECT_EQ(status, Status());
     EXPECT_TRUE(status.ok());
-    EXPECT_EQ(hzcc::StatusCode::kOk, status.code());
-    EXPECT_EQ("", status.message());
+    EXPECT_TRUE(status.message().empty());
 }
 
 TEST(Status, ConstructorWithCodeMessage) {
-    {
-        hzcc::Status status(hzcc::StatusCode::kCancelled, "");
+    for (std::string_view message : {"", "message"}) {
+        const Status status(StatusCode::kInternal, message);
         EXPECT_FALSE(status.ok());
-        EXPECT_EQ(hzcc::StatusCode::kCancelled, status.code());
-        EXPECT_EQ("", status.message());
+        EXPECT_EQ(status.code(), StatusCode::kInternal);
+        EXPECT_EQ(status.message(), message);
     }
-    {
-        hzcc::Status status(hzcc::StatusCode::kInternal, "message");
-        EXPECT_FALSE(status.ok());
-        EXPECT_EQ(hzcc::StatusCode::kInternal, status.code());
-        EXPECT_EQ("message", status.message());
-    }
+}
+
+TEST(Status, ConstructorOwnsMessage) {
+    std::string source = "original message";
+    Status status(StatusCode::kInternal, source);
+    source.assign("changed");
+    EXPECT_EQ(status.message(), "original message");
+}
+
+TEST(Status, MessagePreservesEmbeddedNul) {
+    const std::string message("before\0after", 12);
+    Status status(StatusCode::kInternal, message);
+    EXPECT_EQ(status.message(), message);
 }
 
 TEST(Status, ConstructOutOfRangeCode) {
-    const int kRawCode = 9999;
-    hzcc::Status status(static_cast<hzcc::StatusCode>(kRawCode), "");
-    EXPECT_EQ(hzcc::StatusCode::kUnknown, status.code());
-    EXPECT_EQ(kRawCode, status.raw_code());
-}
-
-constexpr char kUrl1[] = "url.payload.1";
-constexpr char kUrl2[] = "url.payload.2";
-constexpr char kUrl3[] = "url.payload.3";
-constexpr char kUrl4[] = "url.payload.xx";
-
-constexpr char kPayload1[] = "aaaaa";
-constexpr char kPayload2[] = "bbbbb";
-constexpr char kPayload3[] = "ccccc";
-
-using PayloadsVec = std::vector<std::pair<std::string, hzcc::Cord>>;
-
-TEST(Status, TestGetSetPayload) {
-    hzcc::Status ok_status = hzcc::NoError();
-    ok_status.SetPayload(hzcc::Cord(kPayload1));
-    ok_status.SetPayload(hzcc::Cord(kPayload2));
-
-    EXPECT_FALSE(ok_status.GetPayload());
-    EXPECT_FALSE(ok_status.GetPayload());
-
-    hzcc::Status bad_status(hzcc::StatusCode::kInternal, "fail");
-    bad_status.SetPayload(hzcc::Cord(kPayload1));
-    bad_status.SetPayload(hzcc::Cord(kPayload2));
-
-    EXPECT_THAT(bad_status.GetPayload(), Optional(Eq(kPayload1)));
-    EXPECT_THAT(bad_status.GetPayload(), Optional(Eq(kPayload2)));
-
-    EXPECT_FALSE(bad_status.GetPayload());
-
-    bad_status.SetPayload(hzcc::Cord(kPayload3));
-    EXPECT_THAT(bad_status.GetPayload(), Optional(Eq(kPayload3)));
-
-    // Testing dynamically generated type_url
-    bad_status.SetPayload(hzcc::Cord(kPayload1));
-    EXPECT_THAT(bad_status.GetPayload(),
-                Optional(Eq(kPayload1)));
-}
-
-TEST(Status, TestErasePayload) {
-    hzcc::Status bad_status(hzcc::StatusCode::kInternal, "fail");
-    bad_status.SetPayload(hzcc::Cord(kPayload1));
-    bad_status.SetPayload(hzcc::Cord(kPayload2));
-    bad_status.SetPayload(hzcc::Cord(kPayload3));
-
-    EXPECT_FALSE(bad_status.ErasePayload());
-
-    EXPECT_TRUE(bad_status.GetPayload());
-    EXPECT_TRUE(bad_status.ErasePayload());
-    EXPECT_FALSE(bad_status.GetPayload());
-    EXPECT_FALSE(bad_status.ErasePayload());
-
-    EXPECT_TRUE(bad_status.ErasePayload());
-    EXPECT_TRUE(bad_status.ErasePayload());
-
-    bad_status.SetPayload(hzcc::Cord(kPayload1));
-    EXPECT_TRUE(bad_status.ErasePayload());
-}
-
-TEST(Status, TestComparePayloads) {
-    hzcc::Status bad_status1(hzcc::StatusCode::kInternal, "fail");
-    bad_status1.SetPayload(hzcc::Cord(kPayload1));
-    bad_status1.SetPayload(hzcc::Cord(kPayload2));
-    bad_status1.SetPayload(hzcc::Cord(kPayload3));
-
-    hzcc::Status bad_status2(hzcc::StatusCode::kInternal, "fail");
-    bad_status2.SetPayload(hzcc::Cord(kPayload2));
-    bad_status2.SetPayload(hzcc::Cord(kPayload3));
-    bad_status2.SetPayload(hzcc::Cord(kPayload1));
-
-    EXPECT_EQ(bad_status1, bad_status2);
-}
-
-TEST(Status, TestComparePayloadsAfterErase) {
-    hzcc::Status payload_status(hzcc::StatusCode::kInternal, "");
-    payload_status.SetPayload(hzcc::Cord(kPayload1));
-    payload_status.SetPayload(hzcc::Cord(kPayload2));
-
-    hzcc::Status empty_status(hzcc::StatusCode::kInternal, "");
-
-    // Different payload, not equal
-    EXPECT_NE(payload_status, empty_status);
-    EXPECT_TRUE(payload_status.ErasePayload());
-
-    // Still Different payload, still not equal.
-    EXPECT_NE(payload_status, empty_status);
-    EXPECT_TRUE(payload_status.ErasePayload());
-
-    // Both empty payload, should be equal
-    EXPECT_EQ(payload_status, empty_status);
-}
-
-PayloadsVec AllVisitedPayloads(const hzcc::Status& s) {
-    PayloadsVec result;
-
-    s.ForEachPayload([&](hzcc::string_view type_url, const hzcc::Cord& payload) {
-        result.push_back(std::make_pair(std::string(type_url), payload));
-    });
-
-    return result;
-}
-
-TEST(Status, TestForEachPayload) {
-    hzcc::Status bad_status(hzcc::StatusCode::kInternal, "fail");
-    bad_status.SetPayload(hzcc::Cord(kPayload1));
-    bad_status.SetPayload(hzcc::Cord(kPayload2));
-    bad_status.SetPayload(hzcc::Cord(kPayload3));
-
-    int count = 0;
-
-    bad_status.ForEachPayload(
-        [&count](hzcc::string_view, const hzcc::Cord&) { ++count; });
-
-    EXPECT_EQ(count, 3);
-
-    PayloadsVec expected_payloads = {{kUrl1, hzcc::Cord(kPayload1)},
-                                     {kUrl2, hzcc::Cord(kPayload2)},
-                                     {kUrl3, hzcc::Cord(kPayload3)}};
-
-    // test that we visit all the payload in the status.
-    PayloadsVec visited_payloads = AllVisitedPayloads(bad_status);
-    EXPECT_THAT(visited_payloads, UnorderedElementsAreArray(expected_payloads));
-
-    // test that visitation order is not consistent between run.
-    std::vector<hzcc::Status> scratch;
-    while (true) {
-        scratch.emplace_back(hzcc::StatusCode::kInternal, "fail");
-
-        scratch.back().SetPayload(hzcc::Cord(kPayload1));
-        scratch.back().SetPayload(hzcc::Cord(kPayload2));
-        scratch.back().SetPayload(hzcc::Cord(kPayload3));
-
-        if (AllVisitedPayloads(scratch.back()) != visited_payloads) {
-            break;
-        }
+    for (std::string_view message : {"", "unknown code"}) {
+        Status status(static_cast<StatusCode>(9999), message);
+        EXPECT_EQ(status.code(), StatusCode::kUnknown);
+        EXPECT_EQ(status.raw_code(), 9999);
+        EXPECT_EQ(status.message(), message);
     }
+}
+
+// HZCC exposes a read-only optional payload, not the upstream keyed payload
+// mutation/visitation API. Cover its actual states, including heap-backed errors.
+TEST(Status, GetPayloadOnSuccess) { EXPECT_FALSE(NoError().GetPayload().has_value()); }
+
+TEST(Status, GetPayloadOnInlineError) {
+    EXPECT_FALSE(Status(StatusCode::kInternal, "").GetPayload().has_value());
+}
+
+TEST(Status, GetPayloadOnErrorWithMessage) {
+    EXPECT_FALSE(InternalError("message").GetPayload().has_value());
+}
+
+TEST(Status, GetPayloadOnCopiedError) {
+    Status original = InternalError("message");
+    Status copy = original;
+    EXPECT_FALSE(copy.GetPayload().has_value());
+    EXPECT_FALSE(original.GetPayload().has_value());
 }
 
 TEST(Status, ToString) {
-    hzcc::Status s(hzcc::StatusCode::kInternal, "fail");
-    EXPECT_EQ("INTERNAL: fail", s.ToString());
-    s.SetPayload(hzcc::Cord("bar"));
-    EXPECT_EQ("INTERNAL: fail [foo='bar']", s.ToString());
-    s.SetPayload(hzcc::Cord("\377"));
-    EXPECT_THAT(s.ToString(),
-                AllOf(HasSubstr("INTERNAL: fail"), HasSubstr("[foo='bar']"),
-                      HasSubstr("[bar='\\xff']")));
+    EXPECT_EQ(NoError().ToString(), "OK");
+    EXPECT_EQ(InternalError("fail").ToString(), "INTERNAL: fail");
+    EXPECT_EQ(InternalError("").ToString(), "INTERNAL: ");
 }
 
 TEST(Status, ToStringMode) {
-    hzcc::Status s(hzcc::StatusCode::kInternal, "fail");
-    s.SetPayload(hzcc::Cord("bar"));
-    s.SetPayload(hzcc::Cord("\377"));
-
-    EXPECT_EQ("INTERNAL: fail",
-              s.ToString(hzcc::StatusToStringMode::kWithNoExtraData));
-
-    EXPECT_THAT(s.ToString(hzcc::StatusToStringMode::kWithPayload),
-                AllOf(HasSubstr("INTERNAL: fail"), HasSubstr("[foo='bar']"),
-                      HasSubstr("[bar='\\xff']")));
-
-    EXPECT_THAT(s.xcToString(hzcc::StatusToStringMode::kWithEverything),
-                AllOf(HasSubstr("INTERNAL: fail"), HasSubstr("[foo='bar']"),
-                      HasSubstr("[bar='\\xff']")));
-
-    EXPECT_THAT(s.ToString(~hzcc::StatusToStringMode::kWithPayload),
-                AllOf(HasSubstr("INTERNAL: fail"), Not(HasSubstr("[foo='bar']")),
-                      Not(HasSubstr("[bar='\\xff']"))));
+    const Status status = InternalError("fail");
+    for (auto mode :
+         {StatusToStringMode::kWithNoExtraData, StatusToStringMode::kWithPayload,
+          StatusToStringMode::kWithEverything, ~StatusToStringMode::kWithPayload}) {
+        EXPECT_EQ(status.ToString(mode), "INTERNAL: fail");
+        EXPECT_EQ(NoError().ToString(mode), "OK");
+    }
 }
 
-hzcc::Status EraseAndReturn(const hzcc::Status& base) {
-    hzcc::Status copy = base;
-    EXPECT_TRUE(copy.ErasePayload());
-    return copy;
-}
-
-TEST(Status, CopyOnWriteForErasePayload) {
-    {
-        hzcc::Status base(hzcc::StatusCode::kInvalidArgument, "fail");
-        base.SetPayload(hzcc::Cord(kPayload1));
-        EXPECT_TRUE(base.GetPayload().has_value());
-        hzcc::Status copy = EraseAndReturn(base);
-        EXPECT_TRUE(base.GetPayload().has_value());
-        EXPECT_FALSE(copy.GetPayload().has_value());
-    }
-    {
-        hzcc::Status base(hzcc::StatusCode::kInvalidArgument, "fail");
-        base.SetPayload(hzcc::Cord(kPayload1));
-        hzcc::Status copy = base;
-
-        EXPECT_TRUE(base.GetPayload().has_value());
-        EXPECT_TRUE(copy.GetPayload().has_value());
-
-        EXPECT_TRUE(base.ErasePayload());
-
-        EXPECT_FALSE(base.GetPayload().has_value());
-        EXPECT_TRUE(copy.GetPayload().has_value());
-    }
+TEST(Status, InsertionOperator) {
+    std::ostringstream stream;
+    stream << InternalError("fail");
+    EXPECT_EQ(stream.str(), "INTERNAL: fail");
 }
 
 TEST(Status, CopyConstructor) {
-    {
-        hzcc::Status status;
-        hzcc::Status copy(status);
+    for (const Status& status :
+         {NoError(), InternalError(""), InternalError("message")}) {
+        Status copy(status);
         EXPECT_EQ(copy, status);
-    }
-    {
-        hzcc::Status status(hzcc::StatusCode::kInvalidArgument, "message");
-        hzcc::Status copy(status);
-        EXPECT_EQ(copy, status);
-    }
-    {
-        hzcc::Status status(hzcc::StatusCode::kInvalidArgument, "message");
-        status.SetPayload(hzcc::Cord(kPayload1));
-        hzcc::Status copy(status);
-        EXPECT_EQ(copy, status);
+        EXPECT_EQ(copy.message(), status.message());
     }
 }
 
 TEST(Status, CopyAssignment) {
-    hzcc::Status assignee;
-    {
-        hzcc::Status status;
-        assignee = status;
-        EXPECT_EQ(assignee, status);
-    }
-    {
-        hzcc::Status status(hzcc::StatusCode::kInvalidArgument, "message");
-        assignee = status;
-        EXPECT_EQ(assignee, status);
-    }
-    {
-        hzcc::Status status(hzcc::StatusCode::kInvalidArgument, "message");
-        status.SetPayload(hzcc::Cord(kPayload1));
+    Status assignee = InternalError("old error");
+    for (const Status& status :
+         {NoError(), InternalError(""), InternalError("message")}) {
         assignee = status;
         EXPECT_EQ(assignee, status);
     }
 }
 
-TEST(Status, CopyAssignmentIsNotRef) {
-    const hzcc::Status status_orig(hzcc::StatusCode::kInvalidArgument, "message");
-    hzcc::Status status_copy = status_orig;
-    EXPECT_EQ(status_orig, status_copy);
-    status_copy.SetPayload(hzcc::Cord(kPayload1));
-    EXPECT_NE(status_orig, status_copy);
+TEST(Status, CopyAssignmentIsIndependent) {
+    Status original = InternalError("original");
+    Status copy = original;
+    copy = NotFoundError("replacement");
+    EXPECT_EQ(original, InternalError("original"));
+    EXPECT_EQ(copy, NotFoundError("replacement"));
+    original = NoError();
+    EXPECT_EQ(copy, NotFoundError("replacement"));
+}
+
+TEST(Status, CopyOutlivesOriginal) {
+    Status copy;
+    {
+        const Status original = InternalError("owned message");
+        copy = original;
+    }
+    EXPECT_EQ(copy, InternalError("owned message"));
 }
 
 TEST(Status, MoveConstructor) {
-    {
-        hzcc::Status status;
-        hzcc::Status copy(hzcc::Status{});
-        EXPECT_EQ(copy, status);
-    }
-    {
-        hzcc::Status status(hzcc::StatusCode::kInvalidArgument, "message");
-        hzcc::Status copy(
-            hzcc::Status(hzcc::StatusCode::kInvalidArgument, "message"));
-        EXPECT_EQ(copy, status);
-    }
-    {
-        hzcc::Status status(hzcc::StatusCode::kInvalidArgument, "message");
-        status.SetPayload(hzcc::Cord(kPayload1));
-        hzcc::Status copy1(status);
-        hzcc::Status copy2(std::move(status));
-        EXPECT_EQ(copy1, copy2);
+    for (const Status& expected :
+         {NoError(), InternalError(""), InternalError("message")}) {
+        Status source = expected;
+        Status moved(std::move(source));
+        EXPECT_EQ(moved, expected);
+        source = NoError();
+        EXPECT_TRUE(source.ok());
+        EXPECT_EQ(moved, expected);
     }
 }
 
 TEST(Status, MoveAssignment) {
-    hzcc::Status assignee;
-    {
-        hzcc::Status status;
-        assignee = hzcc::Status();
-        EXPECT_EQ(assignee, status);
-    }
-    {
-        hzcc::Status status(hzcc::StatusCode::kInvalidArgument, "message");
-        assignee = hzcc::Status(hzcc::StatusCode::kInvalidArgument, "message");
-        EXPECT_EQ(assignee, status);
-    }
-    {
-        hzcc::Status status(hzcc::StatusCode::kInvalidArgument, "message");
-        status.SetPayload(hzcc::Cord(kPayload1));
-        hzcc::Status copy(status);
-        assignee = std::move(status);
-        EXPECT_EQ(assignee, copy);
-    }
-    {
-        hzcc::Status status(hzcc::StatusCode::kInvalidArgument, "message");
-        hzcc::Status copy(status);
-        status = static_cast<hzcc::Status&&>(status);
-        EXPECT_EQ(status, copy);
+    Status assignee = NotFoundError("old error");
+    for (const Status& expected :
+         {NoError(), InternalError(""), InternalError("message")}) {
+        Status source = expected;
+        assignee = std::move(source);
+        EXPECT_EQ(assignee, expected);
+        source = NoError();
+        EXPECT_EQ(assignee, expected);
     }
 }
 
-TEST(Status, Update) {
-    hzcc::Status s;
-    s.Update(hzcc::NoError());
-    EXPECT_TRUE(s.ok());
-    const hzcc::Status a(hzcc::StatusCode::kCancelled, "message");
-    s.Update(a);
-    EXPECT_EQ(s, a);
-    const hzcc::Status b(hzcc::StatusCode::kInternal, "other message");
-    s.Update(b);
-    EXPECT_EQ(s, a);
-    s.Update(hzcc::NoError());
-    EXPECT_EQ(s, a);
-    EXPECT_FALSE(s.ok());
+TEST(Status, SelfAssignment) {
+    Status status = InternalError("message");
+    const Status expected = status;
+    const Status& alias = status;
+    status = alias;
+    EXPECT_EQ(status, expected);
+    Status& mutable_alias = status;
+    status = std::move(mutable_alias);
+    EXPECT_EQ(status, expected);
+}
+
+TEST(Status, UpdatePreservesFirstError) {
+    Status status;
+    const Status first = NotFoundError("first");
+    const Status second = InternalError("second");
+    status.Update(NoError());
+    EXPECT_TRUE(status.ok());
+    status.Update(first);
+    EXPECT_EQ(status, first);
+    status.Update(second);
+    EXPECT_EQ(status, first);
+    status.Update(NoError());
+    EXPECT_EQ(status, first);
+}
+
+TEST(Status, UpdateWithRvalue) {
+    Status status;
+    status.Update(InternalError("first"));
+    status.Update(NotFoundError("second"));
+    EXPECT_EQ(status, InternalError("first"));
 }
 
 TEST(Status, Equality) {
-    hzcc::Status ok;
-    hzcc::Status no_payload = hzcc::CancelledError("no payload");
-    hzcc::Status one_payload = hzcc::InvalidArgumentError("one payload");
-    one_payload.SetPayload(hzcc::Cord(kPayload1));
-    hzcc::Status two_payloads = one_payload;
-    two_payloads.SetPayload(hzcc::Cord(kPayload2));
-    const std::array<hzcc::Status, 4> status_arr = {ok, no_payload, one_payload,
-                                                    two_payloads};
-    for (int i = 0; i < status_arr.size(); i++) {
-        for (int j = 0; j < status_arr.size(); j++) {
-            if (i == j) {
-                EXPECT_TRUE(status_arr[i] == status_arr[j]);
-                EXPECT_FALSE(status_arr[i] != status_arr[j]);
-            } else {
-                EXPECT_TRUE(status_arr[i] != status_arr[j]);
-                EXPECT_FALSE(status_arr[i] == status_arr[j]);
-            }
+    const std::array<Status, 5> statuses{NoError(), InternalError(""),
+                                         InternalError("first"), InternalError("second"),
+                                         NotFoundError("first")};
+    for (std::size_t i = 0; i < statuses.size(); ++i) {
+        for (std::size_t j = 0; j < statuses.size(); ++j) {
+            EXPECT_EQ(statuses[i] == statuses[j], i == j);
+            EXPECT_EQ(statuses[i] != statuses[j], i != j);
+        }
+    }
+    // Independently allocated messages exercise comparison beyond shared reps.
+    EXPECT_EQ(InternalError("same"), InternalError("same"));
+    EXPECT_NE(Status(static_cast<StatusCode>(9999), "same"), UnknownError("same"));
+}
+
+TEST(Status, Swap) {
+    const std::array<Status, 3> statuses{NoError(), InternalError(""),
+                                         InternalError("msg")};
+    for (const auto& first : statuses) {
+        for (const auto& second : statuses) {
+            Status a = first, b = second;
+            swap(a, b);
+            EXPECT_EQ(a, second);
+            EXPECT_EQ(b, first);
         }
     }
 }
 
-TEST(Status, Swap) {
-    auto test_swap = [](const hzcc::Status& s1, const hzcc::Status& s2) {
-        hzcc::Status copy1 = s1, copy2 = s2;
-        swap(copy1, copy2);
-        EXPECT_EQ(copy1, s2);
-        EXPECT_EQ(copy2, s1);
-    };
-    const hzcc::Status ok;
-    const hzcc::Status no_payload(hzcc::StatusCode::kAlreadyExists, "no payload");
-    hzcc::Status with_payload(hzcc::StatusCode::kInternal, "with payload");
-    with_payload.SetPayload(hzcc::Cord(kPayload1));
-    test_swap(ok, no_payload);
-    test_swap(no_payload, ok);
-    test_swap(ok, with_payload);
-    test_swap(with_payload, ok);
-    test_swap(no_payload, with_payload);
-    test_swap(with_payload, no_payload);
-}
-
 TEST(StatusErrno, ErrnoToStatusCode) {
-    EXPECT_EQ(hzcc::ErrnoToStatusCode(0), hzcc::StatusCode::kOk);
-
-    // Spot-check a few errno values.
-    EXPECT_EQ(hzcc::ErrnoToStatusCode(EINVAL),
-              hzcc::StatusCode::kInvalidArgument);
-    EXPECT_EQ(hzcc::ErrnoToStatusCode(ENOENT), hzcc::StatusCode::kNotFound);
-
-    // We'll pick a very large number so it hopefully doesn't collide to errno.
-    EXPECT_EQ(hzcc::ErrnoToStatusCode(19980927), hzcc::StatusCode::kUnknown);
+    EXPECT_EQ(ErrnoToStatusCode(0), StatusCode::kOk);
+    EXPECT_EQ(ErrnoToStatusCode(EINVAL), StatusCode::kInvalidArguments);
+    EXPECT_EQ(ErrnoToStatusCode(ENOENT), StatusCode::kNotFound);
+    EXPECT_EQ(ErrnoToStatusCode(EEXIST), StatusCode::kAlreadyExists);
+    EXPECT_EQ(ErrnoToStatusCode(ERANGE), StatusCode::kOutOfRange);
+    EXPECT_EQ(ErrnoToStatusCode(ENOSYS), StatusCode::kUnimplemented);
+    EXPECT_EQ(ErrnoToStatusCode(EAGAIN), StatusCode::kUnavailable);
+    EXPECT_EQ(ErrnoToStatusCode(EBUSY), StatusCode::kUnavailable);
+    EXPECT_EQ(ErrnoToStatusCode(EINTR), StatusCode::kUnavailable);
+    EXPECT_EQ(ErrnoToStatusCode(EIO), StatusCode::kDataLoss);
 }
 
-TEST(StatusErrno, ErrnoToStatus) {
-    hzcc::Status status = hzcc::ErrnoToStatus(ENOENT, "Cannot open 'path'");
-    EXPECT_EQ(status.code(), hzcc::StatusCode::kNotFound);
-    EXPECT_EQ(status.message(), "Cannot open 'path': No such file or directory");
+TEST(StatusErrno, UnsupportedErrnoMapsToUnknown) {
+    EXPECT_EQ(ErrnoToStatusCode(19980927), StatusCode::kUnknown);
+    EXPECT_EQ(ErrnoToStatusCode(EACCES), StatusCode::kUnknown);
 }
+}  // namespace
 }  // namespace hzcc

@@ -1,133 +1,80 @@
-###############################################################################
-## Document Requirements ######################################################
-###############################################################################
-find_package(LATEX)
-find_package(Doxygen)
+# Documentation is opt-in at the project root. Use installed tools only.
+find_package(Doxygen REQUIRED OPTIONAL_COMPONENTS dot)
+find_package(LATEX QUIET COMPONENTS PDFLATEX MAKEINDEX)
 
-if (LATEX_FOUND)
-    if (LUALATEX__FOUND)
-        MESSAGE(STATUS "lualatex found - ${LUALATEX_COMPILER}")
-    endif ()
-
-    if (BIBTEX_FOUND)
-        MESSAGE(STATUS "bibtex found - ${BIBTEX_COMPILER}")
-    endif ()
-
-    if (MAKEINDEX_FOUND)
-        MESSAGE(STATUS "makeindex found - ${MAKEINDEX_COMPILER}")
-    endif ()
+set(HZCC_DOC_GENERATE_LATEX NO)
+if (LATEX_PDFLATEX_FOUND AND LATEX_MAKEINDEX_FOUND)
+    set(HZCC_DOC_GENERATE_LATEX YES)
+else ()
+    message(STATUS
+        "pdflatex and/or makeindex not found: documentation will generate HTML only")
 endif ()
 
-###############################################################################
-## Latex Sources ##############################################################
-###############################################################################
-# set latex env
-set(TEXMFHOME ${CMAKE_CURRENT_BINARY_DIR})
+set(HZCC_DOC_HAVE_DOT NO)
+if (DOXYGEN_DOT_FOUND)
+    set(HZCC_DOC_HAVE_DOT YES)
+endif ()
 
-# Latex source file.
-set(DOC_MAIN_TEX "${CMAKE_CURRENT_SOURCE_DIR}/developers.tex")
+# developers.tex embeds refman.tex, so Doxygen must omit its document wrapper.
+# An empty file is portable, unlike the previous /dev/null configuration.
+# Keep generated API files separate from Doxygen configuration and manual inputs.
+set(HZCC_DOC_LATEX_DIR "${CMAKE_CURRENT_BINARY_DIR}/latex")
+set(HZCC_DOC_EMPTY_TEX "${CMAKE_CURRENT_BINARY_DIR}/empty.tex")
+file(WRITE "${HZCC_DOC_EMPTY_TEX}" "")
+configure_file("${PROJECT_SOURCE_DIR}/Doxyfile"
+               "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile" @ONLY)
 
-###############################################################################
-## Doxygen Targets ############################################################
-###############################################################################
-add_custom_target(doc_doxygen)
+add_custom_target(doc_doxygen
+    # A failed extraction must not leave an older XML index available for audit.
+    COMMAND "${CMAKE_COMMAND}" -E rm -rf "${PROJECT_BINARY_DIR}/doxygen_xml"
+    COMMAND Doxygen::doxygen "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    COMMENT "Generating API documentation with Doxygen"
+    VERBATIM)
 
-## if no doxygen found, we install the doxygen from pre-compiled binaries
-if (NOT DOXYGEN_FOUND)
-    if (UNIX AND NOT MACOSX)
-        if (NOT EXISTS ${PROJECT_BINARY_DIR}/tools/doxygen/doxygen-1.9.3/bin)
-            MESSAGE(STATUS "Doxygen NOT found. trying to download...")
+if (HZCC_DOC_GENERATE_LATEX STREQUAL "YES")
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/developers.tex"
+                   "${CMAKE_CURRENT_BINARY_DIR}/developers.tex" COPYONLY)
+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/figure")
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/figure/frontend_structure.png"
+                   "${CMAKE_CURRENT_BINARY_DIR}/figure/frontend_structure.png" COPYONLY)
 
-            ## download doxygen and extract it
-            file(DOWNLOAD https://www.doxygen.nl/files/doxygen-1.9.3.linux.bin.tar.gz ${PROJECT_BINARY_DIR}/doxygen.tar.gz)
-            file(SHA256 ${PROJECT_BINARY_DIR}/doxygen.tar.gz "44df7b2d139eebb1017c7d6ec8c97082527d84a957c570c94c1301ee8eb4e1ec")
-            file(ARCHIVE_EXTRACT INPUT ${PROJECT_BINARY_DIR}/doxygen.tar.gz DESTINATION ${PROJECT_BINARY_DIR}/tools/doxygen)
-        else ()
-            MESSAGE(STATUS "Found downloaded Doxygen at: ${PROJECT_BINARY_DIR}/tools/doxygen/doxygen-1.9.3/bin")
-        endif ()
-
-        ## set true to use the downloaded doxygen
-        set(DOXYGEN_FOUND true)
-
-        ## add doxygen to the path
-        set(DOXYGEN_PATH ${PROJECT_BINARY_DIR}/tools/doxygen/doxygen-1.9.3/bin)
-        set(DOXYGEN_EXECUTABLE ${DOXYGEN_PATH}/doxygen)
+    # Search generated API inputs while leaving the manual and PDF in doc/.
+    # A trailing separator retains TeX's default package search paths.
+    if (WIN32)
+        set(HZCC_TEXINPUTS "${HZCC_DOC_LATEX_DIR};.;$ENV{TEXINPUTS};")
+        string(REPLACE ";" "\\;" HZCC_TEXINPUTS "${HZCC_TEXINPUTS}")
     else ()
-        message(FATAL_ERROR "Doxygen not found")
+        set(HZCC_TEXINPUTS "${HZCC_DOC_LATEX_DIR}:.:$ENV{TEXINPUTS}:")
     endif ()
-endif ()
-
-# set input and output files
-set(DOXYGEN_IN ${PROJECT_SOURCE_DIR}/Doxyfile)
-set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
-
-# generate doxygen configuration file
-configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-
-# note the option ALL which allows to build the docs together with the application
-add_custom_command(
-        TARGET doc_doxygen
-        COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        COMMENT "Generating API documentation with Doxygen"
-        VERBATIM)
-
-###############################################################################
-## Latex Targets ##############################################################
-###############################################################################
-if (LATEX_FOUND AND LATEX_PDFLATEX_FOUND AND DOXYGEN_FOUND)
-    # copy the figure files to the build directory
-    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/figure)
-
-    # copy the figure files to the build directory
-    file(GLOB LATEX_DOC_FIGURES "${CMAKE_CURRENT_SOURCE_DIR}/figure/*.png")
-    foreach (LATEX_DOC_FIGURE ${LATEX_DOC_FIGURES})
-        configure_file(${LATEX_DOC_FIGURE} "${CMAKE_CURRENT_BINARY_DIR}/figure/" COPYONLY)
-    endforeach ()
-
-    # copy the latex files to the build directory
-    file(GLOB LATEX_DOC_FIGURES "${CMAKE_CURRENT_SOURCE_DIR}/*.tex")
-    foreach (LATEX_DOC_FIGURE ${LATEX_DOC_FIGURES})
-        configure_file(${LATEX_DOC_FIGURE} "${CMAKE_CURRENT_BINARY_DIR}/" COPYONLY)
-    endforeach ()
-
-    # copy the sty files to the build directory
-    file(GLOB LATEX_DOC_FIGURES "${CMAKE_CURRENT_SOURCE_DIR}/*.sty")
-    foreach (LATEX_DOC_FIGURE ${LATEX_DOC_FIGURES})
-        configure_file(${LATEX_DOC_FIGURE} "${CMAKE_CURRENT_BINARY_DIR}/" COPYONLY)
-    endforeach ()
-
-    # copy the def files to the build directory
-    file(GLOB LATEX_DOC_FIGURES "${CMAKE_CURRENT_SOURCE_DIR}/*.def")
-    foreach (LATEX_DOC_FIGURE ${LATEX_DOC_FIGURES})
-        configure_file(${LATEX_DOC_FIGURE} "${CMAKE_CURRENT_BINARY_DIR}/" COPYONLY)
-    endforeach ()
-
-    # generate the temporary latex file to_str
-    string(REGEX REPLACE "[.]tex$" ".aux" LATEX_AUX_FILES ${DOC_MAIN_TEX})
-    string(REGEX REPLACE "[.]tex$" ".pdf" LATEX_PDF_FILES ${DOC_MAIN_TEX})
-
-    # Generate the latex documentation to PDF file
-    get_filename_component(LATEX_AUX_FILES ${LATEX_AUX_FILES} NAME)
-    get_filename_component(LATEX_AUX_FILES ${CMAKE_CURRENT_BINARY_DIR}/${LATEX_AUX_FILES} ABSOLUTE)
+    set(HZCC_PDFLATEX_COMMAND "${CMAKE_COMMAND}" -E env
+        "TEXINPUTS=${HZCC_TEXINPUTS}" "${PDFLATEX_COMPILER}")
     add_custom_target(documentation
-            DEPENDS ${DOC_MAIN_TEX}
-            BYPRODUCTS ${LATEX_PDF_FILES}
-            COMMAND ${CMAKE_COMMAND} -E remove -f *.aux
-            COMMAND ${CMAKE_COMMAND} -E remove -f *.idx
-            COMMAND ${CMAKE_COMMAND} -E remove -f *.log
-            COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} -draftmode -interaction=nonstopmode -halt-on-error -file-line-error ${DOC_MAIN_TEX} > ${CMAKE_CURRENT_BINARY_DIR}/latex_prebuild.log 2>&1
-            COMMAND ${CMAKE_COMMAND} -E env TEXMFOUTPUT=${CMAKE_CURRENT_BINARY_DIR} ${MAKEINDEX_COMPILER} ${DOC_MAIN_TEX} -o ${CMAKE_CURRENT_BINARY_DIR}/latex_tmp_ind.ind -t ${CMAKE_CURRENT_BINARY_DIR}/makeindex.log
-            COMMAND ${PDFLATEX_COMPILER} -output-directory ${CMAKE_CURRENT_BINARY_DIR} ${DOC_MAIN_TEX} > ${CMAKE_CURRENT_BINARY_DIR}/pdflatex.log 2>&1 && cp ${CMAKE_CURRENT_BINARY_DIR}/*.pdf ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            COMMENT "Generating LaTeX documentation"
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-
-    # build the latex document are required doxygen documents
-    add_dependencies(documentation doc_doxygen)
-ELSE ()
-    if (NOT LATEX_FOUND)
-        message(FATAL_ERROR "Latex is required to build the documentation.")
-    else ()
-        message(FATAL_ERROR "doxygen is required to build the documentation.")
-    endif ()
+        COMMAND ${HZCC_PDFLATEX_COMMAND} -interaction=nonstopmode -halt-on-error
+                -file-line-error developers.tex
+        COMMAND "${MAKEINDEX_COMPILER}" developers.idx
+        COMMAND ${HZCC_PDFLATEX_COMMAND} -interaction=nonstopmode -halt-on-error
+                -file-line-error developers.tex
+        COMMAND ${HZCC_PDFLATEX_COMMAND} -interaction=nonstopmode -halt-on-error
+                -file-line-error developers.tex
+        BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/developers.pdf"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+        COMMENT "Generating the developer manual PDF"
+        VERBATIM)
+else ()
+    add_custom_target(documentation
+        COMMAND "${CMAKE_COMMAND}" -E echo
+                "HTML documentation: ${PROJECT_BINARY_DIR}/doxygen_html/index.html (PDF requires pdflatex and makeindex)"
+        VERBATIM)
 endif ()
+add_dependencies(documentation doc_doxygen)
+
+# Audit the XML, including private and experimental interfaces, independently of
+# presentation-only warnings about fields or enum values.
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+add_custom_target(check_doxygen
+    COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/scripts/check_doxygen.py"
+            "${PROJECT_BINARY_DIR}/doxygen_xml"
+    DEPENDS doc_doxygen
+    COMMENT "Checking Doxygen coverage for project classes and functions"
+    VERBATIM)

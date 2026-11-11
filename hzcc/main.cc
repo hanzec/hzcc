@@ -3,6 +3,9 @@
 //
 
 #include <CLI/CLI.hpp>
+#include <algorithm>
+#include <fstream>
+#include <iomanip>
 
 #include "ast/CompilationUnit.h"
 #include "const_msg.h"
@@ -10,6 +13,13 @@
 #include "parser/parser.h"
 #include "utils/logging.h"
 
+/**
+ * @brief Parse command-line options and run the requested compiler frontend stages.
+ * @param argc Number of command-line arguments, including the executable name.
+ * @param argv Null-terminated argument vector used by CLI11 and logging.
+ * @return Zero for successful handling; a CLI or compiler error code on failure.
+ * @note Code generation is currently disabled; lexical-only mode returns after its first file.
+ */
 int main(int argc, char* argv[]) {
     hzcc::initLogging(argv);
 
@@ -126,7 +136,9 @@ int main(int argc, char* argv[]) {
             std::make_shared<hzcc::ast::CompilationUnit>(input_files[i]);
 
         // run syntax analysis
-        if (!hzcc::syntax::GenerateAST(tokens.value(), compilation_unit).ok()) {
+        auto syntax_status = hzcc::syntax::GenerateAST(tokens.value(), compilation_unit);
+        if (!syntax_status.ok()) {
+            std::cerr << syntax_status.ToString() << std::endl;
             return -1;
         }
 

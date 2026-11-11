@@ -4,7 +4,7 @@
 #include <glog/logging.h>
 
 #include <cstdint>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 #include <memory>
 #include <optional>
 #include <ostream>
@@ -56,7 +56,7 @@ std::optional<DeduceValue> LiteralExpr::GetDeducedValue() const {
         case LiteralType::Integer:
             return DeduceValue(static_cast<int64_t>(std::stoi(_value)));
         default:
-            DLOG_ASSERT(false) << "unexpected literal type";
+            DCHECK(false) << "unexpected literal type";
     }
     return std::nullopt;
 }
@@ -74,7 +74,7 @@ QualTypePtr LiteralExpr::type() const {
         case LiteralType::Integer:
             return GetNumericalTypeOf<PrimitiveType::kInt>();
         default:
-            DLOG_ASSERT(false) << "unexpected literal type";
+            DCHECK(false) << "unexpected literal type";
     }
     return nullptr;
 }

@@ -43,6 +43,8 @@ StatusOr<std::unique_ptr<Expr>> Cast::apply(
     bool changed = false;
     auto& r_ref = _rules;
     while (ret != nullptr && ret->type() != lhs_type) {
+        // Try each registered rule against the current owned expression and return
+        // that rule's conversion status to the factory iteration.
         auto&& status = for_each_product([&](const std::string& cast_id)
                                              -> Status {
             auto rule = r_ref.find(cast_id);

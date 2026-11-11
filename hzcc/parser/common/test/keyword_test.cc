@@ -32,7 +32,7 @@ TEST(PARSER_COMMON_TOKENTYPE, type_specifier) {
 }
 
 TEST(PARSER_COMMON_TOKENTYPE, Operator) {
-    // 351 ~ 372 is reserved for operator
+    // 351 ~ 371 is reserved for operator
     EXPECT_EQ(magic_enum::enum_integer(TokenType::EQ), 351);
     EXPECT_EQ(magic_enum::enum_integer(TokenType::NE), 352);
     EXPECT_EQ(magic_enum::enum_integer(TokenType::GE), 353);
@@ -48,13 +48,12 @@ TEST(PARSER_COMMON_TOKENTYPE, Operator) {
     EXPECT_EQ(magic_enum::enum_integer(TokenType::kMulAssign), 363);
     EXPECT_EQ(magic_enum::enum_integer(TokenType::kDivAssign), 364);
     EXPECT_EQ(magic_enum::enum_integer(TokenType::kArrow), 365);
-    EXPECT_EQ(magic_enum::enum_integer(TokenType::kSelfMinus), 366);
-    EXPECT_EQ(magic_enum::enum_integer(TokenType::kModAssign), 367);
-    EXPECT_EQ(magic_enum::enum_integer(TokenType::kLShiftAssign), 368);
-    EXPECT_EQ(magic_enum::enum_integer(TokenType::kRShiftAssign), 369);
-    EXPECT_EQ(magic_enum::enum_integer(TokenType::kAndAssign), 370);
-    EXPECT_EQ(magic_enum::enum_integer(TokenType::kXorAssign), 371);
-    EXPECT_EQ(magic_enum::enum_integer(TokenType::kOrAssign), 372);
+    EXPECT_EQ(magic_enum::enum_integer(TokenType::kModAssign), 366);
+    EXPECT_EQ(magic_enum::enum_integer(TokenType::kLShiftAssign), 367);
+    EXPECT_EQ(magic_enum::enum_integer(TokenType::kRShiftAssign), 368);
+    EXPECT_EQ(magic_enum::enum_integer(TokenType::kAndAssign), 369);
+    EXPECT_EQ(magic_enum::enum_integer(TokenType::kXorAssign), 370);
+    EXPECT_EQ(magic_enum::enum_integer(TokenType::kOrAssign), 371);
 }
 
 TEST(PARSER_COMMON_TOKENTYPE, qualifier) {

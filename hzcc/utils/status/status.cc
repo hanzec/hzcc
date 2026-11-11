@@ -15,7 +15,7 @@
 
 #include <absl/strings/cord.h>
 #include <absl/strings/str_cat.h>
-#include <string.h>
+#include <cerrno>
 #include <memory>
 #include <optional>
 #include <utility>
@@ -27,6 +27,10 @@ std::string StatusCodeToString(StatusCode code) {
     switch (code) {
         case StatusCode::kOk:
             return "OK";
+        case StatusCode::kCastStage:
+            return "CAST_STAGE";
+        case StatusCode::kPreProcessStage:
+            return "PREPROCESS_STAGE";
         case StatusCode::kUnknown:
             return "UNKNOWN";
         case StatusCode::kLexicalAnalysisStage:
@@ -70,6 +74,8 @@ hzcc::StatusCode MapToLocalCode(int value) {
     auto code = static_cast<hzcc::StatusCode>(value);
     switch (code) {
         case hzcc::StatusCode::kOk:
+        case hzcc::StatusCode::kCastStage:
+        case hzcc::StatusCode::kPreProcessStage:
         case hzcc::StatusCode::kUnknown:
         case hzcc::StatusCode::kLexicalAnalysisStage:
         case hzcc::StatusCode::kNotFound:
@@ -92,7 +98,7 @@ hzcc::StatusCode MapToLocalCode(int value) {
 }  // namespace status_internal
 
 std::optional<absl::Cord> Status::GetPayload() const {
-    if (IsInlined(rep_)) {
+    if (IsInlined(rep_) || !RepToPointer(rep_)->payload) {
         return std::nullopt;
     } else {
         return {*RepToPointer(rep_)->payload};
@@ -100,8 +106,10 @@ std::optional<absl::Cord> Status::GetPayload() const {
 }
 
 const std::string* Status::EmptyString() {
+    /// @brief Process-lifetime empty string storage with intentionally suppressed destruction.
     static union EmptyString {
         std::string str;
+        /// @brief Leave the shared string alive during static destruction.
         ~EmptyString() {}
     } empty = {{}};
     return &empty.str;
@@ -170,12 +178,9 @@ void Status::PrepareToModify() {
 }
 
 bool Status::EqualsSlow(const hzcc::Status& a, const hzcc::Status& b) {
-    if (IsInlined(a.rep_) != IsInlined(b.rep_)) return false;
     if (a.message() != b.message()) return false;
     if (a.raw_code() != b.raw_code()) return false;
-    if (a.GetPayload() == b.GetPayload()) return true;
-
-    return true;
+    return a.GetPayload() == b.GetPayload();
 }
 
 std::ostream& operator<<(std::ostream& os, const Status& x) {
@@ -191,6 +196,10 @@ Status DataLossError(std::string_view message) {
     return {hzcc::StatusCode::kDataLoss, message};
 }
 
+
+Status InvalidArgumentError(std::string_view message) {
+    return {hzcc::StatusCode::kInvalidArguments, message};
+}
 
 Status InternalError(std::string_view message) {
     return {hzcc::StatusCode::kInternal, message};
@@ -217,6 +226,14 @@ Status UnimplementedError(std::string_view message) {
 
 Status UnknownError(std::string_view message) {
     return Status(hzcc::StatusCode::kUnknown, message);
+}
+
+bool IsAlreadyExists(const Status& status) {
+    return status.code() == hzcc::StatusCode::kAlreadyExists;
+}
+
+bool IsInvalidArgument(const Status& status) {
+    return status.code() == hzcc::StatusCode::kInvalidArguments;
 }
 
 bool IsDataLoss(const Status& status) {
@@ -251,12 +268,23 @@ bool IsUnknown(const Status& status) {
     return status.code() == hzcc::StatusCode::kUnknown;
 }
 
-namespace {
-std::string MessageForErrnoToStatus(int error_number,
-                                    std::string_view message) {
-    return std::string(message) + ": " + strerror(error_number);
+StatusCode ErrnoToStatusCode(int error_number) {
+    // Map only errors represented by HZCC's status enum; unsupported errno
+    // categories remain Unknown rather than being confused with compiler stages.
+    switch (error_number) {
+        case 0: return StatusCode::kOk;
+        case EINVAL: return StatusCode::kInvalidArguments;
+        case ENOENT: return StatusCode::kNotFound;
+        case EEXIST: return StatusCode::kAlreadyExists;
+        case ERANGE: return StatusCode::kOutOfRange;
+        case ENOSYS: return StatusCode::kUnimplemented;
+        case EAGAIN:
+        case EBUSY:
+        case EINTR: return StatusCode::kUnavailable;
+        case EIO: return StatusCode::kDataLoss;
+        default: return StatusCode::kUnknown;
+    }
 }
-}  // namespace
 
 namespace status_internal {
 

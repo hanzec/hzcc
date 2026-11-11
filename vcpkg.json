@@ -1,33 +1,30 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
-  "name": "mycc",
-  "version": "0.0.1",
+  "name": "hzcc",
+  "version": "0.1.0",
+  "description": "An experimental C compiler implemented in C++17",
+  "builtin-baseline": "e54ef0fcc9a82033a61e51002552a910a5d57282",
   "dependencies": [
-    "gtest",
+    "abseil",
     "cli11",
-    "re2",
-    "antlr4",
+    "gflags",
+    "glog",
     "magic-enum",
-    {
-      "name": "abseil",
-      "features": [
-        "cxx17"
-      ]
-    },
+    "re2",
     {
       "name": "glog",
-      "platform": "!osx",
-      "features": [
-        "unwind",
-        "customprefix"
-      ]
-    },
-    {
-      "name": "glog",
-      "platform": "osx",
-      "features": [
-        "customprefix"
-      ]
+      "platform": "linux",
+      "features": ["unwind"]
     }
-  ]
+  ],
+  "features": {
+    "tests": {
+      "description": "Build the GoogleTest unit test suite",
+      "dependencies": ["gtest"]
+    },
+    "antlr": {
+      "description": "Build the experimental ANTLR frontend",
+      "dependencies": ["antlr4"]
+    }
+  }
 }

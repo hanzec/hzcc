@@ -1,0 +1,22 @@
+name: Set up the HZCC Linux build environment
+description: Install the pinned stable compiler, CMake, and Python test environment.
+inputs:
+  compiler:
+    description: gcc or clang
+    required: true
+  documentation:
+    description: Also install Doxygen and the LaTeX toolchain
+    default: 'false'
+  coverage:
+    description: Also install the pinned Python coverage tools
+    default: 'false'
+runs:
+  using: composite
+  steps:
+    - name: Install and verify build tools
+      shell: bash
+      env:
+        HZCC_CI_COMPILER: ${{ inputs.compiler }}
+        HZCC_CI_DOCUMENTATION: ${{ inputs.documentation }}
+        HZCC_CI_COVERAGE: ${{ inputs.coverage }}
+      run: bash "$GITHUB_WORKSPACE/.github/scripts/setup-build.sh"

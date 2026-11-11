@@ -192,7 +192,7 @@
 //
 // Status PreprocessSource(const std::filesystem::path& input,
 //                        std::ostream& output) {
-//    DLOG_ASSERT(std::filesystem::exists(input))
+//    DCHECK(std::filesystem::exists(input))
 //        << "PreprocessSource: input file " << input << " not found";
 //    // change pwd to input file's dir
 //    std::filesystem::current_path(input);

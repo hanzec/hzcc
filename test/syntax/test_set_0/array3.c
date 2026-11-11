@@ -43,6 +43,6 @@ int strange(int A[])
   return 3;
 }
 
-//RUN: %mycc -3 "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
+//RUN: %mycc --fsyntax_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
 //CHECK:      File __FILE__ is syntactically correct.

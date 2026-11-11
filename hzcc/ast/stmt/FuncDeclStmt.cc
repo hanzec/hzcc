@@ -29,7 +29,7 @@ FuncDeclStmt::FuncDeclStmt(
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK_BLOCK({
-        LOG_IF(FATAL, _ret_type != nullptr)
+        LOG_IF(FATAL, _ret_type == nullptr)
             << UniqueName() << "type is nullptr";
     })
 }

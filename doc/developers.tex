@@ -137,7 +137,7 @@
             \> \emph{Description}
         \end{tabbing}
     \end{quote}
-    where the line number and offending text should be where the error occurs (or was detected). The description will typically indicate what the parser_common expected to appear next in input. After the first syntax error, your parser_common may either make a ``best effort'' attempt to continue processing the input file, or exit. When tested on input files with syntax errors, your compiler will be considered correct if it catches the first syntax error. If the input file is syntactically correct, then simply write
+    where the line number and offending text should be where the error occurs (or was detected). The description will typically indicate what the parser\_common expected to appear next in input. After the first syntax error, your parser\_common may either make a ``best effort'' attempt to continue processing the input file, or exit. When tested on input files with syntax errors, your compiler will be considered correct if it catches the first syntax error. If the input file is syntactically correct, then simply write
     \begin{quote}
         \verb|File| \emph{filename} \verb|is syntactically correct.|
     \end{quote}
@@ -285,7 +285,7 @@
             & ~~~~~~ &
                 {\bf Value} & {\bf Lexeme}
             & ~~~~~~ &
-                {\bf to_str} & {\bf Lexeme}
+                {\bf to\_str} & {\bf Lexeme}
             \\ \cline{1-2} \cline{4-5} \cline{7-8}
             401 & \verb|const| & &
             402 & \verb|struct| & &
@@ -384,7 +384,7 @@
 
 
     \section{API reference }
-    \subimport{./}{refman.tex}
+    \subimport{latex/}{refman.tex}
 
     \printindex
 \end{document}

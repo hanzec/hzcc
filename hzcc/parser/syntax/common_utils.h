@@ -3,6 +3,7 @@
 //
 #ifndef HZCC_PARSER_SYNTAX_UTILS_COMMON_UTILS_H_
 #define HZCC_PARSER_SYNTAX_UTILS_COMMON_UTILS_H_
+#include <absl/strings/str_cat.h>
 #include <list>
 #include <memory>
 #include <string>
@@ -19,11 +20,23 @@ class Stmt;
 class CompilationUnit;
 }  // namespace ast
 namespace syntax::utils {
+/**
+ * @brief Report a syntax diagnostic at one token and return its error status.
+ * @param token Token supplying the source location.
+ * @param message Diagnostic text.
+ * @return CompileError status associated with the token location.
+ */
 ALWAYS_INLINE Status TokenErr(const Token& token, std::string_view message) {
     return CompileError(token.loc(),  // NOLINT
                         message);     // NOLINT
 }
 
+/**
+ * @brief Report a syntax diagnostic at the next token or at an unknown location.
+ * @param token Token sequence; an empty sequence uses location (0, 0).
+ * @param message Diagnostic text.
+ * @return Syntax-stage error status; no token is consumed.
+ */
 ALWAYS_INLINE Status TokenErr(TokenList& token, std::string_view message) {
     if (token.empty()) {
         message::print_message(CompileErrorLevel::Error, message, {0, 0});
@@ -33,6 +46,13 @@ ALWAYS_INLINE Status TokenErr(TokenList& token, std::string_view message) {
     }
 }
 
+/**
+ * @brief Consume a base type specification and apply cached qualifiers where supported.
+ * @param tokens Input beginning at a primitive, record, or named type.
+ * @param context Non-null compilation unit supplying and receiving named types.
+ * @return Resolved qualified type, or a type lookup/syntax error.
+ * @note Multi-specifier primitive types currently trigger a fatal unsupported-operation log.
+ */
 ALWAYS_INLINE StatusOr<ast::QualTypePtr> get_base_type(
     TokenList& tokens, std::shared_ptr<ast::CompilationUnit>& context) {
     static std::vector<Qualifier> ret_attr_list(4);
@@ -118,6 +138,12 @@ ALWAYS_INLINE StatusOr<ast::QualTypePtr> get_base_type(
         (TOKENS).pop();                                                                 \
     };
 
+/**
+ * @brief Parse an expression enclosed in parentheses.
+ * @param context Non-null compilation unit used by expression parsing.
+ * @param tokens Input beginning at the opening parenthesis.
+ * @return The condition expression, or a delimiter/expression parsing error.
+ */
 ALWAYS_INLINE StatusOr<ast::ExprPtr> ParseCondition(
     std::shared_ptr<ast::CompilationUnit>& context, TokenList& tokens) {
     // next token is (
@@ -131,6 +157,14 @@ ALWAYS_INLINE StatusOr<ast::ExprPtr> ParseCondition(
     return condition;
 }
 
+/**
+ * @brief Parse a braced body or wrap a single statement in a compound node.
+ * @param context Non-null compilation unit whose scope is entered for a braced body.
+ * @param add_semicolon Whether to push a synthetic semicolon after a braced body.
+ * @param tokens Input sequence beginning at the body statement.
+ * @return Owned compound statement, or the first parsing error.
+ * @note Scope changes and consumed tokens are not rolled back on an error.
+ */
 ALWAYS_INLINE StatusOr<std::unique_ptr<ast::CompoundStmt>> ParseBodyStatement(
     std::shared_ptr<ast::CompilationUnit>& context, bool add_semicolon,
     TokenList& tokens) {

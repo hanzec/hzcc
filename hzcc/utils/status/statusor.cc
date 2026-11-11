@@ -68,14 +68,13 @@ void BadStatusOrAccess::InitWhat() const {
     });
 }
 
-Status InternalError(const char* message);
 namespace internal_statusor {
 
 void Helper::HandleInvalidStatusCtorArg(hzcc::Status* status) {
     const char* kMessage =
         "An OK status is not a valid constructor argument to StatusOr<T>";
 #ifdef NDEBUG
-    INTERNAL_LOG(ERROR) << kMessage;
+    LOG(ERROR) << kMessage;
 #else
     LOG(FATAL) << kMessage;
 #endif

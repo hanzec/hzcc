@@ -13,21 +13,20 @@
 #define HZCC_SYMBOL_UTILS_H
 namespace hzcc::lexical::SymbolUtils {
 
-/**
- * @Brief: internal_status constexpr wrap for searching an std::array with
- * constexpr, which is a constexpr version of std::find_if
- * @note: Since all table's size is not so large, will trying to unroll the loop
- * if possible.
- * @tparam Type the type of the array element.
- * @tparam N the size of the array.
- * @param table the array.
- * @param str the string to be searched.
- * @return the index of the string in the array.
- */
+
 #if !defined(__clang__) && defined(__GNUC__)
 #pragma GCC push_options
 #pragma GCC optimize("unroll-loops")
 #endif
+/**
+ * @brief Find the first equal entry in a fixed-size lookup table.
+ * @tparam CType Type of the searched value.
+ * @tparam AType Table element type.
+ * @tparam ASize Nonzero table size representable by int.
+ * @param table Table to search; string-like entries are compared by content.
+ * @param str Value to locate.
+ * @return Zero-based index of the first match, or -1 when absent.
+ */
 template <class CType, class AType, unsigned long ASize,  // NOLINT
           std::enable_if_t<                               // NOLINT
               std::disjunction_v<                         // NOLINT
@@ -65,9 +64,9 @@ constexpr ALWAYS_INLINE int Iserch_table(const std::array<AType, ASize> &table,
 #endif
 
 /**
- * @Brief: Get the type of the single char symbol.
- * @param str the char to be searched.
- * @return the index of the symbol in symbol table, and -1 if not found.
+ * @brief Classify one punctuation character.
+ * @param str Character to look up in the single-character symbol table.
+ * @return Its ASCII-valued token category, or TokenType::kUnknown.
  */
 ALWAYS_INLINE TokenType GetSymbolType(const char str) {
     auto ret = Iserch_table(parser_common::kSingleCharSymbol, str);
@@ -80,18 +79,18 @@ ALWAYS_INLINE TokenType GetSymbolType(const char str) {
 }
 
 /**
- * @Brief: Check if the char is the special symbol.
- * @param str the char to be checked.
- * @return true if the char is the special symbol, false otherwise.
+ * @brief Check whether a character delimits an identifier or number.
+ * @param str Character to classify.
+ * @return True for a space or a recognized single-character symbol.
  */
 ALWAYS_INLINE bool is_operator(const char str) {
     return str == ' ' || TokenType::kUnknown != GetSymbolType(str);
 }
 
 /**
- * @Brief: Check if the string is the special keyword.
- * @param keyword the string to be checked.
- * @return the index of the keyword in keyword table, and -1 if not found.
+ * @brief Resolve a keyword spelling to its token category.
+ * @param keyword Exact keyword spelling to look up.
+ * @return Matching keyword token, or TokenType::kUnknown when absent.
  */
 ALWAYS_INLINE TokenType is_keyword(std::string_view keyword) {
     auto ret = Iserch_table(::hzcc::kKeywordTable, keyword);
@@ -105,10 +104,9 @@ ALWAYS_INLINE TokenType is_keyword(std::string_view keyword) {
 }
 
 /**
- * @Brief: Check if the giving char is the qualifier.
- * @param str the char to be checked.
- * @return TokenType::kUnknown if the char is not the qualifier, otherwise
- * return the corresponding TokenType.
+ * @brief Resolve a C qualifier spelling to its token category.
+ * @param str Exact qualifier spelling to look up.
+ * @return Matching qualifier token, or TokenType::kUnknown when absent.
  */
 constexpr ALWAYS_INLINE TokenType is_qualifier(std::string_view str) {
     auto ret = Iserch_table(hzcc::kQualifierTable, str);
@@ -122,9 +120,9 @@ constexpr ALWAYS_INLINE TokenType is_qualifier(std::string_view str) {
 }
 
 /**
- * @Brief: Check if the giving char is primitive type.
- * @param str the char to be checked.
- * @return true if the char is the special symbol, false otherwise.
+ * @brief Resolve a type-specifier spelling to its token category.
+ * @param str Exact type-specifier spelling to look up.
+ * @return Matching type-specifier token, or TokenType::kUnknown when absent.
  */
 constexpr ALWAYS_INLINE TokenType is_type_specifier(std::string_view str) {
     auto ret = Iserch_table(hzcc::kTypeSpecifier, str);
@@ -138,9 +136,10 @@ constexpr ALWAYS_INLINE TokenType is_type_specifier(std::string_view str) {
 }
 
 /**
- * @Brief: Get the type of the symbol.
- * @param str the double char to be searched.
- * @return the index of the symbol in symbol table, and -1 if not found.
+ * @brief Prefer a two-character operator, falling back to the first character.
+ * @param str View whose first two characters can be read.
+ * @return Matching multi-character category, or the classification of str[0].
+ * @pre The view contains at least two characters.
  */
 ALWAYS_INLINE TokenType GetSymbolType(std::string_view str) {
     // handle if the char is a single char symbol
@@ -158,18 +157,9 @@ ALWAYS_INLINE TokenType GetSymbolType(std::string_view str) {
 }
 
 /**
- * @Brief: Converting char to ASCII Control StatusCode. There are following
- * ASCII Control StatusCode supported:
- *         - \0: NUL
- *         - \a: BEL
- *         - \b: BS
- *         - \f: FF
- *         - \n: LF
- *         - \r: CR
- *         - \t: HT
- *         - \v: VT
- * @param str the char to be converted.
- * @return the ASCII Control StatusCode, will return 0xFF if not found.
+ * @brief Decode the supported single-letter C control-character escapes.
+ * @param str Escape letter following the backslash.
+ * @return Decoded character, or static_cast<char>(0xFF) for unsupported escapes.
  */
 ALWAYS_INLINE char ToASCIIControlCode(const char str) {
     switch (str) {
@@ -195,18 +185,9 @@ ALWAYS_INLINE char ToASCIIControlCode(const char str) {
 }
 
 /**
- * @Brief: ASCII Control StatusCode to its string('\0' ->"\\0"). There are
- * following ASCII Control StatusCode supported:
- *         - \0: NUL
- *         - \a: BEL
- *         - \b: BS
- *         - \f: FF
- *         - \n: LF
- *         - \r: CR
- *         - \t: HT
- *         - \v: VT
- * @param str ascii control code to be converted.
- * @return the ASCII Control StatusCode, will return "" if not found.
+ * @brief Encode a supported ASCII control character as a C escape spelling.
+ * @param str Control character to encode.
+ * @return Pointer to static escape text, or an empty string for unsupported characters.
  */
 ALWAYS_INLINE const char *ASCIIControlCodeToString(const char str) {
     switch (str) {

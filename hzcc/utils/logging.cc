@@ -11,7 +11,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 
 #include "fs_utils.h"
 #include "options.h"
@@ -25,17 +25,26 @@ constexpr const char* KEnableYellow = "\033[1;33m";
 constexpr const char* KDisableColor = "\033[0m";
 }  // namespace
 
+/** @brief Write HZCC's timestamp, severity, thread, and source-location log prefix.
+ * @param out_stream Destination provided by glog.
+ * @param info Log-message metadata used to format the prefix.
+ */
 void custom_prefix_callback(std::ostream& out_stream,  // NOLINT
-                            const google::LogMessageInfo& info, void*) {
+                            const google::LogMessage& info, void*) {
     // print date with format: YYYY-MM-DD HH:MM:SS
-    out_stream << std::put_time(std::localtime(&info.time.timestamp()), "%F %T") << " ";
+    const auto& time = info.time();
+    out_stream << std::setfill('0') << std::setw(4) << 1900 + time.year() << "-"
+               << std::setw(2) << 1 + time.month() << "-" << std::setw(2) << time.day()
+               << " " << std::setw(2) << time.hour() << ":" << std::setw(2) << time.min()
+               << ":" << std::setw(2) << time.sec() << std::setfill(' ') << " ";
+    const char* severity = google::GetLogSeverityName(info.severity());
 
     // print thread id
-    out_stream << std::setw(5) << std::left << info.thread_id << " ";
+    out_stream << std::setw(5) << std::left << info.thread_id() << " ";
 
     // print color log
     if (!Options::Global_disable_color) {
-        switch (info.severity[0]) {
+        switch (severity[0]) {
             case 'I':
                 out_stream << KEnableGreen;
                 break;
@@ -51,19 +60,21 @@ void custom_prefix_callback(std::ostream& out_stream,  // NOLINT
         }
     }
 
-    out_stream << "[" << info.severity[0] << info.severity[1] << info.severity[2]
-               << info.severity[3] << "] " << std::setw(0) << std::right;
+    out_stream << "[" << severity[0] << severity[1] << severity[2]
+               << severity[3] << "] " << std::setw(0) << std::right;
 
     if (!Options::Global_disable_color) {
         out_stream << KDisableColor;
     }
 
     // print file name and line number
-    out_stream << info.filename << ":" << info.line_number << "]";
+    out_stream << info.basename() << ":" << info.line() << "]";
 }
 
 void initLogging(char* argv[]) {
-    google::InitGoogleLogging(argv[0], &custom_prefix_callback);
+    google::InitGoogleLogging(argv[0]);
+    // glog 0.7 installs prefix callbacks separately from logger initialization.
+    google::InstallPrefixFormatter(&custom_prefix_callback);
     google::SetStderrLogging(google::GLOG_INFO);
 }
 

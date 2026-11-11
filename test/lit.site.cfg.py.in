@@ -1,28 +1,19 @@
-import os, lit
+import os
+import shlex
+import lit
 
-lit_config.load_config(
-        config, os.path.join('${CURRENT_TEST_ROOT}', "lit.cfg.py"))
-
-# diasble pipefail
+# CMake generates one site config per build configuration, using target paths.
+lit_config.load_config(config, os.path.join(r'@CURRENT_TEST_ROOT@', 'lit.cfg.py'))
 config.pipefail = False
+config.test_source_root = r'@CURRENT_TEST_ROOT@'
+config.test_exec_root = os.path.dirname(os.path.abspath(__file__))
+config.environment['PYTHON_EXECUTABLE'] = r'@Python3_EXECUTABLE@'
 
-# test_source_root: The root path where tests are located.
-config.test_source_root = os.path.dirname(os.path.abspath(__file__))
+filecheck_executable = r'$<TARGET_FILE:HZCC_FileCheck>'
+hzcc_executable = r'$<TARGET_FILE:hzcc>'
+for executable in (filecheck_executable, hzcc_executable):
+    if not os.path.isfile(executable):
+        lit_config.fatal('Missing test executable: ' + executable)
 
-# test_exec_root: The root path where tests should be run.
-config.test_exec_root = config.test_source_root
-
-config.environment['PYTHON_EXECUTABLE'] = '${Python3_EXECUTABLE}'
-
-binary_root = '${CMAKE_BINARY_DIR}/bin'
-
-# e2e_file_check tools
-FileCheck_executable = os.path.join(binary_root, 'HZCC_FileCheck')
-config.substitutions.append(('%FileCheck',FileCheck_executable))
-if not lit.util.which(FileCheck_executable):
-    lit_config.fatal('Cannot find OutputCheck executable in your PATH')
-
-# compiler executables
-hzcc_executable = os.path.join(binary_root, 'hzcc')
-config.substitutions.append(('%mycc',hzcc_executable))
-
+config.substitutions.append(('%FileCheck', shlex.quote(filecheck_executable)))
+config.substitutions.append(('%mycc', shlex.quote(hzcc_executable)))

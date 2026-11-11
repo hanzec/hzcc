@@ -308,11 +308,20 @@ enum class StatusCode : int {
 // StatusCodeToString()
 //
 // Returns the to_str for the status code, or "" if it is an unknown value.
+/** @brief Look up the diagnostic label associated with a status code.
+ * @param code Code to format.
+ * @return Its label, or an empty string for an unrecognized value.
+ */
 std::string StatusCodeToString(StatusCode code);
 
 // operator<<
 //
 // Streams StatusCodeToString(code) to `os`.
+/** @brief Write a status-code label to a stream.
+ * @param os Destination stream.
+ * @param code Code whose label is written.
+ * @return The destination stream.
+ */
 std::ostream& operator<<(std::ostream& os, StatusCode code);
 
 // hzcc::StatusToStringMode
@@ -335,29 +344,63 @@ enum class StatusToStringMode : int {
 
 // hzcc::StatusToStringMode is specified as a bitmask type, which means the
 // following operations must be provided:
+/** @brief Intersect formatting flags.
+ * @param lhs First flag set.
+ * @param rhs Second flag set.
+ * @return The resulting flag mask.
+ */
 inline constexpr StatusToStringMode operator&(StatusToStringMode lhs,
                                               StatusToStringMode rhs) {
     return static_cast<StatusToStringMode>(static_cast<int>(lhs) & static_cast<int>(rhs));
 }
+/** @brief Combine formatting flags.
+ * @param lhs First flag set.
+ * @param rhs Second flag set.
+ * @return The resulting flag mask.
+ */
 inline constexpr StatusToStringMode operator|(StatusToStringMode lhs,
                                               StatusToStringMode rhs) {
     return static_cast<StatusToStringMode>(static_cast<int>(lhs) | static_cast<int>(rhs));
 }
+/** @brief Toggle flags present in exactly one operand.
+ * @param lhs First flag set.
+ * @param rhs Second flag set.
+ * @return The resulting flag mask.
+ */
 inline constexpr StatusToStringMode operator^(StatusToStringMode lhs,
                                               StatusToStringMode rhs) {
     return static_cast<StatusToStringMode>(static_cast<int>(lhs) ^ static_cast<int>(rhs));
 }
+/** @brief Invert the formatting flag mask.
+ * @param arg Flag set to invert.
+ * @return Bitwise complement of arg.
+ */
 inline constexpr StatusToStringMode operator~(StatusToStringMode arg) {
     return static_cast<StatusToStringMode>(~static_cast<int>(arg));
 }
+/** @brief Intersect formatting flags.
+ * @param lhs Flag set updated in place.
+ * @param rhs Flag set applied to lhs.
+ * @return Reference to the updated lhs.
+ */
 inline StatusToStringMode& operator&=(StatusToStringMode& lhs, StatusToStringMode rhs) {
     lhs = lhs & rhs;
     return lhs;
 }
+/** @brief Combine formatting flags.
+ * @param lhs Flag set updated in place.
+ * @param rhs Flag set applied to lhs.
+ * @return Reference to the updated lhs.
+ */
 inline StatusToStringMode& operator|=(StatusToStringMode& lhs, StatusToStringMode rhs) {
     lhs = lhs | rhs;
     return lhs;
 }
+/** @brief Toggle flags present in exactly one operand.
+ * @param lhs Flag set updated in place.
+ * @param rhs Flag set applied to lhs.
+ * @return Reference to the updated lhs.
+ */
 inline StatusToStringMode& operator^=(StatusToStringMode& lhs, StatusToStringMode rhs) {
     lhs = lhs ^ rhs;
     return lhs;
@@ -449,6 +492,9 @@ inline StatusToStringMode& operator^=(StatusToStringMode& lhs, StatusToStringMod
 // Returned Status objects may not be ignored. status_internal.h has a forward
 // declaration of the form
 // class [[nodiscard]] Status;
+/** @brief An error code and owned diagnostic, or an OK success result.
+ * Copies share immutable heap data; unknown numeric codes remain available via raw_code().
+ */
 class Status final {
   public:
     // Constructors
@@ -456,6 +502,8 @@ class Status final {
     // This default constructor creates an OK status with no message or payload.
     // Avoid this constructor and prefer explicit construction of an OK status
     // with `absl::NoError()`.
+    /** @brief Construct an OK status with no message or payload.
+     */
     Status();
 
     // Creates a status in the canonical error space with the specified
@@ -465,17 +513,35 @@ class Status final {
     //
     // The `msg` string must be in UTF-8. The implementation may complain (e.g.,
     // // NOLINT by printing a warning) if it is not.
+    /** @brief Construct a status from a code and an owned copy of its diagnostic.
+     * @note An OK code discards the supplied message.
+     * @param code Error or success code to store or encode.
+     * @param msg Diagnostic text copied for non-OK codes.
+     */
     Status(hzcc::StatusCode code, std::string_view msg);
 
+    /** @brief Copy a status by sharing its immutable error representation.
+     */
     Status(const Status&);
+    /** @brief Copy the source status, releasing the previous representation.
+     * @return Reference to this status.
+     * @param x Source status to copy or move.
+     */
     Status& operator=(const Status& x);
 
     // Move operators
 
     // The moved-from state is valid but unspecified.
+    /** @brief Transfer the stored representation, leaving the source valid but unspecified.
+     */
     Status(Status&&) noexcept;
+    /** @brief Move the source status, releasing the previous representation.
+     * @return Reference to this status.
+     */
     Status& operator=(Status&&) noexcept;
 
+    /** @brief Release this reference to any shared error representation.
+     */
     ~Status();
 
     // Status::Update()
@@ -493,7 +559,13 @@ class Status final {
     //   // Instead of "if (overall_status.ok()) overall_status = new_status"
     //   overall_status.Update(new_status);
     //
+    /** @brief Keep the first error, replacing this status only while it is OK.
+     * @param new_status Candidate replacement, used only while this status is OK.
+     */
     void Update(const Status& new_status);
+    /** @brief Keep the first error, replacing this status only while it is OK.
+     * @param new_status Candidate replacement, used only while this status is OK.
+     */
     void Update(Status&& new_status);
 
     // Status::ok()
@@ -501,12 +573,18 @@ class Status final {
     // Returns `true` if `this->code()` == `hzcc::StatusCode::kOk`,
     // indicating the absence of an error.
     // Prefer checking for an OK status using this member function.
+    /** @brief Report whether this status represents success.
+     * @return true only for an OK status.
+     */
     [[nodiscard]] bool ok() const;
 
     // Status::code()
     //
     // Returns the canonical error code of type `hzcc::StatusCode` of this
     // status.
+    /** @brief Return the recognized code, mapping unrecognized raw codes to kUnknown.
+     * @return Local status code used for error handling.
+     */
     [[nodiscard]] hzcc::StatusCode code() const;
 
     // Status::raw_code()
@@ -519,6 +597,9 @@ class Status final {
     //
     // NOTE: This function should only be called when converting to an
     // associated wire format. Use `Status::code()` for error handling.
+    /** @brief Return the stored numeric code without normalizing unknown values.
+     * @return The original integer status code.
+     */
     int raw_code() const;
 
     // Status::message()
@@ -527,9 +608,14 @@ class Status final {
     // Note that this message rarely describes the error code.  It is not
     // unusual for the error message to be the empty string. As a result, prefer
     // `operator<<` or `Status::ToString()` for debug logging.
+    /** @brief View the stored diagnostic without copying it.
+     * @return A view valid until this status is modified or destroyed.
+     */
     [[nodiscard]] std::string_view message() const;
 
+    /** @brief Compare raw status codes, messages and optional payloads for equality. */
     friend bool operator==(const Status&, const Status&);
+    /** @brief Test whether raw codes, diagnostic messages or optional payloads differ. */
     friend bool operator!=(const Status&, const Status&);
 
     // Status::ToString()
@@ -543,6 +629,11 @@ class Status final {
     // The printed code to_str and the message are generally substrings of the
     // result, and the payload to be printed use the status payload printer
     // mechanism (which is internal).
+    /** @brief Format the status code and diagnostic message for humans.
+     * @return "OK" for success, otherwise the code name followed by the message.
+     * @note All modes currently produce the same output; payload formatting is unsupported.
+     * @param mode Formatting flags retained for API compatibility.
+     */
     [[nodiscard]] std::string ToString(
         StatusToStringMode mode = StatusToStringMode::kDefault) const;
 
@@ -551,90 +642,123 @@ class Status final {
     // Ignores any errors. This method does nothing except potentially suppress
     // complaints from any tools that are checking that errors are not dropped
     // on the floor.
+    /** @brief Acknowledge a deliberately ignored result without changing it.
+     */
     void IgnoreError() const;
 
     // swap()
     //
     // Swap the contents of one status with another.
+    /** @brief Exchange both status representations without changing their ownership counts.
+     * @param a First status; receives the previous contents of b.
+     * @param b Second status; receives the previous contents of a.
+     */
     friend void swap(Status& a, Status& b);
 
     //----------------------------------------------------------------------------
     // Payload Management APIs
     //----------------------------------------------------------------------------
 
-    // A payload may be attached to a status to provide additional context to an
-    // error that may not be satisfied by an existing `hzcc::StatusCode`.
-    // Typically, this payload serves one of several purposes:
-    //
-    //   * It may provide more fine-grained semantic information about the error
-    //     to facilitate actionable remedies.
-    //   * It may provide human-readable contexual information that is more
-    //     appropriate to display to an end user.
-    //
-    // A payload consists of a [key,value] pair, where the key is a string
-    // referring to a unique "type URL" and the value is an object of type
-    // `absl::Cord` to hold the contextual data.
-    //
-    // The "type URL" should be unique and follow the format of a URL
-    // (https://en.wikipedia.org/wiki/URL) and, ideally, provide some
-    // documentation or schema on how to interpret its associated data. For
-    // example, the default type URL for a protobuf message type is
-    // "type.googleapis.com/packagename.messagename". Other custom wire formats
-    // should define the format of type URL in a similar practice so as to
-    // minimize the chance of conflict between type URLs.
-    // Users should ensure that the type URL can be mapped to a concrete
-    // C++ type if they want to deserialize the payload and read it effectively.
-    //
-    // To attach a payload to a status object, call `Status::SetPayload()`,
-    // passing it the type URL and an `absl::Cord` of associated data.
-    // Similarly, to extract the payload from a status, call
-    // `Status::GetPayload()`. You may attach multiple payload (with differing
-    // type URLs) to any given status object, provided that the status is
-    // currently exhibiting an error code (i.e. is not OK).
-
-    // Status::GetPayload()
-    //
-    // Gets the payload of a status given its unique `type_url` key, if present.
+    /** @brief Copy the optional payload stored in the status representation.
+     * @return The payload, or std::nullopt when none is present.
+     * @note The current public API does not provide payload mutation.
+     */
     [[nodiscard]] std::optional<absl::Cord> GetPayload() const;
 
   private:
     // Creates a status in the canonical error space with the specified
     // code, and an empty error message.
+    /** @brief Construct an inline status with the supplied code and no message.
+     * @param code Error or success code to store or encode.
+     */
     explicit Status(hzcc::StatusCode code);
 
+    /** @brief Release a heap representation and delete it when its last owner disappears.
+     * @pre rep encodes a heap allocation, not an inline status.
+     * @param rep Tagged representation whose code or ownership is inspected.
+     */
     static void UnrefNonInlined(uintptr_t rep);
+    /** @brief Retain a heap representation; inline statuses need no reference count.
+     * @param rep Tagged representation whose code or ownership is inspected.
+     */
     static void Ref(uintptr_t rep);
+    /** @brief Release a representation, dispatching heap ownership cleanup when needed.
+     * @param rep Tagged representation whose code or ownership is inspected.
+     */
     static void Unref(uintptr_t rep);
 
     // REQUIRES: !ok()
     // Ensures rep_ is not shared with any other Status.
+    /** @brief Ensure exclusive ownership of a writable heap representation.
+     * @pre This status is not OK.
+     */
     void PrepareToModify();
 
+    /** @brief Compare codes, messages, and optional payloads by value.
+     * @return Whether both statuses have identical observable contents.
+     * @param a First status to compare.
+     * @param b Second status to compare.
+     */
     static bool EqualsSlow(const hzcc::Status& a, const hzcc::Status& b);
 
     // MSVC 14.0 limitation requires the const.
     static constexpr const char kMovedFromString[] = "Status accessed after move.";
 
+    /** @brief Access process-lifetime storage for an empty message.
+     * @return Pointer to a shared empty string.
+     */
     static const std::string* EmptyString();
+    /** @brief Access process-lifetime storage for the moved-from diagnostic.
+     * @return Pointer to the shared diagnostic string.
+     */
     static const std::string* MovedFromString();
 
     // Returns whether rep contains an inlined representation.
     // See rep_ for details.
+    /** @brief Inspect the representation tag without dereferencing it.
+     * @return Whether rep stores its code directly instead of a heap pointer.
+     * @param rep Tagged representation whose code or ownership is inspected.
+     */
     static bool IsInlined(uintptr_t rep);
 
     // Indicates whether this Status was the rhs of a move operation. See rep_
     // for details.
+    /** @brief Inspect the moved-from flag on an inline representation.
+     * @return Whether rep marks a status whose contents were moved away.
+     * @param rep Tagged representation whose code or ownership is inspected.
+     */
     static bool IsMovedFrom(uintptr_t rep);
+    /** @brief Build the inline internal-error marker used after a move.
+     * @return Tagged representation of the moved-from state.
+     */
     static uintptr_t MovedFromRep();
 
     // Convert between error::Code and the inlined uintptr_t representation used
     // by rep_. See rep_ for details.
+    /** @brief Encode a status code in an inline representation.
+     * @return Code bits shifted above the representation flags.
+     * @param code Error or success code to store or encode.
+     */
     static uintptr_t CodeToInlinedRep(hzcc::StatusCode code);
+    /** @brief Decode a code from an inline representation.
+     * @pre rep is inline.
+     * @return Stored status code before local-code normalization.
+     * @param rep Tagged representation whose code or ownership is inspected.
+     */
     static hzcc::StatusCode InlinedRepToCode(uintptr_t rep);
 
     // Converts between StatusRep* and the external uintptr_t representation
     // used by rep_. See rep_ for details.
+    /** @brief Tag an allocated representation pointer for storage.
+     * @return Integer representation retaining the supplied pointer.
+     * @param r Allocated representation pointer or tagged heap representation to convert.
+     */
     static uintptr_t PointerToRep(status_internal::StatusRep* r);
+    /** @brief Recover a pointer from a heap-tagged representation.
+     * @pre r encodes a heap representation.
+     * @return Pointer to its reference-counted data.
+     * @param r Allocated representation pointer or tagged heap representation to convert.
+     */
     static status_internal::StatusRep* RepToPointer(uintptr_t r);
 
     // Status supports two different representations.
@@ -653,11 +777,19 @@ class Status final {
 //
 // Returns an OK status, equivalent to a default constructed instance. Prefer
 // usage of `absl::NoError()` when constructing such an OK status.
+/** @brief Construct an explicit success result.
+ * @return An OK status with no diagnostic or payload.
+ */
 Status NoError();
 
 // operator<<()
 //
 // Prints a human-readable representation of `x` to `os`.
+/** @brief Write a human-readable status diagnostic to a stream.
+ * @param os Destination stream.
+ * @param x Status to format.
+ * @return The destination stream.
+ */
 std::ostream& operator<<(std::ostream& os, const Status& x);
 
 // IsAborted()
@@ -679,22 +811,82 @@ std::ostream& operator<<(std::ostream& os, const Status& x);
 //
 // These convenience functions return `true` if a given status matches the
 // `hzcc::StatusCode` error code of its associated function.
+/** @brief Legacy status helper declaration retained from the upstream interface.
+ * @note This helper has no implementation or corresponding HZCC status code; it is not a usable API.
+ */
 [[nodiscard]] bool IsAborted(const Status& status);
+/** @brief Classify a status as kAlreadyExists.
+ * @param status Result to inspect.
+ * @return Whether status.code() equals StatusCode::kAlreadyExists.
+ */
 [[nodiscard]] bool IsAlreadyExists(const Status& status);
+/** @brief Classify a status as kDataLoss.
+ * @param status Result to inspect.
+ * @return Whether status.code() equals StatusCode::kDataLoss.
+ */
 [[nodiscard]] bool IsDataLoss(const Status& status);
+/** @brief Legacy status helper declaration retained from the upstream interface.
+ * @note This helper has no implementation or corresponding HZCC status code; it is not a usable API.
+ */
 [[nodiscard]] bool IsDeadlineExceeded(const Status& status);
+/** @brief Legacy status helper declaration retained from the upstream interface.
+ * @note This helper has no implementation or corresponding HZCC status code; it is not a usable API.
+ */
 [[nodiscard]] bool IsFailedPrecondition(const Status& status);
+/** @brief Classify a status as kInternal.
+ * @param status Result to inspect.
+ * @return Whether status.code() equals StatusCode::kInternal.
+ */
 [[nodiscard]] bool IsInternal(const Status& status);
+/** @brief Classify a status as kInvalidArguments.
+ * @param status Result to inspect.
+ * @return Whether status.code() equals StatusCode::kInvalidArguments.
+ */
 [[nodiscard]] bool IsInvalidArgument(const Status& status);
+/** @brief Classify a status as kNotFound.
+ * @param status Result to inspect.
+ * @return Whether status.code() equals StatusCode::kNotFound.
+ */
 [[nodiscard]] bool IsNotFound(const Status& status);
+/** @brief Classify a status as kOutOfRange.
+ * @param status Result to inspect.
+ * @return Whether status.code() equals StatusCode::kOutOfRange.
+ */
 [[nodiscard]] bool IsOutOfRange(const Status& status);
+/** @brief Legacy status helper declaration retained from the upstream interface.
+ * @note This helper has no implementation or corresponding HZCC status code; it is not a usable API.
+ */
 [[nodiscard]] bool IsPermissionDenied(const Status& status);
+/** @brief Legacy status helper declaration retained from the upstream interface.
+ * @note This helper has no implementation or corresponding HZCC status code; it is not a usable API.
+ */
 [[nodiscard]] bool IsResourceExhausted(const Status& status);
+/** @brief Classify a status as kUnauthenticated.
+ * @param status Result to inspect.
+ * @return Whether status.code() equals StatusCode::kUnauthenticated.
+ */
 [[nodiscard]] bool IsUnauthenticated(const Status& status);
+/** @brief Classify a status as kUnavailable.
+ * @param status Result to inspect.
+ * @return Whether status.code() equals StatusCode::kUnavailable.
+ */
 [[nodiscard]] bool IsUnavailable(const Status& status);
+/** @brief Classify a status as kUnimplemented.
+ * @param status Result to inspect.
+ * @return Whether status.code() equals StatusCode::kUnimplemented.
+ */
 [[nodiscard]] bool IsUnimplemented(const Status& status);
+/** @brief Classify a status as kUnknown.
+ * @param status Result to inspect.
+ * @return Whether status.code() equals StatusCode::kUnknown.
+ */
 [[nodiscard]] bool IsUnknown(const Status& status);
 
+/** @brief Print a source diagnostic and return a compile-error status.
+ * @param pos Source line and column forwarded to the diagnostic printer.
+ * @param msg Diagnostic text printed and copied into the returned status.
+ * @return A status with code kCompileError.
+ */
 ALWAYS_INLINE Status CompileError(Position pos,            // NOLINT
                                   std::string_view msg) {  // NOLINT
     message::print_message(CompileErrorLevel::Error, msg, pos);
@@ -721,21 +913,76 @@ ALWAYS_INLINE Status CompileError(Position pos,            // NOLINT
 // These convenience functions create an `hzcc::Status` object with an error
 // code as indicated by the associated function to_str, using the error message
 // passed in `message`.
+/** @brief Construct a kNotFound error with an owned diagnostic.
+ * @param message Text copied into the status.
+ * @return An error with code StatusCode::kNotFound.
+ */
 Status NotFoundError(std::string_view message);
 
+/** @brief Legacy status helper declaration retained from the upstream interface.
+ * @note This helper has no implementation or corresponding HZCC status code; it is not a usable API.
+ */
 Status AbortedError(std::string_view message);
+/** @brief Construct a kAlreadyExists error with an owned diagnostic.
+ * @param message Text copied into the status.
+ * @return An error with code StatusCode::kAlreadyExists.
+ */
 Status AlreadyExistsError(std::string_view message);
+/** @brief Construct a kDataLoss error with an owned diagnostic.
+ * @param message Text copied into the status.
+ * @return An error with code StatusCode::kDataLoss.
+ */
 Status DataLossError(std::string_view message);
+/** @brief Legacy status helper declaration retained from the upstream interface.
+ * @note This helper has no implementation or corresponding HZCC status code; it is not a usable API.
+ */
 Status DeadlineExceededError(std::string_view message);
+/** @brief Legacy status helper declaration retained from the upstream interface.
+ * @note This helper has no implementation or corresponding HZCC status code; it is not a usable API.
+ */
 Status FailedPreconditionError(std::string_view message);
+/** @brief Construct a kInternal error with an owned diagnostic.
+ * @param message Text copied into the status.
+ * @return An error with code StatusCode::kInternal.
+ */
 Status InternalError(std::string_view message);
+/** @brief Construct a kInvalidArguments error with an owned diagnostic.
+ * @param message Text copied into the status.
+ * @return An error with code StatusCode::kInvalidArguments.
+ */
 Status InvalidArgumentError(std::string_view message);
+/** @brief Construct a kOutOfRange error with an owned diagnostic.
+ * @param message Text copied into the status.
+ * @return An error with code StatusCode::kOutOfRange.
+ */
 Status OutOfRangeError(std::string_view message);
+/** @brief Legacy status helper declaration retained from the upstream interface.
+ * @note This helper has no implementation or corresponding HZCC status code; it is not a usable API.
+ */
 Status PermissionDeniedError(std::string_view message);
+/** @brief Legacy status helper declaration retained from the upstream interface.
+ * @note This helper has no implementation or corresponding HZCC status code; it is not a usable API.
+ */
 Status ResourceExhaustedError(std::string_view message);
+/** @brief Construct a kUnauthenticated error with an owned diagnostic.
+ * @param message Text copied into the status.
+ * @return An error with code StatusCode::kUnauthenticated.
+ */
 Status UnauthenticatedError(std::string_view message);
+/** @brief Construct a kUnavailable error with an owned diagnostic.
+ * @param message Text copied into the status.
+ * @return An error with code StatusCode::kUnavailable.
+ */
 Status UnavailableError(std::string_view message);
+/** @brief Construct a kUnimplemented error with an owned diagnostic.
+ * @param message Text copied into the status.
+ * @return An error with code StatusCode::kUnimplemented.
+ */
 Status UnimplementedError(std::string_view message);
+/** @brief Construct a kUnknown error with an owned diagnostic.
+ * @param message Text copied into the status.
+ * @return An error with code StatusCode::kUnknown.
+ */
 Status UnknownError(std::string_view message);
 
 // ErrnoToStatusCode()
@@ -743,6 +990,10 @@ Status UnknownError(std::string_view message);
 // Returns the StatusCode for `error_number`, which should be an `errno` value.
 // See https://en.cppreference.com/w/cpp/error/errno_macros and similar
 // references.
+/** @brief Map a supported errno category to its HZCC status code.
+ * @param error_number errno value, with zero denoting success.
+ * @return Matching local code, or kUnknown for categories not represented by HZCC.
+ */
 hzcc::StatusCode ErrnoToStatusCode(int error_number);
 
 //------------------------------------------------------------------------------
@@ -799,13 +1050,23 @@ inline std::string_view Status::message() const {
                                                  : std::string_view());
 }
 
+/** @brief Compare status codes, messages, and optional payloads.
+ * @param lhs First result.
+ * @param rhs Second result.
+ * @return Whether their observable contents match.
+ */
 inline bool operator==(const Status& lhs, const Status& rhs) {
     return lhs.rep_ == rhs.rep_ || Status::EqualsSlow(lhs, rhs);
 }
 
+/** @brief Test whether two status results differ.
+ * @param lhs First result.
+ * @param rhs Second result.
+ * @return The negation of value equality.
+ */
 inline bool operator!=(const Status& lhs, const Status& rhs) { return !(lhs == rhs); }
 
-inline std::string Status::ToString(StatusToStringMode mode) const {
+inline std::string Status::ToString(StatusToStringMode /*mode*/) const {
     return ok() ? "OK"
                 : (hzcc::StatusCodeToString(code()) + ": " + std::string(message()));
 }
@@ -814,6 +1075,10 @@ inline void Status::IgnoreError() const {
     // no-op
 }
 
+/** @brief Exchange status representations without copying their messages.
+ * @param a First result to exchange.
+ * @param b Second result to exchange.
+ */
 inline void swap(hzcc::Status& a, hzcc::Status& b) {
     using std::swap;
     swap(a.rep_, b.rep_);

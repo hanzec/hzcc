@@ -6,6 +6,9 @@
 #define HZCC_OPTIMIZATION_PASS_MODULE_PASS_H
 #include "PassBase.h"
 namespace hzcc::Pass {
+/**
+ * @brief Placeholder for a module-level pass; execution is not implemented.
+ */
 class ModulePass {};
 
 }  // namespace Hzcc::Pass

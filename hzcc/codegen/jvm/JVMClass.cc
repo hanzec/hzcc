@@ -8,6 +8,12 @@
 
 #include "version.h"
 namespace Hzcc::Codegen::JVM {
+/**
+ * @brief Write the legacy class assembly skeleton to a previously unused path.
+ * @param file_name Destination path; an existing file is rejected.
+ * @return INVALID_ARGUMENT when the path already exists; otherwise the current body returns OK.
+ * @note Stream creation and write failures are not checked by this unfinished implementation.
+ */
 Status JVMClass::SaveToFile(const std::string& file_name) const {
     // check file is exist or not
     if (std::filesystem::exists(file_name)) {
@@ -65,6 +71,11 @@ Status JVMClass::SaveToFile(const std::string& file_name) const {
     return Status(Hzcc::Status::OK);
 }
 
+/**
+ * @brief Initialize JVMClass with the supplied backend state.
+ * @param class_name Name of the JVM class owning generated fields and methods.
+ * @param source_file_name Original source filename recorded in the assembly.
+ */
 JVMClass::JVMClass(std::string class_name, std::string source_file_name)
     : _class_name(std::move(class_name)),
       _source_file_name(std::move(source_file_name)) {

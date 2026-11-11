@@ -18,8 +18,17 @@
 namespace hzcc::ast {
 class StructType;
 
+/**
+ * @brief Store declarations in one scope and retain nested scopes.
+ * @details Child scopes are owned; the parent link is weak to avoid ownership cycles.
+ */
 class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
   public:
+    /**
+     * @brief Create a scope with an inherited function return type.
+     * @param return_type Shared return type; nullptr denotes a scope without a function.
+     * @param parent Non-owning reference to the enclosing scope.
+     */
     SymbTbl(QualTypePtr return_type,         // NOLINT
             std::weak_ptr<SymbTbl> parent);  // NOLINT
 
@@ -40,26 +49,20 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
     bool has_type(std::string_view name);
 
     /**
-     * @brief Get the type's shared_ptr with the given to_str.
-     *
-     * @param name The to_str of the type.
-     *
-     * @details We are searching the symbol table from the current symbol table
-     * first, if not found, then we will search the upper symbol table. Until
-     * reaching root symbol table.
-     *
-     * @return std::shared_ptr<type> The type with the given to_str or nullptr
-     * if not found.
+     * @brief Look up a named type from this scope through its parents.
+     * @param name Registered type spelling, including any struct prefix.
+     * @param qualifiers Qualifiers applied when the type is found in this scope.
+     * @return A shared qualified wrapper, or nullptr if the name is unknown.
+     * @note Parent-scope lookup currently uses the parent's default qualifier set.
      */
     QualTypePtr get_type(std::string_view name,
                          const std::vector<Qualifier>& qualifiers = {});
 
     /**
-     * @brief Register a type to the symbol table.
-     * @param name The shared_ptr of the type to be registered.
-     * @return true if type is successfully registered.
-     * @return false if type to_str is existed as other type or as registered
-     * variable identifier.
+     * @brief Register a structure type under its struct-prefixed name.
+     * @param name Structure tag copied into the new type.
+     * @return Shared ownership of the registered structure type.
+     * @pre No visible type already has this structure name.
      */
     StructTypePtr add_struct_type(std::string_view name);
 
@@ -73,18 +76,22 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
     bool has_var(std::string_view name, bool current_scope);
 
     /**
-     * @brief Register a variable to the symbol table.
-     * @param pos the line number of the variable.
-     * @param name the identifier of the variable to be registered.
-     * @param type The shared_ptr of the variable types to be registered.
-     * @return true if variable is successfully registered.
-     * @return false if variable to_str is existed as other variable or as
-     * registered type identifier.
+     * @brief Register a variable in this scope.
+     * @param pos Source position of the declaration.
+     * @param type Shared qualified variable type copied into the table.
+     * @param name Variable identifier copied into the table.
+     * @pre The variable does not duplicate a declaration in the current scope.
      */
     void add_var(Position pos,            // NOLINT
                  QualTypePtr& type,       // NOLINT
                  std::string_view name);  // NOLINT
 
+    /**
+     * @brief Find the source location of a visible variable declaration.
+     * @param name Identifier to search from this scope through its parents.
+     * @return The recorded declaration position.
+     * @pre The variable exists in a visible scope.
+     */
     Position var_def_pos(std::string_view name);
     /**
      * @brief Enter a new symbol table.
@@ -93,6 +100,10 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
      */
     std::shared_ptr<SymbTbl> enter_scope();
 
+    /**
+     * @brief Return the function return type inherited by this scope.
+     * @return Shared qualified type, or nullptr outside a function.
+     */
     QualTypePtr ret_type();
 
   private:

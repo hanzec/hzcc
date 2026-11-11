@@ -1,0 +1,155 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: '2'
+  VCPKG_MAX_CONCURRENCY: '2'
+  VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/.cache/vcpkg,readwrite
+
+jobs:
+  core:
+    name: Core / ${{ matrix.compiler }} / ${{ matrix.preset }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+        preset: [debug, release]
+        include:
+          - compiler: gcc
+            image: gcc:16.2.0@sha256:b8a42d6804296fbe7a54e17e9d60c3100d9e8dbe7ef88c748cae2ddb00d63ba2
+          - compiler: clang
+            image: ubuntu:24.04@sha256:fe81560990fae86dc4743202b2cb4d3df98d0bcf949173cecef15ce1127ef852
+    steps:
+      - name: Prepare the container for checkout and caching
+        run: |
+          apt-get update
+          apt-get install --yes --no-install-recommends ca-certificates git zstd
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up the stable toolchain
+        uses: ./.github/actions/setup-build
+        with:
+          compiler: ${{ matrix.compiler }}
+          coverage: ${{ matrix.compiler == 'gcc' && matrix.preset == 'debug' }}
+      - name: Cache vcpkg binary packages
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/vcpkg
+          key: linux-x64-vcpkg-${{ matrix.compiler }}-tests-on-${{ hashFiles('vcpkg.json', 'cmake/Dependencies.cmake', 'cmake/triplets/**', '.github/scripts/setup-build.sh', '.github/workflows/**') }}
+      - name: Configure
+        env:
+          HZCC_PRESET: ${{ matrix.preset }}
+          HZCC_COVERAGE: ${{ matrix.compiler == 'gcc' && matrix.preset == 'debug' && 'ON' || 'OFF' }}
+        run: |
+          mkdir -p "build/$HZCC_PRESET"
+          cmake --preset "$HZCC_PRESET" -DUNIT_TESTING=ON -DE2E_TESTING=ON \
+            -DGENERATE_DOCUMENTATION=OFF -DENABLE_COVERAGE="$HZCC_COVERAGE" \
+            -DCMAKE_C_COMPILER="$CC" \
+            -DCMAKE_CXX_COMPILER="$CXX" -DPython3_EXECUTABLE="$HZCC_PYTHON" \
+            2>&1 | tee "build/$HZCC_PRESET/configure.log"
+      - name: Build
+        env:
+          HZCC_PRESET: ${{ matrix.preset }}
+        run: cmake --build --preset "$HZCC_PRESET" 2>&1 | tee "build/$HZCC_PRESET/build.log"
+      - name: Unit tests
+        env:
+          HZCC_PRESET: ${{ matrix.preset }}
+        run: |
+          ctest --preset "$HZCC_PRESET" -L unit \
+            --output-junit "$PWD/build/$HZCC_PRESET/unit-tests.xml"
+      - name: Compiler information and lexical integration tests
+        env:
+          HZCC_PRESET: ${{ matrix.preset }}
+        run: |
+          ctest --preset "$HZCC_PRESET" -L e2e -R '^(compiler_info|lexical)$' \
+            --output-junit "$PWD/build/$HZCC_PRESET/e2e-core.xml"
+      - name: Export GCC Debug coverage
+        if: matrix.compiler == 'gcc' && matrix.preset == 'debug'
+        run: |
+          cmake --build --preset debug --target ccov-export-hzcc_test \
+            2>&1 | tee build/debug/coverage.log
+      - name: Upload test results and build logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: core-${{ matrix.compiler }}-${{ matrix.preset }}
+          path: |
+            build/${{ matrix.preset }}/*.log
+            build/${{ matrix.preset }}/*.xml
+            build/${{ matrix.preset }}/ccov/hzcc_test.xml
+            build/${{ matrix.preset }}/Testing/Temporary/
+            build/${{ matrix.preset }}/test/test_output/
+          retention-days: 14
+
+  syntax:
+    # The migration baseline contains 85 failing, unfinished syntax fixtures.
+    # Keep their actual exit status visible in this independent check.
+    name: Syntax integration / unfinished parser
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: gcc:16.2.0@sha256:b8a42d6804296fbe7a54e17e9d60c3100d9e8dbe7ef88c748cae2ddb00d63ba2
+    steps:
+      - name: Prepare the container for checkout and caching
+        run: |
+          apt-get update
+          apt-get install --yes --no-install-recommends ca-certificates git zstd
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up the stable toolchain
+        uses: ./.github/actions/setup-build
+        with:
+          compiler: gcc
+      - name: Cache vcpkg binary packages
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/vcpkg
+          key: linux-x64-vcpkg-gcc-tests-off-${{ hashFiles('vcpkg.json', 'cmake/Dependencies.cmake', 'cmake/triplets/**', '.github/scripts/setup-build.sh', '.github/workflows/**') }}
+      - name: Configure and build the syntax test tools
+        run: |
+          mkdir -p build/release
+          cmake --preset release -DUNIT_TESTING=OFF -DE2E_TESTING=ON \
+            -DGENERATE_DOCUMENTATION=OFF -DCMAKE_C_COMPILER="$CC" \
+            -DCMAKE_CXX_COMPILER="$CXX" -DPython3_EXECUTABLE="$HZCC_PYTHON" \
+            2>&1 | tee build/release/configure.log
+          cmake --build --preset release 2>&1 | tee build/release/build.log
+      - name: Run the complete syntax suite
+        run: |
+          printf '%s\n' 'Migration baseline: 85 syntax fixtures fail because the parser is unfinished.' >> "$GITHUB_STEP_SUMMARY"
+          ctest --preset release -L e2e -R '^lexical_part3$' \
+            --output-junit "$PWD/build/release/syntax-tests.xml"
+      - name: Upload syntax failures and build logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: syntax-results
+          path: |
+            build/release/*.log
+            build/release/*.xml
+            build/release/Testing/Temporary/
+            build/release/test/test_output/
+          retention-days: 14

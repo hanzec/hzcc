@@ -8,72 +8,70 @@
 #include <vector>
 
 #include "parser/common/Token.h"
-#include "parser/lexical.h"
+#include "parser/lexical/test/lexer_test_utils.h"
 
 namespace hzcc::lexical {
 TEST(LEXICAL_PARSER, string_iteral_1) {
     std::stringstream os;
     os << "\"Hello, World!\"";
 
-    std::list<Token> token_stream;
-    auto result = ParseToToken(os);
+    auto result = ParseTestSource(os);
 
-    ASSERT_TRUE(result.Ok());
+    ASSERT_TRUE(result.ok()) << result.status();
+    auto& token_stream = result.value();
     EXPECT_EQ(token_stream.size(), 1);
-    EXPECT_EQ(token_stream.front().type(), kString);
-    EXPECT_EQ(token_stream.front().to_str(), "Hello, World!");
+    EXPECT_EQ(token_stream.peek().type(), TokenType::Str_Lit);
+    EXPECT_EQ(token_stream.peek().to_str(), "Hello, World!");
 }
 
 TEST(LEXICAL_PARSER, string_iteral_2) {
     std::stringstream os;
     os << R"("Hello, world!\n")";
 
-    std::list<Token> token_stream;
-    auto result = ParseToToken(os);
+    auto result = ParseTestSource(os);
 
-    ASSERT_TRUE(result.Ok());
+    ASSERT_TRUE(result.ok()) << result.status();
+    auto& token_stream = result.value();
     EXPECT_EQ(token_stream.size(), 1);
-    EXPECT_EQ(token_stream.front().type(), kString);
-    EXPECT_EQ(token_stream.front().to_str(), "Hello, world!\n");
+    EXPECT_EQ(token_stream.peek().type(), TokenType::Str_Lit);
+    EXPECT_EQ(token_stream.peek().to_str(), "Hello, world!\n");
 }
 
 TEST(LEXICAL_PARSER, string_iteral_3) {
     std::stringstream os;
     os << R"("I said, \"Hello, world!\"")";
 
-    std::list<Token> token_stream;
-    auto result = ParseToToken(os);
+    auto result = ParseTestSource(os);
 
-    ASSERT_TRUE(result.Ok());
+    ASSERT_TRUE(result.ok()) << result.status();
+    auto& token_stream = result.value();
     EXPECT_EQ(token_stream.size(), 1);
-    EXPECT_EQ(token_stream.front().type(), kString);
-    EXPECT_EQ(token_stream.front().to_str(), "I said, \\\"Hello, world!\\\"");
+    EXPECT_EQ(token_stream.peek().type(), TokenType::Str_Lit);
+    EXPECT_EQ(token_stream.peek().to_str(), "I said, \\\"Hello, world!\\\"");
 }
 
 TEST(LEXICAL_PARSER, string_iteral_4) {
     std::stringstream os;
     os << R"("This is evil \\")";
 
-    std::list<Token> token_stream;
-    auto result = ParseToToken(os);
+    auto result = ParseTestSource(os);
 
-    ASSERT_TRUE(result.Ok());
+    ASSERT_TRUE(result.ok()) << result.status();
+    auto& token_stream = result.value();
     EXPECT_EQ(token_stream.size(), 1);
-    EXPECT_EQ(token_stream.front().type(), kString);
-    EXPECT_EQ(token_stream.front().to_str(), "This is evil \\\\");
+    EXPECT_EQ(token_stream.peek().type(), TokenType::Str_Lit);
+    EXPECT_EQ(token_stream.peek().to_str(), "This is evil \\\\");
 }
 
 TEST(LEXICAL_PARSER, string_iteral_5) {
     std::stringstream os;
     os << R"("This is evil \\)";
 
-    std::list<Token> token_stream;
-    auto result = ParseToToken(os);
+    auto result = ParseTestSource(os);
 
-    ASSERT_FALSE(result.Ok());
-    EXPECT_EQ(token_stream.size(), 1);
-    EXPECT_EQ(token_stream.front().type(), kString);
-    EXPECT_EQ(token_stream.front().to_str(), "This is evil \\\\");
+    ASSERT_FALSE(result.ok());
+    EXPECT_EQ(result.status().code(), StatusCode::kLexicalAnalysisStage);
+    EXPECT_FALSE(result.status().message().empty());
 }
 
 }  // namespace hzcc::lexical

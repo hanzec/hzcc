@@ -10,6 +10,11 @@ constexpr static const std::array<const char *, OpHint::kOpHint_ENUM_SIZE>
         "if_icmplt ", "ifge ",      "ifne ",      "ifeq ",      "ifle ",
         "ifgt",       "iflt ",      "ifeq "};
 
+/**
+ * @brief Emit JVM assembly for a IfStmt node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status JVMGenerator::visit(Hzcc::AST::IfStmt *p_expr) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

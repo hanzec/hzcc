@@ -5,6 +5,11 @@
 #include "codegen/jvm/JVMGenerator.h"
 namespace Hzcc::Codegen {
 
+/**
+ * @brief Emit JVM assembly for a BreakStmt node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status JVMGenerator::visit(Hzcc::AST::BreakStmt *p_expr) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

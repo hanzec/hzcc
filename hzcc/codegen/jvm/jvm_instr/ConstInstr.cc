@@ -14,6 +14,12 @@ constexpr static std::array<const char *, 3> kConstDoubleASM = {"dconst_0",
 constexpr static std::array<const char *, 2> kConstLongASM = {"lconst_0",
                                                               "lconst_1"};
 
+/**
+ * @brief Initialize ConstInstr with the supplied backend state.
+ * @param type JVM type or descriptor used by this operation.
+ * @param val Constant value to encode in the instruction sequence.
+ * @note Both referenced arguments must outlive this instruction.
+ */
 ConstInstr::ConstInstr(const JVM::Type &type, const Hzcc::AST::DeduceValue &val)
     : Instruction(0, 1), _val(val), _type(type) {
     /** #####################################################################
@@ -25,6 +31,10 @@ ConstInstr::ConstInstr(const JVM::Type &type, const Hzcc::AST::DeduceValue &val)
            "long, short, char";
 }
 
+/**
+ * @brief Produce the textual JVM instruction sequence represented by this object.
+ * @return Assembly instructions that load the represented constant.
+ */
 std::string ConstInstr::GenerateInstr() {
     // if integer type
     if (_type.IsInt() || _type.IsLong() || _type.IsShort() || _type.IsLong()) {

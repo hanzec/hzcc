@@ -31,6 +31,11 @@ Status PassManagerImpl::RunPass(
     return Status::OkStatus();
 }
 
+/**
+ * @brief Run applicable registered passes on one function, stopping at the first failure.
+ * @param F Owned function to inspect and modify in place.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status PassManagerImpl::RunFunctionPass(std::unique_ptr<AST::FuncDeclStmt>& F) {
     DVLOG(OPT_LOG_LEVEL) << "Running Function Pass";
     DVLOG(OPT_LOG_LEVEL) << "Optimizing function: " << F->GetName();

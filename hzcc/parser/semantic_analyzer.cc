@@ -4,7 +4,6 @@
 #include <absl/strings/str_cat.h>
 #include <glog/logging.h>
 
-#include <ext/alloc_traits.h>
 #include <list>
 #include <memory>
 #include <ostream>

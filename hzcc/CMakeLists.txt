@@ -1,188 +1,93 @@
-###############################################################################
-## Compiler Targets ###########################################################
-###############################################################################
-# exec target
-add_executable(hzcc)
-
-# required cpp 17
-set_property(TARGET hzcc PROPERTY CXX_STANDARD 17)
-set_property(TARGET hzcc PROPERTY CXX_STANDARD_REQUIRED ON)
-
-# testing target
-if (UNIT_TESTING MATCHES "ON")
-    message(STATUS "Enable testing...")
-    add_executable(hzcc_test parser/common/test/keyword_test.cc)
-
-    # required cpp 17 since hzcc require cpp 17
-    set_property(TARGET hzcc_test PROPERTY CXX_STANDARD 17)
-    set_property(TARGET hzcc_test PROPERTY CXX_STANDARD_REQUIRED ON)
-endif ()
-
-###############################################################################
-## Project Versions ###########################################################
-###############################################################################
-# generate the configuration file
-configure_file(
-        version.h.in
-        ${CMAKE_CURRENT_BINARY_DIR}/version.h)
-target_include_directories(hzcc PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-
-if (UNIT_TESTING MATCHES "ON")
-    target_include_directories(hzcc_test PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-endif ()
-
-###############################################################################
-## Shared Dependency ##########################################################
-###############################################################################
-# google re2
-find_package(re2 CONFIG REQUIRED)
-target_link_libraries(hzcc re2::re2)
-
-# google log
-find_package(glog CONFIG REQUIRED)
-target_link_libraries(hzcc glog::glog)
-
-# magic enum
-find_package(magic_enum CONFIG REQUIRED)
-target_link_libraries(hzcc magic_enum::magic_enum)
-
-# google abseil
+# Keep dependency usage requirements identical for the compiler and unit tests.
 find_package(absl CONFIG REQUIRED)
-target_link_libraries(hzcc absl::cord absl::inlined_vector) # for status/statusor
-target_link_libraries(hzcc absl::flat_hash_set absl::node_hash_set) # for heterogeneous lookup
+find_package(CLI11 CONFIG REQUIRED)
+find_package(glog CONFIG REQUIRED)
+find_package(magic_enum CONFIG REQUIRED)
+find_package(re2 CONFIG REQUIRED)
+find_package(Threads REQUIRED)
 
-if (UNIT_TESTING)
-    # google log
-    target_link_libraries(hzcc gflags_static)
+add_library(hzcc_dependencies INTERFACE)
+target_link_libraries(hzcc_dependencies INTERFACE
+    absl::cord
+    absl::flat_hash_map
+    absl::flat_hash_set
+    absl::inlined_vector
+    absl::node_hash_set
+    absl::strings
+    glog::glog
+    magic_enum::magic_enum
+    re2::re2
+    Threads::Threads)
 
-    # google flag
-    find_package(gflags CONFIG REQUIRED)
-    target_link_libraries(hzcc_test glog::glog)
+configure_file(version.h.in "${CMAKE_CURRENT_BINARY_DIR}/version.h")
 
-    # google test deps(require pthread)
-    find_package(Threads REQUIRED)
+function(hzcc_configure_target target visibility)
+    target_compile_features(${target} ${visibility} cxx_std_17)
+    set_target_properties(${target} PROPERTIES
+        CXX_EXTENSIONS OFF
+        CXX_VISIBILITY_PRESET hidden
+        VISIBILITY_INLINES_HIDDEN ON
+        POSITION_INDEPENDENT_CODE ON)
+    target_include_directories(${target} ${visibility}
+        "${CMAKE_CURRENT_SOURCE_DIR}"
+        "${CMAKE_CURRENT_BINARY_DIR}")
+    target_link_libraries(${target} ${visibility} hzcc_dependencies)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4)
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(${target} PRIVATE -Wall -Wextra -frtti)
+    endif()
+endfunction()
+
+# Object libraries retain translation units whose only effect is factory registration.
+# Compile production sources once and use the same objects in both executables.
+add_library(hzcc_core OBJECT options.cc)
+hzcc_configure_target(hzcc_core PUBLIC)
+
+add_executable(hzcc main.cc)
+hzcc_configure_target(hzcc PRIVATE)
+target_link_libraries(hzcc PRIVATE hzcc_core CLI11::CLI11)
+
+if(UNIT_TESTING)
     find_package(GTest CONFIG REQUIRED)
-    target_link_libraries(hzcc_test Threads::Threads)
-    target_link_libraries(hzcc_test GTest::gmock GTest::gtest GTest::gmock_main GTest::gtest_main)
-endif ()
+    # The project supplies test_main.cc, so do not link either GTest main library.
+    add_executable(hzcc_test test_main.cc)
+    hzcc_configure_target(hzcc_test PRIVATE)
+    target_link_libraries(hzcc_test PRIVATE hzcc_core GTest::gmock GTest::gtest)
+endif()
 
-###############################################################################
-## Compile Config #############################################################
-###############################################################################
-# general  compile options
-add_compile_options(-Wall -Wextra -frtti)
+# Each directory owns its non-recursive source list. CONFIGURE_DEPENDS makes adding
+# a source or test trigger reconfiguration without duplicating production sources.
+function(hzcc_add_sources)
+    if(ARGC EQUAL 0)
+        set(source_dirs "${CMAKE_CURRENT_SOURCE_DIR}")
+    else()
+        set(source_dirs ${ARGV})
+    endif()
+    foreach(source_dir IN LISTS source_dirs)
+        file(GLOB sources CONFIGURE_DEPENDS "${source_dir}/*.cc" "${source_dir}/*.h")
+        target_sources(hzcc_core PRIVATE ${sources})
+        if(UNIT_TESTING)
+            file(GLOB tests CONFIGURE_DEPENDS "${source_dir}/test/*_test.cc")
+            target_sources(hzcc_test PRIVATE ${tests})
+        endif()
+    endforeach()
+endfunction()
 
-# hide static link symbols
-if (APPLE)
-    #    target_link_options(hzcc PRIVATE -hidden-lssl)
-else ()
-    #    target_link_options(hzcc PRIVATE -Wl,--exclude-libs,ALL)
-endif ()
-
-# compile under cxx 17
-target_compile_features(hzcc PRIVATE cxx_std_17)
-
-# set default visibility
-set_property(TARGET hzcc PROPERTY CXX_STANDARD_REQUIRED ON)
-set_target_properties(hzcc PROPERTIES C_VISIBILITY_PRESET hidden) # not export symbols
-set_target_properties(hzcc PROPERTIES VISIBILITY_INLINES_HIDDEN 1) # generate fpic
-set_target_properties(hzcc PROPERTIES CXX_VISIBILITY_PRESET hidden) # not export symbols
-
-# change include base to project root
-target_include_directories(hzcc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
-# testing target options
-if (UNIT_TESTING MATCHES "ON")
-    # compile under cxx 17
-    target_compile_features(hzcc_test PRIVATE cxx_std_17)
-    set_property(TARGET hzcc_test PROPERTY CXX_STANDARD_REQUIRED ON)
-
-    # change include base to project root
-    target_include_directories(hzcc_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-endif ()
-
-# build type specific options
-if (CMAKE_BUILD_TYPE)
-    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-        # general debug options
-        target_link_options(hzcc PRIVATE -o0 -g)
-        target_compile_options(hzcc PRIVATE -O0 -g)
-
-        # debug mode will always enable ASAN
-        target_link_options(hzcc PRIVATE -fsanitize=address -fno-omit-frame-pointer)
-        target_compile_options(hzcc PRIVATE -fsanitize=address -fno-omit-frame-pointer)
-
-        if (UNIT_TESTING MATCHES "ON")
-            target_link_options(hzcc_test PRIVATE -o0 -g)
-            target_compile_options(hzcc_test PRIVATE -O0 -g)
-
-            # debug mode will always enable ASAN
-            target_link_options(hzcc_test PRIVATE -fsanitize=address -fno-omit-frame-pointer)
-            target_compile_options(hzcc_test PRIVATE -fsanitize=address -fno-omit-frame-pointer)
-        endif ()
-    elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
-        set_target_properties(hzcc PROPERTIES POSITION_INDEPENDENT_CODE 1)  # generate fpic
-        target_compile_options(hzcc PRIVATE -O3 -ffast-math -Bsymbolic -Werror)
-
-        if (UNIT_TESTING MATCHES "ON")
-            set_target_properties(hzcc_test PROPERTIES POSITION_INDEPENDENT_CODE 1) # generate fpic
-
-            target_compile_options(hzcc_test PRIVATE -O3 -fPIC -ffast-math -Bsymbolic -Werror)
-        endif ()
-    endif ()
-endif ()
-
-###############################################################################
-## Project hzcc #############################################################
-###############################################################################
-target_sources(hzcc
-        PRIVATE
-        "macro.h" "main.cc" "options.cc" "options.h" "const_msg.h" "enums.h")
-
-###############################################################################
-## StatusCode Generation ############################################################
-###############################################################################
-#add_subdirectory(codegen)
-
-###############################################################################
-## Optimization  ##############################################################
-###############################################################################
-#add_subdirectory(optimization)
-
-###############################################################################
-## ASTs #######################################################################
-###############################################################################
+# Subdirectories register their production sources and tests through the helper.
 add_subdirectory(ast)
-
-###############################################################################
-## Project Utils ##############################################################
-###############################################################################
 add_subdirectory(utils)
-
-###############################################################################
-## lexical Analysis ###########################################################
-###############################################################################
 add_subdirectory(parser)
 
-###############################################################################
-## Testing ####################################################################
-###############################################################################
-if (UNIT_TESTING MATCHES "ON")
-    # discover test
+# JVM code generation and optimization are unfinished and are not built by default.
+if(UNIT_TESTING)
     include(GoogleTest)
-    gtest_discover_tests(hzcc_test)
-
-    # add testing main
-    target_sources(hzcc_test
-            PRIVATE
-            "test_main.cc" "options.cc")
-endif ()
-
-###############################################################################
-## Testing  Coverage ##########################################################
-###############################################################################
-if ((ENABLE_COVERAGE MATCHES "ON") AND (UNIT_TESTING MATCHES "ON"))
-    include(code-coverage)
-    target_code_coverage(hzcc_test)
-    message(STATUS "Code coverage enabled")
-endif ()
+    gtest_discover_tests(hzcc_test
+        DISCOVERY_MODE PRE_TEST
+        PROPERTIES LABELS unit)
+    if(ENABLE_COVERAGE)
+        include(code-coverage)
+        target_code_coverage(hzcc_core PUBLIC)
+        target_code_coverage(hzcc_test)
+    endif()
+endif()

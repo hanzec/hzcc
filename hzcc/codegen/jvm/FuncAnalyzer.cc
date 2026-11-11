@@ -27,6 +27,11 @@
 #include "codegen/jvm/utils/macro.h"
 namespace Hzcc::Codegen::JVM {
 
+/**
+ * @brief Analyze stack and symbol effects for a CastExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::CastExpr *p_expr) {
     // firs we get the type of the cast
     HZCC_JVM_Visit_Node(p_expr->GetCastExpr());
@@ -42,6 +47,11 @@ Status FuncAnalyzer::visit(Hzcc::AST::CastExpr *p_expr) {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Analyze stack and symbol effects for a ArithmeticExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::ArithmeticExpr *p_expr) {
     /**
      * Arithmetic Expression will consume two stack slots and produce one stack
@@ -59,6 +69,11 @@ Status FuncAnalyzer::visit(Hzcc::AST::ArithmeticExpr *p_expr) {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Analyze stack and symbol effects for a AssignExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::AssignExpr *p_expr) {
     /**
      * Stack change for Assign Expression will be determined by the RHS
@@ -127,6 +142,11 @@ Status FuncAnalyzer::visit(Hzcc::AST::AssignExpr *p_expr) {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Analyze stack and symbol effects for a BitwiseExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::BitwiseExpr *p_expr) {
     /**
      * BitwiseExpr Expression will consume two stack slots and produce one stack
@@ -146,6 +166,11 @@ Status FuncAnalyzer::visit(Hzcc::AST::BitwiseExpr *p_expr) {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Analyze stack and symbol effects for a LogicalExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::LogicalExpr *p_expr) {
     /**
      * LogicalExpr Expression will consume two stack slots and produce one stack
@@ -165,6 +190,11 @@ Status FuncAnalyzer::visit(Hzcc::AST::LogicalExpr *p_expr) {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Analyze stack and symbol effects for a CommaExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::CommaExpr *p_expr) {
     /**
      * CommaExpr Expression will not consume or pop any stack.
@@ -180,6 +210,11 @@ Status FuncAnalyzer::visit(Hzcc::AST::CommaExpr *p_expr) {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Analyze stack and symbol effects for a RelationalExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::RelationalExpr *p_expr) {
     /**
      * RelationalExpr Expression will consume two stack slots and produce one
@@ -199,9 +234,19 @@ Status FuncAnalyzer::visit(Hzcc::AST::RelationalExpr *p_expr) {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Accept a AccessExpr node without analyzing it in this unfinished visitor.
+ * @param p_expr Borrowed node pointer; this handler does not inspect or traverse it.
+ * @return Success without changing stack or symbol state.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::AccessExpr *p_expr) {
     return Status::OkStatus();
 }
+/**
+ * @brief Analyze stack and symbol effects for a ArraySubscriptExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::ArraySubscriptExpr *p_expr) {
     // first visit DeclRefExpr
     HZCC_JVM_GENERATE_LOAD_INSTR(HZCC_JVM_Visit_Node(p_expr->GetArrayBase()));
@@ -217,9 +262,19 @@ Status FuncAnalyzer::visit(Hzcc::AST::ArraySubscriptExpr *p_expr) {
 
     return Status::OkStatus();
 }
+/**
+ * @brief Accept a TernaryExpr node without analyzing it in this unfinished visitor.
+ * @param p_expr Borrowed node pointer; this handler does not inspect or traverse it.
+ * @return Success without changing stack or symbol state.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::TernaryExpr *p_expr) {
     return Status::OkStatus();
 }
+/**
+ * @brief Analyze stack and symbol effects for a DeclRefExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::DeclRefExpr *p_expr) {
     // Generate push instruction if needed
     if (_generate_load) {
@@ -236,6 +291,11 @@ Status FuncAnalyzer::visit(Hzcc::AST::DeclRefExpr *p_expr) {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Analyze stack and symbol effects for a SizeofExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::SizeofExpr *p_expr) {
     /**
      * SizeofExpr Expression will push one stack slot.
@@ -247,6 +307,11 @@ Status FuncAnalyzer::visit(Hzcc::AST::SizeofExpr *p_expr) {
 
     return Status::OkStatus();
 }
+/**
+ * @brief Analyze stack and symbol effects for a UnaryExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::UnaryExpr *p_expr) {
     if (p_expr->GetUnaryType() == AST::kUnaryType_UnaryMinus) {
         HZCC_JVM_GENERATE_LOAD_INSTR(HZCC_JVM_Visit_Node(p_expr->GetExpr()));
@@ -268,6 +333,11 @@ Status FuncAnalyzer::visit(Hzcc::AST::UnaryExpr *p_expr) {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Analyze stack and symbol effects for a CompoundStmt node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::CompoundStmt *p_expr) {
     /**
      * CompoundStmt is a list of statements. We will visit each stmt
@@ -280,21 +350,51 @@ Status FuncAnalyzer::visit(Hzcc::AST::CompoundStmt *p_expr) {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Accept a BreakStmt node without analyzing it in this unfinished visitor.
+ * @param p_expr Borrowed node pointer; this handler does not inspect or traverse it.
+ * @return Success without changing stack or symbol state.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::BreakStmt *p_expr) {
     return Status::OkStatus();
 }
+/**
+ * @brief Accept a ContinueStmt node without analyzing it in this unfinished visitor.
+ * @param p_expr Borrowed node pointer; this handler does not inspect or traverse it.
+ * @return Success without changing stack or symbol state.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::ContinueStmt *p_expr) {
     return Status::OkStatus();
 }
+/**
+ * @brief Accept a DoStatement node without analyzing it in this unfinished visitor.
+ * @param p_expr Borrowed node pointer; this handler does not inspect or traverse it.
+ * @return Success without changing stack or symbol state.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::DoStatement *p_expr) {
     return Status::OkStatus();
 }
+/**
+ * @brief Accept a EmptyStatement node without analyzing it in this unfinished visitor.
+ * @param p_expr Borrowed node pointer; this handler does not inspect or traverse it.
+ * @return Success without changing stack or symbol state.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::EmptyStatement *p_expr) {
     return Status::OkStatus();
 }
+/**
+ * @brief Accept a ForStmt node without analyzing it in this unfinished visitor.
+ * @param p_expr Borrowed node pointer; this handler does not inspect or traverse it.
+ * @return Success without changing stack or symbol state.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::ForStmt *p_expr) {
     return Status::OkStatus();
 }
+/**
+ * @brief Analyze stack and symbol effects for a FuncCallStmt node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::FuncCallStmt *p_expr) {
     // generate ars push
     for (auto &arg : p_expr->GetArgsNode()) {
@@ -317,33 +417,73 @@ Status FuncAnalyzer::visit(Hzcc::AST::FuncCallStmt *p_expr) {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Accept a FuncDeclStmt node without analyzing it in this unfinished visitor.
+ * @param p_expr Borrowed node pointer; this handler does not inspect or traverse it.
+ * @return Success without changing stack or symbol state.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::FuncDeclStmt *p_expr) {
     return Status::OkStatus();
 }
+/**
+ * @brief Accept a DeclStmt node without analyzing it in this unfinished visitor.
+ * @param p_expr Borrowed node pointer; this handler does not inspect or traverse it.
+ * @return Success without changing stack or symbol state.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::DeclStmt *p_expr) {
     return Status::OkStatus();
 }
+/**
+ * @brief Accept a IfStmt node without analyzing it in this unfinished visitor.
+ * @param p_expr Borrowed node pointer; this handler does not inspect or traverse it.
+ * @return Success without changing stack or symbol state.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::IfStmt *p_expr) {
     return Status::OkStatus();
 }
+/**
+ * @brief Analyze stack and symbol effects for a ParamVarDecl node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::ParamVarDecl *p_expr) {
     AddLocalVariable(p_expr->GetName(), Utils::GetTypeName(p_expr->GetType()),
                      p_expr->GetLine());
     return Status::OkStatus();
 }
+/**
+ * @brief Analyze stack and symbol effects for a ReturnStmt node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::ReturnStmt *p_expr) {
     _has_return = true;
     HZCC_JVM_GENERATE_LOAD_INSTR(
         HZCC_LEAVE_RET_ON_STACK(HZCC_JVM_Visit_Node(p_expr->GetReturnVal())));
     return Status::OkStatus();
 }
+/**
+ * @brief Accept a WhileStmt node without analyzing it in this unfinished visitor.
+ * @param p_expr Borrowed node pointer; this handler does not inspect or traverse it.
+ * @return Success without changing stack or symbol state.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::WhileStmt *p_expr) {
     return Status::OkStatus();
 }
+/**
+ * @brief Analyze stack and symbol effects for a LiteralExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::LiteralExpr *p_expr) {
     ModifyStackSize(1);
     return Status::OkStatus();
 }
+/**
+ * @brief Analyze stack and symbol effects for a VarDecl node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status FuncAnalyzer::visit(Hzcc::AST::VarDecl *p_expr) {
     AddLocalVariable(p_expr->GetName(), Utils::GetTypeName(p_expr->GetType()),
                      p_expr->GetLine());
@@ -378,19 +518,40 @@ Status FuncAnalyzer::visit(Hzcc::AST::VarDecl *p_expr) {
     return Status::OkStatus();
 }
 
+/**
+ * @brief Apply a signed operand-stack adjustment and update the observed maximum.
+ * @param p_size Number of slots by which the operand-stack estimate is adjusted.
+ */
 void FuncAnalyzer::ModifyStackSize(int p_size) {
     _current_stack_size += p_size;
     if (_current_stack_size > _max_stack_size) {
         _max_stack_size = _current_stack_size;
     }
 }
+/**
+ * @brief Subtract slots from the current operand-stack estimate.
+ * @param p_size Number of slots by which the operand-stack estimate is adjusted.
+ */
 void FuncAnalyzer::DecreaseCurrentStack(uint8_t p_size) {
     _current_stack_size -= p_size;
 }
+/**
+ * @brief Return the observed maximum operand-stack size plus the legacy safety margin of 20.
+ * @return Maximum observed slot count plus 20.
+ */
 uint32_t FuncAnalyzer::GetMaxStackSize() const { return _max_stack_size + 20; }
 
+/**
+ * @brief Report whether a return statement has been visited.
+ * @return True when the stated condition holds; otherwise false.
+ */
 bool FuncAnalyzer::HasValidReturn() const { return _has_return; }
 
+/**
+ * @brief Compute the operand-stack change caused by storing a variable.
+ * @param name Variable or symbol name to register or look up.
+ * @return Signed stack-size adjustment.
+ */
 int FuncAnalyzer::SaveToVariable(const std::string &name) {
     if (IsLocal(name)) {
         auto var_type = GetLocalVarType(name);
@@ -411,6 +572,11 @@ int FuncAnalyzer::SaveToVariable(const std::string &name) {
     }
 }
 
+/**
+ * @brief Compute the operand-stack change caused by loading a variable.
+ * @param name Variable or symbol name to register or look up.
+ * @return Signed stack-size adjustment.
+ */
 int FuncAnalyzer::LoadFromVariable(const std::string &name) {
     if (IsLocal(name)) {
         auto var_type = GetLocalVarType(name);
@@ -425,16 +591,29 @@ int FuncAnalyzer::LoadFromVariable(const std::string &name) {
         LOG(FATAL) << "Variable " << name << " not found";
     }
 }
+/**
+ * @brief Initialize FuncAnalyzer with the supplied backend state.
+ * @param global_vars Borrowed global name-to-type table; it must outlive this analyzer.
+ */
 FuncAnalyzer::FuncAnalyzer(
     const std::unordered_map<std::string, std::string> &global_vars)
     : _global_vars(global_vars) {
     EnterScope();
 }
 
+/**
+ * @brief Push an intermediate result identifier onto the return-value stack.
+ * @param stackID Identifier of the intermediate result to retain.
+ */
 void FuncAnalyzer::PushReturnStack(const std::string &stackID) {
     _return_stack.push_back(stackID);
 }
 
+/**
+ * @brief Pop and return the most recent intermediate result identifier.
+ * @return Most recently pushed result identifier.
+ * @pre The corresponding stack or scope list is nonempty.
+ */
 std::string FuncAnalyzer::ConsumeReturnStack() {
     DLOG_ASSERT(!_return_stack.empty()) << " Return stack is empty";
     auto poped_stack = _return_stack.back();
@@ -442,9 +621,11 @@ std::string FuncAnalyzer::ConsumeReturnStack() {
     return poped_stack;
 }
 
-/** #####################################################################
- *  ### Symbol Table Functions                                         ###
- *  ##################################################################### */
+/**
+ * @brief Look up a variable in active lexical scopes, searching from the innermost scope.
+ * @param p_name Variable name to look up.
+ * @return True when the stated condition holds; otherwise false.
+ */
 bool FuncAnalyzer::IsLocal(const std::string &p_name) {
     // iterate from the top of the stack to the bottom
     for (auto iter = _symbol_table_stack.rbegin();
@@ -457,10 +638,20 @@ bool FuncAnalyzer::IsLocal(const std::string &p_name) {
     return false;
 }
 
+/**
+ * @brief Test whether a variable is present in the global variable table.
+ * @param p_name Variable name to look up.
+ * @return True when the stated condition holds; otherwise false.
+ */
 bool FuncAnalyzer::IsGlobal(const std::string &p_name) {
     return _global_vars.find(p_name) != _global_vars.end();
 }
 
+/**
+ * @brief Return the type of the nearest visible local declaration.
+ * @param p_name Variable name to look up.
+ * @return Type descriptor of the nearest visible local variable.
+ */
 std::string FuncAnalyzer::GetLocalVarType(const std::string &p_name) {
     DLOG_ASSERT(IsLocal(p_name)) << " Variable " << p_name << " not found";
 
@@ -475,19 +666,36 @@ std::string FuncAnalyzer::GetLocalVarType(const std::string &p_name) {
     return "";
 }
 
+/**
+ * @brief Append a local declaration to the active scope.
+ * @param name Variable or symbol name to register or look up.
+ * @param type JVM type or descriptor used by this operation.
+ * @param line_no Source line of the variable declaration.
+ */
 void FuncAnalyzer::AddLocalVariable(const std::string &name,
                                     const std::string &type, uint32_t line_no) {
     _symbol_table_stack.back()->AddSymbol(name, type, line_no);
 }
 
+/**
+ * @brief Push a new lexical scope for subsequent declarations or labels.
+ */
 void FuncAnalyzer::EnterScope() {
     auto new_scope = std::make_shared<ScopedSymbolTable>();
     _symbol_table_stack.emplace_back(new_scope);
     _saved_symbol_table.emplace_back(_symbol_table_stack.back());
 }
 
+/**
+ * @brief Pop the innermost scope after its contents have been processed.
+ * @pre The corresponding stack or scope list is nonempty.
+ */
 void FuncAnalyzer::LeaveScope() { _symbol_table_stack.pop_back(); }
 
+/**
+ * @brief Build slot-indexed lists of variable names, types and declaration lines.
+ * @return Slot-indexed lists of (name, type, declaration line) tuples.
+ */
 FuncAnalyzer::SymbolTable FuncAnalyzer::GetLocalVariable() {
     FuncAnalyzer::SymbolTable ret;
 
@@ -529,21 +737,33 @@ FuncAnalyzer::SymbolTable FuncAnalyzer::GetLocalVariable() {
     return ret;
 }
 
-/** #####################################################################
- *  ### Scoped Symbol Table                                           ###
- *  ##################################################################### */
-
+/**
+ * @brief Append a symbol name, type and declaration line to this scope.
+ * @param name Variable or symbol name to register or look up.
+ * @param type JVM type or descriptor used by this operation.
+ * @param line_no Source line of the variable declaration.
+ */
 void FuncAnalyzer::ScopedSymbolTable::AddSymbol(const std::string &name,
                                                 const std::string &type,
                                                 uint32_t line_no) {
     _symbol_table.emplace_back(name, type, line_no);
 }
 
+/**
+ * @brief Test whether this scope contains the given symbol name.
+ * @param name Variable or symbol name to register or look up.
+ * @return True when the stated condition holds; otherwise false.
+ */
 bool FuncAnalyzer::ScopedSymbolTable::HasSymbol(const std::string &name) {
     return std::find_if(_symbol_table.begin(), _symbol_table.end(),
                         [&](auto &t) { return std::get<0>(t) == name; }) !=
            _symbol_table.end();
 }
+/**
+ * @brief Return the type recorded for a symbol in this scope.
+ * @param name Variable or symbol name to register or look up.
+ * @return Type string stored for the named declaration.
+ */
 std::string FuncAnalyzer::ScopedSymbolTable::GetSymbolType(
     const std::string &name) {
     DLOG_ASSERT(HasSymbol(name)) << " Variable " << name << " not found";
@@ -551,6 +771,10 @@ std::string FuncAnalyzer::ScopedSymbolTable::GetSymbolType(
         *std::find_if(_symbol_table.begin(), _symbol_table.end(),
                       [&](auto &t) { return std::get<0>(t) == name; }));
 }
+/**
+ * @brief Return a copy of the declarations recorded in this scope.
+ * @return A copy of this scope's declarations.
+ */
 std::list<FuncAnalyzer::LocalSymbol>
 FuncAnalyzer::ScopedSymbolTable::GetSymbols() {
     return _symbol_table;

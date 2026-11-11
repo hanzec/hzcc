@@ -1,0 +1,4 @@
+# Supplemental raw-source Doxygen audit; use alongside the Doxygen XML check.
+tree-sitter==0.26.1
+tree-sitter-cpp==0.23.4
+tree-sitter-java==0.23.5

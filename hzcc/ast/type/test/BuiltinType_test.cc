@@ -1,185 +1,88 @@
-//
-// Created by chen_ on 2022/6/13.
-//
 #include <gtest/gtest.h>
 
+#include "ast/type/Type.h"
+
 namespace hzcc::ast {
+namespace {
+/**
+ * @brief Verify primitive spelling, category, and distinction from other primitive IDs.
+ * @param primitive Primitive ID represented by the numerical type.
+ * @param spelling Expected C spelling, including underscores in C99 type keywords.
+ */
+void ExpectNumericalType(PrimitiveType primitive, const char* spelling) {
+    const NumericalType type(primitive);
+    EXPECT_EQ(type.to_str(), spelling);
+    EXPECT_TRUE(type.is<TypeCategory::Numerical>());
+    EXPECT_EQ(type.GetTypeId(), magic_enum::enum_integer(primitive));
+
+    for (const auto other : magic_enum::enum_values<PrimitiveType>()) {
+        const NumericalType other_type(other);
+        EXPECT_EQ(type == other_type, primitive == other);
+        EXPECT_EQ(type != other_type, primitive != other);
+    }
+}
+}  // namespace
+
+/** @brief Check the spelling and primitive identity of void. */
 TEST(AST_TYPE, builtin_type_void) {
-    BuiltinType void_type(PrimitiveType::kvoid);
-
-    EXPECT_EQ(void_type.to_str(), "void");
-    EXPECT_TRUE(void_type.is());
-    EXPECT_FALSE(void_type.IsLong());
-    EXPECT_FALSE(void_type.IsShort());
-    EXPECT_FALSE(void_type.IsChar());
-    EXPECT_FALSE(void_type.IsFloat());
-    EXPECT_FALSE(void_type.IsDouble());
-    EXPECT_FALSE(void_type.IsInteger());
-    EXPECT_FALSE(void_type.IsLongLong());
-    EXPECT_FALSE(void_type.IsLongDouble());
+    ExpectNumericalType(PrimitiveType::kVoid, "void");
 }
 
+/** @brief Check the spelling and primitive identity of char. */
 TEST(AST_TYPE, builtin_type_char) {
-    BuiltinType char_type(PrimitiveType::kchar);
-
-    EXPECT_EQ(char_type.to_str(), "char");
-    EXPECT_TRUE(char_type.IsChar());
-    EXPECT_FALSE(char_type.is());
-    EXPECT_FALSE(char_type.IsInteger());
-    EXPECT_FALSE(char_type.IsFloat());
-    EXPECT_FALSE(char_type.IsDouble());
-    EXPECT_FALSE(char_type.IsLong());
-    EXPECT_FALSE(char_type.IsShort());
-    EXPECT_FALSE(char_type.IsLongLong());
-    EXPECT_FALSE(char_type.IsLongDouble());
+    ExpectNumericalType(PrimitiveType::kChar, "char");
 }
 
+/** @brief Check the spelling and primitive identity of short. */
 TEST(AST_TYPE, builtin_type_short) {
-    BuiltinType int_type(PrimitiveType::kshort);
-
-    EXPECT_EQ(int_type.to_str(), "short");
-    EXPECT_FALSE(int_type.IsChar());
-    EXPECT_FALSE(int_type.is());
-    EXPECT_FALSE(int_type.IsInteger());
-    EXPECT_FALSE(int_type.IsFloat());
-    EXPECT_FALSE(int_type.IsDouble());
-    EXPECT_FALSE(int_type.IsLong());
-    EXPECT_TRUE(int_type.IsShort());
-    EXPECT_FALSE(int_type.IsLongLong());
-    EXPECT_FALSE(int_type.IsLongDouble());
+    ExpectNumericalType(PrimitiveType::kShort, "short");
 }
 
+/** @brief Check the spelling and primitive identity of int. */
 TEST(AST_TYPE, builtin_type_int) {
-    BuiltinType int_type(PrimitiveType::kint);
-
-    EXPECT_EQ(int_type.to_str(), "int");
-    EXPECT_FALSE(int_type.IsChar());
-    EXPECT_FALSE(int_type.is());
-    EXPECT_TRUE(int_type.IsInteger());
-    EXPECT_FALSE(int_type.IsFloat());
-    EXPECT_FALSE(int_type.IsDouble());
-    EXPECT_FALSE(int_type.IsLong());
-    EXPECT_FALSE(int_type.IsShort());
-    EXPECT_FALSE(int_type.IsLongLong());
-    EXPECT_FALSE(int_type.IsLongDouble());
+    ExpectNumericalType(PrimitiveType::kInt, "int");
 }
 
+/** @brief Check the spelling and primitive identity of long. */
 TEST(AST_TYPE, builtin_type_long) {
-    BuiltinType long_type(PrimitiveType::klong);
-
-    EXPECT_EQ(long_type.to_str(), "long");
-    EXPECT_FALSE(long_type.IsChar());
-    EXPECT_FALSE(long_type.is());
-    EXPECT_FALSE(long_type.IsInteger());
-    EXPECT_FALSE(long_type.IsFloat());
-    EXPECT_FALSE(long_type.IsDouble());
-    EXPECT_TRUE(long_type.IsLong());
-    EXPECT_FALSE(long_type.IsShort());
-    EXPECT_FALSE(long_type.IsLongLong());
-    EXPECT_FALSE(long_type.IsLongDouble());
+    ExpectNumericalType(PrimitiveType::kLong, "long");
 }
 
+/** @brief Check the spelling and primitive identity of long long. */
 TEST(AST_TYPE, builtin_type_long_long) {
-    BuiltinType longlong_type(PrimitiveType::klonglong);
-
-    EXPECT_EQ(longlong_type.to_str(), "long long");
-    EXPECT_FALSE(longlong_type.IsChar());
-    EXPECT_FALSE(longlong_type.is());
-    EXPECT_FALSE(longlong_type.IsInteger());
-    EXPECT_FALSE(longlong_type.IsFloat());
-    EXPECT_FALSE(longlong_type.IsDouble());
-    EXPECT_FALSE(longlong_type.IsLong());
-    EXPECT_FALSE(longlong_type.IsShort());
-    EXPECT_TRUE(longlong_type.IsLongLong());
-    EXPECT_FALSE(longlong_type.IsLongDouble());
+    // Preserve the existing numerical-type table mapping of this legacy enum slot.
+    ExpectNumericalType(PrimitiveType::Signed, "long long");
 }
 
+/** @brief Check the spelling and primitive identity of float. */
 TEST(AST_TYPE, builtin_type_float) {
-    BuiltinType float_type(PrimitiveType::kfloat);
-
-    EXPECT_EQ(float_type.to_str(), "float");
-    EXPECT_FALSE(float_type.IsChar());
-    EXPECT_FALSE(float_type.is());
-    EXPECT_FALSE(float_type.IsInteger());
-    EXPECT_TRUE(float_type.IsFloat());
-    EXPECT_FALSE(float_type.IsDouble());
-    EXPECT_FALSE(float_type.IsLong());
-    EXPECT_FALSE(float_type.IsShort());
-    EXPECT_FALSE(float_type.IsLongLong());
-    EXPECT_FALSE(float_type.IsLongDouble());
+    ExpectNumericalType(PrimitiveType::kFloat, "float");
 }
 
+/** @brief Check the spelling and primitive identity of double. */
 TEST(AST_TYPE, builtin_type_double) {
-    hzcc::ast::BuiltinType double_type(PrimitiveType::kdouble);
-
-    EXPECT_EQ(double_type.to_str(), "double");
-    EXPECT_FALSE(double_type.IsChar());
-    EXPECT_FALSE(double_type.is());
-    EXPECT_FALSE(double_type.IsInteger());
-    EXPECT_FALSE(double_type.IsFloat());
-    EXPECT_TRUE(double_type.IsDouble());
-    EXPECT_FALSE(double_type.IsLong());
-    EXPECT_FALSE(double_type.IsShort());
-    EXPECT_FALSE(double_type.IsLongLong());
-    EXPECT_FALSE(double_type.IsLongDouble());
+    ExpectNumericalType(PrimitiveType::kDouble, "double");
 }
 
+/** @brief Check the spelling and primitive identity of long double. */
 TEST(AST_TYPE, builtin_type_long_double) {
-    hzcc::ast::BuiltinType bool_type(PrimitiveType::klong_double);
-
-    EXPECT_EQ(bool_type.to_str(), "long double");
-    EXPECT_FALSE(bool_type.IsChar());
-    EXPECT_FALSE(bool_type.is());
-    EXPECT_FALSE(bool_type.IsInteger());
-    EXPECT_FALSE(bool_type.IsFloat());
-    EXPECT_FALSE(bool_type.IsDouble());
-    EXPECT_FALSE(bool_type.IsLong());
-    EXPECT_FALSE(bool_type.IsShort());
-    EXPECT_FALSE(bool_type.IsLongLong());
-    EXPECT_TRUE(bool_type.IsLongDouble());
+    // Preserve the existing numerical-type table mapping of this legacy enum slot.
+    ExpectNumericalType(PrimitiveType::Unsigned, "long double");
 }
 
+/** @brief Check the spelling and primitive identity of _Bool. */
 TEST(AST_TYPE, builtin_type_bool) {
-    hzcc::ast::BuiltinType bool_type(PrimitiveType::kbool);
-
-    EXPECT_EQ(bool_type.to_str(), "bool");
-    EXPECT_FALSE(bool_type.IsChar());
-    EXPECT_FALSE(bool_type.is());
-    EXPECT_FALSE(bool_type.IsInteger());
-    EXPECT_FALSE(bool_type.IsFloat());
-    EXPECT_FALSE(bool_type.IsDouble());
-    EXPECT_FALSE(bool_type.IsLong());
-    EXPECT_FALSE(bool_type.IsShort());
-    EXPECT_FALSE(bool_type.IsLongLong());
-    EXPECT_FALSE(bool_type.IsLongDouble());
+    ExpectNumericalType(PrimitiveType::kBool, "_Bool");
 }
 
+/** @brief Check the spelling and primitive identity of _Complex. */
 TEST(AST_TYPE, builtin_type_complex) {
-    hzcc::ast::BuiltinType complex_type(PrimitiveType::kcomplex);
-
-    EXPECT_EQ(complex_type.to_str(), "complex");
-    EXPECT_FALSE(complex_type.IsChar());
-    EXPECT_FALSE(complex_type.is());
-    EXPECT_FALSE(complex_type.IsInteger());
-    EXPECT_FALSE(complex_type.IsFloat());
-    EXPECT_FALSE(complex_type.IsDouble());
-    EXPECT_FALSE(complex_type.IsLong());
-    EXPECT_FALSE(complex_type.IsShort());
-    EXPECT_FALSE(complex_type.IsLongLong());
-    EXPECT_FALSE(complex_type.IsLongDouble());
+    ExpectNumericalType(PrimitiveType::kComplex, "_Complex");
 }
 
+/** @brief Check the spelling and primitive identity of _Imaginary. */
 TEST(AST_TYPE, builtin_type_imaginary) {
-    hzcc::ast::BuiltinType imaginary_type(PrimitiveType::kimaginary);
+    ExpectNumericalType(PrimitiveType::kImaginary, "_Imaginary");
+}
 
-    EXPECT_EQ(imaginary_type.to_str(), "imaginary");
-    EXPECT_FALSE(imaginary_type.IsChar());
-    EXPECT_FALSE(imaginary_type.is());
-    EXPECT_FALSE(imaginary_type.IsInteger());
-    EXPECT_FALSE(imaginary_type.IsFloat());
-    EXPECT_FALSE(imaginary_type.IsDouble());
-    EXPECT_FALSE(imaginary_type.IsLong());
-    EXPECT_FALSE(imaginary_type.IsShort());
-    EXPECT_FALSE(imaginary_type.IsLongLong());
-    EXPECT_FALSE(imaginary_type.IsLongDouble());
 }  // namespace hzcc::ast

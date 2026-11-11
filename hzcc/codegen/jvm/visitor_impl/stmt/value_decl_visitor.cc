@@ -10,6 +10,11 @@
 #include "codegen/jvm/utils/TypeUtils.h"
 
 namespace Hzcc::Codegen {
+/**
+ * @brief Emit JVM assembly for a VarDecl node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status JVMGenerator::visit(Hzcc::AST::VarDecl *p_expr) {
     static std::unordered_map<std::string, const char *> kTypeName = {
         {"int", "int"},     {"char", "char"},     {"bool", "bool"},
@@ -70,6 +75,10 @@ Status JVMGenerator::visit(Hzcc::AST::VarDecl *p_expr) {
 
     return Status::OkStatus();
 }
+/**
+ * @brief Return the input source filename; this legacy accessor is only declared.
+ * @return The generator-owned input filename.
+ */
 const std::string &JVMGenerator::GetInputFileName() { return _input_file_name; }
 
 }  // namespace Hzcc::Codegen

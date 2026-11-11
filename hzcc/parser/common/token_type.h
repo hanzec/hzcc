@@ -5,6 +5,10 @@
 #ifndef HZCC_LEXICAL_STATIC_TOKEN_TYPE_H
 #define HZCC_LEXICAL_STATIC_TOKEN_TYPE_H
 namespace hzcc {
+/**
+ * @brief Token categories with ASCII-valued punctuation and contiguous keyword ranges.
+ * @note Range sentinels and their ordering are used by lookup tables and category predicates.
+ */
 enum class PACKED TokenType : uint16_t {
     Add = '+',
     Sub = '-',
@@ -132,16 +136,31 @@ enum class PACKED TokenType : uint16_t {
     case TokenType::Signed:    \
     case TokenType::Unsigned
 
+/**
+ * @brief Test whether a token belongs to the keyword numeric range.
+ * @param tokenType Token category to classify.
+ * @return True for categories between the inclusive keyword range sentinels.
+ */
 constexpr ALWAYS_INLINE bool is_keyword(TokenType tokenType) {
     return (int)tokenType >= (int)TokenType::Keyword_START &&
            (int)tokenType <= (int)TokenType::Keyword_END;
 }
 
+/**
+ * @brief Test whether a token belongs to the qualifier numeric range.
+ * @param tokenType Token category to classify.
+ * @return True for categories between the inclusive qualifier range sentinels.
+ */
 constexpr ALWAYS_INLINE bool is_qualifier(TokenType tokenType) {
     return (int)tokenType >= (int)TokenType::Qual_START &&
            (int)tokenType <= (int)TokenType::Qual_END;
 }
 
+/**
+ * @brief Test whether a token belongs to the type-specifier numeric range.
+ * @param tokenType Token category to classify.
+ * @return True for categories between the inclusive type-specifier range sentinels.
+ */
 constexpr ALWAYS_INLINE bool is_type_specifier(TokenType tokenType) {
     return (int)tokenType >= (int)TokenType::TypeSpec_START &&
            (int)tokenType <= (int)TokenType::TypeSpec_END;

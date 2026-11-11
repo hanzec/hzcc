@@ -14,37 +14,40 @@ namespace hzcc {
 using TokenList = utils::CachedList<Token, std::function<bool(Token)>>;
 namespace lexical {
 /**
- * @brief Parse the source code and generate a list of LexicalToken
- *
- * @param source the source code to be parsed
- * @param source_name the source file to_str
- * @return StatusOr<std::list<Token>> the list of LexicalToken or the error
+ * @brief Tokenize a seekable source stream from its beginning.
+ * @param source Source stream; its position is advanced during tokenization.
+ * @return Tokens on success, or the first lexical or input error.
+ * @note Qualifier tokens are cached by TokenList when consumed by the parser.
  */
 StatusOr<TokenList> ParseToToken(std::istream& source) noexcept;
 
 /**
- * @brief Parse the source code and generate a list of LexicalToken
- *
- * @param source the source code to be parsed
- * @param tokenStream the output list of parsed LexicalToken
- * @param source_name the source file to_str, default is ""
- * @return Status return the parsing result
+ * @brief Reserved interface for lexical preprocessing.
+ * @param input Source text to preprocess.
+ * @param output Destination for preprocessed text.
+ * @return Preprocessing status.
+ * @note This overload currently has no implementation; it is not a usable API.
  */
 Status PreprocessSource(const std::istream& input, std::ostream& output);
 }  // namespace lexical
 
 namespace syntax {
 /**
- * @brief Preprocess the source code
- * @param input
- * @param output
- * @return
+ * @brief Reserved interface for syntax preprocessing.
+ * @param input Source text to preprocess.
+ * @param output Destination for preprocessed text.
+ * @return Preprocessing status.
+ * @note This overload currently has no implementation; it is not a usable API.
  */
 Status PreprocessSource(std::istream& input, std::ostream& output);
 
 /**
- * @brief Generate the ast from the source code
- * @param source the source code to be parsed
+ * @brief Consume tokens and register parsed declarations in a compilation unit.
+ * @param source Token list consumed from the front as parsing progresses.
+ * @param compile_unit Non-null compilation unit receiving declarations.
+ * @return OK after consuming all tokens, or the first parsing error.
+ * @note On error, consumed tokens and previously registered declarations are
+ * not rolled back.
  */
 Status GenerateAST(TokenList& source,
                    std::shared_ptr<ast::CompilationUnit> compile_unit);

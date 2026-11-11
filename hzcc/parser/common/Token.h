@@ -11,6 +11,10 @@
 #define HZCC_LEXICAL_LEXICAL_TOKEN_H
 
 namespace hzcc {
+/**
+ * @brief A lexical token with source coordinates and an optional interned spelling.
+ * @note Token spellings are retained in a process-wide pool; concurrent mutation is not synchronized.
+ */
 class Token {
   public:
     /**
@@ -37,7 +41,7 @@ class Token {
 
     /**
      * @brief Change the token type of current LexicalToken
-     * @param token_type the new token type of current LexicalToken
+     * @param new_type New token category; the stored spelling and source position are unchanged.
      */
     void Type(TokenType new_type) noexcept;
 
@@ -49,8 +53,8 @@ class Token {
 
     /**
      * @brief Get the location of the token in the source file
-     * @return std::pair<int, int> the location of the token in the
-     *         source file which is a three tuple variable (row, column)
+     * @return Stored row and column supplied at construction; the lexer uses
+     * one-based rows and zero-based columns.
      */
     [[nodiscard]] Position loc() const noexcept;
 
@@ -75,6 +79,12 @@ class Token {
         _global_val_storage{};
 };
 
+/**
+ * @brief Compare token category and source location, ignoring the stored spelling.
+ * @param lhs First token to compare.
+ * @param rhs Second token to compare.
+ * @return True when both category and location match.
+ */
 inline bool operator==(const Token& lhs, const Token& rhs) {
     return lhs.type() == rhs.type() && lhs.loc() == rhs.loc();
 }

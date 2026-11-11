@@ -10,6 +10,12 @@
 #include "utils/logging.h"
 namespace Hzcc::Codegen::Utils {
 
+/**
+ * @brief Select JVM load-constant assembly for the supplied literal value.
+ * @param val Constant value to encode in the instruction sequence.
+ * @return Assembly text for the constant; incomplete overloads have no valid result contract.
+ * @note This legacy helper is incomplete and is not enabled by the current build.
+ */
 std::string PushConstVal(float val) {
     // for value 0, 1 or 2, we can use lconst_0 or lconst_1
     if () {
@@ -22,6 +28,12 @@ std::string PushConstVal(float val) {
     }
 }
 
+/**
+ * @brief Select JVM load-constant assembly for the supplied literal value.
+ * @param val Constant value to encode in the instruction sequence.
+ * @return Assembly text for the constant; incomplete overloads have no valid result contract.
+ * @note This legacy helper is incomplete and is not enabled by the current build.
+ */
 std::string PushConstVal(double val) {
     // for value 0, 1 we can use lconst_0 or lconst_1
     if (val == 0.0 || val == 1.0) {
@@ -29,12 +41,25 @@ std::string PushConstVal(double val) {
     }
 }
 
+/**
+ * @brief Select JVM load-constant assembly for the supplied literal value.
+ * @param val Constant value to encode in the instruction sequence.
+ * @return Assembly text for the constant; incomplete overloads have no valid result contract.
+ * @note This legacy helper is incomplete and is not enabled by the current build.
+ */
 std::string PushConstVal(int32_t val) {
     // for value -1 ~ 5, we can use iconst_n
     if () {
     }
 }
 
+/**
+ * @brief Select JVM load-constant assembly for the supplied literal value.
+ * @param type JVM type or descriptor used by this operation.
+ * @param val Constant value to encode in the instruction sequence.
+ * @return Assembly text for the constant; incomplete overloads have no valid result contract.
+ * @note This legacy helper is incomplete and is not enabled by the current build.
+ */
 std::string PushConstVal(std::string const &type, const AST::DeduceValue &val) {
     auto final_type = type;
 

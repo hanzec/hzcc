@@ -52,11 +52,8 @@
 namespace hzcc {
 // BadStatusOrAccess
 //
-// This class defines the type of object to throw (if exceptions are enabled),
-// when accessing the value of an `hzcc::StatusOr<T>` object that does not
-// contain a value. This behavior is analogous to that of
-// `std::bad_optional_access` in the case of accessing an invalid
-// `std::optional` value.
+// Retains the status associated with a failed value access. The current
+// StatusOr accessor terminates on error rather than throwing this exception.
 //
 // Example:
 //
@@ -66,14 +63,36 @@ namespace hzcc {
 // } catch (absl::BadStatusOrAccess& ex) {
 //   LOG(ERROR) << ex.status();
 // }
+/** @brief Exception object retaining a Status and lazily formatted explanatory text.
+ * @note The current StatusOr value-access implementation terminates instead of throwing it.
+ */
 class BadStatusOrAccess : public std::exception {
   public:
+    /** @brief Retain the error that prevented access to a StatusOr value.
+     * @param status Error status retained or reported by this operation.
+     */
     explicit BadStatusOrAccess(hzcc::Status status);
+    /** @brief Release the stored status and cached explanatory text.
+     */
     ~BadStatusOrAccess() override = default;
 
+    /** @brief Copy another exception and its error details.
+     * @param other Source object whose state is copied or moved.
+     */
     BadStatusOrAccess(const BadStatusOrAccess& other);
+    /** @brief Copy the exception state and explanatory text.
+     * @return Reference to this exception.
+     * @param other Source object whose state is copied or moved.
+     */
     BadStatusOrAccess& operator=(const BadStatusOrAccess& other);
+    /** @brief Move the stored error from another exception.
+     * @param other Source object whose state is copied or moved.
+     */
     BadStatusOrAccess(BadStatusOrAccess&& other) noexcept;
+    /** @brief Move the exception state and explanatory text.
+     * @return Reference to this exception.
+     * @param other Source object whose state is copied or moved.
+     */
     BadStatusOrAccess& operator=(BadStatusOrAccess&& other) noexcept;
 
     // BadStatusOrAccess::what()
@@ -85,15 +104,23 @@ class BadStatusOrAccess : public std::exception {
     //
     // The pointer of this string is guaranteed to be valid until any non-const
     // function is invoked on the exception object.
+    /** @brief Initialize and retrieve the explanatory error text.
+     * @return Pointer valid until this exception is modified or destroyed.
+     */
     const char* what() const noexcept override;
 
     // BadStatusOrAccess::status()
     //
     // Returns the associated `hzcc::Status` of the `hzcc::StatusOr<T>` object's
     // error.
+    /** @brief Inspect the error retained by this exception.
+     * @return Reference to its stored status.
+     */
     const hzcc::Status& status() const;
 
   private:
+    /** @brief Initialize the cached diagnostic once, including the stored status text.
+     */
     void InitWhat() const;
 
     hzcc::Status status_;
@@ -174,6 +201,10 @@ class [[nodiscard]] StatusOr;
 //    }
 //    return Foo(arg);
 //  }
+/** @brief Result holding either an active T value or a non-OK Status.
+ * @tparam T Stored value type, whose copy and move capabilities constrain this wrapper.
+ * A null pointer may be a successful value; use ok() to distinguish errors.
+ */
 template <typename T>
 class StatusOr : private internal_statusor::StatusOrData<T>,
                  private internal_statusor::CopyCtorBase<T>,
@@ -200,18 +231,32 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     // values such as 'return {};', under the misconception that
     // `hzcc::StatusOr<std::vector<int>>` will be initialized with an empty
     // vector, instead of an `hzcc::StatusCode::kUnknown` error code.
+    /** @brief Construct an error result with code kUnknown and no value.
+     */
     explicit StatusOr();
 
     // `StatusOr<T>` is copy constructible if `T` is copy constructible.
+    /** @brief Copy the source value when present, otherwise propagate its error.
+     * @note This overload is available only when the corresponding value construction is valid.
+     */
     StatusOr(const StatusOr&) = default;
     // `StatusOr<T>` is copy assignable if `T` is copy constructible and copy
     // assignable.
+    /** @brief Copy the source value or error into this result.
+     * @return Reference to this result.
+     */
     StatusOr& operator=(const StatusOr&) = default;
 
     // `StatusOr<T>` is move constructible if `T` is move constructible.
+    /** @brief Move the source value when present, otherwise propagate its error.
+     * @note This overload is available only when the corresponding value construction is valid.
+     */
     StatusOr(StatusOr&&) noexcept = default;
     // `StatusOr<T>` is moveAssignable if `T` is move constructible and move
     // assignable.
+    /** @brief Move the source value or error into this result.
+     * @return Reference to this result.
+     */
     StatusOr& operator=(StatusOr&&) noexcept = default;
 
     // Converting Constructors
@@ -222,6 +267,10 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     // constructor is explicit if and only if the corresponding construction of
     // `T` from `U` is explicit. (This constructor inherits its explicitness
     // from the underlying constructor.)
+    /** @brief Copy the source value when present, otherwise propagate its error.
+     * @note This overload is available only when the corresponding value construction is valid.
+     * @param other Source object whose state is copied or moved.
+     */
     template <
         typename U,
         std::enable_if_t<
@@ -236,6 +285,10 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     StatusOr(const StatusOr<U>& other)  // NOLINT
         : Base(static_cast<const typename StatusOr<U>::Base&>(other)) {}
 
+    /** @brief Copy the source value when present, otherwise propagate its error.
+     * @note This overload is available only when the corresponding value construction is valid.
+     * @param other Source object whose state is copied or moved.
+     */
     template <
         typename U,
         std::enable_if_t<
@@ -250,6 +303,10 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     explicit StatusOr(const StatusOr<U>& other)
         : Base(static_cast<const typename StatusOr<U>::Base&>(other)) {}
 
+    /** @brief Move the source value when present, otherwise propagate its error.
+     * @note This overload is available only when the corresponding value construction is valid.
+     * @param other Source object whose state is copied or moved.
+     */
     template <
         typename U,
         std::enable_if_t<
@@ -262,6 +319,10 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
             int> = 0>
     StatusOr(StatusOr<U>&& other)  // NOLINT
         : Base(static_cast<typename StatusOr<U>::Base&&>(other)) {}
+    /** @brief Move the source value when present, otherwise propagate its error.
+     * @note This overload is available only when the corresponding value construction is valid.
+     * @param other Source object whose state is copied or moved.
+     */
     template <
         typename U,
         std::enable_if_t<
@@ -295,6 +356,10 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     // These overloads only apply if `hzcc::StatusOr<T>` is constructible and
     // assignable from `hzcc::StatusOr<U>` and `StatusOr<T>` cannot be directly
     // assigned from `StatusOr<U>`.
+    /** @brief Copy the source value or error into this result.
+     * @return Reference to this result.
+     * @param other Source object whose state is copied or moved.
+     */
     template <
         typename U,
         std::enable_if_t<
@@ -311,6 +376,10 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
         this->Assign(other);
         return *this;
     }
+    /** @brief Move the source value or error into this result.
+     * @return Reference to this result.
+     * @param other Source object whose state is copied or moved.
+     */
     template <
         typename U,
         std::enable_if_t<
@@ -331,15 +400,19 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
 #pragma ide diagnostic ignored "google-explicit-constructor"
     // Constructs a new `hzcc::StatusOr<T>` with a non-ok status. After calling
     // this constructor, `this->ok()` will be `false` and calls to `value()`
-    // will crash, or produce an exception if exceptions are enabled.
+    // will terminate with a fatal diagnostic.
     //
     // The constructor also takes any type `U` that is convertible to
     // `hzcc::Status`. This constructor is explicit if an only if `U` is not of
     // type `hzcc::Status` and the conversion from `U` to `Status` is explicit.
     //
     // REQUIRES: !Status(std::forward<U>(v)).ok(). This requirement is DCHECKed.
-    // In optimized builds, passing std::NoError() here will have the effect
+    // In optimized builds, passing hzcc::NoError() here will have the effect
     // of passing hzcc::StatusCode::kInternal as a fallback.
+    /** @brief Construct an error result from a status-convertible argument.
+     * @pre The converted status is non-OK; invalid input terminates in debug builds and becomes kInternal in release builds.
+     * @param v Argument forwarded to the selected status or value operation.
+     */
     template <
         typename U = hzcc::Status,
         std::enable_if_t<
@@ -356,6 +429,10 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     StatusOr(U&& v) : Base(std::forward<U>(v)) {}
 #pragma clang diagnostic pop
 
+    /** @brief Construct an error result from a status-convertible argument.
+     * @pre The converted status is non-OK; invalid input terminates in debug builds and becomes kInternal in release builds.
+     * @param v Argument forwarded to the selected status or value operation.
+     */
     template <
         typename U = hzcc::Status,
         std::enable_if_t<
@@ -371,6 +448,11 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
             int> = 0>
     explicit StatusOr(U&& v) : Base(std::forward<U>(v)) {}
 
+    /** @brief Replace the held value or error with a non-OK status.
+     * @pre The converted argument must not be OK.
+     * @return Reference to this result.
+     * @param v Argument forwarded to the selected status or value operation.
+     */
     template <
         typename U = hzcc::Status,
         std::enable_if_t<
@@ -405,6 +487,10 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     //    StatusOr<bool> s1 = true;  // s1.ok() && *s1 == true
     //    StatusOr<bool> s2 = false;  // s2.ok() && *s2 == false
     //    s1 = s2;  // ambiguous, `s1 = *s2` or `s1 = bool(s2)`?
+    /** @brief Assign the held T, or construct it when the result currently holds an error.
+     * @return Reference to this result.
+     * @param v Argument forwarded to the selected status or value operation.
+     */
     template <
         typename U = T,
         typename = typename std::enable_if<std::conjunction<
@@ -425,8 +511,15 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
 
     // Constructs the inner value `T` in-place using the provided params, using
     // the `T(params...)` constructor.
+    /** @brief Construct T in place from the supplied arguments and mark the result OK.
+     * @param args Arguments forwarded to the contained object's constructor.
+     */
     template <typename... Args>
     explicit StatusOr(std::in_place_t, Args&&... args);
+    /** @brief Construct T in place from the supplied arguments and mark the result OK.
+     * @param ilist Initializer list forwarded to T's constructor.
+     * @param args Arguments forwarded to the contained object's constructor.
+     */
     template <typename U, typename... Args>
     explicit StatusOr(std::in_place_t, std::initializer_list<U> ilist,
                       Args&&... args);
@@ -439,6 +532,9 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     // This constructor is explicit if `U` is not convertible to `T`. To avoid
     // ambiguity, this constructor is disabled if `U` is a `StatusOr<J>`, where
     // `J` is convertible to `T`.
+    /** @brief Construct a successful result by forwarding the supplied value into T.
+     * @param u Value forwarded into the stored T.
+     */
     template <
         typename U = T,
         std::enable_if_t<
@@ -457,6 +553,9 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     StatusOr(U&& u)  // NOLINT
         : StatusOr(std::in_place, std::forward<U>(u)) {}
 
+    /** @brief Construct a successful result by forwarding the supplied value into T.
+     * @param u Value forwarded into the stored T.
+     */
     template <
         typename U = T,
         std::enable_if_t<
@@ -490,21 +589,29 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     // else {
     //    // Handle error
     // }
+    /** @brief Check whether a value is active.
+     * @return true when a T value is available; a contained null pointer is still a value.
+     */
     [[nodiscard]] bool ok() const { return this->status_.ok(); }
 
     // StatusOr<T>::status()
     //
     // Returns a reference to the current `hzcc::Status` contained within the
     // `hzcc::StatusOr<T>`. If `hzcc::StatusOr<T>` contains a `T`, then this
-    // function returns `std::NoError()`.
+    // function returns `hzcc::NoError()`.
+    /** @brief Inspect the status without consuming the value.
+     * @return Reference to the stored status, which is OK when a value is present.
+     */
     [[nodiscard]] const Status& status() const&;
+    /** @brief Move out the error status, or return OK when a value is present.
+     * @return Status describing the result.
+     */
     Status status() &&;
 
     // StatusOr<T>::value()
     //
-    // Returns a reference to the held value if `this->ok()`. Otherwise, throws
-    // `std::BadStatusOrAccess` if exceptions are enabled, or is guaranteed to
-    // terminate the process if exceptions are disabled.
+    // Returns a reference to the held value if `this->ok()`. Otherwise logs a
+    // fatal diagnostic and terminates the process.
     //
     // If you have already checked the status using `this->ok()`, you probably
     // want to use `operator*()` or `operator->()` to access the value instead
@@ -526,9 +633,25 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     //
     // The `std::move` on statusor instead of on the whole expression enables
     // warnings about possible uses of the statusor object after the move.
+    /** @brief Access the active value using this overload's constness and value category.
+     * @return Reference to the stored T, whose lifetime remains tied to this result.
+     * @note An error result logs a fatal diagnostic and terminates; this implementation does not throw.
+     */
     const T& value() const& HZCC_ATTRIBUTE_LIFETIME_BOUND;
+    /** @brief Access the active value using this overload's constness and value category.
+     * @return Reference to the stored T, whose lifetime remains tied to this result.
+     * @note An error result logs a fatal diagnostic and terminates; this implementation does not throw.
+     */
     T& value() & HZCC_ATTRIBUTE_LIFETIME_BOUND;
+    /** @brief Access the active value using this overload's constness and value category.
+     * @return Reference to the stored T, whose lifetime remains tied to this result.
+     * @note An error result logs a fatal diagnostic and terminates; this implementation does not throw.
+     */
     const T&& value() const&& HZCC_ATTRIBUTE_LIFETIME_BOUND;
+    /** @brief Access the active value using this overload's constness and value category.
+     * @return Reference to the stored T, whose lifetime remains tied to this result.
+     * @note An error result logs a fatal diagnostic and terminates; this implementation does not throw.
+     */
     T&& value() && HZCC_ATTRIBUTE_LIFETIME_BOUND;
 
     // StatusOr<T>:: operator*()
@@ -541,9 +664,25 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     // `hzcc::StatusOr<T>`. Alternatively, see the `value()` member function for
     // a similar API that guarantees crashing or throwing an exception if there
     // is no current value.
+    /** @brief Dereference the active value.
+     * @pre ok() is true.
+     * @return Reference preserving this overload's constness and value category.
+     */
     const T& operator*() const& HZCC_ATTRIBUTE_LIFETIME_BOUND;
+    /** @brief Dereference the active value.
+     * @pre ok() is true.
+     * @return Reference preserving this overload's constness and value category.
+     */
     T& operator*() & HZCC_ATTRIBUTE_LIFETIME_BOUND;
+    /** @brief Dereference the active value.
+     * @pre ok() is true.
+     * @return Reference preserving this overload's constness and value category.
+     */
     const T&& operator*() const&& HZCC_ATTRIBUTE_LIFETIME_BOUND;
+    /** @brief Dereference the active value.
+     * @pre ok() is true.
+     * @return Reference preserving this overload's constness and value category.
+     */
     T&& operator*() && HZCC_ATTRIBUTE_LIFETIME_BOUND;
 
     // StatusOr<T>::operator->()
@@ -553,7 +692,15 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     // REQUIRES: `this->ok() == true`, otherwise the behavior is undefined.
     //
     // Use `this->ok()` to verify that there is a current value.
+    /** @brief Access members of the active value.
+     * @pre ok() is true.
+     * @return Pointer to the stored T, valid while its lifetime remains active.
+     */
     const T* operator->() const HZCC_ATTRIBUTE_LIFETIME_BOUND;
+    /** @brief Access members of the active value.
+     * @pre ok() is true.
+     * @return Pointer to the stored T, valid while its lifetime remains active.
+     */
     T* operator->() HZCC_ATTRIBUTE_LIFETIME_BOUND;
 
     // StatusOr<T>::value_or()
@@ -569,8 +716,16 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     //
     // Unlike with `value`, calling `std::move()` on the result of `value_or`
     // will still trigger a copy.
+    /** @brief Copy the active value, or construct T from the fallback on error.
+     * @return The held value or converted fallback by value.
+     * @param default_value Fallback forwarded to construct T when this result is an error.
+     */
     template <typename U>
     T value_or(U&& default_value) const&;
+    /** @brief Move the active value, or construct T from the fallback on error.
+     * @return The held value or converted fallback by value.
+     * @param default_value Fallback forwarded to construct T when this result is an error.
+     */
     template <typename U>
     T value_or(U&& default_value) &&;
 
@@ -579,12 +734,18 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
     // Ignores any errors. This method does nothing except potentially suppress
     // complaints from any tools that are checking that errors are not dropped
     // on the floor.
+    /** @brief Acknowledge this result without changing the value or error.
+     */
     void IgnoreError() const;
 
     // StatusOr<T>::emplace()
     //
     // Reconstructs the inner value T in-place using the provided params, using
     // the T(params...) constructor. Returns reference to the reconstructed `T`.
+    /** @brief Replace the current value or error by constructing T in place.
+     * @return Reference to the newly constructed value.
+     * @param args Arguments forwarded to the contained object's constructor.
+     */
     template <typename... Args>
     T& emplace(Args&&... args) {
         if (ok()) {
@@ -597,6 +758,11 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
         return this->data_;
     }
 
+    /** @brief Replace the current value or error by constructing T in place.
+     * @return Reference to the newly constructed value.
+     * @param ilist Initializer list forwarded to T's constructor.
+     * @param args Arguments forwarded to the contained object's constructor.
+     */
     template <
         typename U, typename... Args,
         std::enable_if_t<std::is_constructible<T, std::initializer_list<U>&,
@@ -615,8 +781,14 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
 
   private:
     using internal_statusor::StatusOrData<T>::Assign;
+    /** @brief Assign the source value or error, preserving its success state.
+     * @param other Source object whose state is copied or moved.
+     */
     template <typename U>
     void Assign(const hzcc::StatusOr<U>& other);
+    /** @brief Assign the source value or error, preserving its success state.
+     * @param other Source object whose state is copied or moved.
+     */
     template <typename U>
     void Assign(hzcc::StatusOr<U>&& other);
 };
@@ -624,6 +796,11 @@ class StatusOr : private internal_statusor::StatusOrData<T>,
 // operator==()
 //
 // This operator checks the equality of two `hzcc::StatusOr<T>` objects.
+/** @brief Compare successful values or, for two errors, their statuses.
+ * @param lhs First result.
+ * @param rhs Second result.
+ * @return Whether the specified comparison holds.
+ */
 template <typename T>
 bool operator==(const StatusOr<T>& lhs, const StatusOr<T>& rhs) {
     if (lhs.ok() && rhs.ok()) return *lhs == *rhs;
@@ -633,6 +810,11 @@ bool operator==(const StatusOr<T>& lhs, const StatusOr<T>& rhs) {
 // operator!=()
 //
 // This operator checks the inequality of two `hzcc::StatusOr<T>` objects.
+/** @brief Test whether successful values or error statuses differ.
+ * @param lhs First result.
+ * @param rhs Second result.
+ * @return Whether the specified comparison holds.
+ */
 template <typename T>
 bool operator!=(const StatusOr<T>& lhs, const StatusOr<T>& rhs) {
     return !(lhs == rhs);

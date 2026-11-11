@@ -1,99 +1,55 @@
-###############################################################################
-## hzcc E2E Testing ###########################################################
-###############################################################################
-ProcessorCount(N)
-add_custom_target(hzcc_e2e_test
-        DEPENDS hzcc HZCC_FileCheck
-        COMMAND ${CMAKE_CTEST_COMMAND} --rerun-failed --output-on-failure)
+find_package(Python3 3.6 COMPONENTS Interpreter REQUIRED)
+# Per-test timeouts require psutil to terminate the complete subprocess tree.
+execute_process(
+    COMMAND "${Python3_EXECUTABLE}" -c "import psutil"
+    RESULT_VARIABLE psutil_result
+    ERROR_QUIET)
+if(NOT psutil_result EQUAL 0)
+    message(FATAL_ERROR
+        "E2E test timeouts require psutil. Install requirements-test.txt into your "
+        "Python environment, then set Python3_EXECUTABLE to that interpreter.")
+endif()
 
-# set-up xunit output folder
-set(TEST_OUTPUT_FOLDER "${CMAKE_CURRENT_BINARY_DIR}/test_output")
-
-# create xunit output folder if not exist
-if (NOT EXISTS "${TEST_OUTPUT_FOLDER}")
-    file(MAKE_DIRECTORY "${TEST_OUTPUT_FOLDER}")
-endif ()
-
-# llvm-lit executable
+# lit.py imports the adjacent vendored package; no system pip installation is needed.
 set(LLVM_LIT_EXECUTABLE "${THIRD_PARTY_BASE_PATH}/lit/lit.py")
+execute_process(
+    COMMAND "${Python3_EXECUTABLE}" "${LLVM_LIT_EXECUTABLE}" --version
+    RESULT_VARIABLE lit_result
+    OUTPUT_QUIET
+    ERROR_VARIABLE lit_error)
+if(NOT lit_result EQUAL 0)
+    message(FATAL_ERROR "Cannot run the bundled LLVM lit: ${lit_error}")
+endif()
 
-###############################################################################
-## Helper Function ############################################################
-###############################################################################
+set(TEST_OUTPUT_FOLDER "${CMAKE_CURRENT_BINARY_DIR}/test_output")
+file(MAKE_DIRECTORY "${TEST_OUTPUT_FOLDER}")
+
 function(add_lit_test_set name directory)
-    message(STATUS "Add lit test set [${name}]")
-
-    # check existence of test directory
-    if (NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}")
-        message(FATAL_ERROR "Directory ${directory} does not exist.")
-    endif ()
-
-    # test root
-    set(CURRENT_TEST_ROOT "${CMAKE_CURRENT_BINARY_DIR}/${name}")
-
-    # copy all test files to test directory
-    if (NOT EXISTS ${CURRENT_TEST_ROOT})
-        file(MAKE_DIRECTORY ${CURRENT_TEST_ROOT})
-    endif ()
-
-    # copy all test files to test directory
-    file(GLOB CURRENT_TEST_FILES "${directory}/*")
-    foreach (file ${CURRENT_TEST_FILES})
-        get_filename_component(FILE_EXTENSION ${file} LAST_EXT)
-        if (FILE_EXTENSION STREQUAL ".disabled")
-            message(STATUS "Ignore test case [${name}]:${file} in  since it is mark as disabled.")
-        else ()
-            message(VERBOSE "Discover test [${name}]:${file}")
-            configure_file(${file} "${CURRENT_TEST_ROOT}/" COPYONLY)
-        endif ()
-    endforeach ()
-
-    # generate the environment variable
-    configure_file(lit.site.cfg.py.in "${CURRENT_TEST_ROOT}/lit.site.cfg.py")
-
-    # add test targets
-    set(TEST_TARGET_OUTPUT_FILE "${TEST_OUTPUT_FOLDER}/${name}.xunit.xml")
+    set(CURRENT_TEST_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/${directory}")
+    set(test_exec_root "${CMAKE_CURRENT_BINARY_DIR}/${name}/$<CONFIG>")
+    # Expand CMake variables first and target/configuration expressions at generation.
+    configure_file(lit.site.cfg.py.in "${CMAKE_CURRENT_BINARY_DIR}/${name}.site.py.in" @ONLY)
+    file(GENERATE
+        OUTPUT "${test_exec_root}/lit.site.cfg.py"
+        INPUT "${CMAKE_CURRENT_BINARY_DIR}/${name}.site.py.in")
     add_test(NAME ${name}
-            WORKING_DIRECTORY ${CURRENT_TEST_ROOT}
-            COMMAND ${Python3_EXECUTABLE} ${LLVM_LIT_EXECUTABLE} --no-progress-bar --timeout 5 --xunit-xml-output "${TEST_TARGET_OUTPUT_FILE}" ${CURRENT_TEST_ROOT})
+        COMMAND "${Python3_EXECUTABLE}" "${LLVM_LIT_EXECUTABLE}"
+            --no-progress-bar --verbose --timeout 5
+            --xunit-xml-output "${TEST_OUTPUT_FOLDER}/${name}-$<CONFIG>.xunit.xml"
+            "${test_exec_root}")
+    set_tests_properties(${name} PROPERTIES
+        WORKING_DIRECTORY "${test_exec_root}"
+        LABELS e2e)
 endfunction()
 
-###############################################################################
-## FileCheckTool ##############################################################
-###############################################################################
-# testing target required this target
-add_dependencies(hzcc_e2e_test HZCC_FileCheck)
-
-###############################################################################
-## Testing Dependence #########################################################
-###############################################################################
-find_package(Python3 COMPONENTS Interpreter REQUIRED)
-
-# check dependency of LLVM lit
-if (Python3_FOUND)
-    message(STATUS "Python3 found at ${Python3_EXECUTABLE}")
-    # looking for required python packages
-    execute_process(COMMAND Python3::Interpreter -c "import asd" RESULT_VARIABLE exit_code)
-    if (${exit_code} EQUAL 1)
-        message(FATAL_ERROR "Cannot find llvm lit python package.")
-    endif ()
-else ()
-    message(FATAL_ERROR "Cannot find python3 interpreter.")
-endif ()
-
-###############################################################################
-## Executing E2E test #########################################################
-###############################################################################
-# enable test target
-enable_testing()
-
-message(STATUS "E2E testing is enabled.")
-
-# add compiler_info test set
 add_lit_test_set(compiler_info compiler_info)
-
-# add lexical test set
 add_lit_test_set(lexical lexical)
-
-# add test_set_0 test set
 add_lit_test_set(lexical_part3 syntax/test_set_0)
+
+# Run every E2E suite, including on the first build when no failures are recorded.
+add_custom_target(hzcc_e2e_test
+    COMMAND "${CMAKE_CTEST_COMMAND}" -C "$<CONFIG>" --output-on-failure -L e2e
+    DEPENDS hzcc HZCC_FileCheck
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+    USES_TERMINAL
+    VERBATIM)

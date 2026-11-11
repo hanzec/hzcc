@@ -8,8 +8,16 @@
 #include "optimization/pass/FunctionPass.h"
 #include "utils/logging.h"
 namespace hzcc::Pass {
+/**
+ * @brief Remove statements following the first top-level return in a function body.
+ */
 class DeadCodeElimination : public FunctionPass {
   public:
+    /**
+     * @brief Transform a function body and report whether the pass succeeded and changed it.
+     * @param F Owned function to inspect and modify in place.
+     * @return {true, found_return}; the second flag is true even when the return is already last.
+     */
     std::pair<bool, bool> RunOnFunction(
         std::unique_ptr<AST::FuncDeclStmt>& F) override {
         if (!F->HasBody()) {

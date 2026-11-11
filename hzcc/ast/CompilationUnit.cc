@@ -74,7 +74,7 @@ bool CompilationUnit::has_type(std::string_view name) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
         LOG(FATAL) << "Cannot search for empty type to_str";
 #else
-        return nullptr;
+        return false;
 #endif
     }
 
@@ -196,7 +196,7 @@ std::vector<QualTypePtr> CompilationUnit::func_param_types(std::string_view name
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-static-cast-downcast"
 void CompilationUnit::addDecl(std::unique_ptr<IDeclStmt> node) {
     // node muse be not a nullptr
-    DLOG_ASSERT(node != nullptr) << " Node is nullptr";
+    DCHECK(node != nullptr) << " Node is nullptr";
 
     // if we are adding a function Node
     switch (node->decl_type()) {

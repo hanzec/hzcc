@@ -4,7 +4,7 @@
 #include <array>
 #include <exception>
 #include <glog/logging.h>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 #include <memory>
 #include <ostream>
 #include <string>
@@ -40,6 +40,12 @@ namespace hzcc::ast {
  */
 class WiderTypeCast : public ICastRule {
 public:
+  /**
+   * @brief Consult the stored widening table for two numerical type IDs.
+   * @param rhs Borrowed source expression.
+   * @param lhs Shared destination type.
+   * @return The table entry for the numerical pair, or false for other categories.
+   */
   bool CouldApplyTo(const ExprPtr &rhs, const QualTypePtr &lhs) override { // NOLINT
     auto rhs_type = rhs->type();
 
@@ -53,6 +59,12 @@ public:
     }
   }
 
+  /**
+   * @brief Build an integral cast for supported primitive source IDs.
+   * @param node Source expression whose ownership is consumed.
+   * @param to Shared destination type retained by the cast.
+   * @return An owned IntegralCast for supported IDs; otherwise a null pointer after a warning.
+   */
   StatusOr<std::unique_ptr<CastExpr>> Apply(ExprPtr node,                     // NOLINT
                                             const QualTypePtr &to) override { // NOLINT
     auto rhs_type = node->type()->as<NumericalType>();
@@ -78,7 +90,7 @@ private:
                   {{false, false, false, false, false, false, false, false, false}}}}; // long double
 };
 
-// Register pass
+/** @brief Register the WiderTypeCast conversion in the cast-rule factory. */
 // NOLINTNEXTLINE
 HZCC_REG_CAST_RULE(WiderTypeCast, "WiderTypeCast", "cast rule for wider type");
 

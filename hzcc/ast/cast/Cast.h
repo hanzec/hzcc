@@ -16,25 +16,43 @@ class Expr;
 class Type;
 class ICastRule;
 
+/**
+ * @brief Select registered conversion rules and own their lazily created instances.
+ */
 class Cast : public utils::AutoRegFactory<ICastRule, std::string> {
   public:
     /**
-     * Delete the default constructor and copy constructor to prevent the class
-     * to be copied.
+     * @brief Construct a facade for the shared cast-rule registry.
      */
     Cast() = default;
+    /**
+     * @brief Destroy this facade without clearing the shared cast-rule cache.
+     */
     ~Cast() = default;
+    /**
+     * @brief Disable copying or moving the cast-rule registry facade.
+     */
     Cast(Cast&) = delete;
+    /**
+     * @brief Disable copying or moving the cast-rule registry facade.
+     */
     Cast(Cast&&) = delete;
+    /**
+     * @brief Disable copying or moving the cast-rule registry facade.
+     */
     Cast& operator=(Cast&) = delete;
+    /**
+     * @brief Disable copying or moving the cast-rule registry facade.
+     */
     Cast& operator=(Cast&&) = delete;
 
     /**
-     * Apply the cast rule rhs the given cast expression.
-     * @param rhs The cast expression rhs be applied.
-     * @param lhs_type The cast lhs type.
-     * @return The cast expression after the cast rule is applied.
-     **/
+     * @brief Consume an expression and apply registered conversions to its target type.
+     * @param require_rvalue Insert an lvalue-to-rvalue node when the source is an lvalue.
+     * @param rhs Non-null source expression whose ownership is consumed.
+     * @param lhs_type Shared destination type.
+     * @return The owned converted expression, or a cast-stage error if no rule succeeds.
+     */
     static StatusOr<std::unique_ptr<Expr>> apply(
         bool require_rvalue,                     // NOLINT
         std::unique_ptr<Expr> rhs,               // NOLINT

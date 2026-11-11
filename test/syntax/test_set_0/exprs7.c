@@ -24,6 +24,6 @@ float dist(float x1, float y1, float z1)
   return (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2);
 }
 
-//RUN: %mycc -3 "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement --fsave_gen_test_rules
+//RUN: %mycc --fsyntax_only "%s" | %FileCheck --test_rules="%s" --fsymbol_replacement
 
 //CHECK:      File __FILE__ is syntactically correct.

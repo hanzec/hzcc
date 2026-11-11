@@ -47,7 +47,7 @@ class DeduceValue {
     /**
      * @brief Construct a new Deduce to_str object.
      * @param type type of the deduce value
-     * @param value value of the deduce value in string format
+     * @param str_value Literal spelling parsed according to type.
      */
     DeduceValue(DeduceValueType type, std::string str_value);
 
@@ -62,7 +62,7 @@ class DeduceValue {
     /**
      * @brief Get the value of the deduce value as integer number.
      * @details The value conversion will based on the following rules:
-     * - If the value is real number, the value will be rounded to integer.
+     * - If the value is real number, the value will be truncated toward zero.
      * - If the value is integer, the value will be returned as is.
      * @return the integer value of the deduce value
      */
@@ -91,67 +91,49 @@ class DeduceValue {
 };
 
 /**
- * @brief Overload the biop + for deduce value.
- * @details The transformation rules are as follows:
- *          |             | Integer     | Real Number |  Character  |
- *          | :---------: | :---------: | :---------: | :---------: |
- *          | Integer     | Integer     | Real Number |   Integer   |
- *          | Real Number | Real Number | Real Number | Real Number |
- *          | Character   | Integer     | Real Number |   Integer   |
- * @param lhs left hand side of the biop
- * @param rhs right hand side of the biop
+ * @brief Add two compile-time values.
+ * @param lhs Left operand copied for evaluation.
+ * @param rhs Borrowed right operand.
+ * @return An integer when both operands are integers or both are characters;
+ *         otherwise a real-valued result.
  */
 DeduceValue operator+(DeduceValue lhs, const DeduceValue& rhs);
 
 /**
- * @brief Overload the biop - for deduce value.
- * @details The transformation rules are as follows:
- *          |             | Integer     | Real Number |  Character  |
- *          | :---------: | :---------: | :---------: | :---------: |
- *          | Integer     | Integer     | Real Number |   Integer   |
- *          | Real Number | Real Number | Real Number | Real Number |
- *          | Character   | Integer     | Real Number |   Integer   |
- * @param lhs left hand side of the biop
- * @param rhs right hand side of the biop
+ * @brief Subtract the right compile-time value from the left.
+ * @param lhs Left operand copied for evaluation.
+ * @param rhs Borrowed right operand.
+ * @return An integer when both operands are integers or both are characters;
+ *         otherwise a real-valued result.
  */
 DeduceValue operator-(DeduceValue lhs, const DeduceValue& rhs);
 
 /**
- * @brief Overload the biop * for deduce value.
- * @details The transformation rules are as follows:
- *          |             | Integer     | Real Number |  Character  |
- *          | :---------: | :---------: | :---------: | :---------: |
- *          | Integer     | Integer     | Real Number |   Integer   |
- *          | Real Number | Real Number | Real Number | Real Number |
- *          | Character   | Integer     | Real Number |   Integer   |
- * @param lhs left hand side of the biop
- * @param rhs right hand side of the biop
+ * @brief Multiply two compile-time values.
+ * @param lhs Left operand copied for evaluation.
+ * @param rhs Borrowed right operand.
+ * @return An integer when both operands are integers or both are characters;
+ *         otherwise a real-valued result.
  */
 DeduceValue operator*(DeduceValue lhs, const DeduceValue& rhs);
 
 /**
- * @brief Overload the biop / for deduce value.
- * @details The transformation rules are as follows:
- *          |             | Integer     | Real Number |  Character  |
- *          | :---------: | :---------: | :---------: | :---------: |
- *          | Integer     | Integer     | Real Number |   Integer   |
- *          | Real Number | Real Number | Real Number | Real Number |
- *          | Character   | Integer     | Real Number |   Integer   |
- * @param lhs left hand side of the biop
- * @param rhs right hand side of the biop
+ * @brief Divide the left compile-time value by the right.
+ * @param lhs Left operand copied for evaluation.
+ * @param rhs Borrowed right operand.
+ * @return An integer when both operands are integers or both are characters;
+ *         otherwise a real-valued result.
+ * @pre Integer division requires a nonzero divisor and a representable quotient.
  */
 DeduceValue operator/(DeduceValue lhs, const DeduceValue& rhs);
 
 /**
- * @brief Overload the biop % for deduce value.
- * @details The transformation rules are as follows:
- *          |             | Integer     | Real Number |  Character  |
- *          | :---------: | :---------: | :---------: | :---------: |
- *          | Integer     | Integer     | Integer     | Integer     |
- *          | Real Number | Integer     | Integer     | Integer     |
- *          | Character   | Integer     | Integer     | Integer     |
- * @param lhs left hand side of the biop
- * @param rhs right hand side of the biop
+ * @brief Evaluate the legacy percent operation on integer-converted values.
+ * @param lhs Left operand copied for evaluation.
+ * @param rhs Borrowed right operand.
+ * @return The integer quotient produced by the current implementation.
+ * @note This implementation currently divides rather than computing a remainder.
+ * @pre The integer-converted right operand is nonzero.
  */
 DeduceValue operator%(DeduceValue lhs, const DeduceValue& rhs);
 }  // namespace hzcc::ast

@@ -6,6 +6,11 @@
 #include "AST/expr/DeclRefExpr.h"
 #include "codegen/jvm/JVMGenerator.h"
 namespace Hzcc::Codegen {
+/**
+ * @brief Emit JVM assembly for a DeclRefExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status JVMGenerator::visit(Hzcc::AST::DeclRefExpr *p_expr) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

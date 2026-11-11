@@ -1,0 +1,29 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {"major": 3, "minor": 25, "patch": 0},
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {"UNIT_TESTING": "ON", "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"}
+    },
+    {"name": "default", "inherits": "base", "displayName": "Development", "cacheVariables": {"CMAKE_BUILD_TYPE": "RelWithDebInfo"}},
+    {"name": "debug", "inherits": "base", "cacheVariables": {"CMAKE_BUILD_TYPE": "Debug"}},
+    {"name": "release", "inherits": "base", "cacheVariables": {"CMAKE_BUILD_TYPE": "Release"}},
+    {"name": "e2e", "inherits": "default", "cacheVariables": {"E2E_TESTING": "ON"}}
+  ],
+  "buildPresets": [
+    {"name": "default", "configurePreset": "default"},
+    {"name": "debug", "configurePreset": "debug"},
+    {"name": "release", "configurePreset": "release"},
+    {"name": "e2e", "configurePreset": "e2e"}
+  ],
+  "testPresets": [
+    {"name": "default", "configurePreset": "default", "output": {"outputOnFailure": true}, "execution": {"noTestsAction": "error"}},
+    {"name": "debug", "configurePreset": "debug", "output": {"outputOnFailure": true}, "execution": {"noTestsAction": "error"}},
+    {"name": "release", "configurePreset": "release", "output": {"outputOnFailure": true}, "execution": {"noTestsAction": "error"}},
+    {"name": "e2e", "configurePreset": "e2e", "output": {"outputOnFailure": true}, "execution": {"noTestsAction": "error"}}
+  ]
+}

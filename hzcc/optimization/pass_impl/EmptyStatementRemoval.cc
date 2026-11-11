@@ -13,8 +13,16 @@
 #include "optimization/pass/FunctionPass.h"
 #include "utils/logging.h"
 namespace Hzcc::Pass {
+/**
+ * @brief Remove empty statements from the top-level body of a function.
+ */
 class EmptyStatementRemoval : public FunctionPass {
   public:
+    /**
+     * @brief Transform a function body and report whether the pass succeeded and changed it.
+     * @param F Owned function to inspect and modify in place.
+     * @return Pair of pass success and whether the function was modified.
+     */
     std::pair<bool, bool> RunOnFunction(
         std::unique_ptr<AST::FuncDeclStmt>& F) override {
         if (!F->HasBody()) {
@@ -42,6 +50,7 @@ class EmptyStatementRemoval : public FunctionPass {
     }
 };
 
+/** @brief Register empty-statement removal with the legacy pass manager. */
 static ::hzcc::utils::internal::Register<EmptyStatementRemoval,
                                          hzcc::Pass::PassManagerImpl>
     aRegiasdasd ("EmptyStatementRemoval",

@@ -75,10 +75,10 @@ bool SymbTbl::has_var(std::string_view name, bool current_scope) {
 void SymbTbl::add_var(Position pos,             // NOLINT
                       QualTypePtr& type,        // NOLINT
                       std::string_view name) {  // NOLINT
-    DLOG_ASSERT(type != nullptr) << " Variable " << name << " has passed a nullptr type";
-    DLOG_ASSERT(!has_type(name) || name.find("struct ") != std::string::npos)
+    DCHECK(type != nullptr) << " Variable " << name << " has passed a nullptr type";
+    DCHECK(!has_type(name) || name.find("struct ") != std::string::npos)
         << " Variable " << name << " is already defined as a type";
-    DLOG_ASSERT(!has_var(name, true))
+    DCHECK(!has_var(name, true))
         << " Variable " << name << " has already been defined";
     DVLOG(SYNTAX_LOG) << "Adding variable " << name;
     _variable_lookup_table.emplace(std::make_pair(name, std::make_pair(pos, type)));

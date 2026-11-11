@@ -10,8 +10,14 @@
 #include "utils/logging.h"
 
 namespace hzcc {
+/**
+ * @brief Broad statement categories used by AST nodes.
+ */
 enum class StmtType { DECL = 0, EMPTY, RETURN, EXPR, CTRL, DEFAULT };
 
+/**
+ * @brief Kinds of declarations represented by the AST.
+ */
 enum class DeclType {
     PARAM = 0,
     FUNC,
@@ -21,6 +27,9 @@ enum class DeclType {
     COMB_VAR,
 };
 
+/**
+ * @brief Primitive type identifiers used to index the compiler type tables.
+ */
 enum class PrimitiveType {
     kInt = 0,
     kChar,
@@ -36,6 +45,9 @@ enum class PrimitiveType {
     Unsigned,
 };
 
+/**
+ * @brief Kinds of literal values stored in expression nodes.
+ */
 enum class LiteralType {
     Char = 0,
     Integer = 1,
@@ -43,6 +55,9 @@ enum class LiteralType {
     String = 3,
 };
 
+/**
+ * @brief Comparison operators recognized by relational expressions.
+ */
 enum class RelationalType {
     LT = 0,
     EQ = 1,
@@ -52,11 +67,17 @@ enum class RelationalType {
     GE = 5,
 };
 
+/**
+ * @brief Short-circuit logical operators.
+ */
 enum class LogicalType {
     AND = 0,
     OR = 1,
 };
 
+/**
+ * @brief Bitwise and shift operators represented by binary expressions.
+ */
 enum class BitwiseType {
     AND = 0,
     OR = 1,
@@ -65,6 +86,9 @@ enum class BitwiseType {
     RSHIFT = 4,
 };
 
+/**
+ * @brief Simple and compound assignment operators.
+ */
 enum class AssignType {
     ASSIGN,
     ADD,
@@ -79,6 +103,9 @@ enum class AssignType {
     XOR,
 };
 
+/**
+ * @brief Runtime categories used to discriminate type representations.
+ */
 enum class TypeCategory {
     Numerical,
     Ptr,
@@ -91,8 +118,14 @@ enum class TypeCategory {
     kUnknown,
 };
 
+/**
+ * @brief C type qualifiers stored on qualified types.
+ */
 enum class Qualifier { CONST, VOLATILE, RESTRICT, ATOMIC };
 
+/**
+ * @brief Arithmetic operators indexed by the operator spelling table.
+ */
 enum class ArithmeticType {
     ADD = 0,
     SUB = 1,
@@ -101,6 +134,9 @@ enum class ArithmeticType {
     MOD = 4,
 };
 
+/**
+ * @brief Prefix and postfix operators represented by unary AST nodes.
+ */
 enum class UnaryType {
     ADD = 0,
     PRE_INC = 1,
@@ -153,6 +189,12 @@ constexpr const std::array<const char *, 20> kKeywordTable{
     "switch", "typedef", "union",    "while",   "_Alignas", "_Alignof"};
 }  // namespace
 
+/**
+ * @brief Map a supported internal type spelling to its primitive type identifier.
+ * @param type Internal spelling, including the legacy longlong and long_double names.
+ * @return Matching primitive identifier; an unknown spelling triggers a fatal log.
+ * @note The legacy extended names map to Signed and Unsigned in the current enum.
+ */
 ALWAYS_INLINE constexpr PrimitiveType to_primitive_type(const std::string_view type) {
     if (type == "int") {
         return PrimitiveType::kInt;
@@ -183,6 +225,11 @@ ALWAYS_INLINE constexpr PrimitiveType to_primitive_type(const std::string_view t
     }
 }
 
+/**
+ * @brief Convert a qualifier token to its AST qualifier.
+ * @param attr One of Const, Volatile, Restrict, or Atomic.
+ * @return Corresponding qualifier; a non-qualifier token triggers a fatal log.
+ */
 ALWAYS_INLINE constexpr Qualifier to_attr(TokenType attr) {
     switch (attr) {
         case TokenType::Const:
@@ -199,14 +246,29 @@ ALWAYS_INLINE constexpr Qualifier to_attr(TokenType attr) {
     }
 }
 
+/**
+ * @brief Look up the display spelling for a qualifier.
+ * @param attr Valid Qualifier enumerator indexing the associated table.
+ * @return Reference to the static, null-terminated spelling.
+ */
 ALWAYS_INLINE constexpr auto to_string(Qualifier attr) -> const char (&)[10] {
     return kQualifierTable[magic_enum::enum_integer(attr)];
 }
 
+/**
+ * @brief Look up the display spelling for a primitive type.
+ * @param attr Valid PrimitiveType enumerator indexing the associated table.
+ * @return Reference to the static, null-terminated spelling.
+ */
 ALWAYS_INLINE constexpr auto to_string(PrimitiveType attr) -> const char (&)[15] {
     return kPrimitiveTypeTable[magic_enum::enum_integer(attr)];
 }
 
+/**
+ * @brief Look up the display spelling for a arithmetic operator.
+ * @param attr Valid ArithmeticType enumerator indexing the associated table.
+ * @return Reference to the static, null-terminated spelling.
+ */
 ALWAYS_INLINE constexpr auto to_string(ArithmeticType attr) -> const char (&)[2] {
     return kArithmeticStr[magic_enum::enum_integer(attr)];
 }

@@ -20,6 +20,11 @@ constexpr static const std::array<OpHint, OpHint::kOpHint_ENUM_SIZE>
                              kOpHint_Logical_Less,
                              kOpHint_Logical_NEqual};
 
+/**
+ * @brief Emit JVM assembly for a UnaryExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status JVMGenerator::visit(Hzcc::AST::UnaryExpr *p_expr) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

@@ -29,7 +29,14 @@ enum class StatusCode : int;
 
 namespace status_internal {
 // Reference-counted representation of Status data.
+/** @brief Shared heap storage for a status code, owned message, and optional payload.
+ */
 struct StatusRep {
+    /** @brief Create a reference-counted error representation with one owner.
+     * @param code_arg Status code represented by this allocation.
+     * @param message_arg Diagnostic text copied into owned storage.
+     * @param payloads_arg Optional payload whose ownership is transferred here.
+     */
     StatusRep(
         hzcc::StatusCode code_arg,                                // NOLINT
         std::string_view message_arg,                             // NOLINT
@@ -45,12 +52,21 @@ struct StatusRep {
     std::unique_ptr<absl::Cord> payload;
 };
 
+/** @brief Normalize an integer to a status code recognized by this build.
+ * @param value Stored numeric status code.
+ * @return The matching enum, or kUnknown for an unrecognized code.
+ */
 hzcc::StatusCode MapToLocalCode(int value);
 
 // Returns a pointer to a newly-allocated string with the given `prefix`,
 // suitable for output as an error message in assertion/`CHECK()` failures.
 //
 // This is an internal implementation detail for Abseil logging.
+/** @brief Allocate a formatted failure message for status-check diagnostics.
+ * @param status Non-null status included in the message.
+ * @param prefix Text preceding the formatted status.
+ * @return Newly allocated string; ownership transfers to the caller.
+ */
 std::string* MakeCheckFailString(const hzcc::Status* status,
                                  const char* prefix);
 

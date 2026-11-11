@@ -10,6 +10,11 @@ namespace Hzcc::Codegen {
 constexpr static std::array<const char*, AST::kArithmeticType_ENUM_SIZE>
     ArithmeticASM = {"add", "sub", "mul", "div", "rem"};
 
+/**
+ * @brief Emit JVM assembly for a ArithmeticExpr node in the legacy backend.
+ * @param p_expr Non-null borrowed AST node; ownership remains with the compilation unit.
+ * @return OK on success, or the first backend/pass error.
+ */
 Status JVMGenerator::visit(Hzcc::AST::ArithmeticExpr* p_expr) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###

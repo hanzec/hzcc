@@ -2,7 +2,7 @@
 #define HZCC_AST_TYPE_TYPE_H
 #include <bitset>
 #include <list>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 #include <memory>
 
 #include "enums.h"
@@ -11,13 +11,15 @@ class Expr;
 class QualType;
 
 /**
- * @class type
  * @brief This class is the base class of all language types.
  */
 class Type : public std::enable_shared_from_this<Type> {
   public:
     using TypePtr = std::shared_ptr<Type>;
 
+    /**
+     * @brief Destroy a concrete language type through the Type interface.
+     */
     virtual ~Type() = default;
 
     /**
@@ -28,6 +30,11 @@ class Type : public std::enable_shared_from_this<Type> {
         return reinterpret_cast<uintptr_t>(this);
     };
 
+    /**
+     * @brief Test the stored type category.
+     * @tparam type Category to compare with this type.
+     * @return true when the categories match.
+     */
     template <TypeCategory type>
     [[nodiscard]] constexpr bool is() const {
         return _typeCategory == type;
@@ -50,10 +57,20 @@ class Type : public std::enable_shared_from_this<Type> {
     [[nodiscard]] virtual std::string to_str() const = 0;
 
     // overload operator ==
+    /**
+     * @brief Compare the language types using the derived equality rule.
+     * @param rhs Type to compare with this object.
+     * @return true when is_same accepts the other type.
+     */
     [[nodiscard]] bool operator==(const Type& rhs) const {
         return is_same(rhs);
     }
 
+    /**
+     * @brief Compare the language types for inequality.
+     * @param rhs Type to compare with this object.
+     * @return The negation of the derived equality rule.
+     */
     [[nodiscard]] bool operator!=(const Type& rhs) const {
         return !is_same(rhs);
     }
@@ -62,10 +79,8 @@ class Type : public std::enable_shared_from_this<Type> {
     friend class QualType;
 
     /**
-     * @brief Constructor of type. The abstract class should never be
-     * initialized directly.
-     * @param base_type The base type of the type.
-     * @param attrs The attributes of the type.
+     * @brief Initialize the category common to all derived language types.
+     * @param typeCategory Category used by is<TypeCategory>().
      */
     explicit Type(TypeCategory typeCategory) : _typeCategory(typeCategory){};
 
@@ -81,6 +96,9 @@ class Type : public std::enable_shared_from_this<Type> {
 
 using TypePtr = std::shared_ptr<Type>;
 
+/**
+ * @brief Share an underlying language type and attach an independent qualifier set.
+ */
 class QualType : public std::enable_shared_from_this<QualType> {
   public:
     /**
@@ -98,8 +116,9 @@ class QualType : public std::enable_shared_from_this<QualType> {
     }
 
     /**
-     * @brief Get QualType with same base type but different qualifiers.
-     * @return TypePtr The base type of the qualifier type.
+     * @brief Create a new qualifier wrapper sharing the same underlying type.
+     * @param attrs Complete qualifier set for the new wrapper.
+     * @return Shared ownership of a newly allocated qualified-type wrapper.
      */
     std::shared_ptr<QualType> type_of(const std::vector<Qualifier>& attrs) const {
         auto ret = std::make_shared<QualType>(_base_type);
@@ -109,11 +128,22 @@ class QualType : public std::enable_shared_from_this<QualType> {
         return ret;
     }
 
+    /**
+     * @brief Test the category of the underlying language type.
+     * @tparam type Category to inspect.
+     * @return true when the wrapped type has that category.
+     */
     template <TypeCategory type>
     [[nodiscard]] constexpr bool is() const {
         return _base_type->is<type>();
     }
 
+    /**
+     * @brief Share the underlying type through a more specific static type.
+     * @tparam T Derived Type class expected by the caller.
+     * @return A shared pointer referring to the same underlying object.
+     * @pre The underlying object really is a T; this performs no dynamic check.
+     */
     template <typename T,                                // NOLINT
               std::enable_if_t<                          // NOLINT
                   std::is_base_of_v<Type, T>, int> = 0>  // NOLINT
@@ -123,8 +153,6 @@ class QualType : public std::enable_shared_from_this<QualType> {
 
     /**
      * @brief Get the declare to_str of the type.
-     * @param without_attr If true, the attribute will not be included in the
-     * to_str.
      * @return std::string The declare to_str of the type.
      */
     [[nodiscard]] std::string to_str() const {
@@ -146,20 +174,33 @@ class QualType : public std::enable_shared_from_this<QualType> {
     }
 
     /**
-     * @brief Check if the type is a constant value.
-     * @return
+     * @brief Check whether this type carries a particular qualifier.
+     * @tparam type Qualifier to inspect, such as CONST or VOLATILE.
+     * @return true when the qualifier's bit is set, false otherwise.
      */
     template <Qualifier type>
     [[nodiscard]] bool is() const {
         return _qualifier[magic_enum::enum_integer(type)];
     }
 
-    // overload operator ==
+    // Compare underlying types only; qualifier bits are excluded.
+    // This overload compares QualType objects, not shared_ptr identity.
+    /**
+     * @brief Compare underlying language types while ignoring qualifiers.
+     * @param rhs Qualified type whose base is compared with this base.
+     * @return true when the underlying types compare equal.
+     * @note Comparing QualTypePtr objects instead compares pointer identity.
+     */
     bool operator==(const QualType& rhs) const {
         return _base_type->is_same(*rhs._base_type);
     }
 
     // overload operator !=
+    /**
+     * @brief Compare underlying types while ignoring qualifiers.
+     * @param rhs Qualified type to compare.
+     * @return The negation of base-type equality.
+     */
     bool operator!=(const QualType& rhs) const { return !(*this == rhs); }
 
   private:
@@ -170,17 +211,19 @@ class QualType : public std::enable_shared_from_this<QualType> {
 using QualTypePtr = std::shared_ptr<QualType>;
 
 /**
- * @brief The BuiltinType class
+ * @brief Represent a primitive type by its current numerical-type identifier.
  * @details This class is used for primitive types like 'int'.
  */
 class NumericalType : public Type {
   public:
+    /**
+     * @brief Represent one primitive type ID in the numerical category.
+     * @param type Primitive ID used for spelling and equality.
+     */
     explicit NumericalType(PrimitiveType type);
 
     /**
      * @brief Get the declare to_str of the type.
-     * @param without_attr If true, the attribute will not be included in the
-     * to_str.
      * @return std::string The declare to_str of the type.
      */
     [[nodiscard]] std::string to_str() const override;
@@ -203,27 +246,55 @@ class NumericalType : public Type {
     const PrimitiveType _type;
 };
 
+/**
+ * @brief Represent an array with an owned bound expression and a shared element type.
+ */
 class ArrayType : public Type {
   public:
+    /**
+     * @brief Construct an array type and retain its bound expression.
+     * @param array_size Non-null bound expression whose ownership is transferred.
+     * @param base_type Shared qualified element type.
+     */
     ArrayType(std::unique_ptr<Expr> array_size,
               std::shared_ptr<QualType> base_type);  // NOLINT
 
+    /**
+     * @brief Return the array element type.
+     * @return Shared ownership of the stored qualified element type.
+     */
     [[nodiscard]] std::shared_ptr<QualType> GetBaseType() const {
         return _base_type;
     }
 
+    /**
+     * @brief Check whether the bound expression has a compile-time value.
+     * @return true when the size expression yields a deduced value.
+     */
     [[nodiscard]] bool HasDeduceSize();
 
+    /**
+     * @brief Read the bound as an integer when it is deducible.
+     * @return The deduced bound converted to uint64_t, or zero if it is unknown.
+     */
     [[nodiscard]] uint64_t GetSize() const;
 
+    /**
+     * @brief Expose the bound expression without transferring ownership.
+     * @return Const reference to the owned bound-expression pointer.
+     */
     [[nodiscard]] const std::unique_ptr<ast::Expr>& GetArraySizeNode() const;
 
+    /**
+     * @brief Compare array types by their shared element-type identity.
+     * @param type Type to compare against this array.
+     * @return true for an array with the identical element QualType pointer.
+     * @note Array bounds are not part of this implementation's comparison.
+     */
     [[nodiscard]] bool is_same(const Type& type) const override;
 
     /**
      * @brief Get the declare to_str of the type.
-     * @param without_attr If true, the attribute will not be included in the
-     * to_str.
      * @return std::string The declare to_str of the type.
      */
     [[nodiscard]] std::string to_str() const override;
@@ -233,13 +304,15 @@ class ArrayType : public Type {
     const std::shared_ptr<QualType> _base_type;
 };
 
+/**
+ * @brief Represent a pointer to a shared qualified pointee type.
+ */
 class PointerType : public Type {
   public:
     /**
      * @brief Construct a new PointerType object.
      *
      * @param base_type The base type of the pointer.
-     * @param attrs The attributes of the pointer.
      */
     explicit PointerType(QualTypePtr base_type);
 
@@ -266,12 +339,14 @@ class PointerType : public Type {
     QualTypePtr _base_type;
 };
 
+/**
+ * @brief Provide a common field-registration interface for record types.
+ */
 class IRecordType : public Type {
   public:
     /**
      * @brief Construct a new IRecordType object.
      * @param typeCategory The category of the type.
-     * @param attr_list The attributes of the type.
      */
     explicit IRecordType(TypeCategory typeCategory) : Type(typeCategory) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
@@ -290,21 +365,36 @@ class IRecordType : public Type {
     virtual void add_record(std::string_view name, const QualTypePtr& type) = 0;
 };
 
+/**
+ * @brief Store a structure tag and its ordered field names and shared types.
+ */
 class StructType : public IRecordType {
   public:
+    /**
+     * @brief Create a structure type with a copied tag name.
+     * @param name Structure tag without the struct keyword.
+     */
     explicit StructType(std::string_view name);  // NOLINT
 
     /**
      * @brief Get the declare to_str of the type.
-     * @param without_attr If true, the attribute will not be included in the
-     * to_str.
      * @return std::string The declare to_str of the type.
      */
     [[nodiscard]] std::string to_str() const override;
 
+    /**
+     * @brief Append a named field to the structure.
+     * @param name Field identifier copied into the record list.
+     * @param type Qualified field type retained through shared ownership.
+     */
     void add_record(std::string_view name,              // NOLINT
                     const QualTypePtr& type) override;  // NOLINT
 
+    /**
+     * @brief Find the type of the first field matching an identifier.
+     * @param name Field identifier to find.
+     * @return Shared field type, or nullptr when no matching field exists.
+     */
     QualTypePtr field_type(std::string_view name);
 
     /**
@@ -321,8 +411,17 @@ class StructType : public IRecordType {
 
 using StructTypePtr = std::shared_ptr<StructType>;
 
+/**
+ * @brief Retain a function-pointer signature for the unfinished function-type path.
+ * @note Type comparison and spelling remain abstract in this class.
+ */
 class FuncPtrType : public Type {
   public:
+    /**
+     * @brief Retain shared return and argument types for a function signature.
+     * @param return_type Shared function return type copied into this object.
+     * @param args Ordered shared argument types moved into this object.
+     */
     FuncPtrType(std::shared_ptr<Type>& return_type,
                 std::list<std::shared_ptr<Type>> args)
         : Type({}), _args(std::move(args)), _return_type(return_type) {}
@@ -334,6 +433,12 @@ class FuncPtrType : public Type {
 
 using QualTypePtr = std::shared_ptr<QualType>;
 
+/**
+ * @brief Format a nonempty list of types as a parenthesized comma-separated list.
+ * @param types Shared types to format; each pointer must be non-null.
+ * @return The constructed type-list spelling.
+ * @pre types is nonempty.
+ */
 static std::string ToString(const std::list<Type::TypePtr>& types) {
     std::string ret = "(";
     for (const auto& type : types) {
@@ -342,6 +447,11 @@ static std::string ToString(const std::list<Type::TypePtr>& types) {
     return ret.replace(ret.size() - 1, 1, ")");
 }
 
+/**
+ * @brief Return the cached unqualified type for a primitive ID.
+ * @tparam type Primitive ID whose shared wrapper is cached.
+ * @return Shared ownership of the cached numerical type wrapper.
+ */
 template <PrimitiveType type>
 static QualTypePtr GetNumericalTypeOf() {
     const static QualTypePtr char_type =
@@ -349,6 +459,11 @@ static QualTypePtr GetNumericalTypeOf() {
     return char_type;
 }
 
+/**
+ * @brief Resolve a type-specifier token to its cached numerical type.
+ * @tparam type Token in the type-specifier range.
+ * @return Shared ownership of the corresponding primitive wrapper.
+ */
 template <TokenType type>
 static QualTypePtr GetNumericalTypeOf() {
     static_assert(
@@ -359,6 +474,11 @@ static QualTypePtr GetNumericalTypeOf() {
         magic_enum::enum_integer(TokenType::TypeSpec_START))>();
 }
 
+/**
+ * @brief Dispatch a runtime primitive ID to its cached type wrapper.
+ * @param type Valid primitive ID to resolve.
+ * @return Shared ownership of the corresponding numerical type.
+ */
 ALWAYS_INLINE QualTypePtr GetNumericalTypeOf(PrimitiveType type) {
     switch (type) {
         case PrimitiveType::kInt:
@@ -388,6 +508,12 @@ ALWAYS_INLINE QualTypePtr GetNumericalTypeOf(PrimitiveType type) {
     }
 }
 
+/**
+ * @brief Convert a type-specifier token to a cached numerical type.
+ * @param type Token in the primitive type-specifier range.
+ * @return Shared numerical type; invalid tokens fall back to void without runtime checks.
+ * @pre With runtime checks enabled, the token must map to a primitive ID.
+ */
 ALWAYS_INLINE QualTypePtr GetNumericalTypeOf(TokenType type) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
     auto type_cast = magic_enum::enum_cast<PrimitiveType>(
@@ -397,7 +523,7 @@ ALWAYS_INLINE QualTypePtr GetNumericalTypeOf(TokenType type) {
     LOG_IF(FATAL, !type_cast.has_value())
         << "The type must be a numerical type.";
     return GetNumericalTypeOf(type_cast.value());
-#elif
+#else
     return GetNumericalTypeOf(
         magic_enum::enum_cast<PrimitiveType>(
             magic_enum::enum_integer(type) -
@@ -406,6 +532,13 @@ ALWAYS_INLINE QualTypePtr GetNumericalTypeOf(TokenType type) {
 #endif
 }
 
+/**
+ * @brief Test whether a type is the cached wrapper for a primitive ID.
+ * @tparam T Primitive ID whose cached wrapper is compared.
+ * @param type Qualified type pointer to inspect.
+ * @return true for pointer identity with GetNumericalTypeOf<T>().
+ * @note A separately allocated but structurally equal type does not match.
+ */
 template <PrimitiveType T>
 static bool IsTypeOf(const QualTypePtr& type) {
     return type == GetNumericalTypeOf<T>();

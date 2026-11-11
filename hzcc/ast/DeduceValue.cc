@@ -53,12 +53,12 @@ DeduceValue::DeduceValue(DeduceValueType type, std::string str_value)
             std::memcpy(_raw_value.data(), &double_val, sizeof(double_val));
         } break;
         default:
-            DLOG_ASSERT(false) << "unknown type";
+            DCHECK(false) << "unknown type";
     }
 }
 
 char DeduceValue::as_char() const {
-    DLOG_ASSERT(_type == kDeduceValueType_Char) << "type is not char";
+    DCHECK(_type == kDeduceValueType_Char) << "type is not char";
     char ret;
     std::memcpy(&ret, &_raw_value.front(), sizeof(char));
     return ret;

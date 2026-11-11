@@ -1,163 +1,73 @@
-//
-// Created by chen_ on 2022/2/3.
-//
 #include <gtest/gtest.h>
 
-#define private public  // hack compiler allow asserting private member
-#define protected public
+#include <memory>
+#include <string>
+
 #include "parser/common/Token.h"
-#undef private
-#undef protected
 
 namespace hzcc::parser_common {
-TEST(PARSER_COMMON_TOKEN, construct_one_with_string_test) {  // NOLINT
-    EXPECT_EQ(Token::_const_value_storage.size(),
-              0);  // const vale pool should be empty
 
-    auto* new_token = new Token("test", kIdentity, 0, 0);
+/** @test A token owns its spelling independently of the source string lifetime. */
+TEST(PARSER_COMMON_TOKEN, construct_one_with_string_test) {
+    std::string source = "test";
+    Token token(TokenType::kIdentity, source, 1, 0);
+    source.assign("changed");
 
-    // const vale pool should have one element
-    EXPECT_EQ(Token::_const_value_storage.size(), 1);
-    EXPECT_EQ(Token::_const_value_storage.begin()->second, 1);
-    EXPECT_EQ(Token::_const_value_storage.begin()->first, "test");
-
-    // token should be constructed
-    EXPECT_EQ(new_token->to_str(), "test");
-    EXPECT_EQ(new_token->type(), kIdentity);
-    EXPECT_EQ(new_token->loc(), std::make_pair(0, 0));
-
-    delete new_token;
-    // const vale pool should be empty when object is deleted
-    EXPECT_EQ(Token::_const_value_storage.size(), 0);
+    EXPECT_EQ(token.to_str(), "test");
+    EXPECT_EQ(token.type(), TokenType::kIdentity);
+    EXPECT_EQ(token.loc(), (Position{1, 0}));
 }
 
-TEST(PARSER_COMMON_TOKEN, construct_one_without_string_test) {  // NOLINT
-    EXPECT_EQ(Token::_const_value_storage.size(),
-              0);  // const vale pool should be empty
-
-    auto* new_token = new Token(kAdd, 0, 0);
-
-    // const vale pool should have no element
-    EXPECT_EQ(Token::_const_value_storage.size(), 0);
-
-    // token should be constructed
-    EXPECT_EQ(new_token->to_str(), "+");
-    EXPECT_EQ(new_token->type(), kAdd);
-    EXPECT_EQ(new_token->loc(), std::make_pair(0, 0));
-
-    delete new_token;
-    // const vale pool should be empty when object is deleted
-    EXPECT_EQ(Token::_const_value_storage.size(), 0);
+/** @test A punctuation token derives its spelling from its category. */
+TEST(PARSER_COMMON_TOKEN, construct_one_without_string_test) {
+    Token token(TokenType::Add, 1, 3);
+    EXPECT_EQ(token.to_str(), "+");
+    EXPECT_EQ(token.type(), TokenType::Add);
+    EXPECT_EQ(token.loc(), (Position{1, 3}));
 }
 
-TEST(PARSER_COMMON_TOKEN, construct_two_with_same_string_test) {  // NOLINT
-    EXPECT_EQ(Token::_const_value_storage.size(),
-              0);  // const vale pool should be empty
-
-    auto* new_token_0 = new Token("test", kIdentity, 0, 0);
-
-    // const vale pool should have one element after first construction
-    EXPECT_EQ(Token::_const_value_storage.size(), 1);
-    EXPECT_EQ(Token::_const_value_storage.begin()->second, 1);
-    EXPECT_EQ(Token::_const_value_storage.begin()->first, "test");
-
-    // token should be constructed
-    EXPECT_EQ(new_token_0->to_str(), "test");
-    EXPECT_EQ(new_token_0->type(), kIdentity);
-    EXPECT_EQ(new_token_0->loc(), std::make_pair(0, 0));
-
-    auto* new_token_1 = new Token("test", kIdentity, 0, 1);
-
-    // const vale pool should have one element after second construction
-    EXPECT_EQ(Token::_const_value_storage.size(), 1);
-    EXPECT_EQ(Token::_const_value_storage.begin()->second, 2);
-    EXPECT_EQ(Token::_const_value_storage.begin()->first, "test");
-
-    // token should be constructed
-    EXPECT_EQ(new_token_1->to_str(), "test");
-    EXPECT_EQ(new_token_1->type(), kIdentity);
-    EXPECT_EQ(new_token_1->loc(), std::make_pair(0, 1));
-
-    delete new_token_0;
-
-    // ref count should decrease by 1
-    EXPECT_EQ(Token::_const_value_storage.size(), 1);
-    EXPECT_EQ(Token::_const_value_storage.begin()->second, 1);
-    EXPECT_EQ(Token::_const_value_storage.begin()->first, "test");
-
-    // new token should be still available now
-    EXPECT_EQ(new_token_1->to_str(), "test");
-
-    delete new_token_1;
-
-    // const vale pool should be empty when all object is deleted
-    EXPECT_EQ(Token::_const_value_storage.size(), 0);
+/** @test Equal spellings survive destruction of another token that shares them. */
+TEST(PARSER_COMMON_TOKEN, construct_two_with_same_string_test) {
+    auto first = std::make_unique<Token>(TokenType::kIdentity, "test", 1, 0);
+    Token second(TokenType::kIdentity, "test", 1, 1);
+    EXPECT_EQ(first->to_str(), second.to_str());
+    EXPECT_EQ(second.type(), TokenType::kIdentity);
+    EXPECT_EQ(second.loc(), (Position{1, 1}));
+    first.reset();
+    EXPECT_EQ(second.to_str(), "test");
 }
 
-TEST(PARSER_COMMON_TOKEN, construct_three_string_test) {  // NOLINT
-    EXPECT_EQ(Token::_const_value_storage.size(),
-              0);  // const vale pool should be empty
+/** @test Different interned spellings remain distinct across copies and destruction. */
+TEST(PARSER_COMMON_TOKEN, construct_three_string_test) {
+    auto first = std::make_unique<Token>(TokenType::kIdentity, "test", 1, 0);
+    Token other(TokenType::kIdentity, "test_other", 1, 1);
+    Token copy = *first;
+    first.reset();
 
-    auto* new_token_0 = new Token("test", kIdentity, 0, 0);
-
-    // const vale pool should have one element after first construction
-    EXPECT_EQ(Token::_const_value_storage.size(), 1);
-    EXPECT_EQ(Token::_const_value_storage.begin()->second, 1);
-    EXPECT_EQ(Token::_const_value_storage.begin()->first, "test");
-
-    // token should be constructed
-    EXPECT_EQ(new_token_0->to_str(), "test");
-    EXPECT_EQ(new_token_0->type(), kIdentity);
-    EXPECT_EQ(new_token_0->loc(), std::make_pair(0, 0));
-
-    auto* new_token_1 = new Token("test_other", kIdentity, 0, 1);
-
-    // const vale pool should have one element after second construction
-    EXPECT_EQ(Token::_const_value_storage.size(), 2);
-    EXPECT_EQ(Token::_const_value_storage["test"], 1);
-    EXPECT_EQ(Token::_const_value_storage["test_other"], 1);
-
-    // token should be constructed
-    EXPECT_EQ(new_token_1->to_str(), "test_other");
-    EXPECT_EQ(new_token_1->type(), kIdentity);
-    EXPECT_EQ(new_token_1->loc(), std::make_pair(0, 1));
-
-    auto* new_token_2 = new Token("test", kIdentity, 0, 1);
-
-    // const vale pool should have one element after second construction
-    EXPECT_EQ(Token::_const_value_storage.size(), 2);
-    EXPECT_EQ(Token::_const_value_storage["test"], 2);
-    EXPECT_EQ(Token::_const_value_storage["test_other"], 1);
-
-    // token should be constructed
-    EXPECT_EQ(new_token_2->to_str(), "test");
-    EXPECT_EQ(new_token_2->type(), kIdentity);
-    EXPECT_EQ(new_token_2->loc(), std::make_pair(0, 1));
-
-    delete new_token_0;
-
-    // ref count should decrease by 1
-    EXPECT_EQ(Token::_const_value_storage.size(), 2);
-    EXPECT_EQ(Token::_const_value_storage["test"], 1);
-    EXPECT_EQ(Token::_const_value_storage["test_other"], 1);
-
-    // new token should be still available now
-    EXPECT_EQ(new_token_1->to_str(), "test_other");
-    EXPECT_EQ(new_token_2->to_str(), "test");
-
-    delete new_token_2;
-
-    // ref count should decrease by 1
-    EXPECT_EQ(Token::_const_value_storage.size(), 1);
-    EXPECT_EQ(Token::_const_value_storage["test_other"], 1);
-
-    // new token should be still available now
-    EXPECT_EQ(new_token_1->to_str(), "test_other");
-
-    delete new_token_1;
-
-    // const vale pool should be empty when all object is deleted
-    EXPECT_EQ(Token::_const_value_storage.size(), 0);
+    EXPECT_EQ(copy.to_str(), "test");
+    EXPECT_EQ(copy.type(), TokenType::kIdentity);
+    EXPECT_EQ(copy.loc(), (Position{1, 0}));
+    EXPECT_EQ(other.to_str(), "test_other");
+    EXPECT_EQ(other.loc(), (Position{1, 1}));
 }
 
-}  // namespace hzcc::lexical
+/** @test Changing a token category preserves its location and stored spelling. */
+TEST(PARSER_COMMON_TOKEN, change_category) {
+    Token token(TokenType::kIdentity, "example", 2, 5);
+    token.Type(TokenType::Str_Lit);
+    EXPECT_EQ(token.type(), TokenType::Str_Lit);
+    EXPECT_EQ(token.loc(), (Position{2, 5}));
+    EXPECT_EQ(token.to_str(), "example");
+    EXPECT_EQ(token.to_str(true), "\"example\"");
+}
+
+/** @test Equality compares category and location rather than token spelling. */
+TEST(PARSER_COMMON_TOKEN, equality) {
+    Token first(TokenType::kIdentity, "first", 2, 0);
+    Token same_position(TokenType::kIdentity, "second", 2, 0);
+    Token next_column(TokenType::kIdentity, "first", 2, 1);
+    EXPECT_TRUE(first == same_position);
+    EXPECT_FALSE(first == next_column);
+}
+
+}  // namespace hzcc::parser_common

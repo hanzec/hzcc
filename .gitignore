@@ -17,3 +17,8 @@ venv/
 
 #clangd
 .cache/
+
+# Local CMake presets and vcpkg artifacts
+CMakeUserPresets.json
+vcpkg_installed/
+compile_commands.json
