@@ -12,6 +12,10 @@
     "magic-enum",
     "re2",
     {
+      "name": "liblzma",
+      "platform": "linux"
+    },
+    {
       "name": "glog",
       "platform": "linux",
       "features": ["unwind"]
