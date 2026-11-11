@@ -24,7 +24,7 @@
     "reason": "Diagnostics concern compiler builtin expressions in #if directives (__has_include and __has_cpp_attribute). This header defines attribute macros and a Position alias, with no class definitions or callable declarations."
   },
   "hzcc/parser/lexical/LexicalParser.cc": {
-    "sha256": "3b82787d2d9abd365448dea01b9c2b78b0fd11d89739c4e8bae9081796a73749",
+    "sha256": "d8228392baf7a5ffc9e7db10a9e49fa2ade244c6be1ea0deeb6f8c938544b39d",
     "reason": "LIMIT_REGEX_CHECK accepts a statement block and has no terminating source semicolon, which breaks raw grammar recovery. Its definition and five call arguments were inspected: they contain expressions, local variables and control flow, not class/method declarations. All lexer handler functions and AnalyzeCtx_t are inventoried and documented."
   },
   "hzcc/parser/syntax/common_utils.h": {
