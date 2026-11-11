@@ -31,9 +31,10 @@ apt-get install --yes --no-install-recommends \
 export CCACHE_DIR="${CCACHE_DIR:-$GITHUB_WORKSPACE/.cache/ccache}"
 export CCACHE_BASEDIR="${CCACHE_BASEDIR:-$GITHUB_WORKSPACE}"
 export CCACHE_COMPILERCHECK=content
-export CCACHE_MAXSIZE="${CCACHE_MAXSIZE:-512M}"
+export CCACHE_MAXSIZE="${CCACHE_MAXSIZE:-100MB}"
 mkdir -p "$CCACHE_DIR"
 ccache --version
+ccache --cleanup
 ccache --zero-stats
 
 cmake_prefix=/opt/hzcc-cmake-4.4.5
