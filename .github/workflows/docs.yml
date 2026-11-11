@@ -25,7 +25,6 @@ defaults:
 env:
   CMAKE_BUILD_PARALLEL_LEVEL: '2'
   VCPKG_MAX_CONCURRENCY: '2'
-  VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/.cache/vcpkg,readwrite
   CCACHE_DIR: ${{ github.workspace }}/.cache/ccache
   CCACHE_BASEDIR: ${{ github.workspace }}
   CCACHE_COMPILERCHECK: content

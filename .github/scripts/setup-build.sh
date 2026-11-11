@@ -109,7 +109,10 @@ if [[ "${HZCC_CI_COVERAGE:-false}" == true ]]; then
 fi
 printf 'HZCC_PYTHON=%s\n' "$python" >> "$GITHUB_ENV"
 printf '%s\n' "$RUNNER_TEMP/hzcc-python/bin" >> "$GITHUB_PATH"
-mkdir -p "$GITHUB_WORKSPACE/.cache/vcpkg"
+# The composite vcpkg setting needs the workspace path inside the job container.
+vcpkg_cache_dir="$GITHUB_WORKSPACE/.cache/vcpkg"
+mkdir -p "$vcpkg_cache_dir"
+printf 'VCPKG_BINARY_SOURCES=clear;files,%s,readwrite\n' "$vcpkg_cache_dir" >> "$GITHUB_ENV"
 
 if [[ "${HZCC_CI_DOCUMENTATION:-false}" == true ]]; then
     apt-get install --yes --no-install-recommends \
