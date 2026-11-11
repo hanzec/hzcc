@@ -9,9 +9,6 @@ list(REMOVE_DUPLICATES VCPKG_OVERLAY_TRIPLETS)
 if(UNIT_TESTING)
     list(APPEND VCPKG_MANIFEST_FEATURES tests)
 endif()
-if(ENABLE_ANTLR)
-    list(APPEND VCPKG_MANIFEST_FEATURES antlr)
-endif()
 list(REMOVE_DUPLICATES VCPKG_MANIFEST_FEATURES)
 
 # An explicit toolchain takes precedence, e.g. an existing vcpkg installation.

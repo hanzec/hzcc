@@ -12,6 +12,10 @@
     "magic-enum",
     "re2",
     {
+      "name": "liblzma",
+      "platform": "linux"
+    },
+    {
       "name": "glog",
       "platform": "linux",
       "features": ["unwind"]
@@ -21,10 +25,6 @@
     "tests": {
       "description": "Build the GoogleTest unit test suite",
       "dependencies": ["gtest"]
-    },
-    "antlr": {
-      "description": "Build the experimental ANTLR frontend",
-      "dependencies": ["antlr4"]
     }
   }
 }

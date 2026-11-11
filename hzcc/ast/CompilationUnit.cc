@@ -244,9 +244,8 @@ void CompilationUnit::addDecl(std::unique_ptr<IDeclStmt> node) {
             // otherwise we just add the function to the global scope
             else {
                 // add function to global scope
-                _func_tbl.emplace(node->name(),
-                                  std::make_unique<FuncDeclStmt>(std::move(
-                                      *static_cast<FuncDeclStmt *>(node.release()))));
+                auto function = FuncDeclStmtPtr(static_cast<FuncDeclStmt *>(node.release()));
+                _func_tbl.emplace(function->name(), std::move(function));
             }
         } break;
     }

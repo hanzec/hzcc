@@ -1,7 +1,7 @@
 # This repository's FileCheck wrapper embeds effcee and is used by the lit suites.
 set(GFLAGS_USE_TARGET_NAMESPACE ON)
 find_package(gflags CONFIG REQUIRED)
-find_package(glog CONFIG REQUIRED)
+include(GlogDependencies)
 find_package(re2 CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
