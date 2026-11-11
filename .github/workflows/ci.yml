@@ -60,6 +60,7 @@ jobs:
           key: linux-x64-ccache-v1-${{ matrix.compiler }}-${{ matrix.preset }}-${{ hashFiles('.github/scripts/setup-build.sh') }}-${{ github.run_id }}-${{ github.run_attempt }}-core
           restore-keys: |
             linux-x64-ccache-v1-${{ matrix.compiler }}-${{ matrix.preset }}-${{ hashFiles('.github/scripts/setup-build.sh') }}-
+            linux-x64-ccache-v1-${{ matrix.compiler }}-${{ matrix.preset }}-
       - name: Set up the stable toolchain
         uses: ./.github/actions/setup-build
         with:
@@ -70,6 +71,7 @@ jobs:
         with:
           path: .cache/vcpkg
           key: linux-x64-vcpkg-${{ matrix.compiler }}-tests-on-${{ hashFiles('vcpkg.json', 'cmake/Dependencies.cmake', 'cmake/triplets/**', '.github/scripts/setup-build.sh', '.github/workflows/**') }}
+          restore-keys: linux-x64-vcpkg-${{ matrix.compiler }}-tests-on-
       - name: Configure
         env:
           HZCC_PRESET: ${{ matrix.preset }}
@@ -81,11 +83,12 @@ jobs:
             -DCMAKE_C_COMPILER="$CC" \
             -DCMAKE_CXX_COMPILER="$CXX" -DPython3_EXECUTABLE="$HZCC_PYTHON" \
             -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_SCAN_FOR_MODULES=OFF \
             2>&1 | tee "build/$HZCC_PRESET/configure.log"
       - name: Build
         env:
           HZCC_PRESET: ${{ matrix.preset }}
-        run: cmake --build --preset "$HZCC_PRESET" 2>&1 | tee "build/$HZCC_PRESET/build.log"
+        run: cmake --build --preset "$HZCC_PRESET" --verbose 2>&1 | tee "build/$HZCC_PRESET/build.log"
       - name: Unit tests
         env:
           HZCC_PRESET: ${{ matrix.preset }}
@@ -157,6 +160,7 @@ jobs:
           key: linux-x64-ccache-v1-gcc-release-${{ hashFiles('.github/scripts/setup-build.sh') }}-${{ github.run_id }}-${{ github.run_attempt }}-syntax
           restore-keys: |
             linux-x64-ccache-v1-gcc-release-${{ hashFiles('.github/scripts/setup-build.sh') }}-
+            linux-x64-ccache-v1-gcc-release-
       - name: Set up the stable toolchain
         uses: ./.github/actions/setup-build
         with:
@@ -166,6 +170,7 @@ jobs:
         with:
           path: .cache/vcpkg
           key: linux-x64-vcpkg-gcc-tests-off-${{ hashFiles('vcpkg.json', 'cmake/Dependencies.cmake', 'cmake/triplets/**', '.github/scripts/setup-build.sh', '.github/workflows/**') }}
+          restore-keys: linux-x64-vcpkg-gcc-tests-off-
       - name: Configure and build the syntax test tools
         run: |
           mkdir -p build/release
@@ -173,8 +178,9 @@ jobs:
             -DGENERATE_DOCUMENTATION=OFF -DCMAKE_C_COMPILER="$CC" \
             -DCMAKE_CXX_COMPILER="$CXX" -DPython3_EXECUTABLE="$HZCC_PYTHON" \
             -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_SCAN_FOR_MODULES=OFF \
             2>&1 | tee build/release/configure.log
-          cmake --build --preset release 2>&1 | tee build/release/build.log
+          cmake --build --preset release --verbose 2>&1 | tee build/release/build.log
       - name: Run the complete syntax suite
         run: |
           printf '%s\n' 'Migration baseline: 85 syntax fixtures fail because the parser is unfinished.' >> "$GITHUB_STEP_SUMMARY"

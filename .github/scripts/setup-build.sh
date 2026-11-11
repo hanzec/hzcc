@@ -114,7 +114,8 @@ mkdir -p "$GITHUB_WORKSPACE/.cache/vcpkg"
 if [[ "${HZCC_CI_DOCUMENTATION:-false}" == true ]]; then
     apt-get install --yes --no-install-recommends \
         bison flex graphviz patch texlive-latex-base texlive-latex-recommended \
-        texlive-latex-extra texlive-fonts-recommended
+        texlive-latex-extra texlive-fonts-recommended texlive-plain-generic \
+        texlive-font-utils ghostscript
     "$python" -m pip install --disable-pip-version-check -r "$GITHUB_WORKSPACE/requirements-docs.txt"
 
     # Build the official release with the same current GCC toolchain as the job.

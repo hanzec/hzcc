@@ -55,6 +55,7 @@ jobs:
           key: linux-x64-ccache-v1-gcc-docs-${{ hashFiles('.github/scripts/setup-build.sh') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             linux-x64-ccache-v1-gcc-docs-${{ hashFiles('.github/scripts/setup-build.sh') }}-
+            linux-x64-ccache-v1-gcc-docs-
       - name: Cache the pinned Doxygen build
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -70,6 +71,7 @@ jobs:
         with:
           path: .cache/vcpkg
           key: linux-x64-vcpkg-gcc-tests-off-${{ hashFiles('vcpkg.json', 'cmake/Dependencies.cmake', 'cmake/triplets/**', '.github/scripts/setup-build.sh', '.github/workflows/**') }}
+          restore-keys: linux-x64-vcpkg-gcc-tests-off-
       - name: Test the documentation checkers
         run: |
           "$HZCC_PYTHON" -m unittest discover -s scripts/tests -v
