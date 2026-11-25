@@ -121,7 +121,8 @@ ALWAYS_INLINE static Status SymbolHandler(TokenList& tokens, const std::string_v
  * @brief Skip a comment or delegate a non-comment slash to the symbol handler.
  * @param tokens Destination receiving recognized tokens.
  * @param line Current source line; its backing storage must remain valid during the call.
- * @param ctx Non-null shared lexer state. Cursor points to a slash with an accessible following character; block-comment state may be updated.
+ * @param ctx Non-null shared lexer state. Cursor points to a slash; block-comment
+ * state may be updated.
  * @return OK after advancing the cursor or processing the slash operator.
  */
 ALWAYS_INLINE static Status CommentHandler(TokenList& tokens,
@@ -131,6 +132,9 @@ ALWAYS_INLINE static Status CommentHandler(TokenList& tokens,
                       << " col:" << ctx->col;
 
     size_t col = ctx->col;
+    if (col + 1 >= line.length()) {
+        return SymbolHandler(tokens, line, ctx);
+    }
     if (line[col + 1] == '/') {
         VLOG(LEXICAL_LOG) << "CommentHandler: Single line comment";
         ctx->col = line.length();  // skip to the end of line
@@ -170,10 +174,11 @@ ALWAYS_INLINE static Status StrLitHandler(TokenList& tokens, const std::string_v
     // collected string literal
     for (ctx->col++; true; ctx->col++) {
         // return error if string literal is not closed
-        if (ctx->col > line.length()) {
+        if (ctx->col >= line.length() ||
+            (line[ctx->col] == '\\' && ctx->col + 1 >= line.length())) {
             message::print_message(CompileErrorLevel::Error,
                                    "Missing terminating '\"' character",
-                                   std::make_pair(ctx->row, ctx->col - 2));
+                                   std::make_pair(ctx->row, line.length() - 1));
             return {StatusCode::kLexicalAnalysisStage,
                     "Missing terminating '\"' character"};
         }
@@ -223,10 +228,11 @@ ALWAYS_INLINE static Status CharLitHandler(TokenList& tokens,
 
     auto row = ctx->row;
     auto start = ctx->col + 1;
-    ctx->col = ctx->col + (line[ctx->col + 1] == '\\' ? 3 : 2);
+    const bool escaped = start < line.length() && line[start] == '\\';
+    ctx->col += escaped ? 3 : 2;
 
     // if not found '\'' then error
-    if (line[ctx->col] != '\'') {
+    if (ctx->col >= line.length() || line[ctx->col] != '\'') {
         if (line.find_first_of('\'', ctx->col) == std::string::npos) {
             ctx->col = line.length();
             message::print_message(CompileErrorLevel::Error, "unclosed char literal",
@@ -281,7 +287,7 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens, const std::string_v
         }
 
         // if real number change type to real
-        if (line[ctx->col] == '.') {
+        if (ctx->col < line.length() && line[ctx->col] == '.') {
             type = TokenType::Real_Lit;
             ctx->col++;
         }
@@ -293,13 +299,13 @@ ALWAYS_INLINE static Status NumLitHandler(TokenList& tokens, const std::string_v
     // correctness will be checked in syntax test_set_0.
     // Here we want to escape Dot(.) because it could be
     // test_set_0 of real number
-    while (ctx->col <= line.length() &&
+    while (ctx->col < line.length() &&
            (line[ctx->col] == '.' || (!std::isspace(line[ctx->col]) &&
                                       !SymbolUtils::is_operator(line[ctx->col])))) {
         // we want to escape Minus(-) directly after [E]
         // because it could be test_set_0 of real number
         // (e.g. 1.0E-2)
-        if (std::tolower(line[ctx->col]) == 'e' &&
+        if (std::tolower(line[ctx->col]) == 'e' && ctx->col + 1 < line.length() &&
             (line[ctx->col + 1] == '-' || line[ctx->col + 1] == '+')) {
             ctx->col++;
             type = TokenType::Real_Lit;

@@ -2,12 +2,12 @@
 
 ## Project and layout
 
-HZCC is an experimental C compiler written in C++17. The default build uses the
+HZCC is an experimental C compiler written in C++17. Its only frontend is the
 handwritten lexer and parser. JVM code generation and optimization sources are
 present but are not enabled in `hzcc/CMakeLists.txt`.
 
 - `hzcc/main.cc`: command-line entry point.
-- `hzcc/parser/`: tokens, lexical analysis, syntax analysis, and the optional ANTLR path.
+- `hzcc/parser/`: tokens, handwritten lexical analysis, and handwritten syntax analysis.
 - `hzcc/ast/`: AST nodes, types, casts, and symbol tables.
 - `hzcc/utils/`: logging, status handling, and shared utilities.
 - `hzcc/**/test/`: GoogleTest unit tests beside the code they exercise.
@@ -79,5 +79,5 @@ an existing compiler error prevented it.
   behavior is intentionally changing. Many integration tests match exact output.
 - Keep generated files, build directories, dependency caches, and binaries out of
   source control. Change dependency declarations and build integration together.
-- Do not enable the experimental ANTLR, JVM, or optimization paths as an incidental
+- Do not enable the experimental JVM or optimization paths as an incidental
   part of an unrelated change.

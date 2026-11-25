@@ -22,8 +22,20 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install --yes --no-install-recommends \
     build-essential ca-certificates curl git ninja-build pkg-config \
+    autoconf autoconf-archive automake libtool ccache \
     python3 python3-venv tar unzip zip xz-utils zstd \
     libatomic1 libedit2 libtinfo6 libxml2 zlib1g
+
+# Workflows restore this directory before setup, including before Doxygen builds.
+# Compiler launchers leave CC/CXX and vcpkg's own binary cache unchanged.
+export CCACHE_DIR="${CCACHE_DIR:-$GITHUB_WORKSPACE/.cache/ccache}"
+export CCACHE_BASEDIR="${CCACHE_BASEDIR:-$GITHUB_WORKSPACE}"
+export CCACHE_COMPILERCHECK=content
+export CCACHE_MAXSIZE="${CCACHE_MAXSIZE:-100MB}"
+mkdir -p "$CCACHE_DIR"
+ccache --version
+ccache --cleanup
+ccache --zero-stats
 
 cmake_prefix=/opt/hzcc-cmake-4.4.5
 cmake_archive="$RUNNER_TEMP/cmake-4.4.5-linux-x86_64.sh"
@@ -98,12 +110,16 @@ if [[ "${HZCC_CI_COVERAGE:-false}" == true ]]; then
 fi
 printf 'HZCC_PYTHON=%s\n' "$python" >> "$GITHUB_ENV"
 printf '%s\n' "$RUNNER_TEMP/hzcc-python/bin" >> "$GITHUB_PATH"
-mkdir -p "$GITHUB_WORKSPACE/.cache/vcpkg"
+# The composite vcpkg setting needs the workspace path inside the job container.
+vcpkg_cache_dir="$GITHUB_WORKSPACE/.cache/vcpkg"
+mkdir -p "$vcpkg_cache_dir"
+printf 'VCPKG_BINARY_SOURCES=clear;files,%s,readwrite\n' "$vcpkg_cache_dir" >> "$GITHUB_ENV"
 
 if [[ "${HZCC_CI_DOCUMENTATION:-false}" == true ]]; then
     apt-get install --yes --no-install-recommends \
         bison flex graphviz patch texlive-latex-base texlive-latex-recommended \
-        texlive-latex-extra texlive-fonts-recommended
+        texlive-latex-extra texlive-fonts-recommended texlive-plain-generic \
+        texlive-font-utils ghostscript
     "$python" -m pip install --disable-pip-version-check -r "$GITHUB_WORKSPACE/requirements-docs.txt"
 
     # Build the official release with the same current GCC toolchain as the job.
@@ -126,11 +142,12 @@ if [[ "${HZCC_CI_DOCUMENTATION:-false}" == true ]]; then
         cmake -S "$doxygen_source" -B "$doxygen_build" -G Ninja \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$doxygen_prefix" \
             -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX" \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             -Dbuild_doc=OFF -Dbuild_wizard=OFF -Duse_libclang=OFF
         cmake --build "$doxygen_build" --parallel 2
         cmake --install "$doxygen_build"
     fi
     "$doxygen_prefix/bin/doxygen" --version
-    test "$("$doxygen_prefix/bin/doxygen" --version | sed -n '1s/ .*//p')" = 1.18.0
+    test "$("$doxygen_prefix/bin/doxygen" --version | awk 'NR == 1 { print $1 }')" = 1.18.0
     printf '%s\n' "$doxygen_prefix/bin" >> "$GITHUB_PATH"
 fi

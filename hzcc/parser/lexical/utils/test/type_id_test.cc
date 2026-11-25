@@ -32,6 +32,16 @@ TEST(LEXICAL_UTILS_TOKEN_ID, single_char) {  // NOLINT
     ASSERT_EQ(SymbolUtils::GetSymbolType('|'), TokenType::BitwiseOr);
 }
 
+/** @test Empty and one-character views do not require a readable second character. */
+TEST(LEXICAL_UTILS_TOKEN_ID, short_symbol_views) {
+    EXPECT_EQ(SymbolUtils::GetSymbolType(std::string_view{}), TokenType::kUnknown);
+    for (const char symbol : std::string_view("+-*/%=!()[],;:.><{}?&|")) {
+        SCOPED_TRACE(symbol);
+        EXPECT_EQ(SymbolUtils::GetSymbolType(std::string_view(&symbol, 1)),
+                  SymbolUtils::GetSymbolType(symbol));
+    }
+}
+
 /** @test Compound operators map to their distinct non-ASCII categories. */
 TEST(LEXICAL_UTILS_TOKEN_ID, double_char) {  // NOLINT
     ASSERT_EQ(SymbolUtils::GetSymbolType("=="), TokenType::EQ);

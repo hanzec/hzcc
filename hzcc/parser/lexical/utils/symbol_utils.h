@@ -137,13 +137,17 @@ constexpr ALWAYS_INLINE TokenType is_type_specifier(std::string_view str) {
 
 /**
  * @brief Prefer a two-character operator, falling back to the first character.
- * @param str View whose first two characters can be read.
- * @return Matching multi-character category, or the classification of str[0].
- * @pre The view contains at least two characters.
+ * @param str Symbol spelling, which may end after a single character.
+ * @return Matching multi-character category, the classification of str[0], or
+ * TokenType::kUnknown for an empty view.
  */
 ALWAYS_INLINE TokenType GetSymbolType(std::string_view str) {
+    if (str.empty()) {
+        return TokenType::kUnknown;
+    }
+
     // handle if the char is a single char symbol
-    if (GetSymbolType(str[1]) == TokenType::kUnknown) {
+    if (str.size() == 1 || GetSymbolType(str[1]) == TokenType::kUnknown) {
         return GetSymbolType(str[0]);
     }
 

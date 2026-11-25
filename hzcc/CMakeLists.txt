@@ -1,7 +1,7 @@
 # Keep dependency usage requirements identical for the compiler and unit tests.
 find_package(absl CONFIG REQUIRED)
 find_package(CLI11 CONFIG REQUIRED)
-find_package(glog CONFIG REQUIRED)
+include(GlogDependencies)
 find_package(magic_enum CONFIG REQUIRED)
 find_package(re2 CONFIG REQUIRED)
 find_package(Threads REQUIRED)
