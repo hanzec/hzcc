@@ -1,37 +1,20 @@
 //
 // Created by chen_ on 2022/6/13.
 //
-#include <array>
-#include <exception>
-#include <glog/logging.h>
-#include <magic_enum/magic_enum.hpp>
-#include <memory>
-#include <ostream>
-#include <string>
-#include <unordered_map>
-#include <utility>
-
-#include "ast/Stmt.h"
 #include "ast/cast/Cast.h"
-#include "ast/cast/ICastRule.h"
-#include "ast/expr/Expr.h"
-#include "ast/type/Type.h"
-#include "enums.h"
-#include "utils/factory.h"
-#include "utils/status/statusor.h"
 
 namespace hzcc::ast {
 /**
  * @brief WiderTypeCast Cast Rule
  * @details This Rule to cast a type to a wider type (e.g. int to long). The
  * WiderTypeCast only support built-in types. And converting rules are using the
- * following rules (rows converted to columns):
+ * following rules for these types (rows converted to columns):
  *      |             | short | int | long | long long | char | void | float | double | long double |
  *      | :---------: | :---: | :-: | :--: | :-------: | :--: | :--: | :---: | :----: | :---------: |
  *      |    short    |  NA   | Yes |  Yes |    Yes    |  No  |  No  |  Yes  |  Yes   |     Yes     |
  *      |     int     |  No   | NA  |  Yes |    Yes    |  No  |  No  |  Yes  |  Yes   |     Yes     |
  *      |    long     |  No   | No  |  NA  |    Yes    |  No  |  No  |  Yes  |  Yes   |     Yes     |
- *      |  long long  |  No   | No  |  No  |    NA     |  No  |  No  |  No   |  Yes   |     Yes     |
+ *      |  long long  |  No   | No  |  No  |    NA     |  No  |  No  |  Yes  |  Yes   |     Yes     |
  *      |    char     |  Yes  | Yes |  Yes |    Yes    |  NA  |  No  |  Yes  |  Yes   |     Yes     |
  *      |    void     |  No   | No  |  No  |    No     |  No  |  No  |  No   |  No    |     No      |
  *      |    float    |  No   | No  |  No  |    No     |  No  |  No  |  NA   |  Yes   |    Yes      |
@@ -41,53 +24,36 @@ namespace hzcc::ast {
 class WiderTypeCast : public ICastRule {
 public:
   /**
-   * @brief Consult the stored widening table for two numerical type IDs.
+   * @brief Compare widening ranks for two numerical type IDs.
    * @param rhs Borrowed source expression.
    * @param lhs Shared destination type.
-   * @return The table entry for the numerical pair, or false for other categories.
+   * @return true if the source rank is supported and the destination rank is at least as high.
    */
   bool CouldApplyTo(const ExprPtr &rhs, const QualTypePtr &lhs) override { // NOLINT
-    auto rhs_type = rhs->type();
+    const auto from = rhs->type();
 
     // builtin type only
-    if (lhs->is<TypeCategory::Numerical>() && rhs_type->is<TypeCategory::Numerical>()) {
-      auto lhs_builtin = lhs->as<NumericalType>();
-      auto rhs_builtin = rhs_type->as<NumericalType>();
-      return kCastTable[lhs_builtin->GetTypeId()][rhs_builtin->GetTypeId()];
-    } else {
+    if (!from->is<TypeCategory::Numerical>() || !lhs->is<TypeCategory::Numerical>()) {
       return false;
     }
+    const int source_rank = from->as<NumericalType>()->widening_rank();
+    return source_rank >= 0 && lhs->as<NumericalType>()->widening_rank() >= source_rank;
   }
 
   /**
    * @brief Build an integral cast for supported primitive source IDs.
-   * @param node Source expression whose ownership is consumed.
+   * @param node Source expression whose ownership is consumed on success.
    * @param to Shared destination type retained by the cast.
-   * @return An owned IntegralCast for supported IDs; otherwise a null pointer after a warning.
+   * @param require_rvalue Read a numerical lvalue before constructing the cast.
+   * @return An owned IntegralCast for the accepted conversion.
    */
-  StatusOr<std::unique_ptr<CastExpr>> Apply(ExprPtr node,                     // NOLINT
-                                            const QualTypePtr &to) override { // NOLINT
-    auto rhs_type = node->type()->as<NumericalType>();
-    if (rhs_type->GetTypeId() < magic_enum::enum_integer(PrimitiveType::kFloat)) {
-      return std::make_unique<IntegralCast>(node->loc(), to, std::move(node));
-    } else {
-      LOG(WARNING) << "WiderTypeCast: " << rhs_type->to_str() << " to " << to->to_str() << " is not impl.";
-      return nullptr;
+  StatusOr<std::unique_ptr<CastExpr>> Apply(ExprPtr &node, const QualTypePtr &to,
+                                            bool require_rvalue) override {
+    if (require_rvalue && node->IsReturnLValue()) {
+      node = std::make_unique<LvalueToRvalueCast>(node->loc(), std::move(node));
     }
+    return std::make_unique<IntegralCast>(node->loc(), to, std::move(node));
   }
-
-private:
-  constexpr static std::array<std::array<bool, magic_enum::enum_count<PrimitiveType>()>,
-                              magic_enum::enum_count<PrimitiveType>()>
-      kCastTable{{{{false, true, true, true, false, false, true, true, true}},         // short
-                  {{false, false, true, true, false, false, true, true, true}},        // int
-                  {{false, false, false, true, false, false, true, true, true}},       // long
-                  {{false, false, false, false, false, false, false, true, true}},     // longlong
-                  {{true, true, true, true, false, false, true, true, true}},          // char
-                  {{false, false, false, false, false, false, false, false, false}},   // void
-                  {{false, false, false, false, false, false, false, true, true}},     // float
-                  {{false, false, false, false, false, false, false, false, true}},    // double
-                  {{false, false, false, false, false, false, false, false, false}}}}; // long double
 };
 
 /** @brief Register the WiderTypeCast conversion in the cast-rule factory. */

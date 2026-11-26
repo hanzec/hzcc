@@ -26,12 +26,10 @@ AssignExpr::AssignExpr(const Position& loc,        // NO_LINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    LOG_IF(FATAL, !type.empty()) << UniqueName() << "type string empty";
+    LOG_IF(FATAL, type.empty()) << UniqueName() << "type string empty";
     LOG_IF(FATAL,
-           (type.length() == 2 && type[0] != '=') ||
-               (type.length() == 1 && type[0] == '=') ||
-               (type.length() == 3 && (type[0] == '<' || type[0] == '>')))
-        << UniqueName() << "type len mismatch";
+           type.empty() || type.back() != '=' || type.size() > 3)
+        << UniqueName() << "invalid assignment operator";
 #endif
 
     /** #####################################################################

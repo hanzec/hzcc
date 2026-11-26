@@ -1,10 +1,9 @@
 //
 // Created by chen_ on 2022/3/29.
 //
-#include <array>
 #include <cstdint>
 #include <string>
-#include <cstddef>
+#include <variant>
 
 #ifndef HZCC_AST_DEDUCE_VALUE_H
 #define HZCC_AST_DEDUCE_VALUE_H
@@ -52,10 +51,9 @@ class DeduceValue {
     DeduceValue(DeduceValueType type, std::string str_value);
 
     /**
-     * @brief Get the value of the deduce value as integer number.
-     * @details If the type is not kDeduceValueType_Char, will trigger an assert
-     * error if compile as DEBUG. Undefined behavior if compile as NDEBUG.
-     * @return the integer value of the deduce value
+     * @brief Read the stored character.
+     * @throws std::bad_variant_access if the value is not a character.
+     * @return The character value.
      */
     [[nodiscard]] char as_char() const;
 
@@ -84,17 +82,14 @@ class DeduceValue {
     [[nodiscard]] DeduceValueType GetType() const;
 
   private:
-    DeduceValueType _type;
-    std::array<std::byte, 8> _raw_value = {
-        std::byte(0x0), std::byte(0x0), std::byte(0x0), std::byte(0x0),
-        std::byte(0x0), std::byte(0x0), std::byte(0x0), std::byte(0x0)};
+    std::variant<char, int64_t, double> _value;
 };
 
 /**
  * @brief Add two compile-time values.
  * @param lhs Left operand copied for evaluation.
  * @param rhs Borrowed right operand.
- * @return An integer when both operands are integers or both are characters;
+ * @return An integer when both operands have integral values;
  *         otherwise a real-valued result.
  */
 DeduceValue operator+(DeduceValue lhs, const DeduceValue& rhs);
@@ -103,7 +98,7 @@ DeduceValue operator+(DeduceValue lhs, const DeduceValue& rhs);
  * @brief Subtract the right compile-time value from the left.
  * @param lhs Left operand copied for evaluation.
  * @param rhs Borrowed right operand.
- * @return An integer when both operands are integers or both are characters;
+ * @return An integer when both operands have integral values;
  *         otherwise a real-valued result.
  */
 DeduceValue operator-(DeduceValue lhs, const DeduceValue& rhs);
@@ -112,7 +107,7 @@ DeduceValue operator-(DeduceValue lhs, const DeduceValue& rhs);
  * @brief Multiply two compile-time values.
  * @param lhs Left operand copied for evaluation.
  * @param rhs Borrowed right operand.
- * @return An integer when both operands are integers or both are characters;
+ * @return An integer when both operands have integral values;
  *         otherwise a real-valued result.
  */
 DeduceValue operator*(DeduceValue lhs, const DeduceValue& rhs);
@@ -121,19 +116,18 @@ DeduceValue operator*(DeduceValue lhs, const DeduceValue& rhs);
  * @brief Divide the left compile-time value by the right.
  * @param lhs Left operand copied for evaluation.
  * @param rhs Borrowed right operand.
- * @return An integer when both operands are integers or both are characters;
+ * @return An integer when both operands have integral values;
  *         otherwise a real-valued result.
  * @pre Integer division requires a nonzero divisor and a representable quotient.
  */
 DeduceValue operator/(DeduceValue lhs, const DeduceValue& rhs);
 
 /**
- * @brief Evaluate the legacy percent operation on integer-converted values.
+ * @brief Compute the remainder of two integral values.
  * @param lhs Left operand copied for evaluation.
  * @param rhs Borrowed right operand.
- * @return The integer quotient produced by the current implementation.
- * @note This implementation currently divides rather than computing a remainder.
- * @pre The integer-converted right operand is nonzero.
+ * @return The integer remainder with the sign of the dividend.
+ * @pre Both operands are integral, the divisor is nonzero and the quotient fits.
  */
 DeduceValue operator%(DeduceValue lhs, const DeduceValue& rhs);
 }  // namespace hzcc::ast

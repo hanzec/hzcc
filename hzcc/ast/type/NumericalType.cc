@@ -17,13 +17,13 @@ NumericalType::NumericalType(PrimitiveType type)  // NOLINT
     : Type(TypeCategory::Numerical), _type(type) {}
 
 std::string NumericalType::to_str() const {
-    static constexpr int KPermittedTypeTableSize = 12;
-    static constexpr std::array<const char*, KPermittedTypeTableSize>
+    static constexpr std::array<const char*, magic_enum::enum_count<PrimitiveType>()>
         kPrimitiveTypeTable{"int",        "char",      "float",
                             "double",     "void",      "long",
                             "short",      "_Bool",     "_Complex",
-                            "_Imaginary", "long long", "long double"};
-    return kPrimitiveTypeTable[magic_enum::enum_integer(_type)];
+                            "_Imaginary", "signed",    "unsigned",
+                            "long long",  "long double"};
+    return kPrimitiveTypeTable[*magic_enum::enum_index(_type)];
 }
 
 bool NumericalType::is_same(const Type& rhs) const {

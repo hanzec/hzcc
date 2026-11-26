@@ -43,6 +43,9 @@ enum class PrimitiveType {
     kImaginary,
     Signed,
     Unsigned,
+    // ID 12 corresponds to the non-numerical auto specifier in the token table.
+    kLongLong = 13,
+    kLongDouble,
 };
 
 /**
@@ -167,7 +170,8 @@ constexpr const std::array<const char[10], magic_enum::enum_count<Qualifier>()>
 constexpr const std::array<const char[15], magic_enum::enum_count<PrimitiveType>()>
     kPrimitiveTypeTable{"int",     "char",      "float",     "double",
                         "void",    "long",      "short",     "bool",
-                        "complex", "imaginary", "long long", "long double"};
+                        "complex", "imaginary", "signed",    "unsigned",
+                        "long long", "long double"};
 
 constexpr const std::array<const char[4],                                 // NOLINT
                            magic_enum::enum_integer(TokenType::Op_END) -  // NOLINT
@@ -193,7 +197,6 @@ constexpr const std::array<const char *, 20> kKeywordTable{
  * @brief Map a supported internal type spelling to its primitive type identifier.
  * @param type Internal spelling, including the legacy longlong and long_double names.
  * @return Matching primitive identifier; an unknown spelling triggers a fatal log.
- * @note The legacy extended names map to Signed and Unsigned in the current enum.
  */
 ALWAYS_INLINE constexpr PrimitiveType to_primitive_type(const std::string_view type) {
     if (type == "int") {
@@ -216,10 +219,14 @@ ALWAYS_INLINE constexpr PrimitiveType to_primitive_type(const std::string_view t
         return PrimitiveType::kComplex;
     } else if (type == "imaginary") {
         return PrimitiveType::kImaginary;
-    } else if (type == "longlong") {
+    } else if (type == "signed") {
         return PrimitiveType::Signed;
-    } else if (type == "long_double") {
+    } else if (type == "unsigned") {
         return PrimitiveType::Unsigned;
+    } else if (type == "longlong") {
+        return PrimitiveType::kLongLong;
+    } else if (type == "long_double") {
+        return PrimitiveType::kLongDouble;
     } else {
         LOG(FATAL) << "Unknown primitive type: " << type;
     }
@@ -261,7 +268,7 @@ ALWAYS_INLINE constexpr auto to_string(Qualifier attr) -> const char (&)[10] {
  * @return Reference to the static, null-terminated spelling.
  */
 ALWAYS_INLINE constexpr auto to_string(PrimitiveType attr) -> const char (&)[15] {
-    return kPrimitiveTypeTable[magic_enum::enum_integer(attr)];
+    return kPrimitiveTypeTable[*magic_enum::enum_index(attr)];
 }
 
 /**
@@ -271,6 +278,34 @@ ALWAYS_INLINE constexpr auto to_string(PrimitiveType attr) -> const char (&)[15]
  */
 ALWAYS_INLINE constexpr auto to_string(ArithmeticType attr) -> const char (&)[2] {
     return kArithmeticStr[magic_enum::enum_integer(attr)];
+}
+
+/** @brief Return the source spelling of a relational operator. */
+constexpr std::string_view to_string(RelationalType op) {
+    constexpr std::array<std::string_view, magic_enum::enum_count<RelationalType>()>
+        spellings{"<", "==", "!=", ">", "<=", ">="};
+    return spellings[magic_enum::enum_integer(op)];
+}
+
+/** @brief Return the source spelling of a bitwise operator. */
+constexpr std::string_view to_string(BitwiseType op) {
+    constexpr std::array<std::string_view, magic_enum::enum_count<BitwiseType>()>
+        spellings{"&", "|", "^", "<<", ">>"};
+    return spellings[magic_enum::enum_integer(op)];
+}
+
+/** @brief Return the source spelling of a assign operator. */
+constexpr std::string_view to_string(AssignType op) {
+    constexpr std::array<std::string_view, magic_enum::enum_count<AssignType>()>
+        spellings{"=", "+=", "-=", "*=", "/=", "%=", "<<=", ">>=", "&=", "|=", "^="};
+    return spellings[magic_enum::enum_integer(op)];
+}
+
+/** @brief Return the source spelling of a logical operator. */
+constexpr std::string_view to_string(LogicalType op) {
+    constexpr std::array<std::string_view, magic_enum::enum_count<LogicalType>()>
+        spellings{"&&", "||"};
+    return spellings[magic_enum::enum_integer(op)];
 }
 
 }  // namespace hzcc

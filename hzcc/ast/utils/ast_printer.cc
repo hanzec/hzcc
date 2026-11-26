@@ -278,16 +278,13 @@ Status AstPrinter::visit(ArraySubscriptExpr* p_expr) {
 }
 
 Status AstPrinter::visit(RelationalExpr* p_expr) {
-    static std::array<const char*,                               // NOLINT
-                      magic_enum::enum_count<RelationalType>()>  // NOLINT
-        kRelationalOpSTR = {" == ", " != ", " < ", " <= ", " > ", " >= "};
     print_stmt_hdr(p_expr);  // print node info
 
     // lhs type
     _out << " " + p_expr->lhs()->type()->to_str();
 
     // symbol type
-    _out << kRelationalOpSTR[magic_enum::enum_integer(p_expr->op_type())];
+    _out << ' ' << to_string(p_expr->op_type()) << ' ';
 
     add_indent(" |");
     HZCC_CHECK_OK_OR_RETURN(p_expr->lhs()->visit(*this));
@@ -304,7 +301,7 @@ Status AstPrinter::visit(LogicalExpr* p_expr) {
     print_stmt_hdr(p_expr);  // print node info
 
     // print logical type
-    _out << (p_expr->op_type() == LogicalType::AND ? "&&" : "||");
+    _out << to_string(p_expr->op_type());
 
     // print lhs
     add_indent(" |");
@@ -320,16 +317,12 @@ Status AstPrinter::visit(LogicalExpr* p_expr) {
 }
 
 Status AstPrinter::visit(AssignExpr* p_expr) {
-    static const std::array<const char[6],                         // NOLINT
-                            magic_enum::enum_count<AssignType>()>  // NOLINT
-        kAssignTypeStr = {
-            " = ", " += ", " -= ", " *= ", " /= ", " %= ", " <<= ", " >>= "};
     print_stmt_hdr(p_expr);  // print node info
 
     _out << p_expr->lhs()->type()->to_str();
 
     // print symbol
-    _out << kAssignTypeStr[magic_enum::enum_integer(p_expr->op_type())];
+    _out << ' ' << to_string(p_expr->op_type()) << ' ';
 
     // print LHS and RHS
     add_indent(" |");
@@ -392,13 +385,10 @@ Status AstPrinter::visit(hzcc::ast::ImplicitCastExpr* p_expr) {
 }
 
 Status AstPrinter::visit(BitwiseExpr* p_expr) {
-    static const std::array<const char[5],                          // NOLINT
-                            magic_enum::enum_count<BitwiseType>()>  // NOLINT
-        kBitwiseTypeStr = {" | ", " & ", " ^ ", " << ", " >> "};
     print_stmt_hdr(p_expr);  // print node info
 
     // print node info
-    _out << kBitwiseTypeStr[magic_enum::enum_integer(p_expr->op_type())] << ' '
+    _out << ' ' << to_string(p_expr->op_type()) << ' ' << ' '
          << p_expr->lhs()->type()->to_str();
 
     // print LHS and RHS info

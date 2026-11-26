@@ -3,7 +3,6 @@ find_package(absl CONFIG REQUIRED)
 find_package(CLI11 CONFIG REQUIRED)
 include(GlogDependencies)
 find_package(magic_enum CONFIG REQUIRED)
-find_package(re2 CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
 add_library(hzcc_dependencies INTERFACE)
@@ -16,7 +15,6 @@ target_link_libraries(hzcc_dependencies INTERFACE
     absl::strings
     glog::glog
     magic_enum::magic_enum
-    re2::re2
     Threads::Threads)
 
 configure_file(version.h.in "${CMAKE_CURRENT_BINARY_DIR}/version.h")
@@ -90,4 +88,20 @@ if(UNIT_TESTING)
         target_code_coverage(hzcc_core PUBLIC)
         target_code_coverage(hzcc_test)
     endif()
+endif()
+
+# Build this small port of the legacy backend only when explicitly requested.
+if(UNIT_TESTING)
+    add_executable(hzcc_jvm_test EXCLUDE_FROM_ALL
+        test_main.cc
+        codegen/jvm/constant_return.cc
+        codegen/jvm/test/constant_return_test.cc
+        optimization/PassManagerImpl.cc
+        optimization/pass_impl/DeadCodeElimination.cc)
+    hzcc_configure_target(hzcc_jvm_test PRIVATE)
+    target_link_libraries(hzcc_jvm_test PRIVATE hzcc_core GTest::gtest)
+    target_compile_definitions(hzcc_jvm_test PRIVATE
+        HZCC_JVM_FIXTURES="${PROJECT_SOURCE_DIR}/test/codegen/part5")
+    add_custom_target(check_experimental_jvm
+        COMMAND hzcc_jvm_test DEPENDS hzcc_jvm_test VERBATIM)
 endif()

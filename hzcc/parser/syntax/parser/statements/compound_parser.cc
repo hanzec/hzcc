@@ -34,14 +34,17 @@ StatusOr<ast::StmtPtr> CompoundStatement::parse_impl(SyntaxCtx context,
 
     // parse statements
     while (!tokens.empty() && tokens.peek().type() != TokenType::RBrace) {
-        HZCC_CHECK_OR_ASSIGN(stmt,  // NOLINT
-                             Parser::Parse<ast::Stmt>(context, tokens))
-        block_node->add_stmt(std::move(stmt));
-
-        if (!block_node->last_stmt()->has_body()) {
-            // stmt need end with ';'
-            HZCC_CheckAndConsume_ReturnErr(TokenType::SemiColon, tokens);
+        if (tokens.peek().type() == TokenType::Else &&
+            !block_node->body_stmts().empty()) {
+            auto* previous = dynamic_cast<ast::IfStmt*>(block_node->last_stmt().get());
+            if (previous && previous->has_else()) {
+                return utils::TokenErr(tokens,
+                                       "If stmt cannot have multiple else statements");
+            }
         }
+        HZCC_CHECK_OR_ASSIGN(stmt,  // NOLINT
+                             Parser::Parse<ast::Stmt>(context, tokens));
+        block_node->add_stmt(std::move(stmt));
     }
 
     // consume '}'

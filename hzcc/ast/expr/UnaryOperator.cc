@@ -26,8 +26,8 @@ UnaryOperator::UnaryOperator(const Position& loc,    // NOLINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    LOG_IF(FATAL, _expr != nullptr) << UniqueName() << "cast is nullptr";
-    LOG_IF(FATAL, !type.empty()) << UniqueName() << "type is empty string";
+    LOG_IF(FATAL, _expr == nullptr) << UniqueName() << "cast is nullptr";
+    LOG_IF(FATAL, type.empty()) << UniqueName() << "type is empty string";
 #endif
 
     /** #####################################################################
@@ -38,8 +38,7 @@ UnaryOperator::UnaryOperator(const Position& loc,    // NOLINT
             if (type.size() == 1) {
                 _type = UnaryType::SUB;
             } else {
-                if (loc.first < _expr->loc().first ||
-                    loc.second < _expr->loc().second) {
+                if (loc < _expr->loc()) {
                     _type = UnaryType::PRE_DEC;
                 } else {
                     _type = UnaryType::POST_DEC;
@@ -50,8 +49,7 @@ UnaryOperator::UnaryOperator(const Position& loc,    // NOLINT
             if (type.size() == 1) {
                 _type = UnaryType::ADD;
             } else {
-                if (loc.first < _expr->loc().first ||
-                    loc.second < _expr->loc().second) {
+                if (loc < _expr->loc()) {
                     _type = UnaryType::PRE_INC;
                 } else {
                     _type = UnaryType::POST_INC;

@@ -10,7 +10,6 @@
     "gflags",
     "glog",
     "magic-enum",
-    "re2",
     {
       "name": "liblzma",
       "platform": "linux"
@@ -22,6 +21,10 @@
     }
   ],
   "features": {
+    "e2e": {
+      "description": "Build the FileCheck integration test tool",
+      "dependencies": ["re2"]
+    },
     "tests": {
       "description": "Build the GoogleTest unit test suite",
       "dependencies": ["gtest"]

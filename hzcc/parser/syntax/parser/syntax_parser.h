@@ -4,6 +4,7 @@
 
 #include "parser/parser.h"
 #include "utils/status/statusor.h"
+#include "utils/type_name_utils.h"
 namespace hzcc::syntax::parser {
 /**
  * @brief A parsed declarator type paired with its identifier token.
@@ -11,9 +12,9 @@ namespace hzcc::syntax::parser {
 using VarPack = std::pair<ast::QualTypePtr, Token>;
 
 /**
- * @brief Common parser dispatch interface and shared loop-context flag.
+ * @brief Common parser dispatch interface for recursive-descent productions.
  * @note Parsing consumes the input in place and does not roll back on error.
- * @note Loop state is a shared boolean rather than a nesting stack; parser instances are not reentrant.
+ * @note The compilation unit tracks loop depth and the active scope.
  */
 class ParserBase {
   public:
@@ -64,26 +65,9 @@ class ParserBase {
     virtual StatusOr<ast::StmtPtr> parse_impl(SyntaxCtx ctx,
                                               TokenList& tokens) = 0;
 
-    /**
-     * @brief Inspect the shared loop-context flag.
-     * @return the currently stored loop flag.
-     */
-    static bool WithinLoop() { return _inside_loop; }
-    /**
-     * @brief Clear the shared loop-context flag.
-     * @return false after clearing the flag.
-     */
-    static bool ExitLoop() { return _inside_loop = false; }
-    /**
-     * @brief Set the shared loop-context flag.
-     * @return true after setting the flag.
-     */
-    static bool EnterLoop() { return _inside_loop = true; }
-
   private:
     const size_t _id = -1;
     const std::string _astNodeName;
-    inline static bool _inside_loop = false;
 };
 
 /**
@@ -145,14 +129,13 @@ class DeclStatement : public ParserBase {
      * @param tokens Token sequence beginning at pointer markers or an identifier.
      * @param context Non-null compilation unit used for array-size expression parsing.
      * @param base_type Base type used to build the declarator type.
+     * @param file_scope_object Whether a variable-length array bound is prohibited here.
      * @return Pair of completed type and identifier token, or a declarator error.
      */
     static StatusOr<VarPack> parse_type(TokenList& tokens,             // NOLINT
                                         SyntaxCtx& context,            // NOLINT
-                                        ast::QualTypePtr& base_type);  // NOLINT
-
-    bool _is_fist_declare = true;
-    uint_fast32_t attribute_size_ = 0;
+                                        ast::QualTypePtr base_type,
+                                        bool file_scope_object);
 };
 
 /**
@@ -171,6 +154,17 @@ class CompoundStatement : public ParserBase {
      * @return Owned AST node on success, or the first parsing error.
      * @pre The token sequence contains the expected construct and its required lookahead.
      */
+    StatusOr<ast::StmtPtr> parse_impl(SyntaxCtx ctx,
+                                      TokenList& tokens) override;
+};
+
+/** @brief Parse a full comma expression through the AST parser factory. */
+class ExpressionParser : public ParserBase {
+  public:
+    /** @brief Register this parser under the expression base type. */
+    ExpressionParser() : ParserBase(TypeNameUtil::hash<ast::Expr>(), "expression") {}
+
+    /** @brief Consume an expression and return its owning AST node. */
     StatusOr<ast::StmtPtr> parse_impl(SyntaxCtx ctx,
                                       TokenList& tokens) override;
 };
@@ -275,10 +269,8 @@ class Statement : public ParserBase {
     StatusOr<ast::StmtPtr> parse_impl(SyntaxCtx ctx,
                                       TokenList& tokens) override;
 
-  protected:
-    // TODO should be all static function
     /**
-     * @brief Parse comma expressions, recursively joining assignment expressions.
+     * @brief Parse a left-associative sequence of comma-separated assignment expressions.
      * @param tokens Input sequence consumed through the recognized expression or type.
      * @param context Non-null compilation unit used to resolve names and types.
      * @return Owned expression node, or the first parsing error.
@@ -297,7 +289,7 @@ class Statement : public ParserBase {
     static StatusOr<ast::ExprPtr> ParseAssignExpr(TokenList& tokens,
                                                   const SyntaxCtx& ctx);
 
-    // TODO: add syntax for conditional expression
+  private:
     /**
      * @brief Parse conditional expressions with question-mark and colon branches.
      * @param tokens Input sequence consumed through the recognized expression or type.

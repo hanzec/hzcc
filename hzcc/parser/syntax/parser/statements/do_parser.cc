@@ -22,25 +22,26 @@ DoStatement::DoStatement() noexcept
 
 StatusOr<ast::StmtPtr> DoStatement::parse_impl(SyntaxCtx context,
                                                TokenList& tokens) {
-    EnterLoop();  // enter loop
+    context->enter_loop();  // enter loop
+    absl::Cleanup leave_loop = [&] { context->leave_loop(); };  // exit loop
 
     // check if the next token is [do]
-    auto do_loc = tokens.peek().loc();
+    auto keyword = tokens.peek();
     HZCC_CheckAndConsume_ReturnErr(TokenType::Do, tokens);
 
     // parse body stmt
-    HZCC_CHECK_OR_ASSIGN(condition,  // NOLINT
-                         utils::ParseBodyStatement(context, false, tokens));
+    HZCC_CHECK_OR_ASSIGN(body,  // NOLINT
+                         utils::ParseBodyStatement(context, tokens));
 
     // check if the next token is [while]
-    HZCC_CheckAndConsume_ReturnErr(TokenType::While, tokens);
+    HZCC_CHECK_OK_OR_RETURN(utils::Consume(TokenType::While, tokens, keyword));
 
     // parse condition
-    HZCC_CHECK_OR_ASSIGN(body,  // NOLINT
+    HZCC_CHECK_OR_ASSIGN(cond,  // NOLINT
                          utils::ParseCondition(context, tokens));
+    HZCC_CHECK_OK_OR_RETURN(utils::Consume(TokenType::SemiColon, tokens, keyword));
 
-    ExitLoop();  // exit loop
-    return std::make_unique<ast::DoStmt>(do_loc, std::move(condition),
+    return std::make_unique<ast::DoStmt>(keyword.loc(), std::move(cond),
                                          std::move(body));
 }
 

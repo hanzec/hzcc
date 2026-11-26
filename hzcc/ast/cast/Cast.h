@@ -5,7 +5,6 @@
 #define MYCC_SOURCE_AST_CAST_CASTAPPLIER_H_
 #include <memory>         // for unique_ptr, shared_ptr
 #include <string>         // for string
-#include <unordered_map>  // for unordered_map
 
 #include "ICastRule.h"
 #include "utils/factory.h"          // for AutoRegFactory, HZCC_REGI_PRODUCT...
@@ -55,15 +54,18 @@ class Cast : public utils::AutoRegFactory<ICastRule, std::string> {
      */
     static StatusOr<std::unique_ptr<Expr>> apply(
         bool require_rvalue,                     // NOLINT
-        std::unique_ptr<Expr> rhs,               // NOLINT
+        ExprPtr rhs              ,               // NOLINT
         QualTypePtr lhs_type);  // NOLINT
 
-  private:
     /**
-     * The set of cast rules.
+     * @brief Convert an owned operand in place using a registered direct conversion.
+     * @param require_rvalue Read an lvalue before converting its numerical value.
+     * @param source Operand replaced on success and preserved on failure.
+     * @param target Destination type used to select the conversion rule.
+     * @return A cast-stage error when the types are unknown or incompatible.
      */
-    inline static std::unordered_map<std::string, std::unique_ptr<ICastRule>>
-        _rules;
+    static Status apply_to(bool require_rvalue, ExprPtr& source,
+                           const QualTypePtr& target);
 };
 
 #define HZCC_REG_CAST_RULE(Product, name, desc) \

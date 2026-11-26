@@ -1,17 +1,7 @@
 //
 // Created by chen_ on 2022/6/13.
 //
-#include <cstring>
-#include <memory>
-#include <utility>
-
-#include "ast/Stmt.h"
 #include "ast/cast/Cast.h"
-#include "ast/cast/ICastRule.h"
-#include "ast/expr/Expr.h"
-#include "ast/type/Type.h"
-#include "utils/factory.h"
-#include "utils/status/statusor.h"
 
 namespace hzcc::ast {
 /**
@@ -20,27 +10,30 @@ namespace hzcc::ast {
 class ArrayToPointerDecay : public ICastRule {
 public:
   /**
-   * @brief Test the implementation's subscript and pointer-category conditions.
-   * @param rhs Borrowed expression whose node name and type are inspected.
+   * @brief Test the array and pointer-category conditions.
+   * @param rhs Borrowed expression whose type is inspected.
    * @param lhs Shared destination type.
-   * @return true for a pointer-typed ArraySubscriptExpr and a non-pointer destination.
+   * @return true for an array and a pointer to the same qualified element type.
    */
   bool CouldApplyTo(const ExprPtr &rhs, const QualTypePtr &lhs) override {
-    /**
-     * In order to apply this rule, the rhs has to be an ArraySubscriptExpr
-     * ,the rhs has to be a pointer type and lhs has to be not a pointer
-     */
-    return !lhs->is<TypeCategory::Ptr>() && rhs->type()->is<TypeCategory::Ptr>() &&
-           (strcmp(rhs->NodeName().data(), "ArraySubscriptExpr") == 0);
+    const auto from = rhs->type();
+    if (!from->is<TypeCategory::Array>() || !lhs->is<TypeCategory::Ptr>()) {
+      return false;
+    }
+    const auto element = from->as<ArrayType>()->GetBaseType();
+    const auto pointee = lhs->as<PointerType>()->base_type();
+    return element->is_same_qualified(*pointee);
   }
 
   /**
    * @brief Wrap the source expression in an array-decay cast node.
    * @param node Expression whose ownership is transferred to the wrapper.
    * @param to Destination type; this rule currently derives its type from the operand.
+   * @param require_rvalue Ignored because array decay does not read a numerical lvalue.
    * @return A successful status result containing the newly owned cast node.
    */
-  StatusOr<std::unique_ptr<CastExpr>> Apply(std::unique_ptr<Expr> node, const QualTypePtr &to) override {
+  StatusOr<std::unique_ptr<CastExpr>> Apply(ExprPtr &node, const QualTypePtr &to,
+                                            bool require_rvalue) override {
     return std::make_unique<ArrayToPointerDecayCast>(node->loc(), std::move(node));
   }
 };

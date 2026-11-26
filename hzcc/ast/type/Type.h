@@ -203,6 +203,11 @@ class QualType : public std::enable_shared_from_this<QualType> {
      */
     bool operator!=(const QualType& rhs) const { return !(*this == rhs); }
 
+    /** @brief Compare both the language type and its qualifiers. */
+    [[nodiscard]] bool is_same_qualified(const QualType& rhs) const {
+        return *this == rhs && _qualifier == rhs._qualifier;
+    }
+
   private:
     std::shared_ptr<Type> _base_type;
     std::bitset<magic_enum::enum_count<Qualifier>()> _qualifier;
@@ -241,6 +246,41 @@ class NumericalType : public Type {
      * @return True if the type is the same as another type, false otherwise.
      */
     [[nodiscard]] bool is_same(const Type& rhs) const override;
+
+    /** @brief Return the widening rank, or -1 for unsupported primitive types. */
+    [[nodiscard]] int widening_rank() const {
+        switch (static_cast<PrimitiveType>(GetTypeId())) {
+            case PrimitiveType::kBool:
+                return 0;
+            case PrimitiveType::kChar:
+                return 1;
+            case PrimitiveType::kShort:
+                return 2;
+            case PrimitiveType::Signed:
+            case PrimitiveType::kInt:
+                return 3;
+            case PrimitiveType::Unsigned:
+                return 4;
+            case PrimitiveType::kLong:
+                return 5;
+            case PrimitiveType::kLongLong:
+                return 6;
+            case PrimitiveType::kFloat:
+                return 7;
+            case PrimitiveType::kDouble:
+                return 8;
+            case PrimitiveType::kLongDouble:
+                return 9;
+            default:
+                return -1;
+        }
+    }
+
+    /** @brief Return whether the primitive can be used with integral-only operators. */
+    [[nodiscard]] bool is_integer() const {
+        const auto rank = widening_rank();
+        return rank >= 0 && rank <= 6;
+    }
 
   private:
     const PrimitiveType _type;
@@ -286,9 +326,9 @@ class ArrayType : public Type {
     [[nodiscard]] const std::unique_ptr<ast::Expr>& GetArraySizeNode() const;
 
     /**
-     * @brief Compare array types by their shared element-type identity.
+     * @brief Compare the qualified element types of two arrays.
      * @param type Type to compare against this array.
-     * @return true for an array with the identical element QualType pointer.
+     * @return true for an array with the same qualified element type.
      * @note Array bounds are not part of this implementation's comparison.
      */
     [[nodiscard]] bool is_same(const Type& type) const override;
@@ -350,7 +390,7 @@ class IRecordType : public Type {
      */
     explicit IRecordType(TypeCategory typeCategory) : Type(typeCategory) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, typeCategory != TypeCategory::Struct ||
+        LOG_IF(FATAL, typeCategory != TypeCategory::Struct &&
                           typeCategory != TypeCategory::Union)
             << "The type category must be Struct or Union if you want to "
                "construct a IRecordType.";
@@ -375,6 +415,22 @@ class StructType : public IRecordType {
      * @param name Structure tag without the struct keyword.
      */
     explicit StructType(std::string_view name);  // NOLINT
+
+    /** @brief Start a definition of an incomplete structure tag.
+     * @return False for a tag already being defined or previously completed.
+     */
+    bool begin_definition() {
+        if (_definition != Definition::Incomplete) return false;
+        _definition = Definition::InProgress;
+        return true;
+    }
+
+    /** @brief Finish parsing the tag, allowing retry when parsing failed.
+     * @param success True after the closing brace, semicolon and fields were accepted.
+     */
+    void end_definition(bool success) {
+        _definition = success ? Definition::Complete : Definition::Incomplete;
+    }
 
     /**
      * @brief Get the declare to_str of the type.
@@ -405,6 +461,9 @@ class StructType : public IRecordType {
     [[nodiscard]] bool is_same(const Type& rhs) const override;
 
   private:
+    /** @brief Track forward-declared, currently open and successfully defined tags. */
+    enum class Definition { Incomplete, InProgress, Complete };
+    Definition _definition = Definition::Incomplete;
     const std::string _name;
     std::list<std::tuple<std::string, QualTypePtr>> _localTypeList;
 };
@@ -453,7 +512,7 @@ static std::string ToString(const std::list<Type::TypePtr>& types) {
  * @return Shared ownership of the cached numerical type wrapper.
  */
 template <PrimitiveType type>
-static QualTypePtr GetNumericalTypeOf() {
+inline QualTypePtr GetNumericalTypeOf() {
     const static QualTypePtr char_type =
         std::make_shared<QualType>(std::make_shared<NumericalType>(type));
     return char_type;
@@ -465,11 +524,11 @@ static QualTypePtr GetNumericalTypeOf() {
  * @return Shared ownership of the corresponding primitive wrapper.
  */
 template <TokenType type>
-static QualTypePtr GetNumericalTypeOf() {
+inline QualTypePtr GetNumericalTypeOf() {
     static_assert(
-        type >= TokenType::TypeSpec_START && type <= TokenType::TypeSpec_END,
+        type >= TokenType::TypeSpec_START && type <= TokenType::Unsigned,
         "The type must be a numerical type.");
-    return GetNumericalTypeOf<magic_enum::enum_cast<PrimitiveType>(
+    return GetNumericalTypeOf<static_cast<PrimitiveType>(
         magic_enum::enum_integer(type) -
         magic_enum::enum_integer(TokenType::TypeSpec_START))>();
 }
@@ -505,6 +564,10 @@ ALWAYS_INLINE QualTypePtr GetNumericalTypeOf(PrimitiveType type) {
             return GetNumericalTypeOf<PrimitiveType::Signed>();
         case PrimitiveType::Unsigned:
             return GetNumericalTypeOf<PrimitiveType::Unsigned>();
+        case PrimitiveType::kLongLong:
+            return GetNumericalTypeOf<PrimitiveType::kLongLong>();
+        case PrimitiveType::kLongDouble:
+            return GetNumericalTypeOf<PrimitiveType::kLongDouble>();
     }
 }
 
@@ -533,15 +596,14 @@ ALWAYS_INLINE QualTypePtr GetNumericalTypeOf(TokenType type) {
 }
 
 /**
- * @brief Test whether a type is the cached wrapper for a primitive ID.
+ * @brief Test whether the underlying type has the specified primitive ID.
  * @tparam T Primitive ID whose cached wrapper is compared.
  * @param type Qualified type pointer to inspect.
- * @return true for pointer identity with GetNumericalTypeOf<T>().
- * @note A separately allocated but structurally equal type does not match.
+ * @return true when the primitive types match.
  */
 template <PrimitiveType T>
 static bool IsTypeOf(const QualTypePtr& type) {
-    return type == GetNumericalTypeOf<T>();
+    return type && *type == *GetNumericalTypeOf<T>();
 }
 
 }  // namespace hzcc::ast

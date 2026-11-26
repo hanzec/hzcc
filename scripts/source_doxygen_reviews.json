@@ -1,18 +1,10 @@
 {
-  "hzcc/ast/CompilationUnit.h": {
-    "sha256": "8f744a9d03246c70da230d641bc3c50674f9635ca0664464c2d3f56f4162398e",
-    "reason": "Parser inserts a missing type in two braced default reference arguments; get_type and add_struct_type are inventoried with their attached API comments. Raw class declaration scan finds no omitted definitions."
-  },
   "hzcc/ast/Stmt.h": {
-    "sha256": "9b8db11d31e4d5c687e6acd9cb5b9c813c3917d6506da9b9da19bdb294cd5371",
+    "sha256": "fb568edc49b2da1c316f0aa9ed78d0bb818547102dee3106c3d2c939ab8b25a6",
     "reason": "Errors follow runtime-check macro calls in five method bodies. The enclosing setters and add_else_if method are inventoried with attached comments; the macro arguments contain statements, not type or method declarations."
   },
-  "hzcc/ast/SymbTbl.h": {
-    "sha256": "4b9d1f72accf3b130807b09d732acfbfe3c872cfc427d97a3124bc75a8604e7f",
-    "reason": "Parser inserts a missing type for get_type qualifiers = {}; the method declaration and its attached Doxygen block are inventoried."
-  },
   "hzcc/ast/type/Type.h": {
-    "sha256": "7bc1144be0799aa0f3686d35cdca03d19386c835680b564ad7c7cd320483418b",
+    "sha256": "a98a1cad267aa51ac658c85cf657222cc181bab31d80d756ccf3a3204f76e3de",
     "reason": "Parser inserts a missing type in the QualType constructor braced default argument. The constructor and all class definitions are inventoried and documented."
   },
   "hzcc/codegen/jvm/utils/ConstValUtils.cc": {
@@ -22,26 +14,6 @@
   "hzcc/macro.h": {
     "sha256": "1daf18d399d7a128da7daa2fd56bda18f1a4ae219650617f4e61aeaffa83ab9c",
     "reason": "Diagnostics concern compiler builtin expressions in #if directives (__has_include and __has_cpp_attribute). This header defines attribute macros and a Position alias, with no class definitions or callable declarations."
-  },
-  "hzcc/parser/lexical/LexicalParser.cc": {
-    "sha256": "d8228392baf7a5ffc9e7db10a9e49fa2ade244c6be1ea0deeb6f8c938544b39d",
-    "reason": "LIMIT_REGEX_CHECK accepts a statement block and has no terminating source semicolon, which breaks raw grammar recovery. Its definition and five call arguments were inspected: they contain expressions, local variables and control flow, not class/method declarations. All lexer handler functions and AnalyzeCtx_t are inventoried and documented."
-  },
-  "hzcc/parser/syntax/common_utils.h": {
-    "sha256": "6619e271b5445d1d880ac131050a0ece10f59cf771abf5edaed092a04811f843",
-    "reason": "The diagnostic follows a status-check macro invocation without a source semicolon inside ParseBodyStatement; the function and its attached API comment are inventoried."
-  },
-  "hzcc/parser/syntax/parser/decl_parser.cc": {
-    "sha256": "b4406e32d21f56d6d4d921c8142c7cc7ad7bf1061b14380732e7b81a29fd8d35",
-    "reason": "Diagnostics occur after status propagation/assignment macros inside four documented parser functions. No class or callable declarations are present in the affected statement sequences. The one local declaration ambiguity constructs final_type from base_type; it is an object, not a function."
-  },
-  "hzcc/parser/syntax/parser/statement_parser.cc": {
-    "sha256": "0d53d11060950e2e62fa9529a52132fa94b0c5f904127893a61c28c398e5f58c",
-    "reason": "Diagnostics follow status assignment macros in Statement::ParseAssignExpr. The function is inventoried and its declaration documentation is linked by XML; the affected regions contain only control flow and expressions."
-  },
-  "hzcc/parser/syntax/parser/statements/for_parser.cc": {
-    "sha256": "5d57af496273bf6d4fd644fb902795973360b5fe5f0f0cba4bee9ddc11b9e47f",
-    "reason": "Two diagnostics follow status assignment macros in ForStatement::parse; the method is inventoried and linked to its documented declaration. The error regions contain only calls on for_node."
   },
   "hzcc/utils/constexpr_utils.h": {
     "sha256": "0d313aadda9dc6214bd37b72d2e8abafbf43e1191f5f919156dd6a480e5032c1",
@@ -55,16 +27,12 @@
     "sha256": "031e314f606390522bb4647610372dcdfb02a6cb87a9ee6034dbc6420fbf9d9c",
     "reason": "Two diagnostics occur in enable_if template argument lists above a converting constructor and assignment operator. Both functions and their attached template-level Doxygen comments are inventoried; no additional callable is hidden."
   },
-  "hzcc/utils/status/test/status_or.h": {
-    "sha256": "efed758a5520555d6d6aa5b2a3736b6e74438e887866adf2688115f3121e4082",
-    "reason": "Diagnostics are explicit operator->/conversion calls inside test assertions, not operator declarations. All 16 explicit conversion operator definitions, helper classes and other helper methods are inventoried and documented. GoogleTest invocation macros generate framework-owned methods. Every local declaration ambiguity was inspected: each constructs a StatusOr or value-test object from an expression; none declares a callable."
-  },
   "hzcc/ast/test/DeduceValue_test.cc": {
-    "sha256": "9d62c97a748ec02c42024ba575e473f6086ef9c39c2d639d8a3187ea58a74f2f",
+    "sha256": "5bbd81ed9cdb54b43a3af52d0a7952648cc6b7ff6db91804a7d116286c932d64",
     "reason": "The two ambiguous declarations construct DeduceValue local objects from val. They are not function declarations; all explicit test helpers are inventoried."
   },
   "hzcc/ast/type/test/BuiltinType_test.cc": {
-    "sha256": "bdd6b7e75e3eb47a7b2166841bc877bfcc965ca41a1ba754ace5cdccecb13f1d",
+    "sha256": "9694e81406a2d9278dd14d23081798cb3b930e403be3dfe1d7a7baaaae6f631f",
     "reason": "The two ambiguous declarations construct NumericalType local objects from primitive/other values, not functions."
   },
   "hzcc/codegen/jvm/JVMClass.cc": {
@@ -76,19 +44,15 @@
     "reason": "The ambiguous declaration constructs a local FuncAnalyzer from GetGlobalVars(). It is not a helper function declaration; JVMGenerator::visit has a direct Doxygen block."
   },
   "hzcc/main.cc": {
-    "sha256": "d8a14e32755f0056cc78929aaa644582fbf98786eb7f2139886fde4459cd911f",
-    "reason": "The three ambiguous declarations construct local input/output file streams. The main function is inventoried and documented."
-  },
-  "hzcc/parser/lexical/test/lexer_test_utils.h": {
-    "sha256": "8f9a08086464cdadfc77c7cfd82ebf15c9aa421fddec322e27853794435fedbc",
-    "reason": "The ambiguous declaration constructs an ofstream named file from path. ParseTestSource is inventoried with its directly attached Doxygen comment."
-  },
-  "hzcc/utils/logging.cc": {
-    "sha256": "27bf6505c2576af7b8d2152ab5478f212a8426be629aeee901f853ae34230f59",
-    "reason": "The ambiguous declaration constructs a local fstream from CURRENT_FILE_NAME. Logging and message helper functions are inventoried and linked to their documented declarations."
+    "sha256": "ebbcb79d7c5523fc5fe53a716c08222adde4a3e74f7be2c1222fda194301a093",
+    "reason": "The two ambiguous declarations construct the local input and output file streams from paths. Both main and write_tokens are inventoried with their comments."
   },
   "hzcc/utils/status/test/status_test.cc": {
     "sha256": "2b0db7ea199674246f6f72c0b78280b9bb3c49d707d1a2967b9a47a18e3efd5f",
     "reason": "All six ambiguous declarations construct Status objects from codes, messages or another status. StatusFactoryCase and every explicit helper function are inventoried and documented."
+  },
+  "hzcc/utils/status/test/statusor_test.cc": {
+    "sha256": "f677ad087d2f62ac26cc6b6183f436e184608920465b70daadd3e75db027f8cd",
+    "reason": "Reviewed the local StatusOr, CopyNoAssign, CopyDetector and MapType object constructions in the migrated tests. The syntax errors occur at four explicit operator-> calls and twelve explicit conversion-operator calls in assertions. The raw inventory includes the helper definitions, including all explicit conversion operators, with their comments."
   }
 }

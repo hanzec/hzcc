@@ -137,9 +137,9 @@ jobs:
           retention-days: 14
 
   syntax:
-    # The migration baseline contains 85 failing, unfinished syntax fixtures.
+    # This job runs the 85 syntax fixtures.
     # Keep their actual exit status visible in this independent check.
-    name: Syntax integration / unfinished parser
+    name: Syntax integration
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     container:
@@ -184,7 +184,6 @@ jobs:
           cmake --build --preset release 2>&1 | tee build/release/build.log
       - name: Run the complete syntax suite
         run: |
-          printf '%s\n' 'Migration baseline: 85 syntax fixtures fail because the parser is unfinished.' >> "$GITHUB_STEP_SUMMARY"
           ctest --preset release -L e2e -R '^lexical_part3$' \
             --output-junit "$PWD/build/release/syntax-tests.xml"
       - name: Show compiler cache statistics

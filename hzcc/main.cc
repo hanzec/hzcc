@@ -3,9 +3,13 @@
 //
 
 #include <CLI/CLI.hpp>
-#include <algorithm>
+#include <cstdlib>
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "ast/CompilationUnit.h"
 #include "const_msg.h"
@@ -13,149 +17,132 @@
 #include "parser/parser.h"
 #include "utils/logging.h"
 
+namespace {
+/** @brief Write one source file's tokens in the public lexical listing format.
+ * @param out Destination stream, checked by the caller after flushing.
+ * @param path Input spelling from the command line.
+ * @param tokens Tokens in source order.
+ */
+void write_tokens(std::ostream& out, const std::string& path,
+                  const hzcc::TokenList& tokens) {
+    for (const auto& token : tokens) {
+        out << "File " << path << " Line " << std::setw(5) << token.loc().first
+            << " Token " << std::setw(3) << magic_enum::enum_integer(token.type())
+            << " Text " << token.to_str(true) << '\n';
+    }
+}
+}  // namespace
+
 /**
  * @brief Parse command-line options and run the requested compiler frontend stages.
  * @param argc Number of command-line arguments, including the executable name.
  * @param argv Null-terminated argument vector used by CLI11 and logging.
  * @return Zero for successful handling; a CLI or compiler error code on failure.
- * @note Code generation is currently disabled; lexical-only mode returns after its first file.
+ * @note Code generation is currently disabled.
  */
 int main(int argc, char* argv[]) {
     hzcc::initLogging(argv);
 
     // command line arguments
     CLI::App app{"hzcc - A C compiler"};
-    app.allow_extras();
 
     /** #####################################################################
      * Feature Flags                                                        #
      * #################################################################### */
     bool show_version = false, syntax_only = false, lexical_only = false;
-    app.add_flag("--fsyntax_only", syntax_only, "Only syntax check");
-    app.add_flag("--flexical_only", lexical_only, "Only lexical analysis");
-    app.add_flag("-v,--version", show_version, "version information");
+    auto* syntax = app.add_flag("--fsyntax_only", syntax_only, "Only syntax check");
+    auto* lexical =
+        app.add_flag("--flexical_only", lexical_only, "Only lexical analysis");
+    syntax->excludes(lexical);
+    app.add_flag("-v,--version", show_version, "Version information");
 
     app.add_flag("--fno_color", hzcc::Options::Global_disable_color,
-                 "Disable print color");
+                 "Disable colored diagnostics");
 
     /** #####################################################################
      * Input and Output Flags                                               #
      * #################################################################### */
     std::string output_file;
-    std::vector<std::string> input_files;
-    std::vector<std::string> included_files;
-    app.add_option("-o,--output", output_file, "output file");
-    app.add_option("-I,--include", included_files, "include file")
+    std::vector<std::string> input_files, included_files;
+    app.add_option("-o,--output", output_file, "Lexical output file")->needs(lexical);
+    app.add_option("-I,--include", included_files, "Include file")
         ->check(CLI::ExistingFile);
     // input files [THIS REQUIRED AT LEAST ONE]
-    app.add_option("file, -c", input_files, "hzcc StatusCode")->check(CLI::ExistingFile);
-
-    // parse command line arguments
-    CLI11_PARSE(app, argc, argv);
-
-    // replace all spaces in output_file with '_'
-    std::replace(output_file.begin(), output_file.end(), ' ', '_');
+    app.add_option("file,-c", input_files, "Source files")->check(CLI::ExistingFile);
 
     /** #####################################################################
      * Input and Output Flags Check                                         #
      * #################################################################### */
-    if (syntax_only && lexical_only) {
-        std::cout << "--fsyntax_only and --flexical_only cannot be used "
-                  << "at the same time";
-    }
+    // parse command line arguments
+    CLI11_PARSE(app, argc, argv);
 
     /** #####################################################################
      * Executions Starts Here                                               #
      * #################################################################### */
     // show version
     if (show_version) {
-        std::cout << hzcc::kMsg_Author << std::endl;
-        return 0;
+        std::cout << hzcc::kMsg_Author << '\n';
+        return EXIT_SUCCESS;
     }
 
-    // if no input file will print help information
     if (input_files.empty()) {
-        std::cerr << "No source file" << std::endl;
-        return 0;
+        std::cerr << "No source file\n";
+        return EXIT_FAILURE;
     }
 
     // compilation process
-    std::list<std::shared_ptr<hzcc::ast::CompilationUnit>> compilation_units;
-    // NOLINTNEXTLINE(modernize-loop-convert)
-    for (int i = 0; i < input_files.size(); i++) {
+    // Delay opening a named destination until every input has passed analysis.
+    std::vector<hzcc::TokenList> listings;
+    int result = EXIT_SUCCESS;
+    for (const auto& path : input_files) {
+        std::error_code ec;
+        if (!output_file.empty() && std::filesystem::equivalent(output_file, path, ec)) {
+            std::cerr << "Output names an input file: " << path << '\n';
+            return EXIT_FAILURE;
+        }
+
         /** ##################################################################
          * lexical analysis #
          * ##################################################################*/
-        std::ifstream infile(input_files[i]);
-        hzcc::message::set_current_file_name(input_files[i]);
+        hzcc::message::set_current_file_name(path);
+        std::ifstream input(path);
+        if (!input) {
+            std::cerr << "Cannot open input file: " << path << '\n';
+            result = EXIT_FAILURE;
+            continue;
+        }
 
         // run lexical analysis
-        auto tokens = hzcc::lexical::ParseToToken(infile);
-
-        // print tokens
+        auto tokens = hzcc::lexical::ParseToToken(input);
         if (!tokens.ok()) {
-            DLOG(ERROR) << "Lexical analysis failed: " << tokens.status().message();
-            return magic_enum::enum_integer(tokens.status().code());
+            result = magic_enum::enum_integer(tokens.status().code());
+            continue;
         }
 
         // show lexical analysis result
         if (lexical_only) {
-            try {
-                if (output_file.empty()) {
-                    for (const auto& token : tokens.value()) {
-                        std::cout << "File " << input_files[i] << " Line " << std::setw(5)
-                                  << token.loc().first << std::setw(0) << " Token "
-                                  << std::setw(3)
-                                  << magic_enum::enum_integer(token.type())
-                                  << std::setw(0) << " Text " << token.to_str(true)
-                                  << std::endl;
-                    }
-                } else {
-                    std::fstream outfile(output_file, std::fstream::out);
-                    for (const auto& token : tokens.value()) {
-                        outfile << "File " << input_files[i] << " Line " << std::setw(5)
-                                << token.loc().first << std::setw(0) << " Token "
-                                << std::setw(3) << magic_enum::enum_integer(token.type())
-                                << std::setw(0) << " Text " << token.to_str(true)
-                                << std::endl;
-                    }
-                    outfile.close();
-                }
-            } catch (const std::exception& e) {
-                DLOG(ERROR) << "Lexical analysis failed to print output: " << e.what();
-                return magic_enum::enum_integer(hzcc::StatusCode::kInternal);
+            if (output_file.empty()) {
+                write_tokens(std::cout, path, tokens.value());
+            } else {
+                listings.emplace_back(std::move(tokens).value());
             }
-
-            return 0;
+            continue;
         }
 
         /** ##################################################################
          * syntax Analysis                                                   #
          * ##################################################################*/
-        auto compilation_unit =
-            std::make_shared<hzcc::ast::CompilationUnit>(input_files[i]);
+        auto unit = std::make_shared<hzcc::ast::CompilationUnit>(path);
 
         // run syntax analysis
-        auto syntax_status = hzcc::syntax::GenerateAST(tokens.value(), compilation_unit);
-        if (!syntax_status.ok()) {
-            std::cerr << syntax_status.ToString() << std::endl;
-            return -1;
+        auto status = hzcc::syntax::GenerateAST(tokens.value(), unit);
+        if (!status.ok()) {
+            std::cerr << status.ToString() << '\n';
+            result = EXIT_FAILURE;
+        } else if (syntax_only) {
+            // print syntax analysis result
+            std::cout << "File " << path << " is syntactically correct.\n";
         }
-
-        // print syntax analysis result
-        if (syntax_only) {
-            if (output_file.empty()) {
-                //                compilation_unit->Dump(std::cout);
-            } else {
-                std::fstream outfile(output_file, std::fstream::out);
-                //                compilation_unit->Dump(outfile);
-                outfile.close();
-            }
-
-            return 0;
-        }
-
-        compilation_units.push_back(std::move(compilation_unit));
     }
 
     //    /** ##################################################################
@@ -172,5 +159,23 @@ int main(int argc, char* argv[]) {
     //        jvm_generator.Generate();
     //    }
 
-    return 0;
+    if (result != EXIT_SUCCESS) return result;
+    if (output_file.empty()) {
+        std::cout.flush();
+        return std::cout ? EXIT_SUCCESS : EXIT_FAILURE;
+    }
+    std::ofstream out(output_file);
+    if (!out) {
+        std::cerr << "Cannot open output file: " << output_file << '\n';
+        return EXIT_FAILURE;
+    }
+    for (std::size_t i = 0; i < listings.size(); ++i) {
+        write_tokens(out, input_files[i], listings[i]);
+    }
+    out.close();
+    if (!out) {
+        std::cerr << "Cannot write output file: " << output_file << '\n';
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
 }

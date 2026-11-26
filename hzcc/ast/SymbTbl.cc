@@ -19,19 +19,13 @@ SymbTbl::SymbTbl(QualTypePtr return_type, std::weak_ptr<SymbTbl> parent)
 std::shared_ptr<SymbTbl> SymbTbl::getUpperScope() { return _upper_scope_table.lock(); }
 
 // NOLINTNEXTLINE(misc-no-recursion)
-bool SymbTbl::has_type(std::string_view name) {
-    if (_named_types.find(name) != _named_types.end()) {
-        return true;
-    } else {
-        if (_upper_scope_table.lock() != nullptr) {
-            return _upper_scope_table.lock()->has_type(name);
-        } else {
-            return false;
-        }
-    }
+bool SymbTbl::has_type(std::string_view name, bool current_scope) {
+    if (_named_types.contains(name)) return true;
+    auto parent = _upper_scope_table.lock();
+    return !current_scope && parent && parent->has_type(name);
 }
 StructTypePtr SymbTbl::add_struct_type(std::string_view name) {
-    if (has_type("struct " + std::string(name))) {
+    if (has_type("struct " + std::string(name), true)) {
         LOG(FATAL) << "type " << name << " has already been defined";
     } else {
         auto new_type = std::make_shared<ast::StructType>(name);
@@ -49,7 +43,7 @@ QualTypePtr SymbTbl::get_type(std::string_view name,
         return std::make_shared<QualType>(_named_types[name], qualifiers);
     } else {
         if (_upper_scope_table.lock() != nullptr) {
-            return _upper_scope_table.lock()->get_type(name);
+            return _upper_scope_table.lock()->get_type(name, qualifiers);
         } else {
             LOG(ERROR) << "Variable " << name << " has not been defined";
             return nullptr;
@@ -94,7 +88,7 @@ std::shared_ptr<SymbTbl> SymbTbl::enter_scope() {
 // NOLINTNEXTLINE(misc-no-recursion)
 Position SymbTbl::var_def_pos(std::string_view name) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    LOG_IF(FATAL, has_var(name, false)) << "Variable " << name << " has not been defined";
+    LOG_IF(FATAL, !has_var(name, false)) << "Variable " << name << " has not been defined";
 #endif
 
     if (_variable_lookup_table.find(name) != _variable_lookup_table.end()) {

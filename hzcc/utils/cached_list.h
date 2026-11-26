@@ -96,6 +96,19 @@ class CachedList : protected std::list<T> {
         return attributes;
     }
 
+    /**
+     * @brief Consume filtered tokens at the front together with any cached attributes.
+     * @return Attributes preceding the next visible token, in source order.
+     */
+    std::list<T> take_leading_attributes() {
+        auto next = this->cbegin();
+        while (next != this->cend() && _filter(*next)) {
+            ++next;
+        }
+        _cached_attributes.splice(_cached_attributes.end(), *this, this->cbegin(), next);
+        return cache_attr_list();
+    }
+
   private:
     /** @brief Locate an unfiltered token without changing either list.
      * @param index Zero-based position among unfiltered tokens.

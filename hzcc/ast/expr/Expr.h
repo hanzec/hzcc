@@ -12,14 +12,8 @@ namespace hzcc::ast {
  * @brief Base class of all binary expression such as arithmetic, bitwise, etc.
  * @details This class is abstract, and should never be initialized directly.
  * Instead, it should be inherited by other classes. The type of the current
- * expression will be determined by the type of LHS and RHS. If both LHS and RHS
- * have the deduced type, then the final type will be same as LHS. If only LHS
- * has the deduced type or only RHS has the deduced type, then the returned type
- * will be same as the expression that can not be deduced. For example:
- *      1. int a = 1 + 2.0; // the type of the expression is double
- *      2. int a = 1 + 2; // the type of the expression is int
- *      3. int a = 1 + 2.0f; // the type of the expression is float
- *      4. int a = 1 + 2.0l; // the type of the expression is long double
+ * expression will be determined by the type of LHS and RHS. Arithmetic
+ * expressions use the wider of their two numerical operand types.
  *
  * There are six kinds of binary expression:
  *     1. Arithmetic expression: +, -, *, /, %
@@ -44,25 +38,20 @@ class OperatorBase : public Expr {
     [[nodiscard]] std::unique_ptr<Expr>& rhs() { return _rhs; };
 
     /**
-     * @brief Get the type of the current expression. The type of OperatorBase
-     * and its inherited class will determine by left-hand-expression's and
-     * right-hand-expression's deduced type:
-     *      1. If both LHS and RHS have the deduced type, then the final type
-     *       will be same as LHS
-     *      2. If only LHS has the deduced type or only RHS has the deduced
-     *      type, then the returned type will be same as the expression that can
-     *      not be deduced.
-     * @return return the type of the current expression
+     * @brief Get the type of the current expression.
+     * @return The wider numerical operand type, or nullptr for an unresolved operand.
      */
     [[nodiscard]] QualTypePtr type() const override {
-        if (!_lhs->GetDeducedValue().has_value() &&
-            !_rhs->GetDeducedValue().has_value()) {
-            return _lhs->type();
-        } else {
-            return _lhs->GetDeducedValue().has_value() ? _rhs->type()
-                                                       : _lhs->type();
+        const auto left = _lhs->type();
+        const auto right = _rhs->type();
+        if (!left || !right) return nullptr;
+        if (left->is<TypeCategory::Numerical>() && right->is<TypeCategory::Numerical>() &&
+            right->as<NumericalType>()->widening_rank() >
+                left->as<NumericalType>()->widening_rank()) {
+            return right;
         }
-    };
+        return left;
+    }
 
   protected:
     /**
@@ -83,12 +72,8 @@ class OperatorBase : public Expr {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _lhs != nullptr) << UniqueName() << "lhs is nullptr";
-        LOG_IF(FATAL, _rhs != nullptr) << UniqueName() << "rhs is nullptr";
-        LOG_IF(FATAL, !_lhs->type()->is<TypeCategory::Array>())
-            << UniqueName() << "lhs could not be array";
-        LOG_IF(FATAL, !_rhs->type()->is<TypeCategory::Array>())
-            << UniqueName() << "rhs could not be array";
+        LOG_IF(FATAL, _lhs == nullptr) << UniqueName() << "lhs is nullptr";
+        LOG_IF(FATAL, _rhs == nullptr) << UniqueName() << "rhs is nullptr";
 #endif
     }
 
@@ -126,11 +111,11 @@ class CastExpr : public Expr {
     /**
      * @brief determine whether the node will return a location value (LValue)
      * or auto_factory value (RValue)
-     * @return true if the node will return a LValue, false otherwise
+     * @return false because a cast produces an rvalue.
      */
     [[nodiscard]] bool IsReturnLValue() const override {
-        return _expr->IsReturnLValue();
-    };
+        return false;
+    }
 
     /**
      * @brief return the expression that is being casted
@@ -169,7 +154,7 @@ class CastExpr : public Expr {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _expr != nullptr)
+        LOG_IF(FATAL, _expr == nullptr)
             << UniqueName() << "cast cast is nullptr";
 #endif
     }
@@ -228,10 +213,27 @@ class UnaryOperator : public Expr {
     [[nodiscard]] UnaryType GetUnaryType() const { return _type; };
 
     /**
-     * @brief Get the type forwarded from the unary operator's operand.
-     * @return The operand's qualified type.
+     * @brief Return the result type of applying the unary operator to its operand.
      */
-    [[nodiscard]] QualTypePtr type() const override { return _expr->type(); };
+    [[nodiscard]] QualTypePtr type() const override {
+        const auto operand = _expr->type();
+        if (!operand) return nullptr;
+        if (_type == UnaryType::ADDR) {
+            return std::make_shared<QualType>(std::make_shared<PointerType>(operand));
+        }
+        if (_type == UnaryType::DEREF) {
+            return operand->is<TypeCategory::Ptr>()
+                       ? operand->as<PointerType>()->base_type()
+                       : nullptr;
+        }
+        return _type == UnaryType::NOT ? GetNumericalTypeOf<PrimitiveType::kInt>()
+                                       : operand;
+    }
+
+    /** @brief Dereferencing a pointer designates its target object. */
+    [[nodiscard]] bool IsReturnLValue() const override {
+        return _type == UnaryType::DEREF;
+    }
 
   private:
     UnaryType _type;
@@ -278,11 +280,11 @@ class TernaryExpr : public Expr {
          * #####################################################################
          */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _cond != nullptr)
+        LOG_IF(FATAL, _cond == nullptr)
             << this->UniqueName() << "cond is nullptr";
-        LOG_IF(FATAL, _true_expr != nullptr)
+        LOG_IF(FATAL, _true_expr == nullptr)
             << this->UniqueName() << "true_expr is nullptr";
-        LOG_IF(FATAL, _false_expr != nullptr)
+        LOG_IF(FATAL, _false_expr == nullptr)
             << this->UniqueName() << "false_expr is nullptr";
 #endif
     }
@@ -329,8 +331,8 @@ class TernaryExpr : public Expr {
      * @return the deduced value of the ternary expression
      */
     [[nodiscard]] std::optional<DeduceValue> GetDeducedValue() const override {
-        if (_cond->GetDeducedValue().has_value()) {
-            if (_cond->GetDeducedValue().value().as_char()) {
+        if (const auto condition = _cond->GetDeducedValue()) {
+            if (condition->AsReal() != 0) {
                 return _true_expr->GetDeducedValue();
             } else {
                 return _false_expr->GetDeducedValue();
@@ -397,7 +399,7 @@ class SizeofExpr : public Expr {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _expr != nullptr) << UniqueName() << "cast is nullptr";
+        LOG_IF(FATAL, _expr == nullptr) << UniqueName() << "cast is nullptr";
 #endif
     }
 
@@ -530,14 +532,13 @@ class FuncCallStmt : public Expr {
  */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
         LOG_IF(FATAL, _name.empty()) << UniqueName() << "to_str is empty";
-        LOG_IF(FATAL, _ret_type != nullptr)
-            << UniqueName() << "return type is nullptr";
         {
-            uint_fast32_t args_count = 0;
+            size_t args_count = 0;
             for (auto& arg : _func_args) {
-                LOG_IF(FATAL, arg != nullptr)
+                LOG_IF(FATAL, arg == nullptr)
                     << UniqueName()
                     << "argument " + std::to_string(args_count) + " is nullptr";
+                ++args_count;
             }
         }
 #endif
@@ -558,9 +559,13 @@ class FuncCallStmt : public Expr {
 
     /**
      * @brief Get the type of the function call statement
-     * @return the type of the function call statement
+     * @return The function return type, or nullptr before resolution.
      */
     [[nodiscard]] QualTypePtr type() const override { return _ret_type; }
+
+    /** @brief Retain the return type from the function declaration resolved by the
+     * visitor. */
+    void set_return_type(QualTypePtr type) { _ret_type = std::move(type); }
 
     /**
      * @brief Get the arguments of the function call statement
@@ -587,17 +592,17 @@ class DeclRefExpr : public Expr {
      * @brief Create a reference to a named declaration.
      * @param loc Source position of the identifier use.
      * @param name Declaration identifier copied into the node.
-     * @note Construction does not populate the stored type-proxy pointer.
+     * @param type Optional shared type of the referenced declaration.
      */
     DeclRefExpr(const Position& loc,    // NO_LINT
-                std::string_view name)  // NO_LINT
-        : Expr(loc, "DeclRefExpr"), _name(std::string(name)) {
+                std::string_view name,  // NO_LINT
+                QualTypePtr type = nullptr)
+        : Expr(loc, "DeclRefExpr"), _name(name), _type(std::move(type)) {
 /** #####################################################################
  *  ### Runtime Assertion ###
  *  #####################################################################*/
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _type != nullptr) << "type is nullptr";
-        LOG_IF(FATAL, !_name.empty()) << "to_str is empty string";
+        LOG_IF(FATAL, _name.empty()) << "to_str is empty string";
 #endif
     }
 
@@ -625,11 +630,11 @@ class DeclRefExpr : public Expr {
      * @brief get the type of the variable
      * @return the type of the variable
      */
-    [[nodiscard]] QualTypePtr type() const override { return _type->type(); };
+    [[nodiscard]] QualTypePtr type() const override { return _type; };
 
   private:
     const std::string _name;
-    const std::unique_ptr<TypeProxyExpr> _type;
+    const QualTypePtr _type;
 };
 
 /**
@@ -660,11 +665,9 @@ class ArraySubscriptExpr : public Expr {
  *  ### Runtime Assertion ###
  *  #####################################################################*/
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _array != nullptr) << UniqueName() << "array is nullptr";
-        LOG_IF(FATAL, _subscript != nullptr)
+        LOG_IF(FATAL, _array == nullptr) << UniqueName() << "array is nullptr";
+        LOG_IF(FATAL, _subscript == nullptr)
             << UniqueName() << "subscript is nullptr";
-        LOG_IF(FATAL, _array->type()->is<TypeCategory::Array>())
-            << UniqueName() << "not accessing array";
 #endif
     }
 
@@ -693,7 +696,12 @@ class ArraySubscriptExpr : public Expr {
      * @return the type of the array subscript expression
      */
     [[nodiscard]] QualTypePtr type() const override {
-        return _array->type()->as<ArrayType>()->GetBaseType();
+        const auto base = _array->type();
+        if (base && base->is<TypeCategory::Array>())
+            return base->as<ArrayType>()->GetBaseType();
+        if (base && base->is<TypeCategory::Ptr>())
+            return base->as<PointerType>()->base_type();
+        return nullptr;
     };
 
     /**
@@ -754,11 +762,9 @@ class MemberExpr : public Expr {
  *  ### Runtime Assertion ###
  *  #####################################################################*/
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, !field.empty()) << UniqueName() << "field string empty";
-        LOG_IF(FATAL, _variable != nullptr)
+        LOG_IF(FATAL, field.empty()) << UniqueName() << "field string empty";
+        LOG_IF(FATAL, _variable == nullptr)
             << UniqueName() << "chain_access is nullptr";
-        LOG_IF(FATAL, _variable->type()->is<TypeCategory::Struct>())
-            << UniqueName() << "chain_access is not struct";
 #endif
     }
 
@@ -781,7 +787,10 @@ class MemberExpr : public Expr {
      * @return he type of specified field.
      */
     [[nodiscard]] QualTypePtr type() const override {
-        return _variable->type()->as<StructType>()->field_type(_field);
+        const auto base = _variable->type();
+        return base && base->is<TypeCategory::Struct>()
+                   ? base->as<StructType>()->field_type(_field)
+                   : nullptr;
     };
 
     /**
@@ -929,7 +938,7 @@ class LogicalExpr : public OperatorBase {
 
 /**
  * @brief Represent a comma expression in AST tree.
- * @details Comma expression is a expression that compares two expressions.
+ * @details The left operand is evaluated before the right operand supplies the result.
  * The comma expression is in the form of:
  * lhs , rhs.
  */
@@ -944,7 +953,7 @@ class CommaExpr : public OperatorBase {
     CommaExpr(const Position& loc,        // NOLINT
               std::unique_ptr<Expr> lhs,  // NOLINT
               std::unique_ptr<Expr> rhs)
-        : OperatorBase(loc, "CommaExpr", std::move(rhs), std::move(lhs)) {}
+        : OperatorBase(loc, "CommaExpr", std::move(lhs), std::move(rhs)) {}
 
     /**
      * @brief ast Visitor acceptor
@@ -954,12 +963,9 @@ class CommaExpr : public OperatorBase {
     Status visit(Visitor& visitor) override { return visitor.visit(this); };
 
     /**
-     * @brief Get the type of the current expression. The LogicalExpr will
-     * always return a char value.
-     * @return will always return QualTypePtr which have type of
-     * char
+     * @brief Return the type of the right operand.
      */
-    [[nodiscard]] QualTypePtr type() const override { return lhs_c()->type(); }
+    [[nodiscard]] QualTypePtr type() const override { return rhs_c()->type(); }
 };
 
 /**
@@ -1148,8 +1154,7 @@ class ExplicitCastExpr : public CastExpr {
   public:
     /**
      * @brief CastExpr constructor. Will cast expression to the given
-     * type. If runtime assert is enabled, will trigger an error if the
-     * given type is same as the expression's type.
+     * type.
      * @param type the type to cast to
      * @param expr the expression to cast
      * @param loc location of the cast operator
@@ -1163,10 +1168,8 @@ class ExplicitCastExpr : public CastExpr {
  *  ### Runtime Assertion ###
  *  #####################################################################*/
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _cast_type != nullptr)
+        LOG_IF(FATAL, _cast_type == nullptr)
             << UniqueName() << "cast type is nullptr";
-        LOG_IF(WARNING, cast_expr()->type() != _cast_type->type())
-            << UniqueName() << "cast type is not equal to cast cast type";
 #endif
     }
 
@@ -1209,9 +1212,9 @@ class ImplicitCastExpr : public CastExpr {
  *  ### Runtime Assertion ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, !_name.empty())
+        LOG_IF(FATAL, _name.empty())
             << UniqueName() << "cast to_str is empty string";
-        LOG_IF(FATAL, cast_expr()->type() != nullptr)
+        LOG_IF(FATAL, cast_expr()->type() == nullptr)
             << UniqueName() << "cast cast have a nullptr type";
 #endif
     }
@@ -1236,7 +1239,7 @@ class LvalueToRvalueCast : public ImplicitCastExpr {
   public:
     /**
      * @brief Construct a new LvalueToRvalue Cast. The expression has to be
-     * an rvalue otherwise it will throw an runtime error.
+     * an lvalue.
      * @param location The location of the cast operator.
      * @param expr The expression to cast.
      */
@@ -1247,7 +1250,7 @@ class LvalueToRvalueCast : public ImplicitCastExpr {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, cast_expr()->IsReturnLValue())
+        LOG_IF(FATAL, !cast_expr()->IsReturnLValue())
             << "has to return left value";
 #endif
     }
@@ -1299,14 +1302,11 @@ class IntegralCast : public ImplicitCastExpr {
          *  #####################################################################
          */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _type != nullptr)
+        LOG_IF(FATAL, _type == nullptr)
             << UniqueName() << "cast type is nullptr";
-        LOG_IF(WARNING, (*cast_expr()->type()) != *_type)
-            << UniqueName() << "cast type is not equal to cast cast type";
-        LOG_IF(WARNING, (_type->is<TypeCategory::Numerical>() ||
-                         cast_expr()->type()->is<TypeCategory::Numerical>()))
-            << UniqueName()
-            << "cast type or expression type is not builtin type";
+        LOG_IF(FATAL, !_type->is<TypeCategory::Numerical>() ||
+                          !cast_expr()->type()->is<TypeCategory::Numerical>())
+            << UniqueName() << "expected numerical cast types";
 #endif
     }
 
@@ -1315,6 +1315,14 @@ class IntegralCast : public ImplicitCastExpr {
      * @return the type that is being casted to
      */
     [[nodiscard]] QualTypePtr type() const override { return _type; };
+
+    /** @brief Convert a constant operand to the destination numerical representation. */
+    [[nodiscard]] std::optional<DeduceValue> GetDeducedValue() const override {
+        const auto value = cast_expr()->GetDeducedValue();
+        if (!value) return std::nullopt;
+        if (_type->as<NumericalType>()->is_integer()) return DeduceValue(value->AsInt());
+        return DeduceValue(value->AsReal());
+    }
 
     /**
      * @brief ast Visitor acceptor
@@ -1336,7 +1344,7 @@ class ArrayToPointerDecayCast : public ImplicitCastExpr {
   public:
     /**
      * @brief Construct a new ArrayToPointerDecay Cast. The expression has
-     * to be an rvalue otherwise it will throw an runtime error.
+     * to be an array.
      * @param location The location of the cast operator.
      * @param expr The expression to cast.
      */
@@ -1347,12 +1355,8 @@ class ArrayToPointerDecayCast : public ImplicitCastExpr {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, cast_expr()->type()->is<TypeCategory::Ptr>())
-            << UniqueName() << "has to be a pointer type";
-
-        LOG_IF(FATAL, strcmp(cast_expr()->NodeName().data(),
-                             "ArraySubscriptExpr") == 0)
-            << UniqueName() << "cast has to be a ArraySubscriptExpr";
+        LOG_IF(FATAL, !cast_expr()->type()->is<TypeCategory::Array>())
+            << UniqueName() << "expected an array operand";
 #endif
     }
 
@@ -1361,7 +1365,8 @@ class ArrayToPointerDecayCast : public ImplicitCastExpr {
      * @return the type that is being casted to
      */
     [[nodiscard]] QualTypePtr type() const override {
-        return cast_expr()->type()->as<ArrayType>()->GetBaseType();
+        return std::make_shared<QualType>(std::make_shared<PointerType>(
+            cast_expr()->type()->as<ArrayType>()->GetBaseType()));
     };
 
     /**

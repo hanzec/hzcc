@@ -22,95 +22,71 @@
 #include "utils/type_name_utils.h"
 
 namespace hzcc::syntax::parser {
+namespace {
+/** @brief Parse an if or else-if condition and diagnose a known non-scalar type. */
+StatusOr<ast::ExprPtr> ParseIfCondition(ParserBase::SyntaxCtx& context, TokenList& tokens,
+                                        const Token& keyword) {
+    if (tokens.empty()) return utils::TokenErr(keyword, "Expected '(' after 'if'");
+    const auto opening = tokens.peek();
+    HZCC_CHECK_OR_ASSIGN(condition, utils::ParseCondition(context, tokens));
+    const auto type = condition->type();
+    if (type && (ast::IsTypeOf<PrimitiveType::kVoid>(type) ||
+                 type->is<TypeCategory::Struct>() || type->is<TypeCategory::Union>())) {
+        return utils::TokenErr(opening,
+                               "if condition has non-numeric type " + type->to_str());
+    }
+    return condition;
+}
+}  // namespace
+
 IfStatement::IfStatement() noexcept
     : ParserBase(TypeNameUtil::hash<ast::IfStmt>(),
                  TypeNameUtil::name_pretty<ast::IfStmt>()) {}
 StatusOr<ast::StmtPtr> IfStatement::parse_impl(SyntaxCtx context,
                                                TokenList& tokens) {
-    auto ref = tokens.peek();
 
     // check first if
-    auto if_loc = tokens.peek().loc();
+    auto keyword = tokens.peek();
     HZCC_CheckAndConsume_ReturnErr(TokenType::If, tokens);
 
     // parsing condition
-    auto cond_token = tokens.peek();
-    HZCC_CHECK_OR_ASSIGN(condition,  // NOLINT
-                         utils::ParseCondition(context, tokens));
-
-    // if condition could be converted to int
-    if (!condition->type()->is<TypeCategory::Numerical>()) {
-        return syntax::utils::TokenErr(
-            cond_token, "if condition has non-numeric type void");
-    }
+    HZCC_CHECK_OR_ASSIGN(cond,  // NOLINT
+                         ParseIfCondition(context, tokens, keyword));
 
     // parsing body
     HZCC_CHECK_OR_ASSIGN(body,  // NOLINT
-                         utils::ParseBodyStatement(context, false, tokens));
+                         utils::ParseBodyStatement(context, tokens));
 
     // generate ifNode
-    auto ifNode = std::make_unique<ast::IfStmt>(if_loc, std::move(condition),
-                                                std::move(body));
+    auto node = std::make_unique<ast::IfStmt>(keyword.loc(), std::move(cond),
+                                              std::move(body));
 
     // parsing [else] and [else if] stmt
-    while (tokens.peek().type() == TokenType::Else) {
-        auto prev_else = tokens.pop();  // consume else;
+    while (!tokens.empty() && tokens.peek().type() == TokenType::Else) {
+        auto alternative_keyword = tokens.pop();  // consume else;
+        if (tokens.empty()) {
+            return utils::TokenErr(alternative_keyword,
+                                   "Expected statement after 'else'");
+        }
+
         // if this is single else stmt
-        if (tokens.peek().type() == TokenType::LBrace) {
-            if (ifNode->has_else()) {
-                return syntax::utils::TokenErr(
-                    prev_else, "If stmt cannot have multiple else statements");
-            } else {
-                // enter new scope
-                context->enter_scope();
-
-                // parsing body
-                HZCC_CHECK_OR_ASSIGN(
-                    else_body,  // NOLINT
-                    utils::ParseBodyStatement(context, false, tokens));
-                ifNode->set_else(std::move(else_body));
-
-                // leave scope
-                context->leave_scope();
-            }
+        if (tokens.peek().type() != TokenType::If) {
+            HZCC_CHECK_OR_ASSIGN(alternative, utils::ParseBodyStatement(context, tokens));
+            node->set_else(std::move(alternative));
+            break;
         }
 
         // else-if statements
-        else if (tokens.peek().type() == TokenType::If) {
-            tokens.pop();  // consume if
-            HZCC_CheckAndConsume_ReturnErr(TokenType::LParentheses, tokens);
+        keyword = tokens.pop();  // consume if
 
-            auto else_if_token = tokens.peek();
-            HZCC_CheckAndConsume_ReturnErr(TokenType::LParentheses, tokens);
+        // check if else-if condition is valid
+        HZCC_CHECK_OR_ASSIGN(else_if_cond, ParseIfCondition(context, tokens, keyword));
+        HZCC_CHECK_OR_ASSIGN(else_if_body, utils::ParseBodyStatement(context, tokens));
 
-            HZCC_CHECK_OR_ASSIGN(else_if_condition,
-                                 Parser::Parse<ast::Expr>(context, tokens))
-            // next token is ')'
-            HZCC_CheckAndConsume_ReturnErr(TokenType::RParentheses, tokens);
-
-            // check if else-if condition is valid
-            if (else_if_condition->type()->is<TypeCategory::Numerical>()) {
-                return syntax::utils::TokenErr(
-                    else_if_token, "if condition has non-numeric type void");
-            }
-
-            // add else-if stmt
-            HZCC_CHECK_OR_ASSIGN(
-                else_if_body,  // NOLINT
-                utils::ParseBodyStatement(context, false, tokens));
-            ifNode->add_else_if(std::move(else_if_condition),
-                                std::move(else_if_body));
-        }
-
-        // else statements without code block
-        else {
-            HZCC_CHECK_OR_ASSIGN(
-                else_body,  // NOLINT
-                utils::ParseBodyStatement(context, false, tokens));
-            ifNode->set_else(std::move(else_body));
-        }
+        // add else-if stmt
+        node->add_else_if(std::move(else_if_cond), std::move(else_if_body));
     }
-    return ifNode;
+    return node;
 }
 
 }  // namespace hzcc::syntax::parser

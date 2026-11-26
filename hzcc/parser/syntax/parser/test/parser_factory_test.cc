@@ -51,14 +51,90 @@ TEST(PARSER_FACTORY, truncated_declaration) {
     EXPECT_EQ(result.status().code(), StatusCode::kSyntaxStageErr);
 }
 
-/** @test An unfinished variable parser propagates an error through AST generation. */
-TEST(PARSER_FACTORY, unsupported_variable_declaration) {
-    std::istringstream source("int variable;");
+/** @test Global variable declarations are registered and retain their initializer trees.
+ */
+TEST(PARSER_FACTORY, variable_declaration) {
+    std::istringstream source("int *pointer, value = 12 - 4 - 3;");
     auto tokens = lexical::ParseToToken(source);
     ASSERT_TRUE(tokens.ok());
     auto unit = std::make_shared<ast::CompilationUnit>("variable.c");
     auto status = GenerateAST(tokens.value(), unit);
-    EXPECT_TRUE(IsUnimplemented(status)) << status.ToString();
+    ASSERT_TRUE(status.ok()) << status.ToString();
+    ASSERT_TRUE(unit->has_var("pointer", true));
+    ASSERT_TRUE(unit->has_var("value", true));
+    auto visited = unit->visit_all_decl(
+        [](ast::IDeclStmt* node) {
+            auto* declaration = dynamic_cast<ast::DeclStmt*>(node);
+            if (!declaration || declaration->decls().size() != 2) {
+                return InternalError("Expected two declarators");
+            }
+            const auto& pointer = declaration->decls().front();
+            const auto& value = declaration->decls().back();
+            EXPECT_TRUE(pointer->type()->is<TypeCategory::Ptr>());
+            EXPECT_FALSE(pointer->has_init());
+            EXPECT_TRUE(value->type()->is<TypeCategory::Numerical>());
+            EXPECT_TRUE(value->has_init());
+            if (!value->has_init()) return InternalError("Missing initializer");
+            auto result = value->init_expr()->GetDeducedValue();
+            EXPECT_TRUE(result.has_value());
+            if (result) EXPECT_EQ(result->AsInt(), 5);
+            return NoError();
+        },
+        [](const Status& result) { return result.ok(); });
+    ASSERT_TRUE(visited.ok());
+    EXPECT_EQ(visited.value().size(), 1);
+}
+
+/** @test Nested loops retain the outer loop and scope state survives early returns. */
+TEST(PARSER_FACTORY, loop_state) {
+    auto unit = std::make_shared<ast::CompilationUnit>("loops.c");
+    for (const auto* invalid :
+         {"int bad() { while (1) { break } }", "int outside() { continue; }"}) {
+        std::istringstream source{invalid};
+        auto tokens = lexical::ParseToToken(source);
+        ASSERT_TRUE(tokens.ok());
+        EXPECT_FALSE(GenerateAST(tokens.value(), unit).ok());
+        EXPECT_TRUE(unit->at_root());
+        EXPECT_FALSE(unit->within_loop());
+    }
+    std::istringstream source("int ok() { for (;;) { while (1) break; continue; } }");
+    auto tokens = lexical::ParseToToken(source);
+    ASSERT_TRUE(tokens.ok());
+    auto result = GenerateAST(tokens.value(), unit);
+    ASSERT_TRUE(result.ok()) << result.ToString();
+    EXPECT_TRUE(unit->has_body("ok"));
+}
+
+/** @test Both arity mismatches and parameter type changes reject a redeclaration. */
+TEST(PARSER_FACTORY, function_signatures) {
+    for (const auto* source_text : {"int f(); int f(int a);", "int f(int a); int f();",
+                                    "int f(int a); int f(float a);"}) {
+        std::istringstream source{source_text};
+        auto tokens = lexical::ParseToToken(source);
+        ASSERT_TRUE(tokens.ok());
+        auto unit = std::make_shared<ast::CompilationUnit>("signature.c");
+        auto result = GenerateAST(tokens.value(), unit);
+        EXPECT_EQ(result.code(), StatusCode::kSyntaxStageErr);
+    }
+    std::istringstream source(
+        "int f(int *p); int f(int *q) { return 0; } int f(int *r);");
+    auto tokens = lexical::ParseToToken(source);
+    ASSERT_TRUE(tokens.ok());
+    auto unit = std::make_shared<ast::CompilationUnit>("definition.c");
+    auto result = GenerateAST(tokens.value(), unit);
+    ASSERT_TRUE(result.ok()) << result.ToString();
+    auto visited = unit->visit_all_decl(
+        [](ast::IDeclStmt* node) {
+            auto* function = dynamic_cast<ast::FuncDeclStmt*>(node);
+            if (!function || !function->has_body() || function->params().size() != 1) {
+                return InternalError("Expected the merged definition");
+            }
+            EXPECT_EQ(function->params().front()->name(), "q");
+            return NoError();
+        },
+        [](const Status& result) { return result.ok(); });
+    ASSERT_TRUE(visited.ok());
+    EXPECT_EQ(visited.value().size(), 1);
 }
 
 /** @test Parser dispatch rejects a missing compilation context before dereferencing it. */

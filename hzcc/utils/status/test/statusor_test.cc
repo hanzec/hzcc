@@ -2,8 +2,6 @@
 // Created by hanzech on 12/20/22.
 //
 
-#ifndef HZCC_UTILS_STATUS_TEST_STATUS_OR_H
-#define HZCC_UTILS_STATUS_TEST_STATUS_OR_H
 // Copyright 2020 The Abseil Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +18,12 @@
 
 #include "utils/status/statusor.h"
 
+#include <any>
 #include <array>
+#include <optional>
+#include <variant>
+
+#include "absl/base/casts.h"
 #include <initializer_list>
 #include <memory>
 #include <string>
@@ -41,10 +44,6 @@ using ::testing::Not;
 using ::testing::Pointee;
 using ::testing::VariantWith;
 
-#ifdef GTEST_HAS_STATUS_MATCHERS
-using ::testing::status::IsOk;
-using ::testing::status::IsOkAndHolds;
-#else  // GTEST_HAS_STATUS_MATCHERS
 /** @brief Inspect a test result through a uniform status accessor.
  * @param status Status or StatusOr result to inspect.
  * @return Reference to the caller-owned status.
@@ -217,7 +216,6 @@ IsOkAndHoldsMatcher<typename std::decay<InnerMatcher>::type> IsOkAndHolds(
  * @return Polymorphic success-state matcher.
  */
 inline IsOkMatcher IsOk() { return IsOkMatcher(); }
-#endif  // GTEST_HAS_STATUS_MATCHERS
 
 /** @brief Value fixture recording whether its latest initialization or assignment copied or moved.
  */
@@ -394,7 +392,7 @@ TEST(StatusOr, TestMoveOnlyVector) {
     vec.resize(2);
     auto another_vec = std::move(vec);
     EXPECT_EQ(0, **another_vec[0]);
-    EXPECT_EQ(absl::UnknownError(""), another_vec[1].status());
+    EXPECT_EQ(hzcc::UnknownError(""), another_vec[1].status());
 }
 
 TEST(StatusOr, TestDefaultCtor) {
@@ -416,18 +414,18 @@ TEST(StatusOr, StatusCtorForwards) {
 
 TEST(BadStatusOrAccessTest, CopyConstructionWhatOk) {
     hzcc::Status error =
-        absl::InternalError("some arbitrary message too big for the sso buffer");
-    absl::BadStatusOrAccess e1{error};
-    absl::BadStatusOrAccess e2{e1};
+        hzcc::InternalError("some arbitrary message too big for the sso buffer");
+    hzcc::BadStatusOrAccess e1{error};
+    hzcc::BadStatusOrAccess e2{e1};
     EXPECT_THAT(e1.what(), HasSubstr(error.ToString()));
     EXPECT_THAT(e2.what(), HasSubstr(error.ToString()));
 }
 
 TEST(BadStatusOrAccessTest, CopyAssignmentWhatOk) {
     hzcc::Status error =
-        absl::InternalError("some arbitrary message too big for the sso buffer");
-    absl::BadStatusOrAccess e1{error};
-    absl::BadStatusOrAccess e2{absl::InternalError("other")};
+        hzcc::InternalError("some arbitrary message too big for the sso buffer");
+    hzcc::BadStatusOrAccess e1{error};
+    hzcc::BadStatusOrAccess e2{hzcc::InternalError("other")};
     e2 = e1;
     EXPECT_THAT(e1.what(), HasSubstr(error.ToString()));
     EXPECT_THAT(e2.what(), HasSubstr(error.ToString()));
@@ -435,72 +433,51 @@ TEST(BadStatusOrAccessTest, CopyAssignmentWhatOk) {
 
 TEST(BadStatusOrAccessTest, MoveConstructionWhatOk) {
     hzcc::Status error =
-        absl::InternalError("some arbitrary message too big for the sso buffer");
-    absl::BadStatusOrAccess e1{error};
-    absl::BadStatusOrAccess e2{std::move(e1)};
+        hzcc::InternalError("some arbitrary message too big for the sso buffer");
+    hzcc::BadStatusOrAccess e1{error};
+    hzcc::BadStatusOrAccess e2{std::move(e1)};
     EXPECT_THAT(e2.what(), HasSubstr(error.ToString()));
 }
 
 TEST(BadStatusOrAccessTest, MoveAssignmentWhatOk) {
     hzcc::Status error =
-        absl::InternalError("some arbitrary message too big for the sso buffer");
-    absl::BadStatusOrAccess e1{error};
-    absl::BadStatusOrAccess e2{absl::InternalError("other")};
+        hzcc::InternalError("some arbitrary message too big for the sso buffer");
+    hzcc::BadStatusOrAccess e1{error};
+    hzcc::BadStatusOrAccess e2{hzcc::InternalError("other")};
     e2 = std::move(e1);
     EXPECT_THAT(e2.what(), HasSubstr(error.ToString()));
 }
 
-// Define `EXPECT_DEATH_OR_THROW` to test the behavior of `StatusOr::value`,
-// which either throws `BadStatusOrAccess` or `LOG(FATAL)` based on whether
-// exceptions are enabled.
-#ifdef ABSL_HAVE_EXCEPTIONS
-#define EXPECT_DEATH_OR_THROW(statement, status_)                  \
-  EXPECT_THROW(                                                    \
-      {                                                            \
-        try {                                                      \
-          statement;                                               \
-        } catch (const absl::BadStatusOrAccess& e) {               \
-          EXPECT_EQ(e.status(), status_);                          \
-          EXPECT_THAT(e.what(), HasSubstr(e.status().ToString())); \
-          throw;                                                   \
-        }                                                          \
-      },                                                           \
-      absl::BadStatusOrAccess);
-#else  // ABSL_HAVE_EXCEPTIONS
-#define EXPECT_DEATH_OR_THROW(statement, status) \
-  EXPECT_DEATH_IF_SUPPORTED(statement, status.ToString());
-#endif  // ABSL_HAVE_EXCEPTIONS
-
 TEST(StatusOrDeathTest, TestDefaultCtorValue) {
     hzcc::StatusOr<int> thing;
-    EXPECT_DEATH_OR_THROW(thing.value(), absl::UnknownError(""));
+    EXPECT_DEATH_IF_SUPPORTED(thing.value(), hzcc::UnknownError("").ToString());
     const hzcc::StatusOr<int> thing2;
-    EXPECT_DEATH_OR_THROW(thing2.value(), absl::UnknownError(""));
+    EXPECT_DEATH_IF_SUPPORTED(thing2.value(), hzcc::UnknownError("").ToString());
 }
 
 TEST(StatusOrDeathTest, TestValueNotOk) {
-    hzcc::StatusOr<int> thing(absl::CancelledError());
-    EXPECT_DEATH_OR_THROW(thing.value(), absl::CancelledError());
+    hzcc::StatusOr<int> thing(hzcc::UnavailableError(""));
+    EXPECT_DEATH_IF_SUPPORTED(thing.value(), hzcc::UnavailableError("").ToString());
 }
 
 TEST(StatusOrDeathTest, TestValueNotOkConst) {
-    const hzcc::StatusOr<int> thing(absl::UnknownError(""));
-    EXPECT_DEATH_OR_THROW(thing.value(), absl::UnknownError(""));
+    const hzcc::StatusOr<int> thing(hzcc::UnknownError(""));
+    EXPECT_DEATH_IF_SUPPORTED(thing.value(), hzcc::UnknownError("").ToString());
 }
 
 TEST(StatusOrDeathTest, TestPointerDefaultCtorValue) {
     hzcc::StatusOr<int*> thing;
-    EXPECT_DEATH_OR_THROW(thing.value(), absl::UnknownError(""));
+    EXPECT_DEATH_IF_SUPPORTED(thing.value(), hzcc::UnknownError("").ToString());
 }
 
 TEST(StatusOrDeathTest, TestPointerValueNotOk) {
-    hzcc::StatusOr<int*> thing(absl::CancelledError());
-    EXPECT_DEATH_OR_THROW(thing.value(), absl::CancelledError());
+    hzcc::StatusOr<int*> thing(hzcc::UnavailableError(""));
+    EXPECT_DEATH_IF_SUPPORTED(thing.value(), hzcc::UnavailableError("").ToString());
 }
 
 TEST(StatusOrDeathTest, TestPointerValueNotOkConst) {
-    const hzcc::StatusOr<int*> thing(absl::CancelledError());
-    EXPECT_DEATH_OR_THROW(thing.value(), absl::CancelledError());
+    const hzcc::StatusOr<int*> thing(hzcc::UnavailableError(""));
+    EXPECT_DEATH_IF_SUPPORTED(thing.value(), hzcc::UnavailableError("").ToString());
 }
 
 #if GTEST_HAS_DEATH_TEST
@@ -508,7 +485,7 @@ TEST(StatusOrDeathTest, TestStatusCtorStatusOk) {
     EXPECT_DEBUG_DEATH(
         {
             // This will DCHECK
-            hzcc::StatusOr<int> thing(absl::OkStatus());
+            hzcc::StatusOr<int> thing(hzcc::NoError());
             // In optimized mode, we are actually going to get error::INTERNAL for
             // status here, rather than crashing, so check that.
             EXPECT_FALSE(thing.ok());
@@ -520,7 +497,7 @@ TEST(StatusOrDeathTest, TestStatusCtorStatusOk) {
 TEST(StatusOrDeathTest, TestPointerStatusCtorStatusOk) {
     EXPECT_DEBUG_DEATH(
         {
-            hzcc::StatusOr<int*> thing(absl::OkStatus());
+            hzcc::StatusOr<int*> thing(hzcc::NoError());
             // In optimized mode, we are actually going to get error::INTERNAL for
             // status here, rather than crashing, so check that.
             EXPECT_FALSE(thing.ok());
@@ -549,15 +526,15 @@ TEST(StatusOr, ValueAccessor) {
 }
 
 TEST(StatusOr, BadValueAccess) {
-    const hzcc::Status kError = absl::CancelledError("message");
+    const hzcc::Status kError = hzcc::UnavailableError("message");
     hzcc::StatusOr<int> status_or(kError);
-    EXPECT_DEATH_OR_THROW(status_or.value(), kError);
+    EXPECT_DEATH_IF_SUPPORTED(status_or.value(), kError.ToString());
 }
 
 TEST(StatusOr, TestStatusCtor) {
-    hzcc::StatusOr<int> thing(absl::CancelledError());
+    hzcc::StatusOr<int> thing(hzcc::UnavailableError(""));
     EXPECT_FALSE(thing.ok());
-    EXPECT_EQ(thing.status().code(), hzcc::StatusCode::kCancelled);
+    EXPECT_EQ(thing.status().code(), hzcc::StatusCode::kUnavailable);
 }
 
 TEST(StatusOr, TestValueCtor) {
@@ -578,7 +555,7 @@ struct Foo {
 };
 
 TEST(StatusOr, InPlaceConstruction) {
-    EXPECT_THAT(hzcc::StatusOr<Foo>(absl::in_place, 10),
+    EXPECT_THAT(hzcc::StatusOr<Foo>(std::in_place, 10),
                 IsOkAndHolds(Field(&Foo::x, 10)));
 }
 
@@ -596,7 +573,7 @@ struct InPlaceHelper {
 };
 
 TEST(StatusOr, InPlaceInitListConstruction) {
-    hzcc::StatusOr<InPlaceHelper> status_or(absl::in_place, {10, 11, 12},
+    hzcc::StatusOr<InPlaceHelper> status_or(std::in_place, {10, 11, 12},
                                             std::make_unique<int>(13));
     EXPECT_THAT(status_or, IsOkAndHolds(AllOf(
                                Field(&InPlaceHelper::x, ElementsAre(10, 11, 12)),
@@ -607,24 +584,24 @@ TEST(StatusOr, Emplace) {
     hzcc::StatusOr<Foo> status_or_foo(10);
     status_or_foo.emplace(20);
     EXPECT_THAT(status_or_foo, IsOkAndHolds(Field(&Foo::x, 20)));
-    status_or_foo = absl::InvalidArgumentError("msg");
+    status_or_foo = hzcc::InvalidArgumentError("msg");
     EXPECT_FALSE(status_or_foo.ok());
-    EXPECT_EQ(status_or_foo.status().code(), hzcc::StatusCode::kInvalidArgument);
+    EXPECT_EQ(status_or_foo.status().code(), hzcc::StatusCode::kInvalidArguments);
     EXPECT_EQ(status_or_foo.status().message(), "msg");
     status_or_foo.emplace(20);
     EXPECT_THAT(status_or_foo, IsOkAndHolds(Field(&Foo::x, 20)));
 }
 
 TEST(StatusOr, EmplaceInitializerList) {
-    hzcc::StatusOr<InPlaceHelper> status_or(absl::in_place, {10, 11, 12},
+    hzcc::StatusOr<InPlaceHelper> status_or(std::in_place, {10, 11, 12},
                                             std::make_unique<int>(13));
     status_or.emplace({1, 2, 3}, std::make_unique<int>(4));
     EXPECT_THAT(status_or,
                 IsOkAndHolds(AllOf(Field(&InPlaceHelper::x, ElementsAre(1, 2, 3)),
                                    Field(&InPlaceHelper::y, Pointee(4)))));
-    status_or = absl::InvalidArgumentError("msg");
+    status_or = hzcc::InvalidArgumentError("msg");
     EXPECT_FALSE(status_or.ok());
-    EXPECT_EQ(status_or.status().code(), hzcc::StatusCode::kInvalidArgument);
+    EXPECT_EQ(status_or.status().code(), hzcc::StatusCode::kInvalidArguments);
     EXPECT_EQ(status_or.status().message(), "msg");
     status_or.emplace({1, 2, 3}, std::make_unique<int>(4));
     EXPECT_THAT(status_or,
@@ -641,9 +618,9 @@ TEST(StatusOr, TestCopyCtorStatusOk) {
 }
 
 TEST(StatusOr, TestCopyCtorStatusNotOk) {
-    hzcc::StatusOr<int> original(absl::CancelledError());
+    hzcc::StatusOr<int> original(hzcc::UnavailableError(""));
     hzcc::StatusOr<int> copy(original);
-    EXPECT_EQ(copy.status().code(), hzcc::StatusCode::kCancelled);
+    EXPECT_EQ(copy.status().code(), hzcc::StatusCode::kUnavailable);
 }
 
 TEST(StatusOr, TestCopyCtorNonAssignable) {
@@ -664,7 +641,7 @@ TEST(StatusOr, TestCopyCtorStatusOKConverting) {
 }
 
 TEST(StatusOr, TestCopyCtorStatusNotOkConverting) {
-    hzcc::StatusOr<int> original(absl::CancelledError());
+    hzcc::StatusOr<int> original(hzcc::UnavailableError(""));
     hzcc::StatusOr<double> copy(original);
     EXPECT_EQ(copy.status(), original.status());
 }
@@ -708,7 +685,7 @@ TEST(StatusOr, TestAssignmentStatusOk) {
 TEST(StatusOr, TestAssignmentStatusNotOk) {
     // Copy assignment
     {
-        const hzcc::Status expected = absl::CancelledError();
+        const hzcc::Status expected = hzcc::UnavailableError("");
         hzcc::StatusOr<int> source(expected);
 
         hzcc::StatusOr<int> target;
@@ -723,7 +700,7 @@ TEST(StatusOr, TestAssignmentStatusNotOk) {
 
     // Move assignment
     {
-        const hzcc::Status expected = absl::CancelledError();
+        const hzcc::Status expected = hzcc::UnavailableError("");
         hzcc::StatusOr<int> source(expected);
 
         hzcc::StatusOr<int> target;
@@ -758,7 +735,7 @@ TEST(StatusOr, TestAssignmentStatusOKConverting) {
     // Move assignment
     {
         const auto p = new int(17);
-        hzcc::StatusOr<std::unique_ptr<int>> source(absl::WrapUnique(p));
+        hzcc::StatusOr<std::unique_ptr<int>> source{std::unique_ptr<int>(p)};
 
         hzcc::StatusOr<std::shared_ptr<int>> target;
         target = std::move(source);
@@ -891,7 +868,7 @@ TEST(StatusOr, BooleanConstructionWithImplicitCasts) {
         IsOkAndHolds(Field(&ImplicitConstructibleFromBool::x, false)));
     EXPECT_THAT(
         hzcc::StatusOr<ImplicitConstructibleFromBool>{
-            hzcc::StatusOr<bool>(absl::InvalidArgumentError(""))},
+            hzcc::StatusOr<bool>(hzcc::InvalidArgumentError(""))},
         Not(IsOk()));
 
     EXPECT_THAT(
@@ -900,7 +877,7 @@ TEST(StatusOr, BooleanConstructionWithImplicitCasts) {
         IsOkAndHolds(Field(&ImplicitConstructibleFromBool::x, false)));
     EXPECT_THAT(
         hzcc::StatusOr<ImplicitConstructibleFromBool>{
-            hzcc::StatusOr<ConvertibleToBool>(absl::InvalidArgumentError(""))},
+            hzcc::StatusOr<ConvertibleToBool>(hzcc::InvalidArgumentError(""))},
         Not(IsOk()));
 }
 
@@ -959,13 +936,13 @@ TEST(StatusOr, ExplicitConstruction) {
 TEST(StatusOr, ImplicitConstruction) {
     // Check implicit casting works.
     auto status_or =
-        absl::implicit_cast<hzcc::StatusOr<absl::variant<int, std::string>>>(10);
+        absl::implicit_cast<hzcc::StatusOr<std::variant<int, std::string>>>(10);
     EXPECT_THAT(status_or, IsOkAndHolds(VariantWith<int>(10)));
 }
 
 TEST(StatusOr, ImplicitConstructionFromInitliazerList) {
     // Note: dropping the explicit std::initializer_list<int> is not supported
-    // by hzcc::StatusOr or absl::optional.
+    // by hzcc::StatusOr or std::optional.
     auto status_or =
         absl::implicit_cast<hzcc::StatusOr<std::vector<int>>>({{10, 20, 30}});
     EXPECT_THAT(status_or, IsOkAndHolds(ElementsAre(10, 20, 30)));
@@ -980,7 +957,7 @@ TEST(StatusOr, UniquePtrImplicitConstruction) {
 TEST(StatusOr, NestedStatusOrCopyAndMoveConstructorTests) {
     hzcc::StatusOr<hzcc::StatusOr<CopyDetector>> status_or = CopyDetector(10);
     hzcc::StatusOr<hzcc::StatusOr<CopyDetector>> status_error =
-        absl::InvalidArgumentError("foo");
+        hzcc::InvalidArgumentError("foo");
     EXPECT_THAT(status_or,
                 IsOkAndHolds(IsOkAndHolds(CopyDetectorHas(10, true, false))));
     hzcc::StatusOr<hzcc::StatusOr<CopyDetector>> a = status_or;
@@ -1004,7 +981,7 @@ TEST(StatusOr, NestedStatusOrCopyAndMoveConstructorTests) {
 TEST(StatusOr, NestedStatusOrCopyAndMoveAssignment) {
     hzcc::StatusOr<hzcc::StatusOr<CopyDetector>> status_or = CopyDetector(10);
     hzcc::StatusOr<hzcc::StatusOr<CopyDetector>> status_error =
-        absl::InvalidArgumentError("foo");
+        hzcc::InvalidArgumentError("foo");
     hzcc::StatusOr<hzcc::StatusOr<CopyDetector>> a;
     a = status_or;
     EXPECT_THAT(a, IsOkAndHolds(IsOkAndHolds(CopyDetectorHas(10, false, true))));
@@ -1089,49 +1066,49 @@ TEST(StatusOr, CopyAndMoveAbility) {
 }
 
 TEST(StatusOr, StatusOrAnyCopyAndMoveConstructorTests) {
-    hzcc::StatusOr<absl::any> status_or = CopyDetector(10);
-    hzcc::StatusOr<absl::any> status_error = absl::InvalidArgumentError("foo");
+    hzcc::StatusOr<std::any> status_or = CopyDetector(10);
+    hzcc::StatusOr<std::any> status_error = hzcc::InvalidArgumentError("foo");
     EXPECT_THAT(
         status_or,
         IsOkAndHolds(AnyWith<CopyDetector>(CopyDetectorHas(10, true, false))));
-    hzcc::StatusOr<absl::any> a = status_or;
+    hzcc::StatusOr<std::any> a = status_or;
     EXPECT_THAT(
         a, IsOkAndHolds(AnyWith<CopyDetector>(CopyDetectorHas(10, false, true))));
-    hzcc::StatusOr<absl::any> a_err = status_error;
+    hzcc::StatusOr<std::any> a_err = status_error;
     EXPECT_THAT(a_err, Not(IsOk()));
 
-    const hzcc::StatusOr<absl::any>& cref = status_or;
+    const hzcc::StatusOr<std::any>& cref = status_or;
     // No lint for no-change copy.
-    hzcc::StatusOr<absl::any> b = cref;  // NOLINT
+    hzcc::StatusOr<std::any> b = cref;  // NOLINT
     EXPECT_THAT(
         b, IsOkAndHolds(AnyWith<CopyDetector>(CopyDetectorHas(10, false, true))));
-    const hzcc::StatusOr<absl::any>& cref_err = status_error;
+    const hzcc::StatusOr<std::any>& cref_err = status_error;
     // No lint for no-change copy.
-    hzcc::StatusOr<absl::any> b_err = cref_err;  // NOLINT
+    hzcc::StatusOr<std::any> b_err = cref_err;  // NOLINT
     EXPECT_THAT(b_err, Not(IsOk()));
 
-    hzcc::StatusOr<absl::any> c = std::move(status_or);
+    hzcc::StatusOr<std::any> c = std::move(status_or);
     EXPECT_THAT(
         c, IsOkAndHolds(AnyWith<CopyDetector>(CopyDetectorHas(10, true, false))));
-    hzcc::StatusOr<absl::any> c_err = std::move(status_error);
+    hzcc::StatusOr<std::any> c_err = std::move(status_error);
     EXPECT_THAT(c_err, Not(IsOk()));
 }
 
 TEST(StatusOr, StatusOrAnyCopyAndMoveAssignment) {
-    hzcc::StatusOr<absl::any> status_or = CopyDetector(10);
-    hzcc::StatusOr<absl::any> status_error = absl::InvalidArgumentError("foo");
-    hzcc::StatusOr<absl::any> a;
+    hzcc::StatusOr<std::any> status_or = CopyDetector(10);
+    hzcc::StatusOr<std::any> status_error = hzcc::InvalidArgumentError("foo");
+    hzcc::StatusOr<std::any> a;
     a = status_or;
     EXPECT_THAT(
         a, IsOkAndHolds(AnyWith<CopyDetector>(CopyDetectorHas(10, false, true))));
     a = status_error;
     EXPECT_THAT(a, Not(IsOk()));
 
-    const hzcc::StatusOr<absl::any>& cref = status_or;
+    const hzcc::StatusOr<std::any>& cref = status_or;
     a = cref;
     EXPECT_THAT(
         a, IsOkAndHolds(AnyWith<CopyDetector>(CopyDetectorHas(10, false, true))));
-    const hzcc::StatusOr<absl::any>& cref_err = status_error;
+    const hzcc::StatusOr<std::any>& cref_err = status_error;
     a = cref_err;
     EXPECT_THAT(a, Not(IsOk()));
     a = std::move(status_or);
@@ -1169,15 +1146,15 @@ TEST(StatusOr, StatusOrCopyAndMoveTestsAssignment) {
 }
 
 TEST(StatusOr, AbslAnyAssignment) {
-    EXPECT_FALSE((std::is_assignable<hzcc::StatusOr<absl::any>,
+    EXPECT_FALSE((std::is_assignable<hzcc::StatusOr<std::any>,
                                      hzcc::StatusOr<int>>::value));
-    hzcc::StatusOr<absl::any> status_or;
-    status_or = absl::InvalidArgumentError("foo");
+    hzcc::StatusOr<std::any> status_or;
+    status_or = hzcc::InvalidArgumentError("foo");
     EXPECT_THAT(status_or, Not(IsOk()));
 }
 
 TEST(StatusOr, ImplicitAssignment) {
-    hzcc::StatusOr<absl::variant<int, std::string>> status_or;
+    hzcc::StatusOr<std::variant<int, std::string>> status_or;
     status_or = 10;
     EXPECT_THAT(status_or, IsOkAndHolds(VariantWith<int>(10)));
 }
@@ -1216,7 +1193,7 @@ TEST(StatusOr, Pointer) {
 TEST(StatusOr, TestAssignmentStatusNotOkConverting) {
     // Copy assignment
     {
-        const hzcc::Status expected = absl::CancelledError();
+        const hzcc::Status expected = hzcc::UnavailableError("");
         hzcc::StatusOr<int> source(expected);
 
         hzcc::StatusOr<double> target;
@@ -1231,7 +1208,7 @@ TEST(StatusOr, TestAssignmentStatusNotOkConverting) {
 
     // Move assignment
     {
-        const hzcc::Status expected = absl::CancelledError();
+        const hzcc::Status expected = hzcc::UnavailableError("");
         hzcc::StatusOr<int> source(expected);
 
         hzcc::StatusOr<double> target;
@@ -1262,7 +1239,7 @@ TEST(StatusOr, SelfAssignment) {
 
     // Copy-assignment, error status
     {
-        hzcc::StatusOr<int> so = absl::NotFoundError("taco");
+        hzcc::StatusOr<int> so = hzcc::NotFoundError("taco");
         so = *&so;
 
         EXPECT_FALSE(so.ok());
@@ -1285,7 +1262,7 @@ TEST(StatusOr, SelfAssignment) {
 
     // Move-assignment with copyable type, error status
     {
-        hzcc::StatusOr<int> so = absl::NotFoundError("taco");
+        hzcc::StatusOr<int> so = hzcc::NotFoundError("taco");
 
         // Fool the compiler, which otherwise complains.
         auto& same = so;
@@ -1312,7 +1289,7 @@ TEST(StatusOr, SelfAssignment) {
 
     // Move-assignment with non-copyable type, error status
     {
-        hzcc::StatusOr<std::unique_ptr<int>> so = absl::NotFoundError("taco");
+        hzcc::StatusOr<std::unique_ptr<int>> so = hzcc::NotFoundError("taco");
 
         // Fool the compiler, which otherwise complains.
         auto& same = so;
@@ -1451,9 +1428,9 @@ TEST(StatusOr, PerfectForwardingAssignment) {
 TEST(StatusOr, TestStatus) {
     hzcc::StatusOr<int> good(4);
     EXPECT_TRUE(good.ok());
-    hzcc::StatusOr<int> bad(absl::CancelledError());
+    hzcc::StatusOr<int> bad(hzcc::UnavailableError(""));
     EXPECT_FALSE(bad.ok());
-    EXPECT_EQ(bad.status().code(), hzcc::StatusCode::kCancelled);
+    EXPECT_EQ(bad.status().code(), hzcc::StatusCode::kUnavailable);
 }
 
 TEST(StatusOr, OperatorStarRefQualifiers) {
@@ -1519,7 +1496,7 @@ TEST(StatusOr, OperatorArrow) {
 }
 
 TEST(StatusOr, RValueStatus) {
-    hzcc::StatusOr<int> so(absl::NotFoundError("taco"));
+    hzcc::StatusOr<int> so(hzcc::NotFoundError("taco"));
     const hzcc::Status s = std::move(so).status();
 
     EXPECT_EQ(s.code(), hzcc::StatusCode::kNotFound);
@@ -1552,9 +1529,9 @@ TEST(StatusOr, TestPointerDefaultCtor) {
 }
 
 TEST(StatusOr, TestPointerStatusCtor) {
-    hzcc::StatusOr<int*> thing(absl::CancelledError());
+    hzcc::StatusOr<int*> thing(hzcc::UnavailableError(""));
     EXPECT_FALSE(thing.ok());
-    EXPECT_EQ(thing.status().code(), hzcc::StatusCode::kCancelled);
+    EXPECT_EQ(thing.status().code(), hzcc::StatusCode::kUnavailable);
 }
 
 TEST(StatusOr, TestPointerValueCtor) {
@@ -1596,9 +1573,9 @@ TEST(StatusOr, TestPointerCopyCtorStatusOk) {
 }
 
 TEST(StatusOr, TestPointerCopyCtorStatusNotOk) {
-    hzcc::StatusOr<int*> original(absl::CancelledError());
+    hzcc::StatusOr<int*> original(hzcc::UnavailableError(""));
     hzcc::StatusOr<int*> copy(original);
-    EXPECT_EQ(copy.status().code(), hzcc::StatusCode::kCancelled);
+    EXPECT_EQ(copy.status().code(), hzcc::StatusCode::kUnavailable);
 }
 
 TEST(StatusOr, TestPointerCopyCtorStatusOKConverting) {
@@ -1610,9 +1587,9 @@ TEST(StatusOr, TestPointerCopyCtorStatusOKConverting) {
 }
 
 TEST(StatusOr, TestPointerCopyCtorStatusNotOkConverting) {
-    hzcc::StatusOr<Derived*> original(absl::CancelledError());
+    hzcc::StatusOr<Derived*> original(hzcc::UnavailableError(""));
     hzcc::StatusOr<Base2*> copy(original);
-    EXPECT_EQ(copy.status().code(), hzcc::StatusCode::kCancelled);
+    EXPECT_EQ(copy.status().code(), hzcc::StatusCode::kUnavailable);
 }
 
 TEST(StatusOr, TestPointerAssignmentStatusOk) {
@@ -1625,10 +1602,10 @@ TEST(StatusOr, TestPointerAssignmentStatusOk) {
 }
 
 TEST(StatusOr, TestPointerAssignmentStatusNotOk) {
-    hzcc::StatusOr<int*> source(absl::CancelledError());
+    hzcc::StatusOr<int*> source(hzcc::UnavailableError(""));
     hzcc::StatusOr<int*> target;
     target = source;
-    EXPECT_EQ(target.status().code(), hzcc::StatusCode::kCancelled);
+    EXPECT_EQ(target.status().code(), hzcc::StatusCode::kUnavailable);
 }
 
 TEST(StatusOr, TestPointerAssignmentStatusOKConverting) {
@@ -1641,7 +1618,7 @@ TEST(StatusOr, TestPointerAssignmentStatusOKConverting) {
 }
 
 TEST(StatusOr, TestPointerAssignmentStatusNotOkConverting) {
-    hzcc::StatusOr<Derived*> source(absl::CancelledError());
+    hzcc::StatusOr<Derived*> source(hzcc::UnavailableError(""));
     hzcc::StatusOr<Base2*> target;
     target = source;
     EXPECT_EQ(target.status(), source.status());
@@ -1651,8 +1628,8 @@ TEST(StatusOr, TestPointerStatus) {
     const int kI = 0;
     hzcc::StatusOr<const int*> good(&kI);
     EXPECT_TRUE(good.ok());
-    hzcc::StatusOr<const int*> bad(absl::CancelledError());
-    EXPECT_EQ(bad.status().code(), hzcc::StatusCode::kCancelled);
+    hzcc::StatusOr<const int*> bad(hzcc::UnavailableError(""));
+    EXPECT_EQ(bad.status().code(), hzcc::StatusCode::kUnavailable);
 }
 
 TEST(StatusOr, TestPointerValue) {
@@ -1713,7 +1690,7 @@ TEST(StatusOr, ValueOrOk) {
 }
 
 TEST(StatusOr, ValueOrDefault) {
-    const hzcc::StatusOr<int> status_or = absl::CancelledError();
+    const hzcc::StatusOr<int> status_or = hzcc::UnavailableError("");
     EXPECT_EQ(status_or.value_or(-1), -1);
 }
 
@@ -1724,7 +1701,7 @@ TEST(StatusOr, MoveOnlyValueOrOk) {
 }
 
 TEST(StatusOr, MoveOnlyValueOrDefault) {
-    EXPECT_THAT(hzcc::StatusOr<std::unique_ptr<int>>(absl::CancelledError())
+    EXPECT_THAT(hzcc::StatusOr<std::unique_ptr<int>>(hzcc::UnavailableError(""))
                     .value_or(std::make_unique<int>(-1)),
                 Pointee(-1));
 }
@@ -1740,12 +1717,12 @@ TEST(StatusOr, EqualityOperator) {
     constexpr size_t kNumCases = 4;
     std::array<hzcc::StatusOr<int>, kNumCases> group1 = {
         hzcc::StatusOr<int>(1), hzcc::StatusOr<int>(2),
-        hzcc::StatusOr<int>(absl::InvalidArgumentError("msg")),
-        hzcc::StatusOr<int>(absl::InternalError("msg"))};
+        hzcc::StatusOr<int>(hzcc::InvalidArgumentError("msg")),
+        hzcc::StatusOr<int>(hzcc::InternalError("msg"))};
     std::array<hzcc::StatusOr<int>, kNumCases> group2 = {
         hzcc::StatusOr<int>(1), hzcc::StatusOr<int>(2),
-        hzcc::StatusOr<int>(absl::InvalidArgumentError("msg")),
-        hzcc::StatusOr<int>(absl::InternalError("msg"))};
+        hzcc::StatusOr<int>(hzcc::InvalidArgumentError("msg")),
+        hzcc::StatusOr<int>(hzcc::InternalError("msg"))};
     for (size_t i = 0; i < kNumCases; ++i) {
         for (size_t j = 0; j < kNumCases; ++j) {
             if (i == j) {
@@ -1787,13 +1764,13 @@ struct StatusOrConversionBase<T, ConvTraits::kImplicit> {
      * @return The test error identifying this conversion path.
      */
     operator hzcc::StatusOr<T>() const& {  // NOLINT
-        return absl::InvalidArgumentError("conversion to hzcc::StatusOr");
+        return hzcc::InvalidArgumentError("conversion to hzcc::StatusOr");
     }
     /** @brief Produce an invalid-argument result to identify the selected StatusOr conversion.
      * @return The test error identifying this conversion path.
      */
     operator hzcc::StatusOr<T>() && {  // NOLINT
-        return absl::InvalidArgumentError("conversion to hzcc::StatusOr");
+        return hzcc::InvalidArgumentError("conversion to hzcc::StatusOr");
     }
 };
 
@@ -1806,13 +1783,13 @@ struct StatusOrConversionBase<T, ConvTraits::kExplicit> {
      * @return The test error identifying this conversion path.
      */
     explicit operator hzcc::StatusOr<T>() const& {
-        return absl::InvalidArgumentError("conversion to hzcc::StatusOr");
+        return hzcc::InvalidArgumentError("conversion to hzcc::StatusOr");
     }
     /** @brief Produce an invalid-argument result to identify the selected StatusOr conversion.
      * @return The test error identifying this conversion path.
      */
     explicit operator hzcc::StatusOr<T>() && {
-        return absl::InvalidArgumentError("conversion to hzcc::StatusOr");
+        return hzcc::InvalidArgumentError("conversion to hzcc::StatusOr");
     }
 };
 
@@ -1871,13 +1848,13 @@ struct StatusConversionBase<ConvTraits::kImplicit> {
      * @return The test error identifying this conversion path.
      */
     operator hzcc::Status() const& {  // NOLINT
-        return absl::InternalError("conversion to Status");
+        return hzcc::InternalError("conversion to Status");
     }
     /** @brief Produce an internal error to identify the selected Status conversion.
      * @return The test error identifying this conversion path.
      */
     operator hzcc::Status() && {  // NOLINT
-        return absl::InternalError("conversion to Status");
+        return hzcc::InternalError("conversion to Status");
     }
 };
 
@@ -1889,13 +1866,13 @@ struct StatusConversionBase<ConvTraits::kExplicit> {
      * @return The test error identifying this conversion path.
      */
     explicit operator hzcc::Status() const& {  // NOLINT
-        return absl::InternalError("conversion to Status");
+        return hzcc::InternalError("conversion to Status");
     }
     /** @brief Produce an internal error to identify the selected Status conversion.
      * @return The test error identifying this conversion path.
      */
     explicit operator hzcc::Status() && {  // NOLINT
-        return absl::InternalError("conversion to Status");
+        return hzcc::InternalError("conversion to Status");
     }
 };
 
@@ -1936,7 +1913,7 @@ struct ConvertibleToAnyStatusOr {
      */
     template <typename T>
     operator hzcc::StatusOr<T>() const {  // NOLINT
-        return absl::InvalidArgumentError("Conversion to hzcc::StatusOr");
+        return hzcc::InvalidArgumentError("Conversion to hzcc::StatusOr");
     }
 };
 
@@ -2139,4 +2116,3 @@ TEST(StatusOr, AssignmentFromTypeConvertibleToStatus) {
     }
 }
 }  // namespace
-#endif  // HZCC_UTILS_STATUS_TEST_STATUS_OR_H

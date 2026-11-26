@@ -1,6 +1,7 @@
 //
 // Created by chen_ on 2022/12/29.
 //
+#include <absl/cleanup/cleanup.h>
 #include <absl/strings/str_cat.h>
 #include <glog/logging.h>
 
@@ -23,6 +24,20 @@
 #include "utils/status/statusor.h"
 
 namespace hzcc::semantic {
+namespace {
+/** @brief Describe an operand for a diagnostic, including its name when unresolved. */
+std::string operand_type(const ast::Expr& operand) {
+    if (const auto type = operand.type()) return type->to_str();
+    if (const auto* ref = dynamic_cast<const ast::DeclRefExpr*>(&operand)) {
+        return absl::StrCat("<unresolved type of '", ref->var_name(), "'>");
+    }
+    if (const auto* call = dynamic_cast<const ast::FuncCallStmt*>(&operand)) {
+        return absl::StrCat("<unresolved return type of '", call->name(), "'>");
+    }
+    return absl::StrCat("<unresolved type of ", operand.NodeName(), ">");
+}
+}  // namespace
+
 Status analyzer::visit(hzcc::ast::VarDecl* p_expr) {
     // fist check if type is exist
     HZCC_CHECK_OK_OR_RETURN(p_expr->type_expr()->visit(*this));
@@ -43,37 +58,31 @@ Status analyzer::visit(hzcc::ast::VarDecl* p_expr) {
 
     // variable cannot be defined as void
     auto curr_type = p_expr->type_expr()->type();
-    if (curr_type->is<TypeCategory::Numerical>() &&
-        curr_type == ast::GetNumericalTypeOf<PrimitiveType::kVoid>()) {
+    if (!curr_type)
+        return CompileError(p_expr->loc(),
+                            absl::StrCat("Variable '", p_expr->name(),
+                                         "' has an unresolved declared type"));
+    if (ast::IsTypeOf<PrimitiveType::kVoid>(curr_type)) {
         return CompileError(
             p_expr->loc(),
             "Variable '" + std::string(p_expr->name()) + "' has type void");
     }
 
-    // add current variable to the _ctx
-    _ctx.add_var(p_expr->loc(), curr_type, p_expr->name());
-
     // check if type is match if there is an initializer
     if (p_expr->has_init()) {
-        auto init_type = p_expr->init_expr()->type();
-        if (init_type != curr_type) {
-            // here we're trying to cast the type to the correct type, since
-            // initializer always at right side, we always need rval for this
-            // cast
-            auto cast_ret = ast::Cast::apply(
-                true, std::move(p_expr->init_expr()), curr_type);
-
-            if (!cast_ret.ok()) {
-                return CompileError(
-                    p_expr->loc(),
-                    "Cannot cast from " + init_type->to_str() + " to " +
-                        curr_type->to_str() +
-                        "since :" + std::string(cast_ret.status().message()));
-            }
-
-            p_expr->init_expr() = std::move(cast_ret.value());
+        HZCC_CHECK_OK_OR_RETURN(p_expr->init_expr()->visit(*this));
+        // here we're trying to cast the type to the correct type, since
+        // initializer always at right side, we always need rval for this
+        // cast
+        auto cast = ast::Cast::apply_to(true, p_expr->init_expr(), curr_type);
+        if (!cast.ok()) {
+            return CompileError(p_expr->init_expr()->loc(),
+                                absl::StrCat("Initializer for variable '", p_expr->name(),
+                                             "': ", cast.message()));
         }
     }
+    // add current variable to the _ctx
+    _ctx.add_var(p_expr->loc(), curr_type, p_expr->name());
     return NoError();
 }
 
@@ -88,20 +97,13 @@ Status analyzer::visit(hzcc::ast::ReturnStmt* p_expr) {
     }
 
     // check if return type is match
-    if (p_expr->ret_expr()->type() == _ctx.ret_type()) {
-        auto return_type = p_expr->ret_expr()->type();
+    if (const auto required = _ctx.ret_type()) {
         // cast expr need rvalue to return
-        auto ret_expr_ret = ast::Cast::apply(
-            true, std::move(p_expr->ret_expr()), _ctx.ret_type().value());
-
-        if (!ret_expr_ret.ok()) {
-            return CompileError(p_expr->loc(),
-                                "return stmt type is not match, "
-                                "require: " +
-                                    _ctx.ret_type().value()->to_str() +
-                                    ", got: " + return_type->to_str());
+        auto cast = ast::Cast::apply_to(true, p_expr->ret_expr(), *required);
+        if (!cast.ok()) {
+            return CompileError(p_expr->ret_expr()->loc(),
+                                absl::StrCat("Return type mismatch: ", cast.message()));
         }
-        p_expr->ret_expr() = std::move(ret_expr_ret.value());
     }
 
     return NoError();
@@ -112,31 +114,22 @@ Status analyzer::visit(hzcc::ast::AssignExpr* p_expr) {
     HZCC_CHECK_OK_OR_RETURN(p_expr->lhs()->visit(*this));
     HZCC_CHECK_OK_OR_RETURN(p_expr->rhs()->visit(*this));
 
+    const auto op = to_string(p_expr->op_type());
     // LHS has to be an assignable node
-    if (!p_expr->lhs()->IsReturnLValue()) {
-        return CompileError(p_expr->lhs()->loc(),
-                            "Left-hand side is not assignable");
-    }
-
     // LHS cannot be const variable
-    if (p_expr->lhs()->type()->is<Qualifier::CONST>()) {
-        VLOG(SYNTAX_LOG) << "Left hand side [" << p_expr->lhs()->UniqueName()
-                         << "is not assignable";
-        return CompileError(p_expr->lhs()->loc(),
-                            "Left hand side is not assignable");
+    const auto dest = p_expr->lhs()->type();
+    if (!p_expr->lhs()->IsReturnLValue() || !dest || dest->is<Qualifier::CONST>()) {
+        return CompileError(
+            p_expr->lhs()->loc(),
+            absl::StrCat("Left-hand side of '", operand_type(*p_expr->lhs()), " ", op,
+                         " ", operand_type(*p_expr->rhs()), "' ",
+                         dest ? "is not assignable" : "has an unresolved type"));
     }
-
-    if (!(p_expr->lhs()->type() == p_expr->rhs()->type())) {
-        auto rhs_type = p_expr->rhs()->type();
-        auto rhs_ret = ast::Cast::apply(true, std::move(p_expr->rhs()),
-                                        p_expr->lhs()->type());
-        if (!rhs_ret.ok()) {
-            return CompileError(p_expr->rhs()->loc(),
-                                "Assignment mismatch " +
-                                    p_expr->lhs()->type()->to_str() +
-                                    " += " + rhs_type->to_str());
-        }
-        p_expr->rhs() = std::move(rhs_ret.value());
+    auto cast = ast::Cast::apply_to(true, p_expr->rhs(), dest);
+    if (!cast.ok()) {
+        return CompileError(
+            p_expr->rhs()->loc(),
+            absl::StrCat("Assignment mismatch for '", op, "': ", cast.message()));
     }
     return NoError();
 }
@@ -147,200 +140,93 @@ Status analyzer::visit(hzcc::ast::TernaryExpr* p_expr) {
     HZCC_CHECK_OK_OR_RETURN(p_expr->true_expr()->visit(*this));
     HZCC_CHECK_OK_OR_RETURN(p_expr->false_expr()->visit(*this));
 
-    // todo only allow char
     // true expr and false expr must be same type
-    if (!(p_expr->true_expr()->type() == p_expr->false_expr()->type())) {
-        auto false_expr_type = p_expr->false_expr()->type();
-        auto false_expr_type_ret = ast::Cast::apply(
-            true, std::move(p_expr->false_expr()), p_expr->true_expr()->type());
-        if (!false_expr_type_ret.ok()) {
-            return CompileError(p_expr->loc(),
-                                "Expect type " +
-                                    p_expr->true_expr()->type()->to_str() +
-                                    " but get " + false_expr_type->to_str());
-        }
-        p_expr->false_expr() = std::move(false_expr_type_ret.value());
+    const auto target = p_expr->true_expr()->type();
+    auto cast = ast::Cast::apply_to(true, p_expr->false_expr(), target);
+    if (!cast.ok()) {
+        return CompileError(
+            target ? p_expr->false_expr()->loc() : p_expr->true_expr()->loc(),
+            absl::StrCat("Incompatible branches of '?:': ", cast.message()));
     }
     return NoError();
 }
+
+namespace {
+/** @brief Check both numerical operands and widen the lower-ranked operand in place. */
+Status check_binary(analyzer& visitor, ast::OperatorBase& expr, std::string_view op,
+                    bool integral_only) {
+    // check lhs and rhs first
+    HZCC_CHECK_OK_OR_RETURN(expr.lhs()->visit(visitor));
+    HZCC_CHECK_OK_OR_RETURN(expr.rhs()->visit(visitor));
+    const auto left = expr.lhs()->type();
+    const auto right = expr.rhs()->type();
+    auto reject = [&](const ast::Expr& operand, std::string_view reason) {
+        return CompileError(
+            operand.loc(),
+            absl::StrCat("No match for binary operation '", operand_type(*expr.lhs()),
+                         " ", op, " ", operand_type(*expr.rhs()),
+                         "': ", &operand == expr.lhs().get() ? "left" : "right",
+                         " operand ", reason));
+    };
+    for (const auto* operand : {expr.lhs().get(), expr.rhs().get()}) {
+        const auto& type = operand == expr.lhs().get() ? left : right;
+        if (!type) return reject(*operand, "has an unresolved type");
+        // LHS and rhs should not be void
+        if (ast::IsTypeOf<PrimitiveType::kVoid>(type))
+            return reject(*operand, "has type void");
+        if (!type->is<TypeCategory::Numerical>())
+            return reject(*operand, "must have numerical type");
+        if (integral_only && !type->as<ast::NumericalType>()->is_integer()) {
+            return reject(*operand, "must have integer type");
+        }
+    }
+    if (*left != *right) {
+        const bool widen_left = left->as<ast::NumericalType>()->widening_rank() <
+                                right->as<ast::NumericalType>()->widening_rank();
+        auto& narrower = widen_left ? expr.lhs() : expr.rhs();
+        auto cast = ast::Cast::apply_to(true, narrower, widen_left ? right : left);
+        if (!cast.ok())
+            return reject(*narrower, absl::StrCat("conversion failed: ", cast.message()));
+    }
+    return NoError();
+}
+}  // namespace
 
 Status analyzer::visit(hzcc::ast::LogicalExpr* p_expr) {
-    // check lhs and rhs first
-    HZCC_CHECK_OK_OR_RETURN(p_expr->lhs()->visit(*this));
-    HZCC_CHECK_OK_OR_RETURN(p_expr->rhs()->visit(*this));
-
-    // todo only allow char
-    auto lhs_type = p_expr->lhs()->type();
-    auto rhs_type = p_expr->rhs()->type();
-
-    // LHS and rhs should not be void
-    if (ast::IsTypeOf<PrimitiveType::kVoid>(rhs_type) ||
-        ast::IsTypeOf<PrimitiveType::kVoid>(lhs_type)) {
-        return CompileError(ast::IsTypeOf<PrimitiveType::kVoid>(rhs_type)
-                                ? p_expr->lhs()->loc()
-                                : p_expr->rhs()->loc(),
-                            "No match for binary operation void ");
-    }
-
-    // for logical operator we only allow numeric type
-    if (rhs_type->is<TypeCategory::Numerical>() ||
-        rhs_type->is<TypeCategory::Numerical>()) {
-        return CompileError(rhs_type->is<TypeCategory::Numerical>()
-                                ? p_expr->lhs()->loc()
-                                : p_expr->rhs()->loc(),
-                            "No match for binary operation array ");
-    }
-
-    if (!(lhs_type == rhs_type)) {
-        auto rhs_ret =
-            ast::Cast::apply(true, std::move(p_expr->rhs()), lhs_type);
-        if (!rhs_ret.ok()) {
-            return CompileError(p_expr->rhs()->loc(),
-                                "No match for binary operation " +
-                                    lhs_type->to_str() + " " +
-                                    rhs_type->to_str());
-        }
-    }
-    return NoError();
+    return check_binary(*this, *p_expr, to_string(p_expr->op_type()), false);
 }
+
 Status analyzer::visit(hzcc::ast::BitwiseExpr* p_expr) {
-    // check lhs and rhs first
-    HZCC_CHECK_OK_OR_RETURN(p_expr->lhs()->visit(*this));
-    HZCC_CHECK_OK_OR_RETURN(p_expr->rhs()->visit(*this));
-
-    // todo only allow char
-    auto lhs_type = p_expr->lhs()->type();
-    auto rhs_type = p_expr->rhs()->type();
-
-    // LHS and rhs should not be void
-    if (ast::IsTypeOf<PrimitiveType::kVoid>(rhs_type) ||
-        ast::IsTypeOf<PrimitiveType::kVoid>(lhs_type)) {
-        return CompileError(ast::IsTypeOf<PrimitiveType::kVoid>(rhs_type)
-                                ? p_expr->lhs()->loc()
-                                : p_expr->rhs()->loc(),
-                            "No match for binary operation void ");
-    }
-
-    // for logical operator we only allow numeric type
-    if (rhs_type->is<TypeCategory::Numerical>() ||
-        rhs_type->is<TypeCategory::Numerical>()) {
-        return CompileError(rhs_type->is<TypeCategory::Numerical>()
-                                ? p_expr->lhs()->loc()
-                                : p_expr->rhs()->loc(),
-                            "No match for binary operation array ");
-    }
-
-    if (!(lhs_type == rhs_type)) {
-        auto rhs_ret =
-            ast::Cast::apply(true, std::move(p_expr->rhs()), lhs_type);
-        if (!rhs_ret.ok()) {
-            return CompileError(p_expr->rhs()->loc(),
-                                "No match for binary operation " +
-                                    lhs_type->to_str() + " " +
-                                    rhs_type->to_str());
-        }
-    }
-    return NoError();
+    return check_binary(*this, *p_expr, to_string(p_expr->op_type()), true);
 }
+
 Status analyzer::visit(hzcc::ast::RelationalExpr* p_expr) {
-    // check lhs and rhs first
-    HZCC_CHECK_OK_OR_RETURN(p_expr->lhs()->visit(*this));
-    HZCC_CHECK_OK_OR_RETURN(p_expr->rhs()->visit(*this));
-
-    // todo only allow char
-    auto lhs_type = p_expr->lhs()->type();
-    auto rhs_type = p_expr->rhs()->type();
-
-    // LHS and rhs should not be void
-    if (ast::IsTypeOf<PrimitiveType::kVoid>(rhs_type) ||
-        ast::IsTypeOf<PrimitiveType::kVoid>(lhs_type)) {
-        return CompileError(ast::IsTypeOf<PrimitiveType::kVoid>(rhs_type)
-                                ? p_expr->lhs()->loc()
-                                : p_expr->rhs()->loc(),
-                            "No match for binary operation void ");
-    }
-
-    // for logical operator we only allow numeric type
-    if (rhs_type->is<TypeCategory::Numerical>() ||
-        rhs_type->is<TypeCategory::Numerical>()) {
-        return CompileError(rhs_type->is<TypeCategory::Numerical>()
-                                ? p_expr->lhs()->loc()
-                                : p_expr->rhs()->loc(),
-                            "No match for binary operation array ");
-    }
-
-    if (!(lhs_type == rhs_type)) {
-        auto rhs_ret =
-            ast::Cast::apply(true, std::move(p_expr->rhs()), lhs_type);
-        if (!rhs_ret.ok()) {
-            return CompileError(p_expr->rhs()->loc(),
-                                "No match for binary operation " +
-                                    lhs_type->to_str() + " " +
-                                    rhs_type->to_str());
-        }
-    }
-    return NoError();
+    return check_binary(*this, *p_expr, to_string(p_expr->op_type()), false);
 }
+
 Status analyzer::visit(hzcc::ast::ArithmeticExpr* p_expr) {
-    // check lhs and rhs first
-    HZCC_CHECK_OK_OR_RETURN(p_expr->lhs()->visit(*this));
-    HZCC_CHECK_OK_OR_RETURN(p_expr->rhs()->visit(*this));
-
-    // todo only allow char
-    auto lhs_type = p_expr->lhs()->type();
-    auto rhs_type = p_expr->rhs()->type();
-
-    // LHS and rhs should not be void
-    if (ast::IsTypeOf<PrimitiveType::kVoid>(rhs_type) ||
-        ast::IsTypeOf<PrimitiveType::kVoid>(lhs_type)) {
-        return CompileError(ast::IsTypeOf<PrimitiveType::kVoid>(rhs_type)
-                                ? p_expr->lhs()->loc()
-                                : p_expr->rhs()->loc(),
-                            "No match for binary operation void ");
-    }
-
-    // for logical operator we only allow numeric type
-    if (rhs_type->is<TypeCategory::Numerical>() ||
-        rhs_type->is<TypeCategory::Numerical>()) {
-        return CompileError(rhs_type->is<TypeCategory::Numerical>()
-                                ? p_expr->lhs()->loc()
-                                : p_expr->rhs()->loc(),
-                            "No match for binary operation array ");
-    }
-
-    // lhs and rhs should not be arrayed
-    if (lhs_type->is<TypeCategory::Array>() ||
-        rhs_type->is<TypeCategory::Array>()) {
-        return CompileError(
-            lhs_type->is<TypeCategory::Array>() ? p_expr->lhs()->loc()
-                                                : p_expr->rhs()->loc(),
-            "No match for binary operation " + lhs_type->to_str() + " " +
-                to_string(p_expr->op_type()) + " " + rhs_type->to_str());
-    }
-
-    // LHS == RHS
-    if (!(lhs_type == rhs_type)) {
-        auto rhs_ret =
-            ast::Cast::apply(true, std::move(p_expr->rhs()), lhs_type);
-        if (!rhs_ret.ok()) {
-            return CompileError(p_expr->rhs()->loc(),
-                                "No match for binary operation " +
-                                    lhs_type->to_str() + " " +
-                                    rhs_type->to_str());
-        }
-    }
-    return NoError();
+    return check_binary(*this, *p_expr, to_string(p_expr->op_type()),
+                        p_expr->op_type() == ArithmeticType::MOD);
 }
 Status analyzer::visit(hzcc::ast::UnaryOperator* p_expr) {
-    // LHS has to be a variable Node
-    if (!p_expr->expr()->IsReturnLValue()) {
-        return CompileError(p_expr->loc(), "Expression is not assignable");
+    HZCC_CHECK_OK_OR_RETURN(p_expr->expr()->visit(*this));
+    switch (p_expr->GetUnaryType()) {
+        case UnaryType::PRE_INC:
+        case UnaryType::PRE_DEC:
+        case UnaryType::POST_INC:
+        case UnaryType::POST_DEC:
+            break;
+        default:
+            return NoError();
     }
-
-    // LHS has to be a variable Node
-    if (p_expr->expr()->type()->is<Qualifier::CONST>()) {
+    const auto type = p_expr->expr()->type();
+    if (!type || !p_expr->expr()->IsReturnLValue() || type->is<Qualifier::CONST>()) {
+        const bool increment = p_expr->GetUnaryType() == UnaryType::PRE_INC ||
+                               p_expr->GetUnaryType() == UnaryType::POST_INC;
         return CompileError(p_expr->expr()->loc(),
-                            "cannot set value to const variable");
+                            absl::StrCat("Operand of '", increment ? "++" : "--",
+                                         "' has type '", operand_type(*p_expr->expr()),
+                                         "' and must be a modifiable lvalue"));
     }
 
     return NoError();
@@ -351,22 +237,25 @@ Status analyzer::visit(hzcc::ast::ArraySubscriptExpr* p_expr) {
     HZCC_CHECK_OK_OR_RETURN(p_expr->subscript_expr()->visit(*this));
 
     // base should be arrayed
-    if (!p_expr->base_expr()->type()->is<TypeCategory::Array>()) {
-        return CompileError(p_expr->base_expr()->loc(),
-                            "Subscripted value is not an array");
+    if (!p_expr->base_expr()->type() ||
+        !p_expr->base_expr()->type()->is<TypeCategory::Array>()) {
+        return CompileError(
+            p_expr->base_expr()->loc(),
+            absl::StrCat("Subscripted value of type '",
+                         operand_type(*p_expr->base_expr()), "' is not an array"));
     }
 
     // array subscript should be a numerical type of int
     auto subscript_type = p_expr->subscript_expr()->type();
     if (!ast::IsTypeOf<PrimitiveType::kInt>(subscript_type)) {
         auto index_ret =
-            ast::Cast::apply(true, std::move(p_expr->subscript_expr()),
-                             ast::GetNumericalTypeOf<PrimitiveType::kInt>());
+            ast::Cast::apply_to(true, p_expr->subscript_expr(),
+                                ast::GetNumericalTypeOf<PrimitiveType::kInt>());
         if (!index_ret.ok()) {
-            return CompileError(p_expr->subscript_expr()->loc(),
-                                "Array subscript must be integer");
+            return CompileError(
+                p_expr->subscript_expr()->loc(),
+                absl::StrCat("Array subscript must be integer: ", index_ret.message()));
         }
-        p_expr->subscript_expr() = std::move(index_ret.value());
     }
     return NoError();
 }
@@ -376,10 +265,12 @@ Status analyzer::visit(hzcc::ast::MemberExpr* p_expr) {
     HZCC_CHECK_OK_OR_RETURN(p_expr->base_expr()->visit(*this));
 
     //  check if the type has this member
-    if (!p_expr->base_expr()->type()->is<TypeCategory::Struct>()) {
-        return CompileError(p_expr->base_expr()->loc(),
-                            "Expect struct type for member "
-                            "access");
+    if (!p_expr->base_expr()->type() ||
+        !p_expr->base_expr()->type()->is<TypeCategory::Struct>()) {
+        return CompileError(
+            p_expr->base_expr()->loc(),
+            absl::StrCat("Expected struct for access to member '", p_expr->member_name(),
+                         "', got '", operand_type(*p_expr->base_expr()), "'"));
     }
 
     // static cast here is safe since we already check the type category
@@ -408,16 +299,17 @@ Status analyzer::visit(hzcc::ast::FuncCallStmt* p_expr) {
     }
 
     // func definition
-    auto& func = _ctx.get_func(p_expr->name());
+    auto* func = _ctx.get_func(p_expr->name());
 
     // check number of arguments
     if (func->params().size() != p_expr->params().size()) {
         // generate type string first
         std::string type_str = "(";
         for (const auto& arg : func->params()) {
-            type_str += absl::StrCat(arg->name(), ", ");
+            if (type_str.size() > 1) type_str += ", ";
+            type_str += arg->name();
         }
-        type_str.replace(type_str.end() - 2, type_str.end(), ")");
+        type_str += ")";
 
         // print out error message
         return CompileError(
@@ -433,28 +325,20 @@ Status analyzer::visit(hzcc::ast::FuncCallStmt* p_expr) {
     auto d_arg = func->params().begin();
     auto c_arg = p_expr->params().begin();
     while (d_arg != func->params().end() && c_arg != p_expr->params().end()) {
-        if ((*d_arg)->type() != (*c_arg)->type()) {
-            auto loc = (*c_arg)->loc();
-            auto expr_ret =
-                ast::Cast::apply(false, std::move(*c_arg), (*d_arg)->type());
-            if (!expr_ret.ok()) {
-                return CompileError(
-                    loc,
-                    absl::StrCat("Expect type ", (*d_arg)->type()->to_str(),
-                                 " for argument [", (*d_arg)->name(),
-                                 "] but get ", (*c_arg)->type()->to_str()));
-            }
-            *c_arg = std::move(expr_ret.value());
+        // visit each argument before checking its type
+        HZCC_CHECK_OK_OR_RETURN((*c_arg)->visit(*this));
+        auto cast = ast::Cast::apply_to(false, *c_arg, (*d_arg)->type());
+        if (!cast.ok()) {
+            return CompileError((*c_arg)->loc(),
+                                absl::StrCat("In call to '", p_expr->name(),
+                                             "', argument for parameter '",
+                                             (*d_arg)->name(), "': ", cast.message()));
         }
         ++d_arg;
         ++c_arg;
     }
 
-    // visiting all arguments
-    for (const auto& arg : p_expr->params()) {
-        HZCC_CHECK_OK_OR_RETURN(arg->visit(*this));
-    }
-
+    p_expr->set_return_type(func->type());
     return NoError();
 }
 
@@ -489,6 +373,7 @@ Status analyzer::visit(hzcc::ast::FuncDeclStmt* p_expr) {
     // handle function body
     if (p_expr->has_body()) {
         _ctx.enter_scope(p_expr->name());
+        auto leave = absl::MakeCleanup([this] { _ctx.leave_scope(); });
 
         // add all arguments to the scope
         for (auto& arg : p_expr->params()) {
@@ -503,10 +388,9 @@ Status analyzer::visit(hzcc::ast::FuncDeclStmt* p_expr) {
 
 void Ctx::add_var(Position pos, ast::QualTypePtr type, std::string_view name) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    LOG_IF(FATAL, _compilationUnit->_current_context.lock() != nullptr)
-        << " should never call add_var when in root context";
-    LOG_IF(FATAL,
-           !_compilationUnit->_current_context.lock()->has_var(name, true))
+    LOG_IF(FATAL, _compilationUnit->_current_context.expired())
+        << "missing active symbol table";
+    LOG_IF(FATAL, _compilationUnit->_current_context.lock()->has_var(name, true))
         << "variable already exists";
 #endif
 
@@ -515,15 +399,14 @@ void Ctx::add_var(Position pos, ast::QualTypePtr type, std::string_view name) {
 
 std::pair<bool, Position> Ctx::var_def_pos(std::string_view name) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    LOG_IF(FATAL, name.empty() == false) << "Variable to_str cannot be empty";
-    LOG_IF(FATAL, has_var(name, false)) << "Variable " << name << " not found";
+    LOG_IF(FATAL, name.empty()) << "Variable to_str cannot be empty";
+    LOG_IF(FATAL, !has_var(name, false)) << "Variable " << name << " not found";
 #endif
 
     if (_compilationUnit->_current_context.lock() != nullptr &&
         _compilationUnit->_current_context.lock()->has_var(name, false)) {
         return std::make_pair(
-            false,
-            _compilationUnit->_current_context.lock()->var_def_pos(name));
+            at_root(), _compilationUnit->_current_context.lock()->var_def_pos(name));
     } else {
         DLOG(ERROR) << "Variable " << name << " not found";
         return std::make_pair(false, (Position){0, 0});

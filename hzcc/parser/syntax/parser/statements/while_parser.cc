@@ -24,25 +24,22 @@ WhileStatement::WhileStatement() noexcept
                  TypeNameUtil::name_pretty<ast::WhileStmt>()) {}
 StatusOr<ast::StmtPtr> WhileStatement::parse_impl(SyntaxCtx context,
                                                   TokenList& tokens) {
-    EnterLoop();  // enter loop
+    context->enter_loop();  // enter loop
+    absl::Cleanup leave_loop = [&] { context->leave_loop(); };  // exit loop
 
     // check if the next token is [while]
-    auto while_loc = tokens.peek().loc();
+    auto loc = tokens.peek().loc();
     HZCC_CheckAndConsume_ReturnErr(TokenType::While, tokens);
 
     // parse condition
-    HZCC_CHECK_OR_ASSIGN(condition,  // NOLINT
+    HZCC_CHECK_OR_ASSIGN(cond,  // NOLINT
                          utils::ParseCondition(context, tokens));
 
     // parse body stmt
     HZCC_CHECK_OR_ASSIGN(body,  // NOLINT
-                         utils::ParseBodyStatement(context, false, tokens));
+                         utils::ParseBodyStatement(context, tokens));
 
-    // push a semicolon for easier parsing
-    tokens.push(TokenType::SemiColon, -1, -1);
-
-    ExitLoop();  // exit loop
-    return std::make_unique<ast::WhileStmt>(while_loc, std::move(condition),
+    return std::make_unique<ast::WhileStmt>(loc, std::move(cond),
                                             std::move(body));
 }
 

@@ -3,7 +3,9 @@
 //
 #ifndef HZCC_PARSER_SYNTAX_UTILS_COMMON_UTILS_H_
 #define HZCC_PARSER_SYNTAX_UTILS_COMMON_UTILS_H_
+#include <absl/cleanup/cleanup.h>
 #include <absl/strings/str_cat.h>
+#include <iostream>
 #include <list>
 #include <memory>
 #include <string>
@@ -24,11 +26,14 @@ namespace syntax::utils {
  * @brief Report a syntax diagnostic at one token and return its error status.
  * @param token Token supplying the source location.
  * @param message Diagnostic text.
- * @return CompileError status associated with the token location.
+ * @return Syntax-stage error status for the reported diagnostic.
  */
 ALWAYS_INLINE Status TokenErr(const Token& token, std::string_view message) {
-    return CompileError(token.loc(),  // NOLINT
-                        message);     // NOLINT
+    std::cerr << "Parser error in file " << message::getFilename() << " line "
+              << token.loc().first << " near text " << token.to_str(true) << '\n'
+              << "        " << message << '\n';
+    message::print_source_context(token.loc());
+    return {StatusCode::kSyntaxStageErr, message};
 }
 
 /**
@@ -51,92 +56,83 @@ ALWAYS_INLINE Status TokenErr(TokenList& token, std::string_view message) {
  * @param tokens Input beginning at a primitive, record, or named type.
  * @param context Non-null compilation unit supplying and receiving named types.
  * @return Resolved qualified type, or a type lookup/syntax error.
- * @note Multi-specifier primitive types currently trigger a fatal unsupported-operation log.
+ * @note Unsupported combinations return a syntax-stage diagnostic.
  */
 ALWAYS_INLINE StatusOr<ast::QualTypePtr> get_base_type(
-    TokenList& tokens, std::shared_ptr<ast::CompilationUnit>& context) {
-    static std::vector<Qualifier> ret_attr_list(4);
-
-    auto fist_token = tokens.pop();
-    switch (fist_token.type()) {
-        case TokenType::Enum:
-        case TokenType::Union:
-        case TokenType::Struct: {
-            // next token should be an identifier
-            if (tokens.peek().type() != TokenType::kIdentity) {
-                return TokenErr(tokens.peek(), "except a identifier");
-            } else {
-                if (context->has_type("struct " + tokens.peek().to_str())) {
-                    return TokenErr(tokens.peek(), "struct " + tokens.peek().to_str() +
-                                                       " has been defined");
-                } else {
-                    ret_attr_list.clear();
-                    auto base_type_list = tokens.cache_attr_list();
-                    for (auto& attr : base_type_list) {
-                        ret_attr_list.emplace_back(to_attr(attr.type()));
-                    }
-                    return context->add_struct_type(tokens.pop().to_str(), ret_attr_list);
-                }
-            }
-        } break;
-
-        PRIMITIVE_TYPE_CASES : {
-            // if this is a simple primitive type
-            if (!is_type_specifier(tokens.peek().type())) {
-                return ast::GetNumericalTypeOf(fist_token.type());
-            }
-
-            // if this is a complex type
-            else {
-                // complex type will have at most 4 specifier
-                static std::vector<TokenType> ret_attr_list(4);
-
-                // collect all the specifier
-                ret_attr_list.clear();
-                ret_attr_list.emplace_back(fist_token.type());
-                while (is_type_specifier(tokens.peek().type())) {
-                    ret_attr_list.emplace_back(tokens.pop().type());
-                }
-
-                // TODO: for complex type, like const long long int
-                LOG(FATAL) << "Complex type is not supported yet";
-            }
-        } break;
-
-        case TokenType::kIdentity: {
-            if (context->has_type(fist_token.to_str())) {
-                ret_attr_list.clear();
-                auto base_type_list = tokens.cache_attr_list();
-                for (auto& attr : base_type_list) {
-                    ret_attr_list.emplace_back(to_attr(attr.type()));
-                }
-                return context->get_type(fist_token.to_str(), ret_attr_list);
-            } else {
-                return hzcc::syntax::utils::TokenErr(
-                    fist_token, "Unknown type: " + fist_token.to_str());
-            }
-        } break;
-        default: {
-            return TokenErr(fist_token, "except a type");
-        }
+    TokenList& tokens, const std::shared_ptr<ast::CompilationUnit>& context) {
+    if (tokens.empty()) return TokenErr(tokens, "Expected type name before end of input");
+    auto first = tokens.pop();
+    std::vector<Qualifier> qualifiers;
+    for (const auto& attr : tokens.take_leading_attributes()) {
+        qualifiers.push_back(to_attr(attr.type()));
     }
+    if (first.type() == TokenType::Struct) {
+        if (tokens.empty())
+            return TokenErr(first, "Expected struct tag before end of input");
+        // next token should be an identifier
+        if (tokens.peek().type() != TokenType::kIdentity) {
+            return TokenErr(tokens, "Expected identifier for struct tag");
+        }
+        auto tag = tokens.pop();
+        auto name = "struct " + tag.to_str();
+        if (context->has_type(name)) return context->get_type(name, qualifiers);
+        return context->add_struct_type(tag.to_str(), qualifiers);
+    }
+    if (is_type_specifier(first.type()) && first.type() != TokenType::Auto) {
+        // if this is a complex type
+        if (!tokens.empty() && is_type_specifier(tokens.peek().type())) {
+            // TODO: for complex type, like const long long int
+            return TokenErr(
+                tokens,
+                absl::StrCat("Expected identifier; type combination '", first.to_str(),
+                             " ", tokens.peek().to_str(), "' is not supported"));
+        }
+
+        // if this is a simple primitive type
+        auto type = ast::GetNumericalTypeOf(first.type());
+        return qualifiers.empty() ? type : type->type_of(qualifiers);
+    }
+    if (first.type() == TokenType::kIdentity) {
+        if (context->has_type(first.to_str()))
+            return context->get_type(first.to_str(), qualifiers);
+        return TokenErr(
+            first, absl::StrCat("Expected type name. Unknown type: ", first.to_str()));
+    }
+    if (first.type() == TokenType::Enum || first.type() == TokenType::Union) {
+        return TokenErr(
+            first, absl::StrCat(first.to_str(), " declarations are not supported yet"));
+    }
+    return TokenErr(first, "Expected type name");
 }
 
-#define HZCC_CheckAndConsume_ReturnErr(EXCEPT, TOKENS)                                  \
-    static_assert(std::is_same_v<hzcc::TokenType, decltype(EXCEPT)>,                    \
-                  "Macro type mismatch, need lexical::Token for 1st variable");         \
-    static_assert(                                                                      \
-        std::disjunction_v<std::is_same<hzcc::TokenList&, decltype(TOKENS)>,            \
-                           std::is_same<const hzcc::TokenList&, decltype(TOKENS)>>,     \
-        "Macro type mismatch, need syntax::TokenList& for 2nd variable");               \
-    if ((TOKENS).empty() || (TOKENS).peek().type() != (EXCEPT)) {                       \
-        return syntax::utils::TokenErr(                                                 \
-            TOKENS,                                                                     \
-            absl::StrCat("Expected '", magic_enum::enum_name((EXCEPT)), "', but got '", \
-                         magic_enum::enum_name((TOKENS).peek().type()), "'"));          \
-    } else {                                                                            \
-        (TOKENS).pop();                                                                 \
-    };
+/** @brief Consume the expected punctuation or report its first mismatch. */
+inline Status Consume(TokenType expected, TokenList& tokens) {
+    if (!tokens.empty() && tokens.peek().type() == expected) {
+        tokens.pop();
+        return NoError();
+    }
+    const auto wanted = Token(expected, 0, 0).to_str();
+    if (tokens.empty()) {
+        return TokenErr(tokens,
+                        absl::StrCat("Expected '", wanted, "' before end of input"));
+    }
+    return TokenErr(tokens, absl::StrCat("Expected '", wanted, "', but got '",
+                                         tokens.peek().to_str(true), "'"));
+}
+
+/** @brief Consume punctuation, anchoring an end-of-input error at its opening token. */
+inline Status Consume(TokenType expected, TokenList& tokens, const Token& opening) {
+    if (tokens.empty()) {
+        return TokenErr(
+            opening,
+            absl::StrCat("Expected '", Token(expected, 0, 0).to_str(),
+                         "' before end of input after '", opening.to_str(true), "'"));
+    }
+    return Consume(expected, tokens);
+}
+
+#define HZCC_CheckAndConsume_ReturnErr(EXPECTED, TOKENS) \
+    HZCC_CHECK_OK_OR_RETURN(::hzcc::syntax::utils::Consume(EXPECTED, TOKENS))
 
 /**
  * @brief Parse an expression enclosed in parentheses.
@@ -146,13 +142,18 @@ ALWAYS_INLINE StatusOr<ast::QualTypePtr> get_base_type(
  */
 ALWAYS_INLINE StatusOr<ast::ExprPtr> ParseCondition(
     std::shared_ptr<ast::CompilationUnit>& context, TokenList& tokens) {
+    if (tokens.empty())
+        return TokenErr(tokens, "Expected '(' to start condition before end of input");
     // next token is (
+    const auto opening = tokens.peek();
     HZCC_CheckAndConsume_ReturnErr(TokenType::LParentheses, tokens);
+    if (tokens.empty())
+        return TokenErr(opening, "Expected condition expression before end of input");
 
     HZCC_CHECK_OR_ASSIGN(condition,  // NOLINT
-                         Parser::Parse<ast::Expr>(context, tokens))
+                         Parser::Parse<ast::Expr>(context, tokens));
     // next token is ')'
-    HZCC_CheckAndConsume_ReturnErr(TokenType::RParentheses, tokens);
+    HZCC_CHECK_OK_OR_RETURN(Consume(TokenType::RParentheses, tokens, opening));
 
     return condition;
 }
@@ -160,36 +161,23 @@ ALWAYS_INLINE StatusOr<ast::ExprPtr> ParseCondition(
 /**
  * @brief Parse a braced body or wrap a single statement in a compound node.
  * @param context Non-null compilation unit whose scope is entered for a braced body.
- * @param add_semicolon Whether to push a synthetic semicolon after a braced body.
  * @param tokens Input sequence beginning at the body statement.
  * @return Owned compound statement, or the first parsing error.
- * @note Scope changes and consumed tokens are not rolled back on an error.
+ * @note Block scope is restored on return.
  */
 ALWAYS_INLINE StatusOr<std::unique_ptr<ast::CompoundStmt>> ParseBodyStatement(
-    std::shared_ptr<ast::CompilationUnit>& context, bool add_semicolon,
-    TokenList& tokens) {
+    std::shared_ptr<ast::CompilationUnit>& context, TokenList& tokens) {
+    if (tokens.empty())
+        return TokenErr(tokens, "Expected statement body before end of input");
     if (tokens.peek().type() == TokenType::LBrace) {
         // enter new scope
         context->enter_scope();
 
-        HZCC_CHECK_OR_ASSIGN(body_statement,  // NOLINT
-                             Parser::Parse<ast::CompoundStmt>(context, tokens))
         // leave scope
-        context->leave_scope();
-
-        if (add_semicolon) {
-            // push a semicolon for easier parsing
-            tokens.push(TokenType::SemiColon, -1, -1);
-        }
-
-        return body_statement;
+        absl::Cleanup leave_scope = [&] { context->leave_scope(); };
+        return Parser::Parse<ast::CompoundStmt>(context, tokens);
     } else {
-        HZCC_CHECK_OR_ASSIGN(body_statement, Parser::Parse<ast::Stmt>(context, tokens))
-
-        if (!body_statement->has_body()) {
-            // consume ';'
-            HZCC_CheckAndConsume_ReturnErr(TokenType::SemiColon, tokens)
-        }
+        HZCC_CHECK_OR_ASSIGN(body_statement, Parser::Parse<ast::Stmt>(context, tokens));
 
         // pack into a compound statement
         auto compound_stmt = std::make_unique<ast::CompoundStmt>(body_statement->loc());
