@@ -1,13 +1,11 @@
 //
 // Created by chen_ on 2022/4/18.
 //
-#include <functional>
-#include <list>
+#include <map>
 #include <memory>
-#include <unordered_set>
 #include <utility>
 
-#include "AST/CompilationUnit.h"
+#include "ast/CompilationUnit.h"
 #include "PassManager.h"
 #include "utils/factory.h"
 #include "utils/logging.h"
@@ -27,7 +25,16 @@ class PassManagerImpl : public PassManager,
      * @param compile_unit Compilation unit whose functions are processed.
      * @return OK on success, or the first backend/pass error.
      */
-    Status RunPass(std::shared_ptr<AST::CompilationUnit> compile_unit) override;
+    Status RunPass(std::shared_ptr<ast::CompilationUnit> compile_unit) override;
+
+  private:
+    /**
+     * @brief Run applicable registered passes on one function, stopping at the first failure.
+     * @param F Owned function to inspect and modify in place.
+     * @return OK on success, or the first backend/pass error.
+     */
+    Status RunFunctionPass(std::unique_ptr<ast::FuncDeclStmt>& F);
+    std::map<std::string, std::unique_ptr<PassBase>> _pass_map;
 };
 
 /**

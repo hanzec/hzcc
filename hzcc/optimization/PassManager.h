@@ -1,6 +1,9 @@
 //
 // Created by Hanze Chen on 4/11/22.
 //
+#include <memory>
+
+#include "ast/CompilationUnit.h"
 #include "pass/PassBase.h"
 #include "utils/status/status.h"
 #ifndef HZCC_SOURCE_OPTIMIZATION_PASSMANAGER_H
@@ -23,12 +26,14 @@ class ImmutablePass;
  */
 class PassManager {
   public:
+    /** @brief Destroy a pass manager through its public interface. */
+    virtual ~PassManager() = default;
     /**
      * @brief Run registered function passes over function declarations in the compilation unit.
      * @param F Compilation unit whose functions are processed.
      * @return OK on success, or the first backend/pass error.
      */
-    virtual Status RunPass(std::shared_ptr<AST::CompilationUnit> F) = 0;
+    virtual Status RunPass(std::shared_ptr<ast::CompilationUnit> F) = 0;
 };
 
 }  // namespace hzcc::Pass

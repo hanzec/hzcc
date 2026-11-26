@@ -43,26 +43,27 @@ class SymbTbl : public std::enable_shared_from_this<SymbTbl> {
      * @brief Check if the symbol table has a symbol as type with the given
      * to_str.
      * @param name The to_str of the symbol.
+     * @param current_scope Limit lookup to this scope when true.
      * @return true if type is existed.
      * @return false if type is not existed.
      */
-    bool has_type(std::string_view name);
+    bool has_type(std::string_view name, bool current_scope = false);
 
     /**
      * @brief Look up a named type from this scope through its parents.
      * @param name Registered type spelling, including any struct prefix.
      * @param qualifiers Qualifiers applied when the type is found in this scope.
      * @return A shared qualified wrapper, or nullptr if the name is unknown.
-     * @note Parent-scope lookup currently uses the parent's default qualifier set.
+     * @note Qualifiers apply to the resulting type in any enclosing scope.
      */
     QualTypePtr get_type(std::string_view name,
-                         const std::vector<Qualifier>& qualifiers = {});
+                         const std::vector<Qualifier>& qualifiers = std::vector<Qualifier>{});
 
     /**
      * @brief Register a structure type under its struct-prefixed name.
      * @param name Structure tag copied into the new type.
      * @return Shared ownership of the registered structure type.
-     * @pre No visible type already has this structure name.
+     * @pre No type in the current scope already has this structure name.
      */
     StructTypePtr add_struct_type(std::string_view name);
 

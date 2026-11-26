@@ -26,18 +26,22 @@ TEST(PARSER_COMMON_TOKEN, construct_one_without_string_test) {
     EXPECT_EQ(token.loc(), (Position{1, 3}));
 }
 
-/** @test Equal spellings survive destruction of another token that shares them. */
+/** @test The last token to share a spelling releases its storage. */
 TEST(PARSER_COMMON_TOKEN, construct_two_with_same_string_test) {
-    auto first = std::make_unique<Token>(TokenType::kIdentity, "test", 1, 0);
-    Token second(TokenType::kIdentity, "test", 1, 1);
-    EXPECT_EQ(first->to_str(), second.to_str());
-    EXPECT_EQ(second.type(), TokenType::kIdentity);
-    EXPECT_EQ(second.loc(), (Position{1, 1}));
-    first.reset();
-    EXPECT_EQ(second.to_str(), "test");
+    auto spelling = std::make_shared<const std::string>("test");
+    std::weak_ptr<const std::string> lifetime = spelling;
+    {
+        Token first(TokenType::kIdentity, spelling, 1, 0);
+        Token second(TokenType::kIdentity, spelling, 1, 1);
+        spelling.reset();
+        EXPECT_FALSE(lifetime.expired());
+        EXPECT_EQ(first.to_str(), second.to_str());
+        EXPECT_EQ(second.loc(), (Position{1, 1}));
+    }
+    EXPECT_TRUE(lifetime.expired());
 }
 
-/** @test Different interned spellings remain distinct across copies and destruction. */
+/** @test Different spellings remain distinct across copies and destruction. */
 TEST(PARSER_COMMON_TOKEN, construct_three_string_test) {
     auto first = std::make_unique<Token>(TokenType::kIdentity, "test", 1, 0);
     Token other(TokenType::kIdentity, "test_other", 1, 1);

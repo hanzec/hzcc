@@ -48,10 +48,17 @@ TEST(AST_TYPE, builtin_type_long) {
     ExpectNumericalType(PrimitiveType::kLong, "long");
 }
 
+/** @brief Distinguish signed and unsigned tokens from the extended numerical types. */
+TEST(AST_TYPE, signed_and_unsigned_specifiers) {
+    ExpectNumericalType(PrimitiveType::Signed, "signed");
+    ExpectNumericalType(PrimitiveType::Unsigned, "unsigned");
+    EXPECT_EQ(GetNumericalTypeOf<TokenType::Signed>()->to_str(), "signed");
+    EXPECT_EQ(GetNumericalTypeOf(TokenType::Unsigned)->to_str(), "unsigned");
+}
+
 /** @brief Check the spelling and primitive identity of long long. */
 TEST(AST_TYPE, builtin_type_long_long) {
-    // Preserve the existing numerical-type table mapping of this legacy enum slot.
-    ExpectNumericalType(PrimitiveType::Signed, "long long");
+    ExpectNumericalType(PrimitiveType::kLongLong, "long long");
 }
 
 /** @brief Check the spelling and primitive identity of float. */
@@ -66,8 +73,7 @@ TEST(AST_TYPE, builtin_type_double) {
 
 /** @brief Check the spelling and primitive identity of long double. */
 TEST(AST_TYPE, builtin_type_long_double) {
-    // Preserve the existing numerical-type table mapping of this legacy enum slot.
-    ExpectNumericalType(PrimitiveType::Unsigned, "long double");
+    ExpectNumericalType(PrimitiveType::kLongDouble, "long double");
 }
 
 /** @brief Check the spelling and primitive identity of _Bool. */

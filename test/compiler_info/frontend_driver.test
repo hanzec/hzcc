@@ -1,0 +1,1 @@
+// RUN: %python "%S/frontend_driver.py" %mycc

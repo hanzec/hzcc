@@ -12,7 +12,7 @@
 #include <utility>
 
 #include "ast/DeduceValue.h"
-#include "ast/Stmt.h"
+#include "ast/expr/Expr.h"
 #include "ast/type/Type.h"
 #include "enums.h"
 
@@ -24,9 +24,8 @@ ArrayType::ArrayType(std::unique_ptr<Expr> array_size,
       _base_type(std::move(base_type)) {}
 
 uint64_t ArrayType::GetSize() const {
-    return _size_node->GetDeducedValue().has_value()
-               ? _size_node->GetDeducedValue()->AsInt()
-               : 0;
+    const auto size = _size_node->GetDeducedValue();
+    return size ? size->AsInt() : 0;
 }
 
 bool ArrayType::HasDeduceSize() {
@@ -40,7 +39,7 @@ bool ArrayType::is_same(const Type& type) const {
         DCHECK(other != nullptr)
             << "dynamic cast to array type failed when is_arr() is true";
 
-        return GetBaseType() == other->GetBaseType();
+        return GetBaseType()->is_same_qualified(*other->GetBaseType());
     } else {
         return false;
     }
@@ -49,15 +48,12 @@ const std::unique_ptr<ast::Expr>& ArrayType::GetArraySizeNode() const {
     return _size_node;
 }
 std::string ArrayType::to_str() const {
+    if (_size_node->stmt_type() == StmtType::EMPTY ||
+        dynamic_cast<const EmptyExpr*>(_size_node.get())) {
+        return _base_type->to_str() + "[]";
+    }
+    const auto size = _size_node->GetDeducedValue();
     return _base_type->to_str() +
-           (_size_node->stmt_type() == StmtType::EMPTY
-                ? "[]"
-                : (_size_node->GetDeducedValue().has_value()
-                       ? "[" +
-                             std::to_string(_size_node->GetDeducedValue()
-                                                .value()
-                                                .AsInt()) +
-                             "]"
-                       : "[VLA]"));
+           (size ? "[" + std::to_string(size->AsInt()) + "]" : "[VLA]");
 }
 }  // namespace hzcc::ast

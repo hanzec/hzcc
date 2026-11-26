@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <iomanip>
+#include <optional>
 #include <ostream>
 #include <string>
 #include <string_view>
@@ -96,7 +97,7 @@ enum class CompileErrorLevel {
 namespace message {
 
 /** @brief Select the source file used by subsequent compiler diagnostics.
- * @param filename Source filename copied into process-global state.
+ * @param filename Source filename copied into thread-local state.
  */
 void set_current_file_name(const std::string& filename);
 
@@ -104,14 +105,26 @@ void set_current_file_name(const std::string& filename);
  * @param level Severity selecting the label and color.
  * @param errorMessage Diagnostic text.
  * @param loc Line and column used to locate and underline the source.
- * @pre A current, readable source file has been selected.
+ * @param source_line Borrowed excerpt, an empty view for no excerpt, or no value to
+ * read the source file.
+ * @note When source text is unavailable the diagnostic header is still printed.
  */
 void print_message(CompileErrorLevel level,             // NOLINT
                    std::string_view errorMessage,       // NOLINT
-                   std::pair<uint64_t, uint64_t> loc);  // NOLINT
+                   std::pair<uint64_t, uint64_t> loc,   // NOLINT
+                   std::optional<std::string_view> source_line = std::nullopt);
 
-/** @brief Legacy declaration for inspecting the current diagnostic source filename.
- * @note This accessor currently has no implementation.
+/** @brief Display the source line and caret for a diagnostic.
+ * @param loc One-based line and zero-based column of the offending token.
+ * @param source_line Borrowed line, or no value to read the selected filename.
+ * @param level Severity used to highlight the source when color is enabled.
+ */
+void print_source_context(std::pair<uint64_t, uint64_t> loc,
+                          std::optional<std::string_view> source_line = std::nullopt,
+                          CompileErrorLevel level = CompileErrorLevel::Error);
+
+/** @brief Return the selected diagnostic source filename.
+ * @return Thread-local string, updated by set_current_file_name().
  */
 const std::string& getFilename();
 

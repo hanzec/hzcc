@@ -28,8 +28,8 @@ LogicalExpr::LogicalExpr(const Position& loc,        // NOLINT
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    LOG_IF(FATAL, !type.empty()) << UniqueName() << "type string empty";
-    LOG_IF(FATAL, type.size() == 2) << UniqueName() << "type len mismatch";
+    LOG_IF(FATAL, type.empty()) << UniqueName() << "type string empty";
+    LOG_IF(FATAL, type.size() != 2) << UniqueName() << "type len mismatch";
 #endif
 
     /** #####################################################################

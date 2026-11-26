@@ -26,8 +26,8 @@ external `CMAKE_TOOLCHAIN_FILE`. The repository pins vcpkg and its package basel
 so dependency resolution is reproducible. Initial setup needs network access and
 can take considerably longer than subsequent builds.
 
-Dependencies are declared in `vcpkg.json`: Abseil, CLI11, gflags, glog, magic_enum,
-and RE2, with GoogleTest selected by the `UNIT_TESTING` build option.
+The core dependencies in `vcpkg.json` are Abseil, CLI11, gflags, glog, and
+magic_enum. `UNIT_TESTING` adds GoogleTest. `E2E_TESTING` adds RE2 for FileCheck.
 The integration suite uses the bundled lit runner and `HZCC_FileCheck`; installing
 lit with pip is unnecessary. Its per-test timeout support requires the pinned
 `psutil` dependency in `requirements-test.txt`.
@@ -47,7 +47,7 @@ The `#` suffix is a vcpkg port revision.
 | gflags | `2.3.0` | FileCheck command-line parsing |
 | glog | `0.7.1#3` | Logging |
 | magic_enum | `0.9.8` | Enum reflection |
-| RE2 | `2025-11-05` | Regular expressions |
+| RE2 | `2025-11-05` | Optional FileCheck pattern matching |
 | GoogleTest | `1.18.0` | Optional unit tests |
 
 ## Build
@@ -108,8 +108,10 @@ removed from registered source and test directories.
 
 Pass options during configuration, for example
 `cmake --preset debug -DE2E_TESTING=ON`.
-The JVM and optimization modules still reference older AST APIs and cannot currently
-be enabled as working backends; their source documentation is included in the API audit.
+With unit testing enabled, `cmake --build --preset debug --target check_experimental_jvm`
+runs the registered dead-code elimination pass and compares code generation for a
+parameterless `int` function returning an integer literal with the original JVM
+fixture. The other experimental backend sources still use older AST APIs.
 
 ## Tests
 
@@ -140,10 +142,14 @@ The `hzcc_e2e_test` build target also runs all enabled integration suites. Run
 `ctest --preset e2e` without a label filter to run both unit and integration tests.
 Preserve fixture whitespace and expected diagnostic text when making unrelated edits.
 
-The current handwritten syntax parser is incomplete: the `lexical_part3` suite
-actually contains 85 legacy syntax cases, all of which currently fail. The compiler
-information checks and 81 lexical cases pass. These failures remain visible in
-CTest; passing unit tests does not imply full C syntax support.
+The syntax suite `lexical_part3` runs the 85 coursework fixtures under
+`test/syntax/test_set_0/`. The compiler-information suite also checks the multi-file
+driver and output paths. Negative fixtures check both the exit code and diagnostic.
+Parser regression tests also check the offending token and construct-specific
+detail, including the previous and current types for conflicting prototypes.
+When the source is available, syntax diagnostics show the source line and a caret.
+The Part 4 and general JVM suites are outside the registered CTest suites.
+[Audit findings, implementation results and measurements (中文)](doc/project-audit.md)
 
 Coverage is optional. Install the reporting tools in a virtual environment and
 select that interpreter when configuring:
@@ -178,8 +184,7 @@ project and vcpkg inherit the selected `CC` and `CXX`. The runner caches C and C
 compilation with ccache and reports its statistics. vcpkg uses its own binary cache.
 Core jobs run all unit tests and the compiler-information and lexical suites.
 The GCC Debug job also exports coverage.
-The separate syntax job preserves the actual failures of the incomplete parser,
-so the overall CI result will remain failing until those cases are implemented.
+A separate CI job runs the complete syntax suite and publishes its JUnit report.
 Logs and test results are retained as workflow artifacts.
 
 [Documentation](.github/workflows/docs.yml) independently runs both documentation
@@ -200,6 +205,18 @@ Use `--help` for the command-line options. `--flexical_only` prints tokens;
 `--fsyntax_only` performs syntax analysis. These modes are mutually exclusive.
 `--fno_color` disables colored diagnostics. Lexical output can be written to a file
 using `-o path/to/tokens.txt`. Code generation is not part of the active build.
+
+Supply one or more input files. The driver processes them in order and returns
+a nonzero status when any input fails. Unknown flags, conflicting modes and
+missing inputs are command-line errors.
+
+Only lexical mode accepts `-o`. It opens the destination after all inputs pass
+lexical analysis and reports output errors. Quote file paths that contain spaces.
+A lexical error returns status 4.
+
+`--fsyntax_only` prints `File <path> is syntactically correct.` for each successful
+input. A syntax error returns status 1. The default mode performs the same
+analysis silently on success. The `-I` option currently checks that its path exists.
 
 ## Development
 

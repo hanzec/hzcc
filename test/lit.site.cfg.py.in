@@ -4,7 +4,7 @@ import lit
 
 # CMake generates one site config per build configuration, using target paths.
 lit_config.load_config(config, os.path.join(r'@CURRENT_TEST_ROOT@', 'lit.cfg.py'))
-config.pipefail = False
+config.pipefail = True
 config.test_source_root = r'@CURRENT_TEST_ROOT@'
 config.test_exec_root = os.path.dirname(os.path.abspath(__file__))
 config.environment['PYTHON_EXECUTABLE'] = r'@Python3_EXECUTABLE@'
@@ -17,3 +17,4 @@ for executable in (filecheck_executable, hzcc_executable):
 
 config.substitutions.append(('%FileCheck', shlex.quote(filecheck_executable)))
 config.substitutions.append(('%mycc', shlex.quote(hzcc_executable)))
+config.substitutions.append(('%python', shlex.quote(config.environment['PYTHON_EXECUTABLE'])))

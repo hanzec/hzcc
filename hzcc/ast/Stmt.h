@@ -283,6 +283,16 @@ class CompoundStmt : public Stmt {
         return statements_;
     };
 
+    /** @brief Erase the suffix starting at a valid iterator into this body.
+     * @param first First statement to erase, or the end iterator.
+     * @return Whether any statements were removed.
+     */
+    bool erase_suffix(std::list<std::unique_ptr<Stmt>>::const_iterator first) {
+        if (first == statements_.end()) return false;
+        statements_.erase(first, statements_.end());
+        return true;
+    }
+
   private:
     std::list<std::unique_ptr<Stmt>> statements_{};
 };
@@ -393,8 +403,8 @@ class DoStmt : public Stmt {
          *  ### Runtime Assertion ###
          *  ################################################################# */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _body != nullptr) << UniqueName() << "body is nullptr";
-        LOG_IF(FATAL, _cond != nullptr)
+        LOG_IF(FATAL, _body == nullptr) << UniqueName() << "body is nullptr";
+        LOG_IF(FATAL, _cond == nullptr)
             << UniqueName() << "condition is nullptr";
 #endif
     }
@@ -572,8 +582,8 @@ class IfStmt : public Stmt {
          *  ### Runtime Assertion ###
          *  ################################################################# */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, body != nullptr) << UniqueName() << "body is nullptr";
-        LOG_IF(FATAL, cond != nullptr)
+        LOG_IF(FATAL, _if_body_statement == nullptr) << UniqueName() << "body is nullptr";
+        LOG_IF(FATAL, _condition == nullptr)
             << UniqueName() << "condition is nullptr";
 #endif
     };
@@ -690,8 +700,8 @@ class WhileStmt : public Stmt {
          *  ### Runtime Assertion ###
          *  ################################################################# */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _body != nullptr) << UniqueName() << "body is nullptr";
-        LOG_IF(FATAL, _cond != nullptr)
+        LOG_IF(FATAL, _body == nullptr) << UniqueName() << "body is nullptr";
+        LOG_IF(FATAL, _cond == nullptr)
             << UniqueName() << "condition is nullptr";
 #endif
     }
@@ -749,7 +759,7 @@ class ParamVarDecl : public IDeclStmt {
          *  ### Runtime Assertion                                   ###
          *  ###########################################################*/
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _type != nullptr) << UniqueName() << "type is nullptr";
+        LOG_IF(FATAL, _type == nullptr) << UniqueName() << "type is nullptr";
 #endif
     };
 
@@ -795,7 +805,7 @@ class FieldDecl : public IDeclStmt {
         : IDeclStmt(DeclType::FIELD, "FieldDecl", name, loc),
           _type(std::move(type)) {
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _type != nullptr) << UniqueName() << "type is nullptr";
+        LOG_IF(FATAL, _type == nullptr) << UniqueName() << "type is nullptr";
 #endif
     }
 
@@ -893,8 +903,7 @@ class VarDecl : public IDeclStmt {
          */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
         // to_str and type is checked in DeclStmt
-        LOG_IF(FATAL, _init_expr != nullptr)
-            << UniqueName() << "init expression is nullptr";
+        LOG_IF(FATAL, _type == nullptr) << UniqueName() << "type is nullptr";
 #endif
     }
 
@@ -938,8 +947,8 @@ class VarDecl : public IDeclStmt {
      * @brief Get the type proxy expr of the variable
      * @return The type proxy expr of the variable
      */
-    [[nodiscard]] std::unique_ptr<TypeProxyExpr> type_expr() {
-        return std::move(_type);
+    [[nodiscard]] const std::unique_ptr<TypeProxyExpr>& type_expr() const {
+        return _type;
     };
 
   private:
@@ -1098,7 +1107,7 @@ class ReturnStmt : public Stmt {
  *  ### Runtime Assertion                                             ###
  *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-        LOG_IF(FATAL, _ret_expr != nullptr)
+        LOG_IF(FATAL, _ret_expr == nullptr)
             << UniqueName() << "return statement is nullptr";
 #endif
     }

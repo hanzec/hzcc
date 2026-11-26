@@ -6,22 +6,17 @@
 #define HZCC_FS_UTILS_H
 
 #include <filesystem>
+#include <fstream>
 
 #include "macro.h"
 namespace hzcc::FsUtils {
-/** @brief Inspect whether all owner, group, and other read-permission bits are set.
- * @param path Filesystem entry whose permission bits are queried.
- * @return Whether all three read bits are present. This is not an effective-user access check.
+/** @brief Check whether the current process can open a regular file for reading.
+ * @param path Filesystem path to test.
+ * @return True when the path is a regular file and a read-only stream opens it.
  */
 bool ALWAYS_INLINE is_readable(const std::filesystem::path& path) {
     std::error_code ec;  // For noexcept overload usage.
-    auto perms = std::filesystem::status(path, ec).permissions();
-    return ((perms & std::filesystem::perms::owner_read) !=
-                std::filesystem::perms::none &&
-            (perms & std::filesystem::perms::group_read) !=
-                std::filesystem::perms::none &&
-            (perms & std::filesystem::perms::others_read) !=
-                std::filesystem::perms::none);
+    return std::filesystem::is_regular_file(path, ec) && std::ifstream(path).is_open();
 }
 }  // namespace hzcc::FsUtils
 #endif  // HZCC_FS_UTILS_H

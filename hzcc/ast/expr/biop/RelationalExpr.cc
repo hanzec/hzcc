@@ -27,8 +27,8 @@ RelationalExpr::RelationalExpr(const Position& loc, std::string_view type,
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
 #ifdef HZCC_ENABLE_RUNTIME_CHECK
-    LOG_IF(FATAL, !type.empty()) << UniqueName() << "type string empty";
-    LOG_IF(FATAL, type.length() == 2) << UniqueName() << "type len mismatch";
+    LOG_IF(FATAL, type.empty()) << UniqueName() << "type string empty";
+    LOG_IF(FATAL, type.size() > 2) << UniqueName() << "type len mismatch";
 #endif
 
     /** #####################################################################
@@ -42,13 +42,13 @@ RelationalExpr::RelationalExpr(const Position& loc, std::string_view type,
             this->_type = RelationalType::NE;
             break;
         case '<':
-            if (type[1] == '=')
+            if (type.size() == 2 && type[1] == '=')
                 this->_type = RelationalType::LE;
             else
                 this->_type = RelationalType::LT;
             break;
         case '>':
-            if (type[1] == '=')
+            if (type.size() == 2 && type[1] == '=')
                 this->_type = RelationalType::GE;
             else
                 this->_type = RelationalType::GT;

@@ -3,110 +3,77 @@
 //
 #include "Cast.h"
 
-#include <glog/logging.h>
-#include <glog/vlog_is_on.h>
+#include <absl/strings/str_cat.h>
 
-#include <any>
-#include <ostream>
-#include <string_view>
-#include <utility>
 #include <vector>
-
-#include "ast/Stmt.h"
-#include "ast/cast/ICastRule.h"
-#include "ast/expr/Expr.h"
-#include "ast/type/Type.h"
-#include "utils/logging.h"
-#include "utils/status/status.h"
 
 namespace hzcc::ast {
 StatusOr<std::unique_ptr<Expr>> Cast::apply(
     bool require_rvalue,        // NOLINT
-    std::unique_ptr<Expr> rhs,  // NOLINT
+    ExprPtr rhs,                // NOLINT
     QualTypePtr lhs_type) {     // NOLINT
+    HZCC_CHECK_OK_OR_RETURN(apply_to(require_rvalue, rhs, lhs_type));
+    return std::move(rhs);
+}
 
-    auto ret = std::move(rhs);
-
+Status Cast::apply_to(bool require_rvalue, ExprPtr& source, const QualTypePtr& target) {
+    if (!source) {
+        return {StatusCode::kCastStage,
+                absl::StrCat("Cannot implicitly convert a missing expression to '",
+                             target ? target->to_str() : "<unresolved>", "'")};
+    }
+    const auto from = source->type();
+    const auto node_name = source->NodeName();
+    const auto location = source->loc();
+    auto failure = [&](std::string_view reason,
+                       StatusCode code = StatusCode::kCastStage) {
+        return Status(code, absl::StrCat("Cannot implicitly convert '",
+                                         from ? from->to_str() : "<unresolved>", "' to '",
+                                         target ? target->to_str() : "<unresolved>",
+                                         "' (", node_name, " at ", location.first, ":",
+                                         location.second, "): ", reason));
+    };
+    if (!from || !target) {
+        return failure(!from ? "source type is unresolved"
+                             : "destination type is unresolved");
+    }
     // LvalueToRvalueCast
-    if (require_rvalue) {
-        VLOG_IF(SYNTAX_LOG, !ret->IsReturnLValue())
-            << "No need to apply <LvalueToRvalueCast>cast since the expression "
-               "is already an rvalue.";
-        if (ret->IsReturnLValue()) {
-            VLOG(SYNTAX_LOG) << "Applying <LvalueToRvalueCast>cast";
-            ret = std::make_unique<LvalueToRvalueCast>(ret->loc(),
-                                                       std::move(ret));
+    if (*from == *target) {
+        if (require_rvalue && source->IsReturnLValue()) {
+            source = std::make_unique<LvalueToRvalueCast>(location, std::move(source));
         }
+        return NoError();
     }
 
-    // apply all rules
-    bool changed = false;
-    auto& r_ref = _rules;
-    while (ret != nullptr && ret->type() != lhs_type) {
-        // Try each registered rule against the current owned expression and return
-        // that rule's conversion status to the factory iteration.
-        auto&& status = for_each_product([&](const std::string& cast_id)
-                                             -> Status {
-            auto rule = r_ref.find(cast_id);
-
-            if (rule == r_ref.end()) {
-                r_ref.insert({cast_id, create(cast_id)});
-            }
-
-            if (rule->second->CouldApplyTo(ret, ret->type())) {
-                VLOG(SYNTAX_LOG) << "Applying <" << cast_id << "> cast";
-                auto move_ret =
-                    std::move(rule->second->Apply(std::move(ret), lhs_type));
-
-                if (!move_ret.ok()) {
-                    return move_ret.status();
-                }
-
-                ret = std::move(move_ret.value());
-                changed = true;
-
-                return NoError();
-            }
-            return {StatusCode::kCastStage, "<" + cast_id + "> not applicable"};
+    static const auto rules = [] {
+        std::vector<std::pair<std::string, std::unique_ptr<ICastRule>>> registered;
+        for_each_product([&](const std::string& id) {
+            registered.emplace_back(id, create(id));
+            return NoError();
         });
-
-        // prevent infinite loop
-        if (!changed) {
-            VLOG(DEBUG_INFO) << "Could not apply any Cast Rule rhs node "
-                             << ret->UniqueName() << " because it's not match";
-            return Status(StatusCode::kCastStage,
-                          "Cannot find any suitable cast rule");
-        } else {
-            changed = false;
-
-            // print Debug message
-            if (VLOG_IS_ON(DEBUG_INFO)) {
-                std::stringstream ss;
-
-                ss << "Trying to apply cast rules from ["
-                   << ret->type()->to_str() << "] to [" << lhs_type->to_str()
-                   << "]:" << std::endl;
-
-                for (auto&& statue : status) {
-                    if (!statue.ok()) {
-                        ss << statue.message() << std::endl;
-                    }
-                }
-
-                VLOG(DEBUG_INFO) << ss.str();
+        return registered;
+    }();
+    // Try each registered rule against the current owned expression.
+    for (const auto& [id, rule] : rules) {
+        if (rule && rule->CouldApplyTo(source, target)) {
+            auto converted = rule->Apply(source, target, require_rvalue);
+            if (!converted.ok()) {
+                return failure(absl::StrCat("rule '", id,
+                                            "' failed: ", converted.status().message()),
+                               converted.status().code());
             }
+            if (!converted.value())
+                return failure(absl::StrCat("rule '", id, "' returned an empty cast"));
+            source = std::move(converted.value());
+            return NoError();
         }
     }
-
-    // return the final node
-    LOG_IF(ERROR, ret == nullptr || ret->type() != lhs_type)
-        << "Failed rhs resolve Cast Rule lhs: " << ret->UniqueName() << "("
-        << ret->type()->to_str() << ") rhs type: "
-        << "(" << lhs_type->to_str() << ")";
-
-    if (ret == nullptr || ret->type() != lhs_type) {
-        return Status(StatusCode::kCastStage, "Failed rhs resolve Cast Rule");
+    std::string tried;
+    for (const auto& entry : rules) {
+        if (!tried.empty()) tried += ", ";
+        tried += entry.first;
     }
-    return std::move(ret);
+    return failure(tried.empty() ? "no cast rules are registered"
+                                 : "no suitable cast rule among " + tried);
 }
 }  // namespace hzcc::ast

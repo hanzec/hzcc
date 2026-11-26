@@ -27,67 +27,66 @@ ForStatement::ForStatement() noexcept
 
 StatusOr<ast::StmtPtr> ForStatement::parse_impl(SyntaxCtx context,
                                                 TokenList& tokens) {
-    EnterLoop();  // enter loop
+    context->enter_loop();  // enter loop
+    absl::Cleanup leave_loop = [&] { context->leave_loop(); };  // exit loop
 
     // check first token is for
-    auto for_loc = tokens.peek().loc();
+    auto keyword = tokens.peek();
     HZCC_CheckAndConsume_ReturnErr(TokenType::For, tokens);
 
     // check next token is (
-    auto left_paren_loc = tokens.peek().loc();
-    HZCC_CheckAndConsume_ReturnErr(TokenType::LParentheses, tokens);
-
-    // parse
-    auto for_node = std::make_unique<ast::ForStmt>(for_loc);
+    const auto opening = tokens.empty() ? keyword : tokens.peek();
+    HZCC_CHECK_OK_OR_RETURN(utils::Consume(TokenType::LParentheses, tokens, keyword));
 
     // enter new scope
     context->enter_scope();
+    // leave scope
+    absl::Cleanup leave_scope = [&] { context->leave_scope(); };
+
+    // parse
+    auto node = std::make_unique<ast::ForStmt>(keyword.loc());
 
     // parse initializer
-    if (tokens.peek().type() != TokenType::SemiColon) {
-        HZCC_CHECK_OR_ASSIGN(initializer,  // NOLINT
-                             Parser::Parse<ast::Stmt>(context, tokens));
-        for_node->set_init(std::move(initializer));
+    if (tokens.empty()) return utils::Consume(TokenType::SemiColon, tokens, opening);
+    auto first = tokens.peek();
+    if (is_type_specifier(first.type()) || first.type() == TokenType::Struct ||
+        first.type() == TokenType::Enum || first.type() == TokenType::Union ||
+        (first.type() == TokenType::kIdentity && context->has_type(first.to_str()))) {
+        HZCC_CHECK_OR_ASSIGN(init, Parser::Parse<ast::IDeclStmt>(context, tokens));
+        node->set_init(std::move(init));
+    } else {
+        if (first.type() != TokenType::SemiColon) {
+            HZCC_CHECK_OR_ASSIGN(init, Parser::Parse<ast::Expr>(context, tokens));
+            node->set_init(std::move(init));
+        }
 
         // check ';'  and consume
-        HZCC_CheckAndConsume_ReturnErr(TokenType::SemiColon, tokens)
+        HZCC_CHECK_OK_OR_RETURN(utils::Consume(TokenType::SemiColon, tokens, opening));
     }
 
     // parse condition
-    if (tokens.peek().type() != TokenType::SemiColon) {
-        HZCC_CHECK_OR_ASSIGN(condition,  // NOLINT
-                             Parser::Parse<ast::Stmt>(context, tokens))
-        for_node->set_cond(std::move(condition));
-
-        // check ';'  and consume
-        HZCC_CheckAndConsume_ReturnErr(TokenType::SemiColon, tokens);
+    if (!tokens.empty() && tokens.peek().type() != TokenType::SemiColon) {
+        HZCC_CHECK_OR_ASSIGN(cond, Parser::Parse<ast::Expr>(context, tokens));
+        node->set_cond(std::move(cond));
     }
+
+    // check ';'  and consume
+    HZCC_CHECK_OK_OR_RETURN(utils::Consume(TokenType::SemiColon, tokens, opening));
 
     // parse increment
-    if (tokens.peek().type() != TokenType::RParentheses) {
-        HZCC_CHECK_OR_ASSIGN(increment,  // NOLINT
-                             Parser::Parse<ast::Stmt>(context, tokens));
-        for_node->set_incr(std::move(increment));
-
-        // check next token is )
-        HZCC_CheckAndConsume_ReturnErr(TokenType::RParentheses, tokens);
+    if (!tokens.empty() && tokens.peek().type() != TokenType::RParentheses) {
+        HZCC_CHECK_OR_ASSIGN(incr, Parser::Parse<ast::Expr>(context, tokens));
+        node->set_incr(std::move(incr));
     }
+
+    // check next token is )
+    HZCC_CHECK_OK_OR_RETURN(utils::Consume(TokenType::RParentheses, tokens, opening));
 
     // parse body and return
-    if (tokens.peek().type() != TokenType::SemiColon) {
-        HZCC_CHECK_OR_ASSIGN(body,  // NOLINT
-                             utils::ParseBodyStatement(context, false, tokens))
-        for_node->set_body(std::move(body));
-    }
-
-    // leave scope
-    context->leave_scope();
-
-    // push a semicolon for easier parsing
-    tokens.push(TokenType::SemiColon, -1, -1);
-
-    ExitLoop();  // exit loop
-    return for_node;
+    HZCC_CHECK_OR_ASSIGN(body,  // NOLINT
+                         utils::ParseBodyStatement(context, tokens));
+    node->set_body(std::move(body));
+    return node;
 }
 
 }  // namespace hzcc::syntax::parser

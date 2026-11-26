@@ -21,17 +21,16 @@ BitwiseExpr::BitwiseExpr(const Position& loc,               // NOLINT
                          std::string_view type,             // NOLINT
                          std::unique_ptr<Expr> left_expr,   // NOLINT
                          std::unique_ptr<Expr> right_expr)  // NOLINT
-    : OperatorBase(loc, "BitwiseExpr", std::move(right_expr),
-                   std::move(left_expr)) {
+    : OperatorBase(loc, "BitwiseExpr", std::move(left_expr),
+                   std::move(right_expr)) {
     /** #####################################################################
      *  ### Runtime Assertion                                             ###
      *  ##################################################################### */
     HZCC_RUNTIME_CHECK_BLOCK({
-        LOG_IF(FATAL, type.length() != 0)
+        LOG_IF(FATAL, type.empty())
             << UniqueName() << "type string empty";
         LOG_IF(FATAL,
-               type.length() == 1 ||
-                   (type.length() == 2 && (type[0] == '<' || type[0] == '>')))
+               type.size() != 1 && type != "<<" && type != ">>")
             << UniqueName() << "type len mismatch";
     })
 

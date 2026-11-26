@@ -4,6 +4,7 @@
 
 #ifndef MYCC_PARSER_H
 #define MYCC_PARSER_H
+#include <iterator>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -15,7 +16,7 @@
 namespace hzcc::syntax {
 /**
  * @brief Select a registered parser by the AST node type requested by the caller.
- * @note Parser instances and their loop flag are shared; this factory is not reentrant.
+ * @note Parser instances share no mutable parsing state.
  */
 class Parser {
   public:
@@ -42,8 +43,12 @@ class Parser {
                                       std::string(TypeNameUtil::name_pretty<RetClass>()));
         }
         if (tokens.empty()) {
-            return Status(StatusCode::kSyntaxStageErr, "Unexpected end of token sequence");
+            const auto reason =
+                "Unexpected end of input while parsing " + std::string(parser->name());
+            message::print_message(CompileErrorLevel::Error, reason, {0, 0});
+            return Status(StatusCode::kSyntaxStageErr, reason);
         }
+        const auto end_location = std::prev(tokens.end())->loc();
         try {
             auto ret = parser->parse(std::move(ctx), tokens);
             if (!ret.ok()) {
@@ -57,7 +62,10 @@ class Parser {
             return std::unique_ptr<RetClass>(node);
         } catch (const std::out_of_range&) {
             // CachedList lookahead reports truncated grammar input by throwing.
-            return Status(StatusCode::kSyntaxStageErr, "Unexpected end of token sequence");
+            const auto reason =
+                "Unexpected end of input while parsing " + std::string(parser->name());
+            message::print_message(CompileErrorLevel::Error, reason, end_location);
+            return Status(StatusCode::kSyntaxStageErr, reason);
         }
     }
 
@@ -78,6 +86,8 @@ class Parser {
                                      std::shared_ptr<parser::ParserBase>>
         _parserMap = {{TypeNameUtil::hash<ast::IDeclStmt>(),
                        std::make_shared<parser::DeclStatement>()},
+                      {TypeNameUtil::hash<ast::Expr>(),
+                       std::make_shared<parser::ExpressionParser>()},
                       {TypeNameUtil::hash<ast::Stmt>(),
                        std::make_shared<parser::Statement>()},
                       {TypeNameUtil::hash<ast::CompoundStmt>(),

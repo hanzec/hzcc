@@ -3,64 +3,44 @@
 //
 #include "PassManagerImpl.h"
 
-#include <memory>
+#include "optimization/pass/FunctionPass.h"
 
-#include "AST/statement/CompoundStmt.h"
-#include "AST/statement/FuncDeclStmt.h"
 namespace hzcc::Pass {
 Status PassManagerImpl::RunPass(
-    std::shared_ptr<AST::CompilationUnit> compile_unit) {
-    // Run Function Pass
-    for (auto& decl : compile_unit->GetDecls()) {
-        DVLOG(OPT_LOG_LEVEL) << "Visit: " << decl.first;
-        if (decl.second->IsFuncDecl()) {
-            /**
-             * Here we will temporarily move the ownership of the
-             * function from ASTNode to current function temporary
-             */
-            auto func_decl = std::unique_ptr<AST::FuncDeclStmt>(
-                dynamic_cast<AST::FuncDeclStmt*>(decl.second.release()));
-            DLOG_ASSERT(func_decl != nullptr) << "FuncDecl cast failed";
-            HZCC_ExceptOK_WITH_RETURN(RunFunctionPass(func_decl));
-            decl.second = std::move(func_decl);
+    std::shared_ptr<ast::CompilationUnit> compile_unit) {
+    if (!compile_unit) return InvalidArgumentError("Missing compilation unit");
+    const auto results = for_each_product([&](const std::string& name) {
+        if (_pass_map.find(name) == _pass_map.end()) {
+            auto pass = create(name);
+            if (!pass) return InternalError("Cannot create registered pass: " + name);
+            _pass_map.emplace(name, std::move(pass));
         }
+        return NoError();
+    });
+    for (const auto& result : results) {
+        if (!result.ok()) return result;
     }
 
-    // print final ast
-    DVLOG(OPT_LOG_LEVEL) << "Final ast: " << std::endl << compile_unit->Dump();
-    return Status::OkStatus();
+    // Run Function Pass
+    for (auto& entry : compile_unit->_func_tbl) {
+        HZCC_CHECK_OK_OR_RETURN(RunFunctionPass(entry.second));
+    }
+    return NoError();
 }
 
-/**
- * @brief Run applicable registered passes on one function, stopping at the first failure.
- * @param F Owned function to inspect and modify in place.
- * @return OK on success, or the first backend/pass error.
- */
-Status PassManagerImpl::RunFunctionPass(std::unique_ptr<AST::FuncDeclStmt>& F) {
-    DVLOG(OPT_LOG_LEVEL) << "Running Function Pass";
-    DVLOG(OPT_LOG_LEVEL) << "Optimizing function: " << F->GetName();
-
-    for (auto& pass : _pass_map) {
-        if (pass.second->IsFunctionPass()) {
-            auto [status, modified] =
-                std::dynamic_pointer_cast<FunctionPass>(pass.second)
-                    ->RunOnFunction(F);
+Status PassManagerImpl::RunFunctionPass(std::unique_ptr<ast::FuncDeclStmt>& F) {
+    for (const auto& [name, pass] : _pass_map) {
+        if (pass->IsFunctionPass()) {
+            auto* function_pass = dynamic_cast<FunctionPass*>(pass.get());
+            if (!function_pass) return InternalError("Invalid function pass: " + name);
+            const auto [success, modified] = function_pass->RunOnFunction(F);
 
             // check PASS result
-            if (status) {
-                DVLOG(OPT_LOG_LEVEL) << "Pass: " << pass.first << " finished";
-            } else {
-                DVLOG(OPT_LOG_LEVEL) << "Pass: " << pass.first << " failed";
-                return {Status::Code::UNAVAILABLE,
-                        "Pass: " + std::string(pass.first) + " failed"};
-            }
+            if (!success) return UnavailableError("Pass failed: " + name);
 
-            // print the ast if the pass is modified ast
-            DVLOG_IF(OPT_LOG_LEVEL, modified)
-                << "[" << pass.first << "]: After: \n"
-                << F->Dump("").c_str();
+            VLOG_IF(1, modified) << "Pass " << name << " modified " << F->name();
         }
     }
-    return Status::OkStatus();
+    return NoError();
 }
 }  // namespace hzcc::Pass

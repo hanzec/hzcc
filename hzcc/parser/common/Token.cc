@@ -19,34 +19,19 @@
 #include "utils/constexpr_utils.h"
 #include "utils/logging.h"
 
-#define HZCC_INSERT_TO_CACHE(NEW_CACHE, ASSIGN_TO)                                       \
-    {                                                                                    \
-        auto ref = _global_val_storage.find((NEW_CACHE));                                \
-        if (ref != _global_val_storage.end()) {                                          \
-            (ASSIGN_TO) = ref->second;                                                   \
-        } else {                                                                         \
-            DVLOG(DEBUG_INFO) << "insert new source (NEW_CACHE) cache: [" << (NEW_CACHE) \
-                              << "]";                                                    \
-            auto new_item = std::make_shared<std::string>((NEW_CACHE));                  \
-            (ASSIGN_TO) =                                                                \
-                _global_val_storage.emplace(*new_item, new_item).first->second;          \
-        }                                                                                \
-    }
-
 namespace hzcc {
 Token::Token(TokenType token_type,                           // NOLINT
              uint_fast32_t row, uint_fast32_t col) noexcept  // NOLINT
-    : _token_type(token_type), _location(std::make_pair(row, col)) {}
+    : _location(row, col), _token_type(token_type) {}
 
 Token::Token(TokenType token_type,                           // NOLINT
              std::string_view token_string,                  // NOLINT
              uint_fast32_t row, uint_fast32_t col) noexcept  // NOLINT
-    : Token(token_type, row, col) {
-#ifdef HZCC_ENABLE_RUNTIME_CHECK
-    LOG_IF(WARNING, token_string.empty()) << "token string is empty";
-#endif
-    HZCC_INSERT_TO_CACHE(token_string, _token_val_ref)
-}
+    : Token(token_type, std::make_shared<const std::string>(token_string), row, col) {}
+
+Token::Token(TokenType token_type, std::shared_ptr<const std::string> spelling,
+             uint_fast32_t row, uint_fast32_t col) noexcept
+    : _location(row, col), _token_type(token_type), _token_val_ref(std::move(spelling)) {}
 
 void Token::Type(TokenType new_type) noexcept { _token_type = new_type; }
 
@@ -110,7 +95,7 @@ std::string Token::to_str(bool escape) const noexcept {
             if (_token_type == TokenType::Char_Lit) ss << "\'";
             if (_token_type == TokenType::Str_Lit) ss << "\"";
             for (auto& c : *_token_val_ref) {
-                if (std::iscntrl(c)) {
+                if (std::iscntrl(static_cast<unsigned char>(c))) {
                     ss << lexical::SymbolUtils::ASCIIControlCodeToString(c);
                 } else {
                     ss << c;

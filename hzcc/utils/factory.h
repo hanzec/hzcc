@@ -1,11 +1,16 @@
 //
 // Created by chen_ on 2022/11/2.
 //
+#include <glog/logging.h>
+
 #include <any>
 #include <functional>
 #include <iostream>
 #include <memory>
-#include <queue>
+#include <type_traits>
+#include <typeinfo>
+#include <utility>
+#include <vector>
 #include <string>
 #include <unordered_map>
 
@@ -19,10 +24,8 @@ namespace hzcc::utils {
  * @tparam Product the type of the product
  * @tparam ProductID the type of the product id
  */
-template <typename Product,                                          // NOLINT
-          typename ProductID,                                        // NOLINT
-          std::enable_if_t<                                          // NOLINT
-              std::negation_v<std::is_abstract<Product>>, int> = 0>  // NOLINT
+template <typename Product,    // NOLINT
+          typename ProductID>  // NOLINT
 class AutoRegFactory {
   public:
     /// @brief Construct a factory handle; registrations are shared statically.
@@ -72,55 +75,27 @@ class AutoRegFactory {
      * @return Owned product, or nullptr for an unknown key or callable mismatch.
      * @note The stored std::function signature must match Args exactly.
      */
-    template <class... Args,           // NOLINT
-              std::enable_if_t<        // NOLINT
-                  std::disjunction_v<  // NOLINT
-                      std::is_default_constructible<ProductType>,
-                      std::is_constructible<ProductType, Args&&...>>,
-                  int> = 0>
+    template <class... Args>
     static std::unique_ptr<Product> create(const ProductID& id,
                                            Args&&... args) noexcept {
         // Check if the product is registered
-        auto it = _registered_map.find(id);
-        if (it == _registered_map.end()) {
-            LOG(ERROR) << "The product id %s is not registered" << id.c_str();
+        auto it = registry().find(id);
+        if (it == registry().end()) {
+            LOG(ERROR) << "Product is not registered: " << id;
             return nullptr;
         }
 
         // acquire the product creator
-        try {
-            if constexpr (sizeof...(Args) == 0) {
-                // Assert the case that the product is default constructive if
-                // no additional arguments are provided
-                static_assert(std::is_default_constructible_v<Product>,
-                              "The product is not default constructive");
-
-                // create the product
-                auto creator =
-                    std::any_cast<std::function<std::unique_ptr<Product>()>>(
-                        _creator_collection[it->second.first]);
-                return creator();
-            } else {
-                // assert the product is constructive with the given arguments
-                static_assert(std::is_constructible_v<ProductType, Args&&...>,
-                              "The product is not constructible with the given "
-                              "arguments");
-
-                // create the product
-                auto& creator = std::any_cast<
-                    std::function<std::unique_ptr<Product>(Args...)>>(
-                    _creator_collection[it->second.first]);
-
-                return creator(std::forward<Args>(args)...);
-            }
-        } catch (const std::bad_any_cast& e) {
-            LOG(ERROR) << "Failed to cast product[" << id.c_str()
-                       << "] to the expected type"
-                       << typeid(
-                              std::function<std::unique_ptr<Product>(Args...)>)
-                              .name();
+        using Creator = std::function<std::unique_ptr<Product>(Args...)>;
+        auto* creator = std::any_cast<Creator>(&it->second.first);
+        if (!creator) {
+            LOG(ERROR) << "Registered product " << id << " cannot be created with "
+                       << typeid(Creator).name();
             return nullptr;
         }
+
+        // create the product
+        return (*creator)(std::forward<Args>(args)...);
     }
 
     /** @brief Visit registered identifiers in the registry's unspecified order.
@@ -133,53 +108,37 @@ class AutoRegFactory {
     static auto for_each_product(Func&& func, Args&&... args) noexcept
         -> std::vector<Status> {
         std::vector<Status> ret;
-        for (const auto& [id, desc] : _registered_map) {
+        for (const auto& [id, entry] : registry()) {
             ret.emplace_back(func(id, std::forward<Args>(args)...));
         }
         return ret;
     }
 
   private:
-    using ProductMeta = std::pair<uint32_t, std::string>;
+    using ProductMeta = std::pair<std::any, std::string>;
 
-    inline static std::vector<std::any> _creator_collection{};
-    inline static std::unordered_map<ProductID, ProductMeta> _registered_map{};
+    /** @brief Access registrations, including during cross-file static initialization. */
+    static auto& registry() {
+        static std::unordered_map<ProductID, ProductMeta> products;
+        return products;
+    }
 
     /** @brief Store a creator and its metadata in the shared registry.
      * @param creator Product-creation callable stored with its concrete type.
-     * @param product_id Unique identifier; duplicates terminate the process.
-     * @param product_desc Description printed in registration diagnostics.
+     * @param id Unique identifier; duplicates terminate the process.
+     * @param description Description printed in registration diagnostics.
      */
-    template <
-        class... PArgs,
-        typename ProductCreator =
-            std::function<std::unique_ptr<Product>(PArgs&...)>,
-        std::enable_if_t<std::is_constructible_v<Product, PArgs&&...>, int> = 0>
-    static void internal_reg_product(ProductCreator creator,       // NOLINT
-                                     const ProductID& product_id,  // NOLINT
-                                     const std::string& product_desc) noexcept {
-        try {
-            if (_registered_map.find(product_id) != _registered_map.end()) {
-                std::cerr << "Product " << product_id
-                          << " already registered:" << std::endl;
-                std::cerr << "*********** Registered product list ***********"
-                          << std::endl
-                          << ": " << std::endl;
-                for (const auto& [product, meta] : _registered_map) {
-                    std::cerr << "\t" << product << " (id:" << meta.first
-                              << ") : " << meta.second << std::endl;
-                }
-                std::cerr << "***********************************************"
-                          << std::endl;
-                exit(1);
-            } else {
-                _registered_map[product_id] =
-                    std::make_pair(_creator_collection.size(), product_desc);
-                _creator_collection.emplace_back(
-                    std::make_any<ProductCreator>(creator));
+    template <typename Creator>
+    static void internal_reg_product(Creator creator,       // NOLINT
+                                     const ProductID& id,  // NOLINT
+                                     const std::string& description) {
+        const bool inserted =
+            registry().emplace(id, ProductMeta{std::move(creator), description}).second;
+        if (!inserted) {
+            for (const auto& [name, entry] : registry()) {
+                LOG(ERROR) << "Registered product " << name << ": " << entry.second;
             }
-        } catch (const std::exception& e) {
-            LOG(FATAL) << "Exception in factory: " << e.what() << std::endl;
+            LOG(FATAL) << "Product already registered: " << id;
         }
     }
 };
@@ -205,12 +164,14 @@ class Register : private Factory::RegisterHelper {
               std::enable_if_t<  // NOLINT
                   std::is_constructible_v<Product, PArgs&&...>, int> = 0>
     Register(typename Factory::ProductIDType name, std::string desc)
-        : PASS_NAME(std::move(name)), PASS_DESC(std::move(desc)) {
+        : PASS_DESC(std::move(desc)), PASS_NAME(std::move(name)) {
+        using Base = typename Factory::ProductType;
+        using Creator = std::function<std::unique_ptr<Base>(PArgs...)>;
         this->reg_product(
-            [](PArgs&&... args) {
-                return std::unique_ptr<Product>(
-                    std::forward<decltype(args)>(args)...);
-            },
+            Creator{[](PArgs... args) -> std::unique_ptr<Base> {
+                return std::make_unique<Product>(
+                    std::forward<PArgs>(args)...);
+            }},
             PASS_NAME, PASS_DESC);
     };
 

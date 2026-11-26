@@ -19,6 +19,9 @@
 
 #ifndef HZCC_AST_AST_H
 #define HZCC_AST_AST_H
+namespace hzcc::Pass {
+class PassManagerImpl;
+}
 namespace hzcc::semantic {
 class Ctx;
 }
@@ -33,6 +36,7 @@ class StructType;
  */
 class CompilationUnit {
     friend class hzcc::semantic::Ctx;
+    friend class hzcc::Pass::PassManagerImpl;
 
   public:
     /**
@@ -78,6 +82,15 @@ class CompilationUnit {
      */
     void enter_scope(std::string_view name = "");
 
+    /** @brief Record entry into a loop in this compilation unit. */
+    void enter_loop() { ++_loop_depth; }
+
+    /** @brief Leave the innermost active loop. */
+    void leave_loop() { --_loop_depth; }
+
+    /** @brief Return whether a break or continue statement can target a loop. */
+    bool within_loop() const { return _loop_depth != 0; }
+
     /**
      * @brief Create and enter a named function scope beneath the root scope.
      * @param name Function name used to store the scope.
@@ -109,9 +122,10 @@ class CompilationUnit {
     /**
      * @brief Check primitive or named-type availability in the current context.
      * @param name Type spelling to look up.
+     * @param current_scope Limit named-type lookup to the active scope when true.
      * @return The result of the current primitive/global/local lookup policy.
      */
-    bool has_type(std::string_view name);
+    bool has_type(std::string_view name, bool current_scope = false);
 
 
     /**
@@ -122,7 +136,7 @@ class CompilationUnit {
      * @note Lookup delegated to a parent symbol table retains that table's qualifier behavior.
      */
     QualTypePtr get_type(std::string_view name,
-                         const std::vector<Qualifier>& qualifiers = {});
+                         const std::vector<Qualifier>& qualifiers = std::vector<Qualifier>{});
 
     /**
      * @brief Register a structure type in the current symbol table.
@@ -132,7 +146,7 @@ class CompilationUnit {
      * @pre The structure tag has not already been registered.
      */
     QualTypePtr add_struct_type(std::string_view struct_name,
-                                const std::vector<Qualifier>& attr_list = {});
+                                const std::vector<Qualifier>& attr_list = std::vector<Qualifier>{});
 
     /** ---------------------------------------------------------------
      * ## Variable related Functions                              ###
@@ -180,9 +194,8 @@ class CompilationUnit {
     /**
      * @brief Take ownership of a declaration and register it in the unit.
      * @param node Non-null declaration whose ownership is transferred here.
-     * @note Currently only function declarations are registered. A later
-     * definition supplies the body of an existing prototype; repeated
-     * prototypes are ignored. Other declaration kinds are not stored.
+     * @note Repeated function declarations share one node. A definition supplies its
+     * body and parameter names. Other top-level declarations retain source order.
      */
     void addDecl(std::unique_ptr<IDeclStmt> node);
 
@@ -200,10 +213,10 @@ class CompilationUnit {
      */
     template <
         typename Func, typename Verifier,
-        typename FuncRet = std::invoke_result_t<Func, DeclStmt*>,
+        typename FuncRet = std::invoke_result_t<Func, IDeclStmt*>,
         std::enable_if_t<        // NOLINT
             std::conjunction_v<  // NOLINT
-                std::is_invocable<Func, DeclStmt*>,
+                std::is_invocable<Func, IDeclStmt*>,
                 std::is_invocable<Verifier, FuncRet>,
                 std::is_same<bool, std::invoke_result_t<Verifier, FuncRet>>>,
             int> = 0>
@@ -214,13 +227,18 @@ class CompilationUnit {
             return true;
         }) {
         std::list<FuncRet> ret;
-        for (auto& decl : _var_tbl) {
-            auto visit_result = visit_function(decl.second.get());
+        for (auto& decl : _declarations) {
+            auto visit_result = visit_function(decl.get());
             if (verifier(visit_result)) {
                 ret.push_back(visit_result);
             } else {
                 return visit_result;
             }
+        }
+        for (auto& entry : _func_tbl) {
+            auto visit_result = visit_function(entry.second.get());
+            if (!verifier(visit_result)) return visit_result;
+            ret.push_back(visit_result);
         }
         return ret;
     }
@@ -229,6 +247,7 @@ class CompilationUnit {
     const std::string _file_name;
 
   private:
+    size_t _loop_depth = 0;
     std::weak_ptr<SymbTbl> _current_context;
 
     /**
@@ -238,7 +257,7 @@ class CompilationUnit {
     absl::flat_hash_map<std::string, std::shared_ptr<SymbTbl>>
         _scoped_symbol_table;
 
-    absl::flat_hash_map<std::string, IDeclStmtPtr> _var_tbl;
+    std::list<IDeclStmtPtr> _declarations;
     absl::flat_hash_map<std::string, FuncDeclStmtPtr> _func_tbl;
 };
 

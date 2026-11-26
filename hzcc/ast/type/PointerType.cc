@@ -18,11 +18,11 @@ bool PointerType::is_same(const Type& rhs) const {
     if (rhs.is<TypeCategory::Ptr>()) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-static-cast-downcast"
-        return base_type() ==
-               static_cast<const PointerType*>(&rhs)->base_type();
+        return base_type()->is_same_qualified(
+            *static_cast<const PointerType&>(rhs).base_type());
 #pragma clang diagnostic pop
     }
     return false;
 }
-std::string PointerType::to_str() const { return std::string(); }
+std::string PointerType::to_str() const { return base_type()->to_str() + " *"; }
 }  // namespace hzcc::ast

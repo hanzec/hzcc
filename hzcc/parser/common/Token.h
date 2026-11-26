@@ -1,7 +1,6 @@
 #include <stdint.h>
 #include <memory>
 #include <string>
-#include <unordered_map>
 #include <string_view>
 #include <utility>
 
@@ -12,8 +11,8 @@
 
 namespace hzcc {
 /**
- * @brief A lexical token with source coordinates and an optional interned spelling.
- * @note Token spellings are retained in a process-wide pool; concurrent mutation is not synchronized.
+ * @brief A lexical token with source coordinates and an optional shared spelling.
+ * @note Each token retains its spelling independently of the lexer and source stream.
  */
 class Token {
   public:
@@ -38,6 +37,16 @@ class Token {
     Token(TokenType token_type,                            // NOLINT
           std::string_view token_string,                   // NOLINT
           uint_fast32_t row, uint_fast32_t col) noexcept;  // NOLINT
+
+    /**
+     * @brief Share an immutable spelling with other tokens in a translation unit.
+     * @param token_type Token category.
+     * @param spelling Shared text which survives the lexer that produced the token.
+     * @param row One-based source line.
+     * @param col Zero-based source column.
+     */
+    Token(TokenType token_type, std::shared_ptr<const std::string> spelling,
+          uint_fast32_t row, uint_fast32_t col) noexcept;
 
     /**
      * @brief Change the token type of current LexicalToken
@@ -71,12 +80,7 @@ class Token {
   private:
     Position _location;
     TokenType _token_type;
-    std::shared_ptr<std::string> _token_val_ref = nullptr;
-
-    // global storage pool for all the token string
-    inline static std::unordered_map<std::string_view,
-                                     std::shared_ptr<std::string>>
-        _global_val_storage{};
+    std::shared_ptr<const std::string> _token_val_ref;
 };
 
 /**

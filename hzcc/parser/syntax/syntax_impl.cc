@@ -1,3 +1,4 @@
+#include <absl/cleanup/cleanup.h>
 #include <glog/logging.h>
 #include <memory>
 #include <utility>
@@ -17,6 +18,13 @@
 namespace hzcc::syntax {
 Status GenerateAST(TokenList& tokens,
                    std::shared_ptr<ast::CompilationUnit> compile_unit) {
+    if (!compile_unit) {
+        return InvalidArgumentError("A compilation unit is required for parsing");
+    }
+    const auto previous_file = message::getFilename();
+    message::set_current_file_name(compile_unit->GetFileName());
+    absl::Cleanup restore_file = [&] { message::set_current_file_name(previous_file); };
+
     // generate Ctx from compile_unit
     auto context = std::move(compile_unit);
 
@@ -24,7 +32,7 @@ Status GenerateAST(TokenList& tokens,
     // function prototypes and variables declarations
     while (!tokens.empty()) {
         // Ignore single line comments
-        if (tokens.peek().type() == TokenType::SemiColon) {
+        if (tokens.begin()->type() == TokenType::SemiColon) {
             DVLOG(SYNTAX_LOG) << "ignore single semicolon at location: "
                                     << tokens.peek().loc().first << ":"
                                     << tokens.peek().loc().second;

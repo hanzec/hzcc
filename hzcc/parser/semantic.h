@@ -12,7 +12,6 @@
 namespace hzcc::semantic {
 /**
  * @brief Legacy semantic-analysis view of a compilation unit and its active scope.
- * @note The constructor is declared but not implemented in this frontend snapshot.
  */
 class Ctx {
   public:
@@ -22,9 +21,9 @@ class Ctx {
     /**
      * @brief Declare construction of a semantic context for a compilation unit.
      * @param compilationUnit Non-null unit whose symbol and scope state will be accessed.
-     * @note This constructor currently has no implementation.
      */
-    explicit Ctx(std::shared_ptr<ast::CompilationUnit> compilationUnit);
+    explicit Ctx(std::shared_ptr<ast::CompilationUnit> compilationUnit)
+        : _compilationUnit(std::move(compilationUnit)) {}
 
     /*
      * ----------------------------------------------------------------
@@ -101,12 +100,12 @@ class Ctx {
     bool has_func(std::string_view name);
 
     /**
-     * @brief Access the owning pointer for a known function declaration.
+     * @brief Borrow a known function declaration.
      * @param name Function identifier to look up.
-     * @return Mutable reference to the entry in the compilation unit function table.
+     * @return Declaration owned by the compilation unit.
      * @pre The function exists; a missing name triggers a fatal diagnostic.
      */
-    ast::FuncDeclStmtPtr& get_func(std::string_view name);
+    ast::FuncDeclStmt* get_func(std::string_view name);
 
     /**
      * @brief Query the return type of the function associated with the active scope.
@@ -125,6 +124,10 @@ class Ctx {
  */
 class analyzer : public ast::Visitor {
   public:
+    /** @brief Check nodes using the symbol tables owned by the supplied unit. */
+    explicit analyzer(std::shared_ptr<ast::CompilationUnit> unit)
+        : _ctx(std::move(unit)) {}
+
     /**
      * @brief Check the declared type, duplicate name, and initializer compatibility, then register the variable.
      * @param p_expr Non-null VarDecl node being checked; child expressions may be updated.
@@ -168,7 +171,7 @@ class analyzer : public ast::Visitor {
     Status visit(hzcc::ast::BitwiseExpr* p_expr) override;
 
     /**
-     * @brief Require the unary operand to be an assignable, non-const lvalue.
+     * @brief Require an assignable, non-const operand for increments and decrements.
      * @param p_expr Non-null UnaryOperator node being checked; child expressions may be updated.
      * @return OK when accepted, otherwise the first semantic error.
      */
@@ -264,9 +267,9 @@ ALWAYS_INLINE bool Ctx::has_func(std::string_view name) {
     return this->_compilationUnit->has_func(name);
 }
 
-ALWAYS_INLINE ast::FuncDeclStmtPtr& Ctx::get_func(std::string_view name) {
+ALWAYS_INLINE ast::FuncDeclStmt* Ctx::get_func(std::string_view name) {
     LOG_IF(FATAL, !has_func(name)) << "Function " << name << " is not defined";
-    return this->_compilationUnit->_func_tbl[name];
+    return this->_compilationUnit->_func_tbl.at(name).get();
 }
 
 ALWAYS_INLINE std::optional<ast::QualTypePtr> Ctx::ret_type() const {
